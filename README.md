@@ -132,6 +132,7 @@ Once you've finished editing something in the dashboard, you should see in the t
   - Run `admin.ts`
   - Open `src/pages/government/officials.astro` in your IDE.
   - Use https://toolscord.com/ to get the profile-pictures of each official.
+  - Note: I (Shadno) have found https://discord.id/ to be much quicker, since toolscord has added a manual captcha puzzle for each lookup
   - Use their IGN, if known. Or otherwise use their Discord name, simplified if necessary.
   - Include each position, even if obvious (eg: that the Chief Magistrate is also a Magistrate)
   - Roles should be ordered as such: executive, then legislative, then judicial.
