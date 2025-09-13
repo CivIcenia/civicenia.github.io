@@ -331,3 +331,9 @@ entries:
     fullname: The Icenia Coat of Arms Act
     kind: statute
     googledoc: https://docs.google.com/document/d/e/2PACX-1vSznmggVqBVPQaUu6J3ufS2DwGh-wZGCj17Nqd0LintssnKpkdn7aRNOc0cPmxvy-JHnl1AR3zAVrcC/pub
+  - hidden: false
+    slug: warda
+    name: WARDA
+    fullname: Western Anti-Raider Defence Alliance (WARDA)
+    kind: treaty
+    googledoc: https://docs.google.com/document/d/1IUZzpelfFFJVAFQMCifEwGtvpbEffXjMO-APToxibZA/edit?tab=t.0
