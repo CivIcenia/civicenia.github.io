@@ -217,7 +217,7 @@ entries:
     fullname: Ascendancy of Sovereign Nations
     kind: treaty
     googledoc: https://docs.google.com/document/d/1gNNDFuBlhZ-Asd0lK6n3Wmf1A9J_BWEIu0FGdOa52Wo/preview
-  - hidden: false
+  - hidden: true
     slug: exyria-nap
     name: Exyria, NAP
     fullname: Pact of Non Aggression between Icenia and Exyria
@@ -287,3 +287,47 @@ entries:
     name: Treaty of Wesbury
     kind: treaty
     googledoc: https://docs.google.com/document/d/e/2PACX-1vTI1ks1jBsaMZHlQ-uSLBgYZrNScNTc-Q67d26Gqd7NyS_f-vfoozQZ2-D_u8Cs9W0Gfc_1VFqWQxGt/pub
+  - hidden: false
+    slug: icenia-commercial-area-act
+    name: Commercial Area Act
+    fullname: The Icenia Commercial Area Act
+    kind: statute
+    googledoc: https://docs.google.com/document/d/e/2PACX-1vR28aO6ym_BxvOXhi-ODRiOg_hXxZcJGBsZmSOJJZeZ02523bG_rOGBFxIosipc53r6I-pN-_JWoZPt/pub
+  - hidden: false
+    slug: recruitment-incentivization-initiative
+    name: Recruitment Icentivization Initiative
+    kind: statute
+    googledoc: https://docs.google.com/document/d/e/2PACX-1vQSJdNSo1xn2lXCDqBf3-rnWjlEVzzXalqpO7-VSUjbCSLF3EpxBznzv3dgLngPtQHLxzfdcLZ1h_xB/pub
+  - hidden: false
+    slug: labour-engagement-bill
+    name: Labour Engagement Bill
+    kind: statute
+    googledoc: https://docs.google.com/document/d/e/2PACX-1vSSWK1S1DwOZDGAPdOv0PtMJJN0oneBYTkYiLmAGhizNTkzXTfZ2Qr9Nrm_lT6qOLRUnlnA1kPOEFzr/pub
+  - hidden: false
+    slug: newfriend-zone-bill
+    name: Newfriend Zone Bill
+    kind: statute
+    googledoc: https://docs.google.com/document/d/e/2PACX-1vTtT7TyjPH627WKFUjnNkitV-HrPKzbxhO_3JhNhOb8tpVF8pftYNkDHMY6qn0UoINNoRrgdNxYQ1oZ/pub
+  - hidden: false
+    slug: lunden-accord
+    name: The Lunden Accord
+    kind: treaty
+    googledoc: https://docs.google.com/document/d/e/2PACX-1vSj_sJQuC7tlOib4N9VDqABDj2uXvRJdNWhDDmT5KQS5xBQ8tMD1qdAVuZF8K_r-_AuR8lf4NTs556_/pub
+  - hidden: false
+    slug: dear-program
+    name: D.E.A.R. Program
+    fullname: Drop Everything & Read
+    kind: statute
+    googledoc: https://docs.google.com/document/d/e/2PACX-1vSZdAAItYeNDrCOe4Mx7_4JxWnQLFGYT8Itj6_CrsrmIfjaWMuyCzmlfYEG-4SyqXbsBxIPBzgcX-wx/pub
+  - hidden: false
+    slug: icenia-te-nap
+    name: Temporal Empier NAP
+    fullname: Treaty of Non-Aggression Between Icenia and The Second Temporal Empire
+    kind: treaty
+    googledoc: https://docs.google.com/document/d/e/2PACX-1vRSXOx6FdpU91hGAM4E7_DG_BEPAxLhUFPrFGz1db9PId1tpVBIBJp8nDzNq11d_g/pub
+  - hidden: false
+    slug: coat-of-arms
+    name: The Coat of Arms Act
+    fullname: The Icenia Coat of Arms Act
+    kind: statute
+    googledoc: https://docs.google.com/document/d/e/2PACX-1vSznmggVqBVPQaUu6J3ufS2DwGh-wZGCj17Nqd0LintssnKpkdn7aRNOc0cPmxvy-JHnl1AR3zAVrcC/pub
