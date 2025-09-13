@@ -15,7 +15,9 @@ excerpt: >-
 document:
   type: remote-file
   value: https://docs.google.com/document/d/e/2PACX-1vTtT7TyjPH627WKFUjnNkitV-HrPKzbxhO_3JhNhOb8tpVF8pftYNkDHMY6qn0UoINNoRrgdNxYQ1oZ/pub
-changes: []
+changes:
+  - target: newfriend-zone-bill
+    kind: passage
 icon: /assets/images/law_stock.jpeg
 ---
 [Passed by the February 2025 Senate](https://discord.com/channels/558071874161082368/1336115286805581914/1336115286805581914)

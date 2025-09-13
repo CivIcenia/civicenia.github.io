@@ -20,7 +20,9 @@ document:
 
 
     ———
-changes: []
+changes:
+  - target: third-constitution
+    kind: amendment
 icon: /assets/images/law_stock.jpeg
 ---
 [Passed by the March 2025 Senate](https://discord.com/channels/558071874161082368/1354531569112449256/1354531569112449256)

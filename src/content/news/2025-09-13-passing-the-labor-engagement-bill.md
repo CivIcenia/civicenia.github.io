@@ -15,7 +15,9 @@ excerpt: >-
 document:
   type: remote-file
   value: https://docs.google.com/document/d/e/2PACX-1vSSWK1S1DwOZDGAPdOv0PtMJJN0oneBYTkYiLmAGhizNTkzXTfZ2Qr9Nrm_lT6qOLRUnlnA1kPOEFzr/pub
-changes: []
+changes:
+  - target: labour-engagement-bill
+    kind: passage
 icon: /assets/images/law_stock.jpeg
 ---
 [Passed by the February 2025 Senate](https://discord.com/channels/558071874161082368/1337172032235769897/1337172032235769897)

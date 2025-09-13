@@ -8,7 +8,9 @@ excerpt: Proposed by Senator 1Kayotic
 document:
   type: remote-file
   value: https://docs.google.com/document/d/e/2PACX-1vRSXOx6FdpU91hGAM4E7_DG_BEPAxLhUFPrFGz1db9PId1tpVBIBJp8nDzNq11d_g/pub
-changes: []
+changes:
+  - target: icenia-te-nap
+    kind: passage
 icon: /assets/images/law_stock.jpeg
 ---
 [Passed by the August 2025 Senate](https://discord.com/channels/558071874161082368/1407854408615727234/1407854408615727234)

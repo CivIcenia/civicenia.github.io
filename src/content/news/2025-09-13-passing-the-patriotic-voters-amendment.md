@@ -31,7 +31,9 @@ document:
     Rights: Eligible to vote in elections, should the citizen not hold any non-allied government office elected or appointed in any nation other than Icenia. Eligible to serve in the armed forces. Access to the national farms. Eligible to own a small bunker (the bunker must be approved by the Secretary of the Interior prior to construction).
 
     ———
-changes: []
+changes:
+  - target: third-constitution
+    kind: amendment
 icon: /assets/images/law_stock.jpeg
 ---
 [Passed by the March 2025 Senate](https://discord.com/channels/558071874161082368/1354532221674979602/1354532221674979602)

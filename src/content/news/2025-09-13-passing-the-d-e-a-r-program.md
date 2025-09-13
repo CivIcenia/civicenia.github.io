@@ -25,7 +25,9 @@ document:
     * The books will be sold at the National Library and will also be uploaded to https://civbooks.github.io/,
 
     * Citizens will be eligible.,
-changes: []
+changes:
+  - target: dear-program
+    kind: passage
 icon: /assets/images/law_stock.jpeg
 ---
 [Passed by the March 2025 Senate](https://discord.com/channels/558071874161082368/1345889816545460315/1345889816545460315)

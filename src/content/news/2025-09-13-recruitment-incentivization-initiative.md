@@ -18,7 +18,9 @@ document:
 
 
     -To promote a player to Patrician it must pass a simple majority Senate vote
-changes: []
+changes:
+  - target: recruitment-incentivization-initiative
+    kind: passage
 icon: /assets/images/law_stock.jpeg
 ---
 [Passed by the March 2025 Senate](https://discord.com/channels/558071874161082368/1348466321758879856/1348466321758879856)
