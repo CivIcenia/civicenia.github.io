@@ -27,5 +27,5 @@ export function getActChangeColours(
 export function getBordersLink(
     astro: AstroGlobal
 ) {
-    return "https://civmc-map.github.io/#url=" + astro.url.origin + "/government/borders.json"
+    return "https://map.civinfo.net/#url=" + astro.url.origin + "/government/borders.json"
 }
