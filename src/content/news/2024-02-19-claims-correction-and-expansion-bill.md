@@ -12,10 +12,10 @@ document:
 
     **Schedule 1:** Replace Article 1 with the following:
 
-    > **Article 1:**  
-
-    > The Government shall maintain claims polygons accessible at https://civicenia.github.io/government/borders.json which shall constitute the sovereign territory of Icenia, ie, all lands, waters, subterrain, and airspace. It may also include any points of interest that are owned and or operated by Icenia, though these should be made visually and textually distinct as to not confuse a point of interest with sovereign Icenian territory.
-
+    > **Article 1:**
+     
+    > The Government shall maintain claims polygons accessible at /government/borders.json which shall constitute the sovereign territory of Icenia, ie, all lands, waters, subterrain, and airspace. It may also include any points of interest that are owned and or operated by Icenia, though these should be made visually and textually distinct as to not confuse a point of interest with sovereign Icenian territory.
+     
 
     **Schedule 2:** Rename Article 2 as Article 3.
 
