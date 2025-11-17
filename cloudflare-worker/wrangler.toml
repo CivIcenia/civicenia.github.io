@@ -13,7 +13,7 @@ upload_format = "modules"
 
 # Public admin URL served by GitHub Pages — used by the worker to redirect back to the admin UI after OAuth
 [vars]
-ADMIN_URL = "https://cf-github-proxy.icenia-auth.workers.dev/admin/"
+ADMIN_URL = "https://creepilycreeper.github.io/civicenia.github.io/admin/"
 
 [env.production]
 route = ""
