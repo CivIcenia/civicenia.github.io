@@ -1,0 +1,20 @@
+name = "cf-github-proxy"
+main = "worker.mjs"
+compatibility_date = "2025-11-17"
+type = "javascript"
+
+# Replace with your Cloudflare Account ID (find in dashboard)
+account_id = "32d6ad3c4725cacc38c162cc2a3d19cf"
+
+workers_dev = true
+
+[build]
+upload_format = "modules"
+
+# Public admin URL served by GitHub Pages — used by the worker to redirect back to the admin UI after OAuth
+[vars]
+ADMIN_URL = "https://cf-github-proxy.icenia-auth.workers.dev/admin/"
+
+[env.production]
+route = ""
+zone_id = ""
