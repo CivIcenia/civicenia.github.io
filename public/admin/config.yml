@@ -2,7 +2,7 @@ backend:
   name: github
   repo: "creepilycreeper/civicenia.github.io"
   branch: "main"
-  auth_endpoint: "https://cf-github-proxy.icenia-auth.workers.dev"
+  auth_endpoint: "https://cf-github-proxy.icenia-auth.workers.dev/auth/login"
   open_authoring: false
 local_backend: true
 
