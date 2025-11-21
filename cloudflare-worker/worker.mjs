@@ -1,362 +1,159 @@
-// Cloudflare Worker OAuth proxy + committer
+// Cloudflare Worker OAuth proxy for Decap CMS (based on sterlingwes/decap-proxy)
 const GITHUB_AUTHORIZE = 'https://github.com/login/oauth/authorize';
 const GITHUB_TOKEN = 'https://github.com/login/oauth/access_token';
 const GITHUB_API = 'https://api.github.com';
 
-const encoder = new TextEncoder();
-const decoder = new TextDecoder();
-
-function base64UrlEncode(bytes) {
-  let str = '';
-  const view = new Uint8Array(bytes);
-  for (let i = 0; i < view.length; i++) str += String.fromCharCode(view[i]);
-  return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+// Generate a simple random state
+function generateState() {
+  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }
 
-async function hmacSha256(data, key) {
-  const k = await crypto.subtle.importKey('raw', encoder.encode(key), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-  const sig = await crypto.subtle.sign('HMAC', k, encoder.encode(data));
-  return sig;
-}
-
-async function makeJWT(payloadObj, secret, expSeconds = 900) {
-  const header = { alg: 'HS256', typ: 'JWT' };
-  const now = Math.floor(Date.now() / 1000);
-  const payload = Object.assign({ iat: now, exp: now + expSeconds }, payloadObj);
-  const header64 = base64UrlEncode(encoder.encode(JSON.stringify(header)));
-  const payload64 = base64UrlEncode(encoder.encode(JSON.stringify(payload)));
-  const toSign = `${header64}.${payload64}`;
-  const sig = await hmacSha256(toSign, secret);
-  const sig64 = base64UrlEncode(sig);
-  return `${toSign}.${sig64}`;
-}
-
-async function verifyJWT(token, secret) {
-  try {
-    const parts = token.split('.');
-    if (parts.length !== 3) return null;
-    const [h, p, s] = parts;
-    const toSign = `${h}.${p}`;
-    const expectedSig = await hmacSha256(toSign, secret);
-    const expected = base64UrlEncode(expectedSig);
-    if (expected !== s) return null;
-    const payloadJson = atob(p.replace(/-/g, '+').replace(/_/g, '/'));
-    const payload = JSON.parse(payloadJson);
-    if (payload.exp && Math.floor(Date.now() / 1000) > payload.exp) return null;
-    return payload;
-  } catch (e) { return null; }
-}
-
-// Helper to compute allowed CORS origin based on configured ADMIN_URL and actual request origin.
-function getAllowedOrigin(request, env) {
-  const reqOrigin = request.headers.get('Origin') || '';
-  try {
-    if (env.ADMIN_URL) {
-      // ADMIN_URL may include path; use only origin (scheme + host + port)
-      const adminOrigin = new URL(env.ADMIN_URL).origin;
-      // If the request originates from the admin origin, echo it; otherwise default to adminOrigin.
-      if (reqOrigin === adminOrigin) return adminOrigin;
-      // Fallback: if there's no Origin header, return adminOrigin so we can support direct browser redirects.
-      return adminOrigin;
+// Create OAuth client
+function createOAuth(env) {
+  return {
+    authorizeURL: ({ redirect_uri, scope, state }) => {
+      const params = new URLSearchParams({
+        response_type: 'code',
+        client_id: env.GITHUB_CLIENT_ID,
+        redirect_uri,
+        scope,
+        state
+      });
+      return `${GITHUB_AUTHORIZE}?${params.toString()}`;
+    },
+    
+    getToken: async ({ code, redirect_uri }) => {
+      const response = await fetch(GITHUB_TOKEN, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          client_id: env.GITHUB_CLIENT_ID,
+          client_secret: env.GITHUB_CLIENT_SECRET,
+          code,
+          redirect_uri,
+          grant_type: 'authorization_code'
+        })
+      });
+      
+      const json = await response.json();
+      if (json.error) {
+        throw new Error(json.error_description || json.error);
+      }
+      return json.access_token;
     }
-  } catch (e) {
-    // ignore parse errors
-  }
-  return reqOrigin || '*';
-}
-
-function makeCorsHeaders(origin) {
-  const h = {
-    'Access-Control-Allow-Origin': origin,
-    'Access-Control-Allow-Credentials': 'true',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type'
   };
-  return h;
 }
 
-function redirect(url, corsHeaders = {}) {
-  const res = new Response(null, { status: 302, headers: Object.assign({ Location: url }, corsHeaders) });
-  return res;
+// Handle auth request
+async function handleAuth(url, env) {
+  const provider = url.searchParams.get('provider');
+  if (provider !== 'github') {
+    return new Response('Invalid provider', { status: 400 });
+  }
+
+  const oauth2 = createOAuth(env);
+  const authorizationUri = oauth2.authorizeURL({
+    redirect_uri: `https://${url.hostname}/callback?provider=github`,
+    scope: 'repo,user', // Use 'repo,user' for private repos, 'public_repo,user' for public
+    state: generateState()
+  });
+
+  return new Response(null, { 
+    headers: { 'Location': authorizationUri }, 
+    status: 301 
+  });
 }
 
-function json(body, status = 200, corsHeaders = {}) {
-  const headers = Object.assign({ 'Content-Type': 'application/json' }, corsHeaders);
-  return new Response(JSON.stringify(body), { status, headers });
+// Create callback response with the specific script that Decap CMS expects
+function callbackScriptResponse(status, token) {
+  return new Response(`
+<html>
+<head>
+  <script>
+    const receiveMessage = (message) => {
+      window.opener.postMessage(
+        'authorization:github:${status}:${JSON.stringify({ token })}',
+        '*'
+      );
+      window.removeEventListener("message", receiveMessage, false);
+    }
+    window.addEventListener("message", receiveMessage, false);
+    window.opener.postMessage("authorizing:github", "*");
+  </script>
+</head>
+<body>
+  <p>Authorizing Decap...</p>
+</body>
+</html>`, 
+    { 
+      headers: { 'Content-Type': 'text/html' } 
+    }
+  );
+}
+
+// Handle callback
+async function handleCallback(url, env) {
+  const provider = url.searchParams.get('provider');
+  if (provider !== 'github') {
+    return new Response('Invalid provider', { status: 400 });
+  }
+
+  const code = url.searchParams.get('code');
+  if (!code) {
+    return new Response('Missing code', { status: 400 });
+  }
+
+  try {
+    const oauth2 = createOAuth(env);
+    const accessToken = await oauth2.getToken({
+      code,
+      redirect_uri: `https://${url.hostname}/callback?provider=github`
+    });
+    
+    return callbackScriptResponse('success', accessToken);
+  } catch (error) {
+    console.error('OAuth error:', error);
+    return callbackScriptResponse('error', error.message);
+  }
+}
+
+function makeCorsHeaders() {
+  return {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  };
 }
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const path = url.pathname;
-    const origin = request.headers.get('Origin') || '';
-    const allowedOrigin = getAllowedOrigin(request, env);
-    const cors = makeCorsHeaders(allowedOrigin);
-
+    
     // Handle preflight
     if (request.method === 'OPTIONS') {
-      return new Response(null, { status: 204, headers: cors });
+      return new Response(null, { 
+        status: 204, 
+        headers: makeCorsHeaders() 
+      });
     }
 
+    // Handle auth endpoint (both /auth and /auth/login for compatibility)
     if (path === '/auth' || path === '/auth/login') {
-      const state = crypto.getRandomValues(new Uint8Array(16)).join('');
-      const redirectUri = `${url.origin}/auth/callback`;
-      const params = new URLSearchParams({
-        client_id: env.GITHUB_CLIENT_ID,
-        redirect_uri: redirectUri,
-        scope: 'repo',
-        state
-      });
-      // Redirect directly to GitHub authorization endpoint
-      return redirect(`${GITHUB_AUTHORIZE}?${params.toString()}`, cors);
+      return handleAuth(url, env);
     }
 
-    if (path === '/auth/callback') {
-      const code = url.searchParams.get('code');
-      if (!code) return json({ error: 'missing_code' }, 400, cors);
-      const redirectUri = `${url.origin}/auth/callback`;
-      const tokenRes = await fetch(GITHUB_TOKEN, {
-        method: 'POST',
-        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          client_id: env.GITHUB_CLIENT_ID,
-          client_secret: env.GITHUB_CLIENT_SECRET,
-          code,
-          redirect_uri: redirectUri
-        })
-      });
-      const tokenJson = await tokenRes.json();
-      if (tokenJson.error) return json({ error: 'token_exchange_failed', detail: tokenJson }, 400, cors);
-      const session = await makeJWT({ gh_token: tokenJson.access_token }, env.SESSION_SECRET, 60 * 60);
-      // Set cookie so subsequent proxied API calls from the admin can use the session.
-      // Use SameSite=None because GitHub Pages (admin) is cross-site to the worker domain.
-      const cookie = `session=${session}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=${60 * 60}`;
-      // Determine admin origin for postMessage target. Prefer configured ADMIN_URL, fall back to '*'.
-      let adminOrigin = '*';
-      try {
-        if (env.ADMIN_URL) adminOrigin = new URL(env.ADMIN_URL).origin;
-      } catch (e) { /* ignore */ }
-      // Return a small HTML page for the OAuth popup flow:
-      // - Posts the GitHub access token back to window.opener via postMessage in correct Decap CMS format
-      // - Store in localStorage and close popup automatically
-      const html = `<!doctype html>
-<html>
-  <head><meta charset="utf-8"><title>Decap OAuth</title></head>
-  <body>
-    <h2>Authentication Complete</h2>
-    <p>Debug information:</p>
-    <div id="debug"></div>
-    <script>
-      (function() {
-        const debugDiv = document.getElementById('debug');
-        
-        function addDebugInfo(message) {
-          console.log(message);
-          debugDiv.innerHTML += '<p>' + message + '</p>';
-        }
-        
-        try {
-          addDebugInfo('Starting OAuth callback process...');
-          
-          const token = ${JSON.stringify(tokenJson.access_token)};
-          const target = ${JSON.stringify(adminOrigin)};
-          
-          addDebugInfo('📤 Token: ' + token);
-          addDebugInfo('🎯 Target origin: ' + target);
-          
-          // Store token in localStorage for Decap CMS to find
-          try {
-            localStorage.setItem('github-auth-token', token);
-            addDebugInfo('✅ Token stored in localStorage');
-          } catch (e) {
-            addDebugInfo('❌ Failed to store in localStorage: ' + e.message);
-          }
-          
-          // Check if we have window.opener
-          if (!window.opener) {
-            addDebugInfo('❌ ERROR: No window.opener found!');
-            return;
-          }
-          
-          addDebugInfo('✅ window.opener exists');
-          
-          // Use the exact format that Decap CMS OAuth expects
-          const authMessage = {
-            token: token,
-            provider: 'github'
-          };
-          
-          // Send the message
-          try {
-            window.opener.postMessage({
-              ...authMessage,
-              type: 'authorization:github:success'
-            }, target);
-            addDebugInfo('✅ Success message posted');
-          } catch (e) {
-            try {
-              window.opener.postMessage({
-                ...authMessage,
-                type: 'authorization:github:success'
-              }, '*');
-              addDebugInfo('✅ Fallback success message posted');
-            } catch (e2) {
-              addDebugInfo('❌ All message attempts failed: ' + e2.message);
-            }
-          }
-          
-          // Also send the basic message format
-          try {
-            window.opener.postMessage(authMessage, target);
-            addDebugInfo('✅ Basic message posted');
-          } catch (e) {
-            window.opener.postMessage(authMessage, '*');
-            addDebugInfo('✅ Basic fallback message posted');
-          }
-          
-          // Auto-close after a short delay
-          setTimeout(() => {
-            addDebugInfo('🔒 Closing window...');
-            window.close();
-          }, 2000);
-          
-        } catch (e) {
-          addDebugInfo('❌ ERROR: ' + e.message);
-        }
-      })();
-    </script>
-  </body>
-</html>`;
-      const headers = Object.assign({ 'Content-Type': 'text/html; charset=utf-8', 'Set-Cookie': cookie }, cors);
-      return new Response(html, { status: 200, headers });
+    // Handle callback
+    if (path === '/callback') {
+      return handleCallback(url, env);
     }
 
-    if (path === '/api/whoami') {
-      const cookie = request.headers.get('Cookie') || '';
-      const m = cookie.match(/(?:^|; )session=([^;]+)/);
-      if (!m) return json({ authenticated: false }, 200, cors);
-      const payload = await verifyJWT(m[1], env.SESSION_SECRET);
-      if (!payload) return json({ authenticated: false }, 200, cors);
-      return json({ authenticated: true, user: payload }, 200, cors);
-    }
-
-    if (path === '/api/create-pr' && request.method === 'POST') {
-      const cookie = request.headers.get('Cookie') || '';
-      const m = cookie.match(/(?:^|; )session=([^;]+)/);
-      if (!m) return json({ error: 'not_authenticated' }, 401, cors);
-      const payload = await verifyJWT(m[1], env.SESSION_SECRET);
-      if (!payload) return json({ error: 'invalid_session' }, 401, cors);
-      let body;
-      try { body = await request.json(); } catch (e) { return json({ error: 'invalid_json' }, 400, cors); }
-      const { repo, base = 'main', branch, files, title } = body;
-      if (!repo || !branch || !files || !title) return json({ error: 'missing_fields' }, 400, cors);
-      const ghToken = payload.gh_token;
-      const headers = {
-        Authorization: `token ${ghToken}`,
-        Accept: 'application/vnd.github.v3+json',
-        'User-Agent': 'cf-github-proxy'
-      };
-      // get base ref sha
-      const refRes = await fetch(`${GITHUB_API}/repos/${repo}/git/ref/heads/${base}`, { headers });
-      if (!refRes.ok) return json({ error: 'base_ref_not_found' }, 400, cors);
-      const refJson = await refRes.json();
-      const baseSha = refJson.object.sha;
-      // create branch
-      const createRefRes = await fetch(`${GITHUB_API}/repos/${repo}/git/refs`, {
-        method: 'POST',
-        headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
-        body: JSON.stringify({ ref: `refs/heads/${branch}`, sha: baseSha })
-      });
-      if (!createRefRes.ok) return json({ error: 'create_branch_failed' }, 400, cors);
-      // create blobs and tree
-      const blobEntries = [];
-      for (const f of files) {
-        const blobRes = await fetch(`${GITHUB_API}/repos/${repo}/git/blobs`, {
-          method: 'POST',
-          headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
-          body: JSON.stringify({ content: f.content, encoding: 'utf-8' })
-        });
-        if (!blobRes.ok) return json({ error: 'blob_failed' }, 400, cors);
-        const blobJson = await blobRes.json();
-        blobEntries.push({ path: f.path, mode: '100644', type: 'blob', sha: blobJson.sha });
-      }
-      const treeRes = await fetch(`${GITHUB_API}/repos/${repo}/git/trees`, {
-        method: 'POST',
-        headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
-        body: JSON.stringify({ base_tree: baseSha, tree: blobEntries })
-      });
-      if (!treeRes.ok) return json({ error: 'tree_failed' }, 400, cors);
-      const treeJson = await treeRes.json();
-      const commitRes = await fetch(`${GITHUB_API}/repos/${repo}/git/commits`, {
-        method: 'POST',
-        headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
-        body: JSON.stringify({ message: title, tree: treeJson.sha, parents: [baseSha] })
-      });
-      if (!commitRes.ok) return json({ error: 'commit_failed' }, 400, cors);
-      const commitJson = await commitRes.json();
-      const updateRefRes = await fetch(`${GITHUB_API}/repos/${repo}/git/refs/heads/${branch}`, {
-        method: 'PATCH',
-        headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
-        body: JSON.stringify({ sha: commitJson.sha })
-      });
-      if (!updateRefRes.ok) return json({ error: 'update_ref_failed' }, 400, cors);
-      const prRes = await fetch(`${GITHUB_API}/repos/${repo}/pulls`, {
-        method: 'POST',
-        headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
-        body: JSON.stringify({ title, head: branch, base })
-      });
-      if (!prRes.ok) return json({ error: 'pr_failed' }, 400, cors);
-      const prJson = await prRes.json();
-      return json({ pr: prJson.html_url }, 200, cors);
-    }
-
-    // Proxy GitHub API requests for Decap CMS
-    if (path.startsWith('/api/github/')) {
-      const cookie = request.headers.get('Cookie') || '';
-      const m = cookie.match(/(?:^|; )session=([^;]+)/);
-      if (!m) return json({ error: 'not_authenticated' }, 401, cors);
-      const payload = await verifyJWT(m[1], env.SESSION_SECRET);
-      if (!payload) return json({ error: 'invalid_session' }, 401, cors);
-      
-      // Extract GitHub API path from our proxy path
-      const githubPath = path.replace('/api/github/', '/');
-      const githubUrl = `${GITHUB_API}${githubPath}${url.search}`;
-      
-      // Prepare headers for GitHub API
-      const githubHeaders = {
-        'Authorization': `token ${payload.gh_token}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'User-Agent': 'cf-github-proxy'
-      };
-      
-      // Copy content-type for POST/PUT requests
-      const contentType = request.headers.get('Content-Type');
-      if (contentType) githubHeaders['Content-Type'] = contentType;
-      
-      // Proxy the request to GitHub API
-      const githubResponse = await fetch(githubUrl, {
-        method: request.method,
-        headers: githubHeaders,
-        body: request.method !== 'GET' && request.method !== 'HEAD' ? await request.arrayBuffer() : null
-      });
-      
-      // Return the response with CORS headers
-      const responseBody = await githubResponse.arrayBuffer();
-      const responseHeaders = Object.assign({}, cors);
-      
-      // Copy important headers from GitHub response
-      for (const [key, value] of githubResponse.headers.entries()) {
-        if (['content-type', 'content-length', 'etag', 'last-modified'].includes(key.toLowerCase())) {
-          responseHeaders[key] = value;
-        }
-      }
-      
-      return new Response(responseBody, {
-        status: githubResponse.status,
-        headers: responseHeaders
-      });
-    }
-
-    return new Response('Not Found', { status: 404, headers: cors });
+    // Default response
+    return new Response('Decap CMS OAuth Proxy', { 
+      headers: makeCorsHeaders() 
+    });
   }
 };

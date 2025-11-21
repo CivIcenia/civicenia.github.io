@@ -1,10 +1,9 @@
+site_url: "https://creepilycreeper.github.io/civicenia.github.io/"
 backend:
   name: github
   repo: "CreepilyCreeper/civicenia.github.io"
   branch: "master"
-  site_domain: "creepilycreeper.github.io"
   base_url: "https://cf-github-proxy.icenia-auth.workers.dev"
-  auth_endpoint: "auth"
   open_authoring: false
 # local_backend: true
 
