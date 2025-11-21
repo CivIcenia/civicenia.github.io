@@ -137,7 +137,7 @@ export default {
         if (env.ADMIN_URL) adminOrigin = new URL(env.ADMIN_URL).origin;
       } catch (e) { /* ignore */ }
       // Return a small HTML page for the OAuth popup flow:
-      // - Posts the GitHub access token and session back to window.opener via postMessage
+      // - Posts the GitHub access token back to window.opener via postMessage in Decap CMS format
       // - Closes the popup
       const html = `<!doctype html>
 <html>
@@ -146,20 +146,44 @@ export default {
     <script>
       (function() {
         try {
+          // Decap CMS expects this specific message format
           const payload = {
             provider: 'github',
-            token: ${JSON.stringify(tokenJson.access_token)},
-            session: ${JSON.stringify(session)}
+            token: ${JSON.stringify(tokenJson.access_token)}
           };
           // Post message to the opener (admin UI). Use the configured admin origin when possible.
           const target = ${JSON.stringify(adminOrigin)};
           if (window.opener) {
-            try { window.opener.postMessage(payload, target); } catch (e) { window.opener.postMessage(payload, '*'); }
+            console.log('Posting message to opener:', payload, 'target:', target);
+            try { 
+              window.opener.postMessage(payload, target); 
+            } catch (e) { 
+              console.log('Fallback to * target:', e);
+              window.opener.postMessage(payload, '*'); 
+            }
+            // Also try posting with 'authorization:github:success' type for compatibility
+            setTimeout(() => {
+              try {
+                window.opener.postMessage({
+                  type: 'authorization:github:success',
+                  provider: 'github',
+                  token: ${JSON.stringify(tokenJson.access_token)}
+                }, target);
+              } catch (e) {
+                window.opener.postMessage({
+                  type: 'authorization:github:success',
+                  provider: 'github',
+                  token: ${JSON.stringify(tokenJson.access_token)}
+                }, '*');
+              }
+            }, 100);
+          } else {
+            console.log('No window.opener found');
           }
         } catch (e) {
-          // silently ignore
+          console.error('Error in postMessage:', e);
         } finally {
-          window.close();
+          setTimeout(() => window.close(), 1000);
         }
       })();
     </script>
@@ -247,6 +271,53 @@ export default {
       if (!prRes.ok) return json({ error: 'pr_failed' }, 400, cors);
       const prJson = await prRes.json();
       return json({ pr: prJson.html_url }, 200, cors);
+    }
+
+    // Proxy GitHub API requests for Decap CMS
+    if (path.startsWith('/api/github/')) {
+      const cookie = request.headers.get('Cookie') || '';
+      const m = cookie.match(/(?:^|; )session=([^;]+)/);
+      if (!m) return json({ error: 'not_authenticated' }, 401, cors);
+      const payload = await verifyJWT(m[1], env.SESSION_SECRET);
+      if (!payload) return json({ error: 'invalid_session' }, 401, cors);
+      
+      // Extract GitHub API path from our proxy path
+      const githubPath = path.replace('/api/github/', '/');
+      const githubUrl = `${GITHUB_API}${githubPath}${url.search}`;
+      
+      // Prepare headers for GitHub API
+      const githubHeaders = {
+        'Authorization': `token ${payload.gh_token}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'cf-github-proxy'
+      };
+      
+      // Copy content-type for POST/PUT requests
+      const contentType = request.headers.get('Content-Type');
+      if (contentType) githubHeaders['Content-Type'] = contentType;
+      
+      // Proxy the request to GitHub API
+      const githubResponse = await fetch(githubUrl, {
+        method: request.method,
+        headers: githubHeaders,
+        body: request.method !== 'GET' && request.method !== 'HEAD' ? await request.arrayBuffer() : null
+      });
+      
+      // Return the response with CORS headers
+      const responseBody = await githubResponse.arrayBuffer();
+      const responseHeaders = Object.assign({}, cors);
+      
+      // Copy important headers from GitHub response
+      for (const [key, value] of githubResponse.headers.entries()) {
+        if (['content-type', 'content-length', 'etag', 'last-modified'].includes(key.toLowerCase())) {
+          responseHeaders[key] = value;
+        }
+      }
+      
+      return new Response(responseBody, {
+        status: githubResponse.status,
+        headers: responseHeaders
+      });
     }
 
     return new Response('Not Found', { status: 404, headers: cors });
