@@ -56,7 +56,7 @@ async function handleAuth(url, env) {
 
   const oauth2 = createOAuth(env);
   const authorizationUri = oauth2.authorizeURL({
-    redirect_uri: `https://${url.hostname}/auth/callback?provider=github`,
+    redirect_uri: `https://${url.hostname}/callback`,
     scope: 'repo,user', // Use 'repo,user' for private repos, 'public_repo,user' for public
     state: generateState()
   });
@@ -110,7 +110,7 @@ async function handleCallback(url, env) {
     const oauth2 = createOAuth(env);
     const accessToken = await oauth2.getToken({
       code,
-      redirect_uri: `https://${url.hostname}/auth/callback?provider=github`
+      redirect_uri: `https://${url.hostname}/callback`
     });
     
     return callbackScriptResponse('success', accessToken);
@@ -147,7 +147,7 @@ export default {
     }
 
     // Handle callback
-    if (path === '/auth/callback') {
+    if (path === '/callback') {
       return handleCallback(url, env);
     }
 
