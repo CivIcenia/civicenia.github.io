@@ -4,11 +4,12 @@ import yaml from "@rollup/plugin-yaml";
 // https://astro.build/config
 export default defineConfig({
     // When hosting as a GitHub Pages project site under
-    // `https://<username>.github.io/civicenia.github.io/` set `site`
+    // `https://<username>.github.io/<repo>/` set `site`
     // and `base` accordingly so generated links and redirects are
-    // rooted at the repository path.
-    site: "https://creepilycreeper.github.io/civicenia.github.io",
-    base: "/civicenia.github.io/",
+    // rooted at the repository path. Use `${BASE}` so absolute URLs
+    // include the build-time base path.
+    site: "https://creepilycreeper.github.io${BASE}",
+    base: "/civicenia.github.io/",  // have this as "/" if hosting as a user/organization site
 
     server: {
         port: 4000,

@@ -9,6 +9,8 @@ const { law } = Astro.props;
 
 const changers = await Laws.getChangers(law);
 import { getActChangeColours } from "@comptime";
+// Use the build-time base so links work when deployed under a project site
+const BASE = (import.meta.env.BASE_URL ?? "/");
 ---
 <style>
     div.law-card {
@@ -82,7 +84,7 @@ import { getActChangeColours } from "@comptime";
                                 {changers.map((changer) => (
                                     <tr class="govuk-table__row">
                                         <th scope="row" class="govuk-table__header">
-                                            <a href={"/news/" + changer.act.slug} class="govuk-link">
+                                            <a href={BASE + "news/" + changer.act.slug} class="govuk-link">
                                                 {changer.act.data.headline}
                                             </a>
                                         </th>
