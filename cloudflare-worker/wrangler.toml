@@ -11,10 +11,6 @@ workers_dev = true
 # build.command can be used to run bundlers; leave empty if not required
 command = ""
 
-# Public admin URL served by GitHub Pages — used by the worker to redirect back to the admin UI after OAuth
-[vars]
-ADMIN_URL = "https://creepilycreeper.github.io/civicenia.github.io/admin/"
-
 # [env.production]
 # route = ""
 # zone_id = ""
