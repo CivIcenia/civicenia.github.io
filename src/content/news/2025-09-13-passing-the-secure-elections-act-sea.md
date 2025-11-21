@@ -1,4 +1,5 @@
 ---
+
 changetolaw: true
 layout: "@layouts/news/act.astro"
 institution: senate
