@@ -6,7 +6,28 @@
         <title>Content Manager</title>
     </head>
     <body>
-        <!-- Include the script that builds the page and powers DecapCMS -->
-        <script src="https://unpkg.com/decap-cms@^3.8.4/dist/decap-cms.js"></script>
+        <script>
+          // Prevent the pre-built Decap client from auto-initializing.
+          // We will initialize it manually so the backend auth_endpoint is used directly
+          // and Netlify's proxy is bypassed.
+          window.CMS_MANUAL_INIT = true;
+
+          // Decap config — forces the client to call your worker directly.
+          window.__DECAP_CMS_CONFIG = {
+            backend: {
+              name: "github",
+              repo: "creepilycreeper/civicenia.github.io",
+              branch: "main",
+              // Point to your worker root — the client will append /auth/login as needed.
+              auth_endpoint: "https://cf-github-proxy.icenia-auth.workers.dev",
+              open_authoring: false
+            },
+            media_folder: "public/uploads/",
+            public_folder: "/uploads/"
+          };
+        </script>
+
+        <!-- Load DecapCMS and initialize with our config to avoid Netlify proxy -->
+        <script src="https://unpkg.com/decap-cms@^3.8.4/dist/decap-cms.js" onload="CMS.init(window.__DECAP_CMS_CONFIG)"></script>
     </body>
 </html>
