@@ -100,8 +100,10 @@ export default {
 
     if (path === '/auth/login') {
       const state = crypto.getRandomValues(new Uint8Array(16)).join('');
+      const redirectUri = `${url.origin}/auth/callback`;
       const params = new URLSearchParams({
         client_id: env.GITHUB_CLIENT_ID,
+        redirect_uri: redirectUri,
         scope: 'repo',
         state
       });
@@ -112,13 +114,15 @@ export default {
     if (path === '/auth/callback') {
       const code = url.searchParams.get('code');
       if (!code) return json({ error: 'missing_code' }, 400, cors);
+      const redirectUri = `${url.origin}/auth/callback`;
       const tokenRes = await fetch(GITHUB_TOKEN, {
         method: 'POST',
         headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
         body: JSON.stringify({
           client_id: env.GITHUB_CLIENT_ID,
           client_secret: env.GITHUB_CLIENT_SECRET,
-          code
+          code,
+          redirect_uri: redirectUri
         })
       });
       const tokenJson = await tokenRes.json();
