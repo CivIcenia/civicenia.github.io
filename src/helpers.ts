@@ -196,7 +196,15 @@ export namespace Strings {
         return INTERNAL_stripHtml(html).result;
     }
 
-    export const parseMarkdown = INTERNAL_parseMarkdown;
+    export async function parseMarkdown(md: string): Promise<string> {
+        const rendered = await INTERNAL_parseMarkdown(md);
+        const BASE = (import.meta.env.BASE_URL ?? "/");
+        // Rewrite absolute paths like src="/archive/..." or href='/assets/...' to include BASE.
+        // We capture src|href, the quote char, then the path without the leading slash.
+        return rendered.replace(/(src|href)=("|')\/([^"']+)/g, (_m, attr, q, rest) => {
+            return `${attr}=${q}${BASE}${rest}${q}`;
+        });
+    }
     export const formatDate = INTERNAL_formatDate;
 }
 

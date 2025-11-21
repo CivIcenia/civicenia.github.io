@@ -94,5 +94,26 @@ if (Astros.isDevMode()) {
         <slot/>
 
         <script is:inline>GOVUKFrontend.initAll()</script>
+        <script is:inline>{`(function(){
+            const BASE = "${BASE}";
+            if(!BASE) return;
+            // Rewrite any anchors or images that still have root-absolute paths
+            // to include the build-time BASE. This covers pre-rendered HTML
+            // coming from markdown or content files.
+            try {
+                document.querySelectorAll('img[src^="/"], a[href^="/"]')
+                    .forEach((el) => {
+                        ["src","href"].forEach((attr) => {
+                            if(!el.hasAttribute(attr)) return;
+                            const val = el.getAttribute(attr);
+                            if(!val || !val.startsWith('/')) return;
+                            if(val.startsWith(BASE)) return; // already rewritten
+                            el.setAttribute(attr, BASE + val.replace(/^\//, ''));
+                        });
+                    });
+            } catch (e) {
+                // noop
+            }
+        })();`}</script>
     </body>
 </html>
