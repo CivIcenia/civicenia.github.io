@@ -49,14 +49,20 @@ function createOAuth(env) {
 
 // Handle auth request
 async function handleAuth(url, env) {
-  const provider = url.searchParams.get('provider');
+  let provider = url.searchParams.get('provider');
+  // Default to github when provider is omitted for compatibility with
+  // OAuth redirects that don't include the original provider param.
+  if (!provider) provider = 'github';
   if (provider !== 'github') {
     return new Response('Invalid provider', { status: 400 });
   }
 
   const oauth2 = createOAuth(env);
+  // Include the provider in the redirect_uri so GitHub will return it
+  // to /callback (GitHub appends code & state to the provided redirect URI).
+  const redirectUri = `https://${url.hostname}/callback?provider=${encodeURIComponent(provider)}`;
   const authorizationUri = oauth2.authorizeURL({
-    redirect_uri: `https://${url.hostname}/callback`,
+    redirect_uri: redirectUri,
     scope: 'public_repo,user', // Use 'repo,user' for private repos, 'public_repo,user' for public
     state: generateState()
   });
@@ -96,7 +102,9 @@ function callbackScriptResponse(status, token) {
 
 // Handle callback
 async function handleCallback(url, env) {
-  const provider = url.searchParams.get('provider');
+  let provider = url.searchParams.get('provider');
+  // Allow missing provider (fall back to github) for compatibility.
+  if (!provider) provider = 'github';
   if (provider !== 'github') {
     return new Response('Invalid provider', { status: 400 });
   }
@@ -108,9 +116,10 @@ async function handleCallback(url, env) {
 
   try {
     const oauth2 = createOAuth(env);
+    const redirectUri = `https://${url.hostname}/callback?provider=${encodeURIComponent(provider)}`;
     const accessToken = await oauth2.getToken({
       code,
-      redirect_uri: `https://${url.hostname}/callback`
+      redirect_uri: redirectUri
     });
     
     return callbackScriptResponse('success', accessToken);
