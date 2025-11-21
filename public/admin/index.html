@@ -11,25 +11,14 @@
         window.addEventListener('message', function(event) {
             console.log('📨 Message received in admin:', event.data, 'from:', event.origin);
             
-            // Try to manually trigger DecapCMS oauth completion if it's a github token
+            // Check if it's a GitHub token message
             if (event.data && event.data.token && event.data.provider === 'github') {
-                console.log('🎯 GitHub token received, attempting to complete auth...');
+                console.log('🎯 GitHub token received');
                 
-                // Try to access DecapCMS directly and complete auth
-                setTimeout(() => {
-                    try {
-                        // Check if CMS is available
-                        if (window.CMS) {
-                            console.log('✅ CMS object found');
-                            // Try to manually set the authentication
-                            window.CMS.init();
-                        } else {
-                            console.log('❌ CMS object not found');
-                        }
-                    } catch (e) {
-                        console.log('❌ Error accessing CMS:', e);
-                    }
-                }, 1000);
+                // Try to trigger the correct event that Decap CMS listens for
+                if (event.data.type === 'authorization:github:success') {
+                    console.log('✅ Success message detected');
+                }
             }
         });
         </script>

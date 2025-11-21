@@ -98,7 +98,7 @@ export default {
       return new Response(null, { status: 204, headers: cors });
     }
 
-    if (path === '/auth/login') {
+    if (path === '/auth' || path === '/auth/login') {
       const state = crypto.getRandomValues(new Uint8Array(16)).join('');
       const redirectUri = `${url.origin}/auth/callback`;
       const params = new URLSearchParams({
@@ -137,7 +137,7 @@ export default {
         if (env.ADMIN_URL) adminOrigin = new URL(env.ADMIN_URL).origin;
       } catch (e) { /* ignore */ }
       // Return a small HTML page for the OAuth popup flow:
-      // - Posts the GitHub access token back to window.opener via postMessage in Decap CMS format
+      // - Posts the GitHub access token back to window.opener via postMessage in correct Decap CMS format
       // - Keep window open for debugging
       const html = `<!doctype html>
 <html>
@@ -167,81 +167,33 @@ export default {
           
           addDebugInfo('✅ window.opener exists');
           
-          // Decap CMS expects this specific message format and event sequence
           const token = ${JSON.stringify(tokenJson.access_token)};
-          
-          addDebugInfo('📤 Token prepared: ' + token);
-          
           const target = ${JSON.stringify(adminOrigin)};
+          
+          addDebugInfo('📤 Token: ' + token);
           addDebugInfo('🎯 Target origin: ' + target);
           
-          // Try multiple message formats that Decap CMS might recognize
-          const messageFormats = [
-            // Standard format
-            {
-              provider: 'github',
-              token: token
-            },
-            // NetlifyCMS legacy format
-            {
-              provider: 'github',
-              token: token,
-              type: 'authorization'
-            },
-            // Success event format
-            {
-              type: 'authorization:github:success',
-              provider: 'github',
-              token: token
-            },
-            // Direct token format
-            {
-              token: token
-            },
-            // Event-based format
-            {
-              type: 'authorization',
-              provider: 'github',
-              token: token
-            }
-          ];
+          // Use the standard Decap CMS OAuth completion format
+          const authData = {
+            provider: 'github',
+            token: token
+          };
           
-          let successCount = 0;
-          messageFormats.forEach((payload, index) => {
-            setTimeout(() => {
-              try {
-                window.opener.postMessage(payload, target);
-                addDebugInfo('✅ Message format ' + (index + 1) + ' posted: ' + JSON.stringify(payload));
-                successCount++;
-              } catch (e) {
-                try {
-                  window.opener.postMessage(payload, '*');
-                  addDebugInfo('✅ Message format ' + (index + 1) + ' posted with * target: ' + JSON.stringify(payload));
-                  successCount++;
-                } catch (e2) {
-                  addDebugInfo('❌ Failed format ' + (index + 1) + ': ' + e2.message);
-                }
-              }
-            }, index * 50); // Stagger messages
-          });
-          
-          // Also try triggering a storage event as fallback
-          setTimeout(() => {
+          // Send the message in the format Decap CMS expects
+          try {
+            window.opener.postMessage(authData, target);
+            addDebugInfo('✅ Standard message posted successfully');
+          } catch (e) {
             try {
-              localStorage.setItem('decap-cms-oauth-github', token);
-              window.opener.postMessage({
-                type: 'storage',
-                key: 'decap-cms-oauth-github',
-                value: token
-              }, target);
-              addDebugInfo('✅ Storage event triggered');
-            } catch (e) {
-              addDebugInfo('⚠️ Storage event failed: ' + e.message);
+              window.opener.postMessage(authData, '*');
+              addDebugInfo('✅ Fallback message posted successfully');
+            } catch (e2) {
+              addDebugInfo('❌ Both message attempts failed: ' + e2.message);
             }
-          }, 300);
+          }
           
         } catch (e) {
-          addDebugInfo('❌ ERROR in postMessage: ' + e.message);
+          addDebugInfo('❌ ERROR: ' + e.message);
         }
       })();
     </script>
