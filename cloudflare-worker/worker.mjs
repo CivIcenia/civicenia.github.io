@@ -57,7 +57,7 @@ async function handleAuth(url, env) {
   const oauth2 = createOAuth(env);
   const authorizationUri = oauth2.authorizeURL({
     redirect_uri: `https://${url.hostname}/callback`,
-    scope: 'repo,user', // Use 'repo,user' for private repos, 'public_repo,user' for public
+    scope: 'public_repo,user', // Use 'repo,user' for private repos, 'public_repo,user' for public
     state: generateState()
   });
 
