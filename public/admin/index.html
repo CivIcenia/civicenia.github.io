@@ -6,7 +6,42 @@
         <title>Content Manager</title>
     </head>
     <body>
+        <!-- Debug message listener -->
+        <script>
+        window.addEventListener('message', function(event) {
+            console.log('📨 Message received in admin:', event.data, 'from:', event.origin);
+            
+            // Try to manually trigger DecapCMS oauth completion if it's a github token
+            if (event.data && event.data.token && event.data.provider === 'github') {
+                console.log('🎯 GitHub token received, attempting to complete auth...');
+                
+                // Try to access DecapCMS directly and complete auth
+                setTimeout(() => {
+                    try {
+                        // Check if CMS is available
+                        if (window.CMS) {
+                            console.log('✅ CMS object found');
+                            // Try to manually set the authentication
+                            window.CMS.init();
+                        } else {
+                            console.log('❌ CMS object not found');
+                        }
+                    } catch (e) {
+                        console.log('❌ Error accessing CMS:', e);
+                    }
+                }, 1000);
+            }
+        });
+        </script>
+        
         <!-- Include the script that builds the page and powers DecapCMS -->
         <script src="https://unpkg.com/decap-cms@^3.8.4/dist/decap-cms.js"></script>
+        
+        <!-- Additional debug script -->
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Admin page loaded, CMS available:', typeof window.CMS);
+        });
+        </script>
     </body>
 </html>
