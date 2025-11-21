@@ -138,7 +138,7 @@ export default {
       } catch (e) { /* ignore */ }
       // Return a small HTML page for the OAuth popup flow:
       // - Posts the GitHub access token back to window.opener via postMessage in correct Decap CMS format
-      // - Keep window open for debugging
+      // - Store in localStorage and close popup automatically
       const html = `<!doctype html>
 <html>
   <head><meta charset="utf-8"><title>Decap OAuth</title></head>
@@ -146,7 +146,6 @@ export default {
     <h2>Authentication Complete</h2>
     <p>Debug information:</p>
     <div id="debug"></div>
-    <button onclick="window.close()" style="margin-top: 20px;">Close Window</button>
     <script>
       (function() {
         const debugDiv = document.getElementById('debug');
@@ -159,6 +158,20 @@ export default {
         try {
           addDebugInfo('Starting OAuth callback process...');
           
+          const token = ${JSON.stringify(tokenJson.access_token)};
+          const target = ${JSON.stringify(adminOrigin)};
+          
+          addDebugInfo('📤 Token: ' + token);
+          addDebugInfo('🎯 Target origin: ' + target);
+          
+          // Store token in localStorage for Decap CMS to find
+          try {
+            localStorage.setItem('github-auth-token', token);
+            addDebugInfo('✅ Token stored in localStorage');
+          } catch (e) {
+            addDebugInfo('❌ Failed to store in localStorage: ' + e.message);
+          }
+          
           // Check if we have window.opener
           if (!window.opener) {
             addDebugInfo('❌ ERROR: No window.opener found!');
@@ -167,30 +180,45 @@ export default {
           
           addDebugInfo('✅ window.opener exists');
           
-          const token = ${JSON.stringify(tokenJson.access_token)};
-          const target = ${JSON.stringify(adminOrigin)};
-          
-          addDebugInfo('📤 Token: ' + token);
-          addDebugInfo('🎯 Target origin: ' + target);
-          
-          // Use the standard Decap CMS OAuth completion format
-          const authData = {
-            provider: 'github',
-            token: token
+          // Use the exact format that Decap CMS OAuth expects
+          const authMessage = {
+            token: token,
+            provider: 'github'
           };
           
-          // Send the message in the format Decap CMS expects
+          // Send the message
           try {
-            window.opener.postMessage(authData, target);
-            addDebugInfo('✅ Standard message posted successfully');
+            window.opener.postMessage({
+              ...authMessage,
+              type: 'authorization:github:success'
+            }, target);
+            addDebugInfo('✅ Success message posted');
           } catch (e) {
             try {
-              window.opener.postMessage(authData, '*');
-              addDebugInfo('✅ Fallback message posted successfully');
+              window.opener.postMessage({
+                ...authMessage,
+                type: 'authorization:github:success'
+              }, '*');
+              addDebugInfo('✅ Fallback success message posted');
             } catch (e2) {
-              addDebugInfo('❌ Both message attempts failed: ' + e2.message);
+              addDebugInfo('❌ All message attempts failed: ' + e2.message);
             }
           }
+          
+          // Also send the basic message format
+          try {
+            window.opener.postMessage(authMessage, target);
+            addDebugInfo('✅ Basic message posted');
+          } catch (e) {
+            window.opener.postMessage(authMessage, '*');
+            addDebugInfo('✅ Basic fallback message posted');
+          }
+          
+          // Auto-close after a short delay
+          setTimeout(() => {
+            addDebugInfo('🔒 Closing window...');
+            window.close();
+          }, 2000);
           
         } catch (e) {
           addDebugInfo('❌ ERROR: ' + e.message);
