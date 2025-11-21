@@ -4,6 +4,7 @@ backend:
   branch: "main"
   auth_endpoint: "https://cf-github-proxy.icenia-auth.workers.dev/"
   open_authoring: false
+  base_url: "https://cf-github-proxy.icenia-auth.workers.dev/"
 local_backend: true
 
 media_folder: "public/uploads/"
