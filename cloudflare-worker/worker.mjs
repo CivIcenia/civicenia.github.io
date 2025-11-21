@@ -138,56 +138,113 @@ export default {
       } catch (e) { /* ignore */ }
       // Return a small HTML page for the OAuth popup flow:
       // - Posts the GitHub access token back to window.opener via postMessage in Decap CMS format
-      // - Closes the popup
+      // - Keep window open for debugging
       const html = `<!doctype html>
 <html>
   <head><meta charset="utf-8"><title>Decap OAuth</title></head>
   <body>
+    <h2>Authentication Complete</h2>
+    <p>Debug information:</p>
+    <div id="debug"></div>
+    <button onclick="window.close()" style="margin-top: 20px;">Close Window</button>
     <script>
       (function() {
+        const debugDiv = document.getElementById('debug');
+        
+        function addDebugInfo(message) {
+          console.log(message);
+          debugDiv.innerHTML += '<p>' + message + '</p>';
+        }
+        
         try {
-          // Decap CMS expects this specific message format
-          const payload = {
-            provider: 'github',
-            token: ${JSON.stringify(tokenJson.access_token)}
-          };
-          // Post message to the opener (admin UI). Use the configured admin origin when possible.
+          addDebugInfo('Starting OAuth callback process...');
+          
+          // Check if we have window.opener
+          if (!window.opener) {
+            addDebugInfo('❌ ERROR: No window.opener found!');
+            return;
+          }
+          
+          addDebugInfo('✅ window.opener exists');
+          
+          // Decap CMS expects this specific message format and event sequence
+          const token = ${JSON.stringify(tokenJson.access_token)};
+          
+          addDebugInfo('📤 Token prepared: ' + token);
+          
           const target = ${JSON.stringify(adminOrigin)};
-          if (window.opener) {
-            console.log('Posting message to opener:', payload, 'target:', target);
-            try { 
-              window.opener.postMessage(payload, target); 
-            } catch (e) { 
-              console.log('Fallback to * target:', e);
-              window.opener.postMessage(payload, '*'); 
+          addDebugInfo('🎯 Target origin: ' + target);
+          
+          // Try multiple message formats that Decap CMS might recognize
+          const messageFormats = [
+            // Standard format
+            {
+              provider: 'github',
+              token: token
+            },
+            // NetlifyCMS legacy format
+            {
+              provider: 'github',
+              token: token,
+              type: 'authorization'
+            },
+            // Success event format
+            {
+              type: 'authorization:github:success',
+              provider: 'github',
+              token: token
+            },
+            // Direct token format
+            {
+              token: token
+            },
+            // Event-based format
+            {
+              type: 'authorization',
+              provider: 'github',
+              token: token
             }
-            // Also try posting with 'authorization:github:success' type for compatibility
+          ];
+          
+          let successCount = 0;
+          messageFormats.forEach((payload, index) => {
             setTimeout(() => {
               try {
-                window.opener.postMessage({
-                  type: 'authorization:github:success',
-                  provider: 'github',
-                  token: ${JSON.stringify(tokenJson.access_token)}
-                }, target);
+                window.opener.postMessage(payload, target);
+                addDebugInfo('✅ Message format ' + (index + 1) + ' posted: ' + JSON.stringify(payload));
+                successCount++;
               } catch (e) {
-                window.opener.postMessage({
-                  type: 'authorization:github:success',
-                  provider: 'github',
-                  token: ${JSON.stringify(tokenJson.access_token)}
-                }, '*');
+                try {
+                  window.opener.postMessage(payload, '*');
+                  addDebugInfo('✅ Message format ' + (index + 1) + ' posted with * target: ' + JSON.stringify(payload));
+                  successCount++;
+                } catch (e2) {
+                  addDebugInfo('❌ Failed format ' + (index + 1) + ': ' + e2.message);
+                }
               }
-            }, 100);
-          } else {
-            console.log('No window.opener found');
-          }
+            }, index * 50); // Stagger messages
+          });
+          
+          // Also try triggering a storage event as fallback
+          setTimeout(() => {
+            try {
+              localStorage.setItem('decap-cms-oauth-github', token);
+              window.opener.postMessage({
+                type: 'storage',
+                key: 'decap-cms-oauth-github',
+                value: token
+              }, target);
+              addDebugInfo('✅ Storage event triggered');
+            } catch (e) {
+              addDebugInfo('⚠️ Storage event failed: ' + e.message);
+            }
+          }, 300);
+          
         } catch (e) {
-          console.error('Error in postMessage:', e);
-        } finally {
-          setTimeout(() => window.close(), 1000);
+          addDebugInfo('❌ ERROR in postMessage: ' + e.message);
         }
       })();
     </script>
-    <p>Authentication complete. You can close this window.</p>
   </body>
 </html>`;
       const headers = Object.assign({ 'Content-Type': 'text/html; charset=utf-8', 'Set-Cookie': cookie }, cors);
