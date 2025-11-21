@@ -4,7 +4,7 @@ backend:
   repo: "CreepilyCreeper/civicenia.github.io"
   branch: "master"
   base_url: "https://cf-github-proxy.icenia-auth.workers.dev"
-  open_authoring: false
+  open_authoring: true
 # local_backend: true
 
 media_folder: "public/uploads/"
