@@ -16,16 +16,21 @@ const {
     noheader = false
 } = Astro.props;
 
+// Use the build-time base (import.meta.env.BASE_URL) so links and assets
+// resolve correctly when this is deployed as a GitHub Pages project site
+// under https://<user>.github.io/<repo>/
+const BASE = (import.meta.env.BASE_URL ?? "/");
+
 const navigationLinks = [
-    Structs.createLink("News", "/news/"),
-    Structs.createLink("Laws", "/laws/"),
-    Structs.createLink("Officials", "/government/officials/"),
-    Structs.createLink("Borders", Astros.isDevMode() ? "/government/map" : getBordersLink(Astro), "_blank"),
+    Structs.createLink("News", BASE + "news/"),
+    Structs.createLink("Laws", BASE + "laws/"),
+    Structs.createLink("Officials", BASE + "government/officials/"),
+    Structs.createLink("Borders", Astros.isDevMode() ? BASE + "government/map" : getBordersLink(Astro), "_blank"),
     Structs.createLink("Discord", "https://discord.gg/dfwSjCjRN5", "_blank"),
 ];
 
 if (Astros.isDevMode()) {
-    navigationLinks.unshift(Structs.createLink("Admin", "/admin/index.html"));
+    navigationLinks.unshift(Structs.createLink("Admin", BASE + "admin/index.html"));
 }
 ---
 <!DOCTYPE html>
@@ -37,10 +42,10 @@ if (Astros.isDevMode()) {
         <meta name="description" content={description}>
         <meta name="keywords" content={keywords.join(",")}>
         <link rel="canonical" href={Astro.url}>
-        <link rel="shortcut icon" href={"/favicon.ico"}/>
-        <link rel="stylesheet" href={"/assets/css/sanitize-13.0.0.css"}/>
-        <link rel="stylesheet" href={"/assets/css/govuk-frontend-4.3.1.min.css"}/>
-        <script is:inline src={"/assets/js/govuk-frontend-4.3.1.min.js"}></script>
+        <link rel="shortcut icon" href={BASE + "favicon.ico"}/>
+        <link rel="stylesheet" href={BASE + "assets/css/sanitize-13.0.0.css"}/>
+        <link rel="stylesheet" href={BASE + "assets/css/govuk-frontend-4.3.1.min.css"}/>
+        <script src={BASE + "assets/js/govuk-frontend-4.3.1.min.js"}></script>
         <style>
             body {
                min-height: 100vh;
@@ -60,9 +65,9 @@ if (Astros.isDevMode()) {
             <header class="govuk-header" role="banner" data-module="govuk-header">
                 <div class="govuk-header__container govuk-width-container">
                     <div class="govuk-header__logo">
-                        <a href="/" class="govuk-header__link govuk-header__link--homepage">
+                        <a href={BASE} class="govuk-header__link govuk-header__link--homepage">
                             <span class="govuk-header__logotype">
-                                <img src="/assets/images/icenia_logo.png" width="36px" height="36px" />
+                                <img src={BASE + "assets/images/icenia_logo.png"} width="36px" height="36px" />
                                 <span class="govuk-header__logotype-text">
                                     Icenia
                                 </span>
