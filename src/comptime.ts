@@ -6,7 +6,8 @@ export const DESCRIPTION = "They work for you.";
 export const EXCERPT_SEPARATOR = "<!--more-->";
 
 export const PERMALINK_ROOTS = Object.freeze({
-    news: "/news/",
+    // Use the build-time BASE so permalinks include the project base path
+    news: (import.meta.env.BASE_URL ?? "/") + "news/",
 });
 
 export function getActChangeColours(
@@ -27,5 +28,6 @@ export function getActChangeColours(
 export function getBordersLink(
     astro: AstroGlobal
 ) {
-    return "https://map.civinfo.net/#url=" + astro.url.origin + "/government/borders.json"
+    const BASE = (import.meta.env.BASE_URL ?? "/");
+    return "https://map.civinfo.net/#url=" + astro.url.origin + BASE + "government/borders.json"
 }

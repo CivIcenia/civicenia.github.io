@@ -1,0 +1,16 @@
+name = "cf-github-proxy"
+main = "worker.mjs"
+compatibility_date = "2025-11-17"
+
+# Replace with your Cloudflare Account ID (find in dashboard)
+account_id = "32d6ad3c4725cacc38c162cc2a3d19cf"
+
+workers_dev = true
+
+[build]
+# build.command can be used to run bundlers; leave empty if not required
+command = ""
+
+# [env.production]
+# route = ""
+# zone_id = ""

@@ -1,4 +1,8 @@
 ---
 import { Astros } from "@helpers";
-return Astros.redirect("/laws/");
+
+// Use a relative redirect so the root of a project-site (e.g.
+// `https://<user>.github.io/civicenia.github.io/`) redirects to
+// `.../civicenia.github.io/laws/` rather than the domain root.
+return Astros.redirect("laws/");
 ---

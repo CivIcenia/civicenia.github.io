@@ -10,6 +10,7 @@ export type Props = MarkdownLayoutProps<Acts.Act>;
 const { frontmatter } = Astro.props as Props;
 const act = Acts.ensureAct(frontmatter);
 const laws = Arrays.toMap(await Laws.getLaws(), (law) => law.slug);
+const BASE = (import.meta.env.BASE_URL ?? "/");
 ---
 <PostLayout chin={false}>
     <div class="govuk-panel govuk-panel--confirmation">
@@ -45,7 +46,12 @@ const laws = Arrays.toMap(await Laws.getLaws(), (law) => law.slug);
                                 </style>
                                 <div set:html={Strings.parseMarkdown(act.document.value)}/>
                             </>;
-                        case "local-file":
+                        case "local-file": {
+                            // Local files are stored under the site root (e.g. `/archive/...`).
+                            // Prepend the build-time BASE so project-site deployments include the repo path.
+                            const url = act.document.value?.startsWith("/") ? BASE + act.document.value.replace(/^\//, "") : act.document.value;
+                            return <iframe src={url} style="width: 100%; min-width: 100%; max-width: 100%; aspect-ratio: 1 / 1.4142;"></iframe>;
+                        }
                         case "remote-file":
                             return <iframe src={act.document.value} style="width: 100%; min-width: 100%; max-width: 100%; aspect-ratio: 1 / 1.4142;"></iframe>;
                         default:
