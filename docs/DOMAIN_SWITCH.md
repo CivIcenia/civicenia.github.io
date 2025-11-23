@@ -28,25 +28,13 @@ const BASE = import.meta.env.BASE_URL ?? "/";
 - `backend.repo`: set to "username/repo".
 - `auth_endpoint` and `media_folder` should be checked if you host admin or the proxy elsewhere.
 
-4. [`cloudflare-worker/wrangler.toml`](cloudflare-worker/wrangler.toml:1) and tests
-- `[vars]` `ADMIN_URL` should point to the admin URL on your Pages site; use the `BASE`-aware form:
-```toml
-ADMIN_URL = "https://<username>.github.io${BASE}admin/"
-```
-- Update tests and helpers that assume the repo, e.g. [`cloudflare-worker/test/run_e2e.js`](cloudflare-worker/test/run_e2e.js:1) (REPO env var).
 
-5. Content files with absolute domain references
+4. Content files with absolute domain references
 - Some markdown files reference the old org domain (for example `https://civicenia.github.io/...`). Prefer using the build base (`${BASE}`) or relative URLs.
 - Decide:
   A) Convert to relative URLs (recommended): `${BASE}government/borders.json` or `/government/borders.json`
   B) Update to your site domain using `${BASE}`: `https://<username>.github.io${BASE}...`
 - To find them: run: `git grep "civicenia.github.io"` or search for `github.io` in the repo.
 
-6. README.md and docs
+5. README.md and docs
 - Update clone URL examples and any documentation pointing to the original organisation.
-
-7. Git configuration
-- Update git remote to your fork:
-```bash
-git remote set-url origin https://github.com/<username>/<repo>.git
-```
