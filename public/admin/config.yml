@@ -6,7 +6,7 @@ backend:
   base_url: "https://cf-github-proxy.icenia-auth.workers.dev"
   open_authoring: true
 publish_mode: editorial_workflow
-# local_backend: true
+local_backend: true
 
 media_folder: "public/uploads/"
 public_folder: "/uploads/"
