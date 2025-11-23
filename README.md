@@ -1,6 +1,8 @@
 # civicenia.github.io
 
-## Installing the site
+## Hosting the Site Locally
+
+### Installing the site
 
 You'll need [git](https://git-scm.com/downloads) and [Bun](https://bun.sh/).
 
@@ -10,28 +12,40 @@ You'll need [git](https://git-scm.com/downloads) and [Bun](https://bun.sh/).
 
 - Install the site's dependencies: `bun install`
 
+### Loading the Site
+  - Run `bun admin.ts`
+  - Open http://localhost:4000, you should see the website
+
+There is a script called `admin.ts`, which runs [Astro](https://docs.astro.build/en/getting-started/) in development mode and start a [NetlifyCMS](https://v1.netlifycms.org/) proxy in local editing mode. You can access the NetlifyCMS dashboard by going to http://localhost:4000/admin/index.html, or by clicking the "Admin" navigation link on the site.
+
 ## Updating the Site
 
-There is a script called `admin.ts`, which you can invoke via `./admin.ts` or `bun admin.ts`. This script will run [Astro](https://docs.astro.build/en/getting-started/) in development mode and start a [NetlifyCMS](https://v1.netlifycms.org/) proxy. You can access the NetlifyCMS dashboard by going to http://localhost:4000/admin/index.html, or by clicking the "Admin" navigation link on the site.
+You either locally host and edit the site, or use the NetlifyCMS dashboard.
 
-The NetlifyCMS dashboard is extremely helpful when entering new bills and laws, but can be cumbersome with elections. I recommend using both the dashboard and your IDE with elections since you can then copy-paste party names and colours wholesale. DO NOT REMOVE REPEALED LAWS! Just toggle the "EXPIRED" switch in the dashboard.
+**New Change:** https://civicenia.github.io/admin now hosts a DecapCMS edit page! Any edits made here will become pull requests on the website repo which can be approved by repo maintainers.
+
+The NetlifyCMS dashboard is extremely helpful when entering new bills and laws, but can be cumbersome with elections. I recommend using both the dashboard and your IDE with elections since you can then copy-paste party names and colours wholesale. DO NOT REMOVE REPEALED LAWS! Just toggle the "EXPIRED" switch in the dashboard, so all legal text can be archived.
 
 ## Saving in the Dashboard
 
-Once you've finished editing something in the dashboard, you should see in the top left "UNSAVED CHANGES", and to the right of that is a dropdown-button labelled "Publish". Click that and choose the "Publish now" option. This will save your changes to disk.
+Once you've finished editing something in the dashboard, you should see in the top left **Unsaved Changes**, and to the right of that is a button labelled **Publish**. Click that and choose the **Publish now** option. This will save your changes to the disk, or the repo directly.
+
+If the option doesn't exist, click the **Save** button to the right of the top left "UNSAVED CHANGES". Then go back by clicking on the top left box with the arrow, and go to **Workflow** on the top left bar, and click onto your new change under **Drafts**. Then, click on the **Status** dropdown on the top left to the right of the **Save** button, and click on **Ready**, or **In Review** if **Ready** is not an option.
+
+If **Ready** is an option, you can then click on **Publish** and **Publish now** to publish to the site.
+
+If you clicked on **In Review** instead, this means you do not have edit permissions on the repo. Your "In Review" drafts are now stored on the repo as Pull Requests. Ask a repo maintainer to review and approve your changes.
 
 ## Particulars
 
 - Laws:
   - YOU NEED TO ADD THE LAW BEFORE YOU CAN POST THE BILL THAT ENACTED THE LAW!
-  - Run `admin.ts`
   - Open http://localhost:4000/admin/index.html
   - Click "Data" in the sidebar.
   - Click "Laws", this should bring up a page with all laws ordered from oldest to newest.
   - Click "Add law +"
   - Scroll down to the new form.
   - Follow the instructions.
-
 
 - Bills:
   - Run `admin.ts`

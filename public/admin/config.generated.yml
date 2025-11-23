@@ -1,0 +1,289 @@
+site_url: "https://civicenia.github.io/"
+backend:
+  name: github
+  repo: "CivIcenia/civicenia.github.io"
+  branch: "master"
+  base_url: "https://cf-github-proxy.icenia-auth.workers.dev"
+  open_authoring: true
+publish_mode: editorial_workflow
+local_backend: true
+
+media_folder: "public/uploads/"
+public_folder: "/uploads/"
+
+collections:
+  #######################################################
+  ## Laws
+  #######################################################
+  - label: "Data"
+    name: "data"
+    editor: { preview: false }
+    files:
+      - label: "Laws"
+        name: "laws"
+        file: "src/data/laws.yml"
+        fields:
+          - label: "Laws"
+            label_singular: "Law"
+            name: "entries"
+            widget: "list"
+            default: []
+            summary: "{{name}}"
+            fields:
+              # Identifier
+              - label: "Identifier"
+                name: "slug"
+                widget: "string"
+                required: true
+                pattern: ["^[a-z0-9]+(?:-[a-z0-9]+)*$", "Must be a valid slug! e.g: bill-of-rights"]
+                hint: "This identifies the law and so should reflect the purpose of the law, e.g: bill-of-rights"
+              # Short Title
+              - label: "Short Title"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The shorter name for this law, e.g: Constitution of Icenia"
+              # Long Title (optional)
+              - label: "Full Title"
+                name: "fullname"
+                widget: "string"
+                required: false
+                hint: "The full name of this law, e.g: The Constitution of the Third Republic of Icenia. Leave empty if unnecessary."
+              # Type of law
+              - label: "Category"
+                name: "kind"
+                widget: "select"
+                required: true
+                hint: "The type of law this legislation is classed as."
+                options:
+                  - {label: "Statute / Ordinary Law", value: "statute"}
+                  - {label: "Constitutional Law", value: "constitution"}
+                  - {label: "Statehood Agreement", value: "statehood"}
+                  - {label: "Treaty", value: "treaty"}
+              # Google Doc
+              - label: "Google Doc"
+                name: "googledoc"
+                widget: "string"
+                required: true
+                hint: "What's the Google Doc link? Make sure it ends in `/preview`. And make sure it's an archived copy owned by Icenia."
+              # Expired?
+              - label: "Expired"
+                name: "hidden"
+                widget: "boolean"
+                default: false
+                hint: "Flip this on if this law has been repealed"
+  #######################################################
+  ## Senate Bills
+  #######################################################
+  - name: "lawchanges"
+    label: "Changes to Law"
+    label_singular: "Change to Law"
+    folder: "src/content/news"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{headline}}"
+    extension: "md"
+    format: "yaml-frontmatter"
+    editor: { preview: false }
+    sortable_fields: ["date"]
+    filter: { field: "changetolaw", value: true }
+    fields:
+      # ChangeToLaw
+      - label: "ChangeToLaw"
+        name: "changetolaw"
+        widget: "hidden"
+        required: true
+        default: true
+      # Layout
+      - label: "Layout"
+        name: "layout"
+        widget: "hidden"
+        required: true
+        default: "@layouts/news/act.astro"
+      # Changing institution
+      - label: "Institution"
+        name: "institution"
+        widget: "select"
+        required: true
+        hint: "Who changed the law?"
+        options:
+          - {label: "Senate", value: "senate"}
+          - {label: "Executive (President, etc)", value: "executive"}
+          - {label: "Referendum", value: "referendum"}
+          - {label: "Signatures of Icenians", value: "icenian-signatures"}
+        default: "senate"
+      # Headline
+      - label: "Title"
+        name: "headline"
+        widget: "string"
+        required: true
+        hint: "The headline to show readers, e.g: Passing the Bill of Rights"
+      # Date
+      - label: "When did this change go into effect?"
+        name: "date"
+        widget: "datetime"
+        required: true
+        # https://day.js.org/docs/en/display/format
+        format: "YYYY-MM-DD HH:mm:00 Z"
+        hint: "Typically it's when the President gave assent."
+      # Excerpt
+      - label: "Excerpt"
+        name: "excerpt"
+        widget: "text"
+        required: false
+        hint: "Leave empty if you'd prefer it to be inferred from the content block."
+        default: null
+      # Bill Embed
+      - label: "How are you embedding this?"
+        name: "document"
+        widget: "object"
+        required: true
+        fields:
+          - label: "Type"
+            name: "type"
+            widget: "select"
+            options:
+              - {label: "Local File", value: "local-file"}
+              - {label: "Remote File", value: "remote-file"}
+              - {label: "Markdown", value: "markdown"}
+            default: ""
+          - label: "Value"
+            name: "value"
+            widget: "text"
+            required: true
+      # Changes
+      - label: "Changes to Law"
+        name: "changes"
+        widget: "list"
+        default: []
+        summary: "{{target}} ({{kind}})"
+        fields:
+          - label: "Which Law?"
+            name: "target"
+            widget: "relation"
+            collection: "data"
+            search_fields: ["entries.*.name"]
+            value_field: "entries.*.slug"
+            display_fields: ["entries.*.name"]
+            default: ""
+            hint: "Just start typing and it'll search for that legislation. Click the correct result. The law needs to already exist in the 'Laws' collection."
+          - label: "How"
+            name: "kind"
+            widget: "select"
+            options:
+              - {label: "Enacted", value: "passage"}
+              - {label: "Amended", value: "amendment"}
+              - {label: "Repealed", value: "repeal"}
+            default: ""
+        hint: "What laws does this Bill effect and how? The ordering should reflect what's in the Bill itself."
+      # Content
+      - label: "Content"
+        name: "body"
+        widget: "markdown"
+        required: false
+        hint: "You needn't include the title."
+      # Icon
+      - label: "Icon"
+        name: "icon"
+        widget: "string"
+        default: "/assets/images/law_stock.jpeg"
+        required: true
+        hint: "The image that will appear beside the headline on the news page (default: /assets/images/law_stock.jpeg)"
+  #######################################################
+  ## Elections
+  #######################################################
+  - name: "elections"
+    label: "Elections"
+    label_singular: "Election"
+    folder: "src/content/news"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-senate-election"
+    identifier_field: "headline"
+    summary: "[Term: {{term}}] {{headline}}"
+    description: "DecapCMS doesn't support auto-increment yet. You'll need to make sure to enter a properly incremented term number! Best to sort by Term Number in descending order and see the top result."
+    extension: "md"
+    format: "yaml-frontmatter"
+    editor: { preview: false }
+    sortable_fields: ["term", "date"]
+    filter: { field: "election", value: true }
+    fields:
+      # IsElection
+      - label: "Election"
+        name: "election"
+        widget: "hidden"
+        required: true
+        default: true
+      # Layout
+      - label: "Layout"
+        name: "layout"
+        widget: "hidden"
+        required: true
+        default: "@layouts/news/election.astro"
+      # Headline
+      - label: "Headline"
+        name: "headline"
+        widget: "string"
+        hint: "What headline would you give this election? e.g: October Senate (2022)"
+      # Term Number
+      - label: "Term Number"
+        name: "term"
+        widget: "number"
+        value_type: "int"
+        min: 1
+        step: 1
+        hint: "THIS WILL NOT AUTO-INCREMENT! PLEASE MANUALLY CHECK THAT THIS IS 1-HIGHER THAN THE PREVIOUS ELECTION!"
+      # Date
+      - label: "When was the election certified?"
+        name: "date"
+        widget: "datetime"
+        required: true
+        # https://day.js.org/docs/en/display/format
+        format: "YYYY-MM-DD HH:mm:00 Z"
+      # Custom Parties
+      - label: "Parties"
+        name: "parties"
+        widget: "list"
+        default: []
+        summary: "{{name}}"
+        collapsed: true
+        fields:
+          - label: "Party Name"
+            name: "name"
+            widget: "string"
+            required: true
+            hint: "You should also include a parenthesised acronym/initialism if applicable (eg: Homeowner's Association (HOA))"
+          - label: "Background Colour"
+            name: "bgcolour"
+            widget: "color"
+            allowInput: true
+            default: "#A3A3A3"
+          - label: "Text Colour"
+            name: "txtcolour"
+            widget: "color"
+            allowInput: true
+            default: "#3D3D3D"
+          - label: "Current Members"
+            name: "members"
+            widget: "list"
+            allow_add: true
+            default: []
+            hint: "Which members of this party got elected? (As a comma-separated list)"
+          - label: "Former Members"
+            name: "exmembers"
+            widget: "list"
+            allow_add: true
+            default: []
+            hint: "The Senators who defected from this party (or resigned) during their term. (As a comma-separated list)"
+        hint: "Put the parties in order of campaign announcement. Independents should always go last."
+      # Content
+      - label: "Content"
+        name: "body"
+        widget: "markdown"
+        required: false
+        hint: "You should include the election results here. Also any other information like Senators resigning, by-elections, etc."
+      # Icon
+      - label: "Icon"
+        name: "icon"
+        widget: "string"
+        default: "/assets/images/election_stock.png"
+        required: true
+        hint: "The image that will appear beside the headline on the news page (default: /assets/images/election_stock.png)"
