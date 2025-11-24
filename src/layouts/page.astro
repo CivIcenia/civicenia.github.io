@@ -1,15 +1,23 @@
 ---
 interface Props {
-    chin?: boolean
+    chin?: boolean,
+    title?: string,
+    description?: string,
+    keywords?: string[],
+    noheader?: boolean
 }
 
 const {
-    chin = true
+    chin = true,
+    title,
+    description,
+    keywords = [],
+    noheader = false
 } = Astro.props;
 
 import DefaultLayout from "@layouts/default.astro";
 ---
-<DefaultLayout>
+<DefaultLayout title={title} description={description} keywords={keywords} noheader={noheader}>
     <div class="govuk-width-container">
         {chin
             ? (<style>main.govuk-main-wrapper { padding-top: 20px !important; }</style>)

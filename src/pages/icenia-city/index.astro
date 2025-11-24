@@ -1,0 +1,19 @@
+---
+import PageLayout from "@layouts/page.astro";
+const title = "Icenia City";
+const description = "Icenia City — capital, government buildings, markets and public spaces.";
+---
+<PageLayout title={title} description={description}>
+    <h1 class="govuk-heading-xl">Icenia City</h1>
+    <p class="govuk-body">Icenia City is the capital and central hub of the Icenian community. It hosts our government buildings, markets, and public spaces.</p>
+
+    <div class="govuk-grid-row govuk-!-margin-top-6">
+        <div class="govuk-grid-column-one-half">
+            <img class="govuk-image" src="/assets/images/icenia_logo.png" alt="Icenia logo" width="120" height="120" />
+        </div>
+        <div class="govuk-grid-column-one-half">
+            <p class="govuk-body">Visit our <a class="govuk-link" href="/news/">news</a> or browse <a class="govuk-link" href="/laws/">laws</a> related to the city.</p>
+            <a class="govuk-button govuk-button--secondary" href="/">Back to homepage</a>
+        </div>
+    </div>
+</PageLayout>

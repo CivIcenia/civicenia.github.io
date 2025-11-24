@@ -22,15 +22,18 @@ const {
 const BASE = (import.meta.env.BASE_URL ?? "/");
 
 const navigationLinks = [
+    Structs.createLink("Home", BASE),
     Structs.createLink("News", BASE + "news/"),
     Structs.createLink("Laws", BASE + "laws/"),
     Structs.createLink("Officials", BASE + "government/officials/"),
     Structs.createLink("Borders", Astros.isDevMode() ? BASE + "government/map" : getBordersLink(Astro), "_blank"),
+    Structs.createLink("Icenia City", BASE + "icenia-city/"),
+    Structs.createLink("Joining", BASE + "guide/"),
     Structs.createLink("Discord", "https://discord.gg/dfwSjCjRN5", "_blank"),
 ];
 
 if (Astros.isDevMode()) {
-    navigationLinks.unshift(Structs.createLink("Admin", BASE + "admin/index.html"));
+    navigationLinks.push(Structs.createLink("Admin", BASE + "admin/index.html"));
 }
 ---
 <!DOCTYPE html>
@@ -44,8 +47,9 @@ if (Astros.isDevMode()) {
         <link rel="canonical" href={Astro.url}>
         <link rel="shortcut icon" href={BASE + "favicon.ico"}/>
         <link rel="stylesheet" href={BASE + "assets/css/sanitize-13.0.0.css"}/>
-        <link rel="stylesheet" href={BASE + "assets/css/govuk-frontend-4.3.1.min.css"}/>
-        <script src={BASE + "assets/js/govuk-frontend-4.3.1.min.js"}></script>
+    <link rel="stylesheet" href={BASE + "assets/css/govuk-frontend-4.3.1.min.css"}/>
+    <link rel="stylesheet" href={BASE + "assets/css/icenia-theme.css"}/>
+    <script is:inline src="/assets/js/govuk-frontend-4.3.1.min.js"></script>
         <style>
             body {
                min-height: 100vh;
@@ -54,6 +58,7 @@ if (Astros.isDevMode()) {
         </style>
     </head>
     <body data-base={BASE}>
+        <a class="govuk-skip-link" href="#main-content">Skip to main content</a>
         <script is:inline>document.body.className = ((document.body.className) ? document.body.className + " js-enabled" : "js-enabled");</script>
 
         {!noheader && (<>
