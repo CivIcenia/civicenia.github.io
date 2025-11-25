@@ -13,6 +13,14 @@
     --off-white: #eeeeee;
 }
 
+code {
+    background-color: #f0f0f0 !important;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'monospace', monospace !important;
+    color: var(--icenia-blue) !important;
+}
+
 /* govuk-header color override */
 .govuk-header {
   border-bottom-color: var(--off-white);
@@ -183,4 +191,25 @@
    sans-serif font. This rule is intentionally not marked !important — if govuk-
    frontend defines fonts later in the cascade it will override this default. */
 html, body { background: var(--off-white); font-family: Arial, sans-serif; }
+
+/*
+ * GOV.UK sets a 10px bottom border on the inner header container
+ * in `govuk-frontend-4.3.1.min.css` (.govuk-header__container {
+ *   ... border-bottom: 10px solid #1d70b8;
+ * }) which is the blue bar you see.
+ *
+ * Override it here to change or remove the bar.
+ */
+
+.govuk-header {
+    /* Optional: change overall header background if desired */
+    border-bottom: 0px !important;
+
+}
+
+.govuk-header__container {
+    border-bottom: 0px !important;
+    /* govuk adds a negative bottom margin to pull up content; reset if needed */
+    /* margin-bottom: 0 !important; */
+}
 

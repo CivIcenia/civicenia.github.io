@@ -106,7 +106,7 @@ export async function GET(
                     // Boartal Portal Area
                     [[-7770,-315],[-7670,-315],[-7670,-215],[-7770,-215]]
                 ],
-                "color": "#64BE21",
+                "color": "#B22234",
                 "notes": "Icarus became a State of Icenia on the 28th August, 2024 via the Icarus-Icenia Merger",
                 "Icarus-Icenia Merger": "https://docs.google.com/document/d/10VMMREwPoON5OqTHE8ku1DIjXNMy7PNP7N-qfMeERj0/preview",
                 ...constDetails
@@ -118,6 +118,7 @@ export async function GET(
                 "polygon": [
                     [[2014,3815],[2026,3844],[1993,3872],[2006,3896],[2072,3893],[2153,3902],[2224,3928],[2275,3956],[2288,3987],[2264,4019],[2268,4082],[2210,4116],[2258,4195],[2206,4274],[2140,4327],[2090,4312],[2055,4264],[2017,4265],[1988,4277],[1997,4353],[1940,4400],[1902,4438],[1883,4468],[1922,4572],[1955,4591],[2111,4598],[2169,4576],[2233,4700],[2232,4758],[2156,4758],[2114,4829],[2064,4857],[2104,4942],[2151,5051],[2189,5117],[2233,5172],[2236,5238],[2204,5268],[2204,5301],[2232,5339],[2261,5319],[2312,5309],[2412,5271],[2438,5234],[2505,5217],[2534,5147],[2583,5080],[2545,5028],[2570,4997],[2572,4946],[2621,4942],[2671,4899],[2689,4809],[2728,4791],[2729,4741],[2677,4716],[2612,4662],[2594,4615],[2529,4579],[2593,4500],[2681,4445],[2749,4452],[2794,4389],[2785,4318],[2842,4264],[2806,4205],[2820,4152],[2880,4112],[2956,4085],[2977,4099],[3015,4113],[3012,4076],[2966,3990],[2933,3898],[2952,3842],[2924,3806],[2880,3870],[2800,3864],[2768,3908],[2755,3927],[2724,3939],[2706,3923],[2697,3884],[2671,3873],[2636,3854],[2639,3808],[2629,3784],[2610,3807],[2586,3810],[2570,3787],[2557,3764],[2536,3755],[2529,3735],[2449,3621],[2411,3616],[2395,3623],[2350,3613],[2327,3648],[2267,3651],[2243,3642],[2226,3654],[2209,3660],[2174,3652],[2145,3589],[2123,3581],[2109,3589],[2107,3638],[2095,3655],[2066,3649],[2034,3631],[2022,3651],[2023,3672],[2001,3696],[1997,3717],[2017,3747],[1993,3788]]
                 ],
+                "color": "#2F9AFF",
                 "notes": "Alenarith Protectorate became a State of Icenia on the 23rd September, 2024 via the Grant of Statehood to the Alenarith Protectorate (AP)",
                 "Grant of Statehood to the Alenarith Protectorate (AP)": "https://docs.google.com/document/d/1zxa3Rtzu-qmQosiP218nOUseYa3n-wvimUhWXhD8WpI/preview",
                 ...constDetails
@@ -130,13 +131,14 @@ export async function GET(
                     // Selsey Proper
                     [[-2477,-4891],[-2473,-4912],[-2489,-4955],[-2459,-5017],[-2475,-5045],[-2509,-5096],[-2540,-5150],[-2593,-5193],[-2655,-5146],[-2680,-5131],[-2775,-5073],[-2778,-4859],[-2654,-4792],[-2626,-4811],[-2584,-4809],[-2555,-4853],[-2521,-4855],[-2492,-4877]],
                 ],
+                "color": "#55FFFF",
                 "notes": "Selsey became a State of Icenia on the 9th July, 2024 via the Mandate of Selsey",
                 "Mandate of Selsey": "https://docs.google.com/document/d/1EhhKE-hQOTvhXdu29f7dRNhon7AL62AVrTGs-teET4Y/preview",
                 ...constDetails
             },
             {
                 ...defaultDetails,
-                "name": "Iceniar Nether Portal",
+                "name": "North Portal",
                 "id": "e41bcdaf-8bf1-4211-96b8-f396c09e8890",
                 "x": -2136,
                 "z": -7560,
@@ -144,16 +146,16 @@ export async function GET(
             },
             {
                 ...defaultDetails,
-                "name": "Boartal (Nether Portal)",
+                "name": "Icarus Portal",
                 "id": "4dcb8c97-0dc6-411a-aaa9-fa77363af2cf",
                 "x": -7720,
                 "z": -265,
-                "color": "#64BE21",
+                "color": "#B22234",
                 ...constDetails
             },
             {
                 ...defaultDetails,
-                "name": "Sarlacc Pit (Nether Portal)",
+                "name": "Sarlacc Pit Portal",
                 "id": "515fb8ed-6fb3-416a-a77a-201ae08c77f2",
                 "x": -4904,
                 "z": -2824,
@@ -161,7 +163,7 @@ export async function GET(
             },
             {
                 ...defaultDetails,
-                "name": "Elysium Nether Portal",
+                "name": "Elysium Portal",
                 "id": "eef5d4ca-ffbd-451f-8452-c9bf9587db92",
                 "x": -6200,
                 "z": -4808,
