@@ -19,19 +19,6 @@
     --navbar-height: 54px; /* nav links (~44px) + blue border (10px) */
 }
 
-.scroll-container {
-  /* Hide scrollbar for WebKit browsers (Chrome, Safari, Opera) */
-  &::-webkit-scrollbar {
-    display: none !important;
-  }
-
-  /* Hide scrollbar for IE, Edge */
-  -ms-overflow-style: none !important;
-
-  /* Hide scrollbar for Firefox */
-  scrollbar-width: none !important;
-}
-
 
 code {
     background-color: #f0f0f0 !important;
@@ -123,6 +110,26 @@ body.menu-mode .icenia-hero {
     gap: 1rem;
     justify-content: center;
     flex-wrap: wrap;
+}
+
+.icenia-scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255,255,255,0.7);
+    font-size: 0.875rem;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(5px); }
 }
 
 /* Buttons: style to match GOV.UK button spacing and keep utility classes */
@@ -253,7 +260,18 @@ body.menu-mode .icenia-hero {
    (Arial, sans-serif) so pages that don't include govuk-frontend still get a sane
    sans-serif font. This rule is intentionally not marked !important — if govuk-
    frontend defines fonts later in the cascade it will override this default. */
-html, body { background: var(--off-white); font-family: Arial, sans-serif; }
+html, body { 
+    background: var(--off-white); 
+    font-family: Arial, sans-serif;
+    /* Hide scrollbar for all browsers */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
 
 /*
  * GOV.UK sets a 10px bottom border on the inner header container

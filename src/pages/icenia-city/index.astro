@@ -20,7 +20,7 @@ const description = "Welcome to Icenia City, the capital of the Republic of Icen
                 <a href="https://discord.gg/dfwSjCjRN5" target="_blank" class="icenia-btn icenia-btn-secondary icenia-btn-tertiary" style="text-decoration: none;">Join Discord</a>
             </div>
         </div>
-        <div class="city-hero-scroll-hint">
+        <div class="icenia-scroll-hint">
             <span>Scroll to explore</span>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 5v14M5 12l7 7 7-7"/>
@@ -257,25 +257,9 @@ const description = "Welcome to Icenia City, the capital of the Republic of Icen
         flex-wrap: wrap;
     }
 
-    .city-hero-scroll-hint {
-        position: absolute;
-        bottom: 2rem;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 2;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.5rem;
-        color: rgba(255,255,255,0.7);
-        font-size: 0.875rem;
-        animation: bounce 2s infinite;
-    }
 
-    @keyframes bounce {
-        0%, 100% { transform: translateX(-50%) translateY(0); }
-        50% { transform: translateX(-50%) translateY(8px); }
-    }
+
+
 
     @media (max-width: 768px) {
         .city-hero-scroll-hint { display: none; }
