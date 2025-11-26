@@ -72,6 +72,57 @@ collections:
                 widget: "boolean"
                 default: false
                 hint: "Flip this on if this law has been repealed"
+      - label: "City Laws"
+        name: "city-laws"
+        file: "src/data/city-laws.yml"
+        fields:
+          - label: "City Laws"
+            label_singular: "City Law"
+            name: "entries"
+            widget: "list"
+            default: []
+            summary: "{{name}}"
+            fields:
+              # Identifier
+              - label: "Identifier"
+                name: "slug"
+                widget: "string"
+                required: true
+                pattern: ["^[a-z0-9]+(?:-[a-z0-9]+)*$", "Must be a valid slug! e.g: building-code"]
+                hint: "This identifies the city law, e.g: building-code"
+              # Short Title
+              - label: "Short Title"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The shorter name for this law, e.g: Building Code"
+              # Long Title (optional)
+              - label: "Full Title"
+                name: "fullname"
+                widget: "string"
+                required: false
+                hint: "The full name of this law. Leave empty if unnecessary."
+              # Type of law
+              - label: "Category"
+                name: "kind"
+                widget: "select"
+                required: true
+                hint: "The type of city law this is."
+                options:
+                  - {label: "City Charter", value: "charter"}
+                  - {label: "City Ordinance", value: "ordinance"}
+              # Google Doc
+              - label: "Google Doc"
+                name: "googledoc"
+                widget: "string"
+                required: true
+                hint: "What's the Google Doc link? Make sure it ends in `/preview`."
+              # Expired?
+              - label: "Repealed"
+                name: "hidden"
+                widget: "boolean"
+                default: false
+                hint: "Flip this on if this city law has been repealed"
   #######################################################
   ## Senate Bills
   #######################################################
@@ -287,3 +338,202 @@ collections:
         default: "/assets/images/election_stock.png"
         required: true
         hint: "The image that will appear beside the headline on the news page (default: /assets/images/election_stock.png)"
+
+  #######################################################
+  ## City Law Changes
+  #######################################################
+  - name: "citylawchanges"
+    label: "Changes to City Law"
+    label_singular: "Change to City Law"
+    folder: "src/content/city-news"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{headline}}"
+    extension: "md"
+    format: "yaml-frontmatter"
+    editor: { preview: false }
+    sortable_fields: ["date"]
+    filter: { field: "changetocitylaw", value: true }
+    fields:
+      # ChangeToCityLaw
+      - label: "ChangeToCityLaw"
+        name: "changetocitylaw"
+        widget: "hidden"
+        required: true
+        default: true
+      # Layout
+      - label: "Layout"
+        name: "layout"
+        widget: "hidden"
+        required: true
+        default: "@layouts/news/city-act.astro"
+      # Changing institution
+      - label: "Institution"
+        name: "institution"
+        widget: "select"
+        required: true
+        hint: "Who changed the city law?"
+        options:
+          - {label: "City Council", value: "council"}
+          - {label: "Mayor", value: "mayor"}
+          - {label: "City Referendum", value: "referendum"}
+          - {label: "Federal Government", value: "federal"}
+        default: "council"
+      # Headline
+      - label: "Title"
+        name: "headline"
+        widget: "string"
+        required: true
+        hint: "The headline to show readers, e.g: Amending the Building Code"
+      # Date
+      - label: "When did this change go into effect?"
+        name: "date"
+        widget: "datetime"
+        required: true
+        format: "YYYY-MM-DD HH:mm:00 Z"
+        hint: "Typically when the ordinance was passed by the Council."
+      # Excerpt
+      - label: "Excerpt"
+        name: "excerpt"
+        widget: "text"
+        required: false
+        hint: "Leave empty if you'd prefer it to be inferred from the content block."
+        default: null
+      # Document Embed
+      - label: "How are you embedding this?"
+        name: "document"
+        widget: "object"
+        required: true
+        fields:
+          - label: "Type"
+            name: "type"
+            widget: "select"
+            options:
+              - {label: "Local File", value: "local-file"}
+              - {label: "Remote File", value: "remote-file"}
+              - {label: "Markdown", value: "markdown"}
+            default: "markdown"
+          - label: "Value"
+            name: "value"
+            widget: "text"
+            required: true
+      # Changes
+      - label: "Changes to City Law"
+        name: "changes"
+        widget: "list"
+        default: []
+        summary: "{{target}} ({{kind}})"
+        fields:
+          - label: "Which City Law?"
+            name: "target"
+            widget: "relation"
+            collection: "data"
+            file: "city-laws"
+            search_fields: ["entries.*.name"]
+            value_field: "entries.*.slug"
+            display_fields: ["entries.*.name"]
+            default: ""
+            hint: "Start typing to search for the city law. The law needs to already exist in the 'City Laws' collection."
+          - label: "How"
+            name: "kind"
+            widget: "select"
+            options:
+              - {label: "Enacted", value: "passage"}
+              - {label: "Amended", value: "amendment"}
+              - {label: "Repealed", value: "repeal"}
+            default: ""
+        hint: "What city laws does this ordinance affect and how?"
+      # Content
+      - label: "Content"
+        name: "body"
+        widget: "markdown"
+        required: false
+        hint: "You needn't include the title."
+      # Icon
+      - label: "Icon"
+        name: "icon"
+        widget: "string"
+        default: "/assets/images/law_stock.jpeg"
+        required: true
+        hint: "The image that will appear beside the headline (default: /assets/images/law_stock.jpeg)"
+
+  #######################################################
+  ## Council Elections
+  #######################################################
+  - name: "councilelections"
+    label: "Council Elections"
+    label_singular: "Council Election"
+    folder: "src/content/city-news"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-council-election"
+    identifier_field: "headline"
+    summary: "[Term: {{term}}] {{headline}}"
+    description: "Record city council election results."
+    extension: "md"
+    format: "yaml-frontmatter"
+    editor: { preview: false }
+    sortable_fields: ["term", "date"]
+    filter: { field: "councilelection", value: true }
+    fields:
+      # IsCouncilElection
+      - label: "CouncilElection"
+        name: "councilelection"
+        widget: "hidden"
+        required: true
+        default: true
+      # Layout
+      - label: "Layout"
+        name: "layout"
+        widget: "hidden"
+        required: true
+        default: "@layouts/news/council-election.astro"
+      # Headline
+      - label: "Headline"
+        name: "headline"
+        widget: "string"
+        hint: "What headline would you give this election? e.g: January Council Election (2024)"
+      # Term Number
+      - label: "Term Number"
+        name: "term"
+        widget: "number"
+        value_type: "int"
+        min: 1
+        step: 1
+        hint: "The council term number. Please manually check this is correctly incremented!"
+      # Date
+      - label: "When was the election certified?"
+        name: "date"
+        widget: "datetime"
+        required: true
+        format: "YYYY-MM-DD HH:mm:00 Z"
+      # Councillors
+      - label: "Councillors"
+        name: "councillors"
+        widget: "list"
+        default: []
+        summary: "{{name}}"
+        collapsed: true
+        fields:
+          - label: "Name"
+            name: "name"
+            widget: "string"
+            required: true
+            hint: "The councillor's name"
+          - label: "Role"
+            name: "role"
+            widget: "string"
+            required: false
+            hint: "Optional role, e.g: Mayor, Deputy Mayor"
+        hint: "List the elected councillors"
+      # Content
+      - label: "Content"
+        name: "body"
+        widget: "markdown"
+        required: false
+        hint: "Include election results and any other relevant information."
+      # Icon
+      - label: "Icon"
+        name: "icon"
+        widget: "string"
+        default: "/assets/images/election_stock.png"
+        required: true
+        hint: "The image that will appear beside the headline (default: /assets/images/election_stock.png)"

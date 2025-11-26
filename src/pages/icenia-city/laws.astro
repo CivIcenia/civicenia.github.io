@@ -1,0 +1,164 @@
+---
+import PageLayout from "@layouts/page.astro";
+import CityCard from "@components/laws/city-card.astro";
+import { CityLaws, CityActs } from "@collections";
+import { Arrays, Strings } from "@helpers";
+import { getActChangeColours } from "@comptime";
+
+const BASE = (import.meta.env.BASE_URL ?? "/");
+
+// Get city laws and recent acts
+const cityLaws = await CityLaws.getCityLaws();
+const recentActs = (await CityActs.getCityActs()).slice(0, 5);
+
+const currentLaws = cityLaws.filter((law) => law.hidden !== true);
+const expiredLaws = cityLaws.filter((law) => law.hidden === true);
+
+// Organize laws by type
+const charterLaws = currentLaws.filter((law) => law.kind === "charter");
+const ordinanceLaws = currentLaws.filter((law) => law.kind === "ordinance");
+---
+<style>
+    /* Recent Changes Section */
+    .recent-changes-section {
+        background: #f3f2f1;
+        padding: 20px;
+        margin-bottom: 30px;
+        border-left: 6px solid #1D70B8;
+    }
+
+    .change-item {
+        padding: 12px 0;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .change-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .change-info {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .change-date {
+        color: #6f777b;
+        font-size: 0.875rem;
+        margin-bottom: 3px;
+    }
+
+    .change-title {
+        font-weight: 700;
+    }
+
+    .change-title a {
+        text-decoration: none;
+    }
+
+    .change-title a:hover {
+        text-decoration: underline;
+    }
+
+    .repealed-card {
+        opacity: 0.7;
+    }
+
+    .repealed-card div.law-card-internal {
+        border-left-color: #6f777b;
+    }
+</style>
+
+<PageLayout chin={false} title="City Laws - Icenia City" description="View the charter, ordinances, and regulations governing Icenia City.">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Icenia City Laws</h1>
+        <p class="govuk-body-l">The charter, ordinances, and regulations governing the capital city.</p>
+    </div>
+
+    <!-- Recent Changes Section -->
+    {recentActs.length > 0 && (
+        <div class="recent-changes-section">
+            <h2 class="govuk-heading-m" style="margin-top: 0;">Recent Changes to City Law</h2>
+            {recentActs.map((act) => (
+                <div class="change-item">
+                    <div class="change-info">
+                        <div class="change-date">
+                            {Strings.formatDate(act.data.date, "dS mmmm yyyy")}
+                        </div>
+                        <div class="change-title">
+                            <a href={BASE + "icenia-city/news/" + act.slug} class="govuk-link">
+                                {act.data.headline}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="change-tags">
+                        {(act.data as CityActs.CityAct).changes.map((change) => (
+                            <strong class="govuk-tag govuk-tag--small" style={`background-color: #${getActChangeColours(change.kind).background}; margin-left: 5px;`}>
+                                {change.kind === "passage" ? "Enacted" : change.kind === "amendment" ? "Amended" : change.kind === "repeal" ? "Repealed" : "Changed"}
+                            </strong>
+                        ))}
+                    </div>
+                </div>
+            ))}
+        </div>
+    )}
+
+    <!-- Laws Grid -->
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-half">
+            <h2 class="govuk-heading-l">City Charter</h2>
+            {charterLaws.length > 0 ? (
+                charterLaws.map((law) => <CityCard law={law} />)
+            ) : (
+                <p class="govuk-body">No city charter documents available.</p>
+            )}
+        </div>
+        <div class="govuk-grid-column-one-half">
+            <h2 class="govuk-heading-l">City Ordinances</h2>
+            {ordinanceLaws.length > 0 ? (
+                ordinanceLaws.map((law) => <CityCard law={law} />)
+            ) : (
+                <p class="govuk-body">No city ordinances available.</p>
+            )}
+        </div>
+    </div>
+
+    <!-- Expired/Repealed Laws Section -->
+    {expiredLaws.length > 0 && (
+        <>
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        View repealed ordinances ({expiredLaws.length})
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    {expiredLaws.map((law) => (
+                        <div class="repealed-card">
+                            <CityCard law={law} />
+                        </div>
+                    ))}
+                </div>
+            </details>
+        </>
+    )}
+
+    <!-- Link to Republic Laws -->
+    <div class="govuk-grid-row govuk-!-margin-top-6">
+        <div class="govuk-grid-column-full">
+            <div class="govuk-inset-text">
+                <p class="govuk-body">
+                    Looking for national legislation? View the <a href={BASE + "laws/"} class="govuk-link">Republic of Icenia Laws</a>, 
+                    including the Constitution, statutes, and international treaties.
+                </p>
+            </div>
+        </div>
+    </div>
+</PageLayout>

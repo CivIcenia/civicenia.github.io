@@ -1,0 +1,310 @@
+/* Prefer govuk-frontend for layout and spacing; these are fallbacks */
+/* Icenia theme (GOV.UK colour & style alignment)
+   This file provides minimal overrides and utility classes that
+   complement the included govuk-frontend styles while using the
+   original site's colours (blue: #1C70B8) and high-contrast black/white.
+*/
+
+:root {
+    --icenia-blue: #1C70B8; /* GOV.UK-like primary blue */
+    --icenia-black: #000000;
+    --icenia-white: #ffffff;
+    --icenia-muted: #6f777b;
+    --off-white: #eeeeee;
+}
+
+code {
+    background-color: #f0f0f0 !important;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'monospace', monospace !important;
+    color: var(--icenia-blue) !important;
+}
+
+/* govuk-header color override */
+.govuk-header {
+  border-bottom-color: var(--off-white);
+}
+
+/* .govuk-body code,
+.govuk-body pre,
+.govuk-body kbd,
+.govuk-body samp {
+	font-family: monospace, monospace;
+} */
+
+/* Keep styling minimal — prefer govuk-frontend classes for structure */
+
+/* Status Bar (small utility) */
+.icenia-status-bar {
+    background-color: var(--icenia-blue);
+    color: var(--icenia-white);
+    padding: 6px 18px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    gap: 8px;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .icenia-status-bar { flex-direction: column; text-align: center; }
+}
+
+/* Hero: use straight overlay and let govuk typography apply */
+.icenia-hero {
+	background: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('../images/nation_render.png') center/cover no-repeat;
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: var(--icenia-white);
+    padding: 2rem 1rem;
+}
+
+.icenia-hero h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: clamp(1.75rem, 4vw, 3rem);
+    line-height: 1.05;
+    font-weight: 700; /* govuk heading weight */
+}
+
+.icenia-hero p { margin: 0 0 1.25rem 0; font-size: 1.125rem; color: rgba(255,255,255,0.95); }
+
+/* Buttons: style to match GOV.UK button spacing and keep utility classes */
+.icenia-btn {
+    display: inline-block;
+    padding: 12px 20px; /* comfortable tap target */
+    background-color: var(--icenia-blue);
+    color: var(--icenia-white);
+    text-decoration: none;
+    border-radius: 0; /* align with GOV.UK minimal radius */
+    font-weight: 700;
+    border: 0;
+    font-size: 1rem;
+    line-height: 1.25;
+    box-sizing: border-box;
+}
+
+.icenia-btn:hover, .icenia-btn:focus { background-color: #154f86; color: var(--icenia-white); }
+
+.icenia-btn-secondary {
+    display: inline-block;
+    padding: 12px 20px;
+    background: transparent;
+    color: var(--icenia-blue);
+    border: 2px solid var(--icenia-blue);
+    border-radius: 0;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.25;
+}
+
+.icenia-btn-secondary:hover, .icenia-btn-secondary:focus { background-color: var(--icenia-blue); color: var(--icenia-white); }
+
+/* Card components - work with GOV.UK grid */
+.icenia-card { 
+    background: var(--icenia-white); 
+    padding: 1.5rem; 
+    border-top: 4px solid var(--icenia-blue); 
+    box-shadow: 0 1px 2px rgba(3,10,21,0.08); 
+    margin-bottom: 1.5rem;
+}
+
+.state-card { 
+    background: var(--icenia-white); 
+    padding: 1rem; 
+    border-left: 4px solid var(--icenia-blue); 
+    box-shadow: 0 1px 1px rgba(3,10,21,0.06); 
+    margin-bottom: 1.5rem;
+}
+
+/* News ticker aligned with govuk panels - works within GOV.UK grid */
+.news-ticker { 
+    background: var(--icenia-white); 
+    padding: 1.5rem; 
+    margin-bottom: 1.5rem;
+    border-left: 6px solid var(--icenia-blue); 
+}
+.news-ticker-item { 
+    padding: 0.75rem 0; 
+    border-bottom: 1px solid #eee; 
+}
+.news-ticker-item:last-child { 
+    border-bottom: none; 
+}
+.news-ticker-date { 
+    color: var(--icenia-muted); 
+    font-size: 0.875rem; 
+}
+
+.section-header { background: var(--icenia-blue); color: var(--icenia-white); padding: 1.5rem 1rem; text-align: center; }
+.section-header h2 { margin: 0; font-size: 1.5rem; line-height: 1.2; }
+
+
+/* Equal height cards utility - works with GOV.UK grid */
+.equal-cards .govuk-grid-row {
+	display: flex;
+	gap: 1.5rem;
+	flex-wrap: wrap;
+	/* margin-bottom: 1.5rem; */
+}
+
+.equal-cards .govuk-grid-column-one-half {
+	flex: 1 1 calc(50% - 0.75rem);
+	display: flex;
+	min-width: 260px;
+}
+
+.equal-cards .icenia-card {
+	/* make card fill column and align content so buttons sit at bottom */
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding: 1.25rem;
+	background: var(--icenia-white);
+	/* border-radius: 6px; */
+	/* box-shadow: 0 1px 4px rgba(0,0,0,0.06); */
+	flex: 1;
+	min-height: 220px; /* ensure a consistent minimum height */
+}
+
+/* Ensure link doesn't collapse spacing on very short content */
+.equal-cards .icenia-card a {
+	margin-top: 0.75rem;
+	align-self: flex-start;
+}
+
+@media (max-width: 700px) {
+	.equal-cards .govuk-grid-column-one-half {
+		flex: 1 1 100%;
+	}
+}
+
+
+/* Small utility adjustments */
+/* Prefer GOV.UK frontend typography if present. Provide a conservative default font stack
+   (Arial, sans-serif) so pages that don't include govuk-frontend still get a sane
+   sans-serif font. This rule is intentionally not marked !important — if govuk-
+   frontend defines fonts later in the cascade it will override this default. */
+html, body { background: var(--off-white); font-family: Arial, sans-serif; }
+
+/*
+ * GOV.UK sets a 10px bottom border on the inner header container
+ * in `govuk-frontend-4.3.1.min.css` (.govuk-header__container {
+ *   ... border-bottom: 10px solid #1d70b8;
+ * }) which is the blue bar you see.
+ *
+ * Override it here to change or remove the bar.
+ */
+
+.govuk-header {
+    /* Optional: change overall header background if desired */
+    border-bottom: 0px !important;
+
+}
+
+.govuk-header__container {
+    border-bottom: 0px !important;
+    /* govuk adds a negative bottom margin to pull up content; reset if needed */
+    /* margin-bottom: 0 !important; */
+}
+
+/* ==========================================================================
+   Page Header Component
+   Used across multiple pages (laws, news, union, officials, city pages)
+   ========================================================================== */
+
+.page-header {
+    background: var(--icenia-blue);
+    padding: 30px 20px;
+    margin-bottom: 30px;
+    color: var(--icenia-white);
+}
+
+.page-header h1 {
+    color: var(--icenia-white);
+    margin: 0 0 10px 0;
+}
+
+.page-header p {
+    color: var(--icenia-white);
+    margin: 0;
+}
+
+/* ==========================================================================
+   Info Box Component
+   Highlighted information section with left border accent
+   ========================================================================== */
+
+.info-box {
+    background: #f3f2f1;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-left: 6px solid var(--icenia-blue);
+}
+
+/* ==========================================================================
+   Officials/Council Card Components
+   Used on government/officials and icenia-city/council pages
+   ========================================================================== */
+
+.officials-centred {
+    text-align: center;
+}
+
+.officials-parent {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.officials-wrapper {
+    width: 200px;
+    flex: 0 0 200px;
+    margin: 10px;
+    text-align: center;
+}
+
+.official-card {
+    width: 200px;
+    border: 2px solid var(--icenia-blue);
+    border-radius: 5px;
+    margin: 0 auto;
+    padding: 15px 10px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.official-pfp {
+    display: block;
+    margin: 5px auto 10px;
+    border-radius: 75px;
+    border: 3px solid var(--icenia-blue);
+}
+
+.official-name {
+    display: block;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #0b0c0c;
+}
+
+.official-title {
+    display: block;
+    font-size: 0.875rem;
+    color: #505a5f;
+    margin-top: 5px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 30px 0 20px 0;
+    color: #0b0c0c;
+}
+

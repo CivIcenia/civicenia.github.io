@@ -5,6 +5,7 @@ import Card from "@components/laws/card.astro";
 
 import { Arrays } from "@helpers";
 
+
 // Had to rename because it weirdly conflicts with laws.astro
 // There's probably some weird Astro shenanigans going on
 import { Laws as AllLaws } from "@collections";
@@ -12,8 +13,17 @@ const laws = await AllLaws.getLaws();
 
 const currentLaws = laws.filter((law) => law.hidden !== true);
 const expiredLaws = laws.filter((law) => law.hidden === true);
+
+const BASE = import.meta.env.BASE_URL ?? "/";
 ---
 <style>
+    .laws-info {
+        background: #f3f2f1;
+        padding: 20px;
+        margin-bottom: 30px;
+        border-left: 6px solid #1D70B8;
+    }
+
     div.law-card {
         display: block;
         margin-bottom: 25px;
@@ -65,7 +75,23 @@ const expiredLaws = laws.filter((law) => law.hidden === true);
     }
 </style>
 
-<PageLayout chin={false}>
+<PageLayout chin={false} title="Republic Laws - Republic of Icenia" description="The Constitution, statutes, and treaties of the Republic of Icenia.">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Republic Laws</h1>
+        <p class="govuk-body-l">The Constitution, statutes, and treaties of the Republic of Icenia.</p>
+    </div>
+
+    <!-- Laws Information -->
+    <div class="laws-info">
+        <h2 class="govuk-heading-m" style="margin-top: 0;">About Icenian Law</h2>
+        <p class="govuk-body" style="margin-bottom: 0;">
+            Icenian law is organised into Constitutional documents, ordinary statutes, statehood acts, 
+            and international treaties. All laws are enacted by the Senate and signed by the President 
+            in accordance with the Constitution.
+        </p>
+    </div>
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-half">
             <LawSection
@@ -95,17 +121,41 @@ const expiredLaws = laws.filter((law) => law.hidden === true);
         </div>
     </div>
 
-    {Arrays.hasElements(expiredLaws) ? (<>
-        <hr/>
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text">
-                Expired Laws
-            </span>
-            </summary>
-            <div class="govuk-details__text">
-                {expiredLaws.map((law) => <Card law={law}/>)}
+    {Arrays.hasElements(expiredLaws) ? (
+        <div>
+            <hr/>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Expired Laws
+                </span>
+                </summary>
+                <div class="govuk-details__text">
+                    {expiredLaws.map((law) => <Card law={law}/>)}
+                </div>
+            </details>
+        </div>
+    ) : ""}
+
+    <!-- Links Section -->
+    <div class="govuk-grid-row govuk-!-margin-top-6">
+        <div class="govuk-grid-column-one-half">
+            <div class="govuk-inset-text">
+                <h3 class="govuk-heading-s">Government Officials</h3>
+                <p class="govuk-body-s">
+                    Meet the elected representatives of the Republic.
+                </p>
+                <a href={BASE + "government/officials/"} class="govuk-link">View Officials &rarr;</a>
             </div>
-        </details>
-    </>) : ``}
+        </div>
+        <div class="govuk-grid-column-one-half">
+            <div class="govuk-inset-text">
+                <h3 class="govuk-heading-s">City Laws</h3>
+                <p class="govuk-body-s">
+                    View ordinances and regulations specific to Icenia City.
+                </p>
+                <a href={BASE + "icenia-city/laws/"} class="govuk-link">View City Laws &rarr;</a>
+            </div>
+        </div>
+    </div>
 </PageLayout>

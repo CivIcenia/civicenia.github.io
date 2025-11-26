@@ -1,0 +1,232 @@
+---
+import PageLayout from "@layouts/page.astro";
+import { Astros } from "@helpers";
+import { getBordersLink } from "@comptime";
+
+const BASE = (import.meta.env.BASE_URL ?? "/");
+
+// State information extracted from borders.json.ts
+const states = [
+    {
+        name: "Icenia Federal Territory",
+        type: "Federal Territory",
+        description: "The heartlands of Icenia, encompassing a large portion of the -,- quadrant. Stretches from lush forests and snowy mountains to sprawling plains and deserts.",
+        color: "#3AB3DA",
+        coordinates: "-4554 -4938",
+        notes: "Icenia's original territory established on 15th May 2022"
+    },
+    {
+        name: "Icenia City",
+        type: "Capital Territory",
+        description: "The administrative and economic center of the Republic, hosting key government buildings, bustling markets, and the historic core of Icenian society.",
+        color: "#3AB3DA",
+        coordinates: "-3920, -4274",
+        notes: "Formed from federal territory on 19th November 2025"
+    },
+    {
+        name: "Icarus",
+        type: "State",
+        description: "Desert and savanna biomes characterize this western frontier. Home to the legendary 'Ikea' vault and gateway to the western territories.",
+        color: "#B22234",
+        coordinates: "-5790 232",
+        notes: "Became a State of Icenia on 28th August 2024 via the Icarus-Icenia Merger"
+    },
+    {
+        name: "Cortesia Del Mar",
+        type: "State",
+        description: "Comparatively recently returned sovereign nation that joined the Union. Coastal territory known for its maritime heritage and strategic southern position.",
+        color: "#2F9AFF",
+        coordinates: "2449 4460",
+        notes: "Became a State of Icenia on 23rd September 2024"
+    },
+    {
+        name: "Southshire",
+        type: "State",
+        description: "Historical territory with deep roots in Icenian culture. Home to Castle Batavia and the Batavian Plains. Once an allied and friendly nation to Icenia, later became a state.",
+        color: "#013201",
+        coordinates: "-7042 -4982",
+        notes: "Became a State of Icenia on 30th April 2023"
+    },
+    {
+        name: "Riemark",
+        type: "State",
+        description: "Originally a small village, later achieved statehood through the Mandate of Selsey.",
+        color: "#FFFF55",
+        coordinates: "-2619 -4993",
+        notes: "Became a State of Icenia on 9th July 2024 via the Mandate of Selsey"
+    },
+];
+---
+
+<style>
+    .union-info {
+        background: #f3f2f1;
+        padding: 20px;
+        margin-bottom: 30px;
+        border-left: 6px solid #1D70B8;
+    }
+
+    .map-card {
+        background: white;
+        padding: 20px;
+        margin-bottom: 30px;
+        border: 1px solid #b1b4b6;
+        border-radius: 5px;
+    }
+
+    .state-card {
+        background: white;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-left: 6px solid;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .state-name {
+        margin: 0 0 5px 0;
+        font-size: 1.5rem;
+        color: #0b0c0c;
+    }
+
+    .state-type {
+        margin: 0;
+        color: #505a5f;
+        font-style: italic;
+    }
+
+    .state-description {
+        margin: 15px 0;
+        color: #0b0c0c;
+    }
+
+    .state-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+
+    .state-note {
+        margin: 15px 0 0 0;
+        padding: 10px;
+        background-color: #f8f8f8;
+        border-radius: 4px;
+        font-size: 0.9rem;
+    }
+
+    .color-indicator {
+        width: 40px;
+        height: 40px;
+        border-radius: 4px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #1D70B8;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+    .btn:hover {
+        background: #003078;
+    }
+
+    .btn-secondary {
+        background: #f3f2f1;
+        color: #0b0c0c;
+        border: 1px solid #b1b4b6;
+    }
+
+    .btn-secondary:hover {
+        background: #dbdad9;
+    }
+</style>
+
+<PageLayout chin={false} title="The Union - Republic of Icenia" description="Explore the diverse states and territories that make up the Third Republic of Icenia.">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">The Union</h1>
+        <p class="govuk-body-l">Explore the diverse states and territories of the Third Republic of Icenia.</p>
+    </div>
+
+    <!-- Union Information -->
+    <div class="union-info">
+        <h2 class="govuk-heading-m" style="margin-top: 0;">About the Republic</h2>
+        <p class="govuk-body" style="margin-bottom: 0;">
+            The Republic of Icenia is a federal union comprised of states and territories across CivMC. 
+            Each state maintains its own local governance while participating in the broader Republic 
+            through representation in the Senate and adherence to the Constitution.
+        </p>
+    </div>
+
+    <!-- Interactive Map -->
+    <div class="map-card">
+        <h3 class="govuk-heading-m" style="margin-top: 0; color: #1D70B8;">Interactive Map</h3>
+        <p class="govuk-body">
+            View our territories on the official CivMC map. Our borders are maintained and updated through 
+            <code>borders.json.ts</code> for accurate representation.
+        </p>
+        <a href={Astros.isDevMode() ? BASE + "government/map" : getBordersLink(Astro)} target="_blank" class="btn">View Map</a>
+        <a href={BASE + "government/borders.json"} class="btn btn-secondary">Download Borders JSON</a>
+    </div>
+
+    <h3 class="govuk-heading-l" style="color: #0b0c0c;">States and Territories</h3>
+    
+    <div style="display: grid; gap: 20px;">
+        {states.map((state) => (
+            <div class="state-card" style={`border-left-color: ${state.color}`}>
+                <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <h4 class="state-name">{state.name}</h4>
+                        <p class="state-type">{state.type}</p>
+                    </div>
+                    <div class="color-indicator" style={`background-color: ${state.color};`}></div>
+                </div>
+                
+                <p class="state-description">{state.description}</p>
+                
+                <div class="state-meta">
+                    <div>
+                        <strong style="color: #1D70B8;">Coordinates:</strong>
+                        <span style="margin-left: 5px;">{state.coordinates}</span>
+                    </div>
+                </div>
+                
+                {state.notes && (
+                    <p class="state-note">
+                        <strong>Note:</strong> {state.notes}
+                    </p>
+                )}
+            </div>
+        ))}
+    </div>
+
+    <!-- Links Section -->
+    <div class="govuk-grid-row govuk-!-margin-top-6">
+        <div class="govuk-grid-column-one-half">
+            <div class="govuk-inset-text">
+                <h3 class="govuk-heading-s">Government Officials</h3>
+                <p class="govuk-body-s">
+                    Meet the elected representatives of the Republic.
+                </p>
+                <a href={BASE + "government/officials/"} class="govuk-link">View Officials &rarr;</a>
+            </div>
+        </div>
+        <div class="govuk-grid-column-one-half">
+            <div class="govuk-inset-text">
+                <h3 class="govuk-heading-s">Icenia City</h3>
+                <p class="govuk-body-s">
+                    Explore the capital city of the Republic.
+                </p>
+                <a href={BASE + "icenia-city/"} class="govuk-link">Visit Icenia City &rarr;</a>
+            </div>
+        </div>
+    </div>
+</PageLayout>

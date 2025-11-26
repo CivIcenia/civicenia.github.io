@@ -1,0 +1,150 @@
+---
+import DefaultLayout from "@layouts/default.astro";
+import { Astros} from "@helpers";
+import { getBordersLink } from "@comptime";
+
+const BASE = (import.meta.env.BASE_URL ?? "/");
+const title = "Icenia City";
+const description = "Welcome to Icenia City, the capital of the Republic of Icenia.";
+---
+<DefaultLayout title={title} description={description}>
+    <!-- Hero Section -->
+    <section class="city-hero">
+        <div class="city-hero-content">
+            <h1>Welcome to Icenia City</h1>
+            <p class="govuk-body-l">The capital of the Republic</p>
+        </div>
+    </section>
+
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper">
+            <!-- Introduction -->
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <h2 class="govuk-heading-l">About Icenia City</h2>
+                    <p class="govuk-body-l">
+                        Icenia City is the vibrant capital and central hub of the Republic of Icenia. 
+                        Home to our government buildings, bustling markets, and public spaces, the city 
+                        stands as the heart of Icenian culture and commerce.
+                    </p>
+                    <p class="govuk-body">
+                        Whether you're a new resident looking to set up shop, a citizen seeking 
+                        government services, or a visitor exploring the -,- quadrant, Icenia City 
+                        welcomes you.
+                    </p>
+                </div>
+                <div class="govuk-grid-column-one-third">
+                    <img class="govuk-image" src="/assets/images/icenia_logo.png" alt="Icenia City Emblem" style="width: 100%; max-width: 180px; display: block; margin: 0 auto;" />
+                </div>
+            </div>
+
+            <!-- Quick Links Section -->
+            <div class="govuk-grid-row govuk-!-margin-top-6">
+                <div class="govuk-grid-column-full">
+                    <h2 class="govuk-heading-l">Quick Links</h2>
+                </div>
+            </div>
+            
+            <div class="equal-cards">
+                <div class="govuk-grid-row">
+                    <div class="icenia-card">
+                        <h3 class="govuk-heading-m">📜 City Laws</h3>
+                        <p class="govuk-body">
+                            View the city charter, ordinances, and regulations that govern Icenia City.
+                        </p>
+                        <a href={BASE + "icenia-city/laws/"} class="govuk-link govuk-!-font-weight-bold">View City Laws →</a>
+                    </div>
+
+                    <div class="icenia-card">
+                        <h3 class="govuk-heading-m">🏛️ City Council</h3>
+                        <p class="govuk-body">
+                            Meet the elected officials who govern Icenia City and represent its residents.
+                        </p>
+                        <a href={BASE + "icenia-city/council/"} class="govuk-link govuk-!-font-weight-bold">View Council →</a>
+                    </div>
+
+                    <div class="icenia-card">
+                        <h3 class="govuk-heading-m">🏪 Shops</h3>
+                        <p class="govuk-body">
+                            Browse the shops and markets of Icenia City, including the renowned Enron Exchange.
+                        </p>
+                        <a href={BASE + "icenia-city/shops/"} class="govuk-link govuk-!-font-weight-bold">View Shops →</a>
+                    </div>
+
+                    <div class="icenia-card">
+                        <h3 class="govuk-heading-m">🚀 Join Us</h3>
+                        <p class="govuk-body">
+                            New to Icenia? Learn how to become a citizen and start your journey with us.
+                        </p>
+                        <a href={BASE + "guide/"} class="govuk-link govuk-!-font-weight-bold">New Player Guide →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="govuk-grid-row govuk-!-margin-bottom-6">
+                <div class="govuk-grid-column-full">
+                    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+                </div>
+            </div>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-one-half">
+                    <h3 class="govuk-heading-m">🏛️ Government District</h3>
+                    <p class="govuk-body">
+                        The Government District houses the Senate chambers, administrative offices, 
+                        and the Presidential residence. All official state business is conducted here.
+                    </p>
+                    <a href={BASE + "government/officials/"} class="govuk-link">View Government Officials →</a>
+                </div>
+                <div class="govuk-grid-column-one-half">
+                    <h3 class="govuk-heading-m">🗺️ Getting Around</h3>
+                    <p class="govuk-body">
+                        Icenia City is well-connected via the international rail network and has 
+                        easy access to all states of the Republic.
+                    </p>
+                    <a href={Astros.isDevMode() ? BASE + "government/map" : getBordersLink(Astro)} target="_blank" class="govuk-link">View CivMC Map →</a>
+                </div>
+            </div>
+
+            <div class="govuk-grid-row govuk-!-margin-top-6">
+            </div>
+
+        </main>
+    </div>
+</DefaultLayout>
+
+<style>
+    .city-hero {
+        background: linear-gradient(rgba(28, 112, 184, 0.85), rgba(28, 112, 184, 0.85)), url('/assets/images/nation_render.png') center/cover no-repeat;
+        padding: 60px 20px;
+        text-align: center;
+        color: white;
+    }
+
+    .city-hero h1 {
+        margin: 0 0 0.5rem 0;
+        font-size: clamp(1.75rem, 4vw, 2.5rem);
+        line-height: 1.1;
+        font-weight: 700;
+        color: white;
+    }
+
+    .city-hero p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.95);
+    }
+
+    /* Adjust equal-cards for three columns */
+    .equal-cards .govuk-grid-column-one-third {
+        flex: 1 1 calc(33.333% - 1rem);
+        display: flex;
+        min-width: 260px;
+    }
+
+    @media (max-width: 900px) {
+        .equal-cards .govuk-grid-column-one-third {
+            flex: 1 1 100%;
+        }
+    }
+</style>
