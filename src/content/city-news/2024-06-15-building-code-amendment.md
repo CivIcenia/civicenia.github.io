@@ -1,13 +1,13 @@
 ---
-layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
+layout: "@layouts/news/city-act.astro"
 institution: council
-headline: Building Code Amendment - Height Restrictions
+headline: PLACEHOLDER Building Code Amendment - Height Restrictions
 date: 2024-06-15 12:00:00 +0000
-excerpt: Updated maximum building heights in the commercial district.
+excerpt: "PLACEHOLDER "
 document:
   type: markdown
-  value: ""
+  value: "PLACEHOLDER "
 changes:
   - kind: amendment
     target: building-code

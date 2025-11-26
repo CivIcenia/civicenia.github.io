@@ -1,13 +1,13 @@
 ---
-layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
+layout: "@layouts/news/city-act.astro"
 institution: council
-headline: Shop Regulations - Opening Hours
+headline: PLACEHOLDER Shop Regulations - Opening Hours
 date: 2024-04-10 12:00:00 +0000
 excerpt: Clarified requirements for shop signage and operating guidelines.
 document:
   type: markdown
-  value: ""
+  value: PLACEHOLDER
 changes:
   - kind: amendment
     target: shop-regulations

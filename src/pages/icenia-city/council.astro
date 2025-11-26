@@ -1,18 +1,13 @@
 ---
-import { Structs } from "@helpers";
+import { Councillors } from "@collections";
 import PageLayout from "@layouts/page.astro";
 
 const BASE = (import.meta.env.BASE_URL ?? "/");
 
-// City Council Members
-// Use https://toolscord.com/ to get the pfps
-const councillors = [
-    Structs.official(["Mayor"], "ExampleMayor", "https://cdn.discordapp.com/embed/avatars/0.png"),
-    Structs.official(["Deputy Mayor"], "ExampleDeputy", "https://cdn.discordapp.com/embed/avatars/1.png"),
-    Structs.official(["Councillor"], "Councillor1", "https://cdn.discordapp.com/embed/avatars/2.png"),
-    Structs.official(["Councillor"], "Councillor2", "https://cdn.discordapp.com/embed/avatars/3.png"),
-    Structs.official(["Councillor"], "Councillor3", "https://cdn.discordapp.com/embed/avatars/4.png"),
-];
+// Load councillors from data file (managed via Decap CMS)
+const mayor = Councillors.getMayor();
+const councillorSeats = Councillors.getCouncillorSeats();
+const councilTerm = Councillors.getCouncilTerm();
 
 // Default avatar for councillors without profile pictures
 const defaultAvatar = "https://cdn.discordapp.com/embed/avatars/0.png";
@@ -49,15 +44,29 @@ const defaultAvatar = "https://cdn.discordapp.com/embed/avatars/0.png";
     </div>
 
     <div class="officials-centred">
-        <h2 class="section-title">Current Council Members</h2>
+        <h2 class="section-title">Council Members ({councilTerm})</h2>
         <div class="officials-parent">
-            {councillors.map((councillor) => (
+            <!-- Mayor -->
+            {mayor.name && (
                 <div class="officials-wrapper">
                     <div class="official-card">
-                        <img src={councillor.pfp || defaultAvatar} class="official-pfp" width="120px" height="120px" alt={councillor.name}/>
+                        <img src={mayor.icon || defaultAvatar} class="official-pfp" width="120px" height="120px" alt={mayor.name}/>
+                        <span class="official-name">{mayor.name}</span>
+                        <span class="official-titles">
+                            <span class="official-title">Mayor</span>
+                        </span>
+                    </div>
+                </div>
+            )}
+
+            <!-- Councillors -->
+            {councillorSeats.map((councillor) => (
+                <div class="officials-wrapper">
+                    <div class="official-card">
+                        <img src={councillor.icon || defaultAvatar} class="official-pfp" width="120px" height="120px" alt={councillor.name}/>
                         <span class="official-name">{councillor.name}</span>
                         <span class="official-titles">
-                            {councillor.titles.map((title) => <span class="official-title">{title}</span>)}
+                            <span class="official-title">Councillor (Seat {councillor.seat})</span>
                         </span>
                     </div>
                 </div>

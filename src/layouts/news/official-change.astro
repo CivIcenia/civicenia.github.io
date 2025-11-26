@@ -1,0 +1,119 @@
+---
+import { type MarkdownLayoutProps } from "astro";
+import { Strings } from "@helpers";
+import { OfficialChanges } from "@collections";
+
+import PostLayout from "@layouts/news/post.astro";
+
+export type Props = MarkdownLayoutProps<OfficialChanges.OfficialChange>;
+const { frontmatter } = Astro.props as Props;
+const change = OfficialChanges.ensureOfficialChange(frontmatter);
+
+// Get appropriate colors based on action type
+function getActionColours(action: string): { background: string; text: string } {
+    switch (action) {
+        case "appointed":
+        case "elected":
+        case "reelected":
+            return { background: "28a745", text: "ffffff" };
+        case "resigned":
+            return { background: "ffc107", text: "000000" };
+        case "removed":
+            return { background: "dc3545", text: "ffffff" };
+        case "succeeded":
+            return { background: "17a2b8", text: "ffffff" };
+        default:
+            return { background: "6c757d", text: "ffffff" };
+    }
+}
+
+// Get human-readable change type label
+function getChangeTypeLabel(changetype: string): string {
+    switch (changetype) {
+        case "senate-election":
+            return "Senate Election";
+        case "senate-byelection":
+            return "Senate By-Election";
+        case "secretary-change":
+            return "Secretary Change";
+        case "speaker-vote":
+            return "Speaker Vote";
+        case "president-change":
+            return "President Change";
+        default:
+            return "Official Change";
+    }
+}
+---
+<PostLayout chin={false}>
+    <div class="govuk-panel govuk-panel--confirmation" style="background-color: #1D70B8;">
+        <h1 class="govuk-panel__title">
+            {change.headline}
+        </h1>
+        <div class="govuk-panel__body">
+            {Strings.formatDate(change.date, "dS mmmm yyyy")}
+        </div>
+    </div>
+
+    <div class="govuk-width-container">
+        <div class="govuk-grid-row">
+
+            <div class="govuk-grid-column-two-thirds">
+                <slot><br/></slot>
+            </div>
+
+            <div class="govuk-grid-column-one-third">
+                <style>
+                    div.official-change-card {
+                        width: 100%;
+                        text-align: center;
+                        padding: 15px;
+                        margin-bottom: 10px;
+                        border-radius: 4px;
+                    }
+
+                    span.change-type-badge {
+                        display: inline-block;
+                        padding: 4px 12px;
+                        background: #f3f2f1;
+                        border-radius: 4px;
+                        font-size: 0.875rem;
+                        margin-bottom: 15px;
+                        color: #0b0c0c;
+                    }
+
+                    .official-name {
+                        font-weight: 700;
+                        font-size: 1.125rem;
+                    }
+
+                    .official-role {
+                        font-size: 0.9375rem;
+                        margin-top: 4px;
+                    }
+
+                    .official-action {
+                        text-transform: uppercase;
+                        font-size: 0.75rem;
+                        font-weight: 700;
+                        letter-spacing: 0.5px;
+                        margin-top: 8px;
+                    }
+                </style>
+
+                <span class="change-type-badge">{getChangeTypeLabel(change.changetype)}</span>
+
+                {change.officials.map((official) => {
+                    const colours = getActionColours(official.action);
+                    return (
+                        <div class="official-change-card" style={`background: #${colours.background}; color: #${colours.text};`}>
+                            <div class="official-name">{official.name}</div>
+                            <div class="official-role">{official.role}</div>
+                            <div class="official-action">{official.action}</div>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    </div>
+</PostLayout>

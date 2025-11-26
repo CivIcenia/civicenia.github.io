@@ -1,0 +1,56 @@
+# Government Officials Data
+# This file is managed through Decap CMS
+# Use https://toolscord.com/ to get Discord profile pictures
+
+# Senate term label (e.g., "September 2025")
+senate_term: "September 2025"
+
+# Executive Branch Officials - Fixed slots with role icons
+president:
+  name: "ChrisChrispie"
+  icon: "https://cdn.discordapp.com/avatars/161282206113857537/0e246c5d1e815473a2035868cc7ed72a?size=1024"
+
+secretary_of_defense:
+  name: "Anvil"
+  icon: "https://cdn.discordapp.com/avatars/164188981293088769/2c254c3c8280692107fdbc64612118f6?size=1024"
+
+secretary_of_interior:
+  name: "SneedChungus"
+  icon: "https://cdn.discordapp.com/avatars/1224526027514970216/bb2b2edf8284811f3038f17c1c2cbdcb?size=1024"
+
+secretary_of_treasury:
+  name: "7Misun"
+  icon: "https://cdn.discordapp.com/avatars/143920509833314304/9bd4216b49f9d15a0766379e76a7c85e?size=1024"
+
+secretary_of_state:
+  name: ""
+  icon: "https://cdn.discordapp.com/embed/avatars/0.png"
+
+# Speaker of the Senate - Fixed slot
+speaker:
+  name: "Oko"
+  icon: "https://cdn.discordapp.com/avatars/165189955012919296/4fe990172cfe1f3ab768aa11c0326543?size=1024"
+
+# Senate Seats - Fixed numbered slots (7 seats)
+senators:
+  - seat: 1
+    name: "Dr_Bacon_Hair"
+    icon: "https://cdn.discordapp.com/avatars/689297659907145831/f5a93ea6ed6d9d23de6b15b1768b511d.png?size=1024"
+  - seat: 2
+    name: "yodabird19"
+    icon: "https://cdn.discordapp.com/avatars/282286523011825666/5d8c2b301ab4a6008a341b04441ee5dd.png?size=1024"
+  - seat: 3
+    name: "itsalreadygold"
+    icon: "https://cdn.discordapp.com/avatars/532060480651526146/a6507514df79cc631659b2068a9d29e0.png?size=1024"
+  - seat: 4
+    name: "Zolo17"
+    icon: "https://cdn.discordapp.com/avatars/284408888109957130/9b643a71831d986540b1267d0ab458f8.png?size=1024"
+  - seat: 5
+    name: "HsmNewfriend"
+    icon: "https://cdn.discordapp.com/avatars/1080275805277540423/a95d5aeab1df4316903742ae66cb75b2.png?size=1024"
+  - seat: 6
+    name: "Jaimiemie"
+    icon: "https://cdn.discordapp.com/avatars/206334799160279041/5a0f6567c77a7d66f8cb5294e70058ac?size=1024"
+  - seat: 7
+    name: "Oko"
+    icon: "https://cdn.discordapp.com/avatars/165189955012919296/4fe990172cfe1f3ab768aa11c0326543?size=1024"

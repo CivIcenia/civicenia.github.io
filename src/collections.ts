@@ -277,3 +277,231 @@ export namespace CouncilElections {
             .reverse();
     }
 }
+
+// ############################################################
+// Government Officials
+// ############################################################
+
+import OfficialsData from "./data/officials.yml";
+export namespace GovOfficials {
+    // Schema for a role slot (name + discord icon)
+    export type RoleSlot = z.infer<typeof RoleSlotSchema>;
+    export const RoleSlotSchema = z.object({
+        "name": z.string(),
+        "icon": z.string().optional(),
+    });
+
+    // Schema for a senator seat
+    export type SenatorSeat = z.infer<typeof SenatorSeatSchema>;
+    export const SenatorSeatSchema = z.object({
+        "seat": z.number(),
+        "name": z.string(),
+        "icon": z.string().optional(),
+    });
+
+    export type OfficialsData = z.infer<typeof Schema>;
+    export const Schema = z.object({
+        "senate_term": z.string(),
+        "president": RoleSlotSchema,
+        "secretary_of_defense": RoleSlotSchema,
+        "secretary_of_interior": RoleSlotSchema,
+        "secretary_of_treasury": RoleSlotSchema,
+        "secretary_of_state": RoleSlotSchema,
+        "speaker": RoleSlotSchema,
+        "senators": z.array(SenatorSeatSchema),
+    });
+
+    const defaultSlot: RoleSlot = { name: "", icon: "https://cdn.discordapp.com/embed/avatars/0.png" };
+
+    export function getOfficials(): OfficialsData {
+        const parsed = Schema.safeParse(OfficialsData);
+        if (parsed.success) {
+            return parsed.data;
+        }
+        // Return defaults if parsing fails
+        return {
+            senate_term: "Current Term",
+            president: defaultSlot,
+            secretary_of_defense: defaultSlot,
+            secretary_of_interior: defaultSlot,
+            secretary_of_treasury: defaultSlot,
+            secretary_of_state: defaultSlot,
+            speaker: defaultSlot,
+            senators: []
+        };
+    }
+
+    export function getPresident(): RoleSlot {
+        return getOfficials().president;
+    }
+
+    export function getSecretaries(): { title: string; slot: RoleSlot }[] {
+        const data = getOfficials();
+        return [
+            { title: "Secretary of Defense", slot: data.secretary_of_defense },
+            { title: "Secretary of Interior", slot: data.secretary_of_interior },
+            { title: "Secretary of Treasury", slot: data.secretary_of_treasury },
+            { title: "Secretary of State", slot: data.secretary_of_state },
+        ].filter(s => s.slot.name !== "");
+    }
+
+    export function getSpeaker(): RoleSlot {
+        return getOfficials().speaker;
+    }
+
+    export function getSenators(): SenatorSeat[] {
+        return getOfficials().senators;
+    }
+
+    export function getSenateTerm(): string {
+        return getOfficials().senate_term;
+    }
+}
+
+// ############################################################
+// City Councillors
+// ############################################################
+
+import CouncillorsData from "./data/councillors.yml";
+export namespace Councillors {
+    // Schema for a role slot (name + discord icon)
+    export type RoleSlot = z.infer<typeof RoleSlotSchema>;
+    export const RoleSlotSchema = z.object({
+        "name": z.string(),
+        "icon": z.string().optional(),
+    });
+
+    // Schema for a councillor seat
+    export type CouncillorSeat = z.infer<typeof CouncillorSeatSchema>;
+    export const CouncillorSeatSchema = z.object({
+        "seat": z.number(),
+        "name": z.string(),
+        "icon": z.string().optional(),
+    });
+
+    export type CouncillorsData = z.infer<typeof Schema>;
+    export const Schema = z.object({
+        "council_term": z.string(),
+        "mayor": RoleSlotSchema,
+        "councillors": z.array(CouncillorSeatSchema),
+    });
+
+    const defaultSlot: RoleSlot = { name: "", icon: "https://cdn.discordapp.com/embed/avatars/0.png" };
+
+    export function getCouncillors(): CouncillorsData {
+        const parsed = Schema.safeParse(CouncillorsData);
+        if (parsed.success) {
+            return parsed.data;
+        }
+        // Return defaults if parsing fails
+        return {
+            council_term: "Current Term",
+            mayor: defaultSlot,
+            councillors: []
+        };
+    }
+
+    export function getMayor(): RoleSlot {
+        return getCouncillors().mayor;
+    }
+
+    export function getCouncillorSeats(): CouncillorSeat[] {
+        return getCouncillors().councillors;
+    }
+
+    export function getCouncilTerm(): string {
+        return getCouncillors().council_term;
+    }
+}
+
+// ############################################################
+// Official Changes (News) - Government
+// ############################################################
+
+export namespace OfficialChanges {
+    export const Schema = NewsItemSchema.extend({
+        "layout": z.literal("@layouts/news/official-change.astro"),
+        "officialchange": z.literal(true),
+        "changetype": z.enum([
+            "senate-election",
+            "senate-byelection",
+            "secretary-change",
+            "speaker-vote",
+            "president-change"
+        ]),
+        "officials": z.array(z.object({
+            "name": z.string(),
+            "role": z.string(),
+            "action": z.enum(["elected", "reelected", "appointed", "resigned", "removed", "succeeded"])
+        }))
+    });
+    export type OfficialChange = z.infer<typeof Schema>;
+
+    export function isOfficialChange(
+        frontmatter: any
+    ) {
+        return frontmatter["officialchange"] === true;
+    }
+
+    export function ensureOfficialChange(
+        frontmatter: MarkdownLayoutProps<OfficialChange>["frontmatter"]
+    ): OfficialChange {
+        frontmatter.officials ??= [];
+        return frontmatter;
+    }
+
+    /**
+     * Retrieves all official changes sorted from newest to oldest.
+     */
+    export async function getOfficialChanges() {
+        return (await getCollection("news"))
+            .filter((entry) => isOfficialChange(entry.data))
+            .sort(Arrays.sortByDate((entry) => entry.data.date))
+            .reverse();
+    }
+}
+
+// ############################################################
+// City Official Changes (News)
+// ############################################################
+
+export namespace CityOfficialChanges {
+    export const Schema = NewsItemSchema.extend({
+        "layout": z.literal("@layouts/news/city-official-change.astro"),
+        "cityofficialchange": z.literal(true),
+        "changetype": z.enum([
+            "council-election",
+            "council-byelection",
+            "mayor-vote"
+        ]),
+        "officials": z.array(z.object({
+            "name": z.string(),
+            "role": z.string(),
+            "action": z.enum(["elected", "reelected", "appointed", "resigned", "removed", "succeeded"])
+        }))
+    });
+    export type CityOfficialChange = z.infer<typeof Schema>;
+
+    export function isCityOfficialChange(
+        frontmatter: any
+    ) {
+        return frontmatter["cityofficialchange"] === true;
+    }
+
+    export function ensureCityOfficialChange(
+        frontmatter: MarkdownLayoutProps<CityOfficialChange>["frontmatter"]
+    ): CityOfficialChange {
+        frontmatter.officials ??= [];
+        return frontmatter;
+    }
+
+    /**
+     * Retrieves all city official changes sorted from newest to oldest.
+     */
+    export async function getCityOfficialChanges() {
+        return (await getCollection("city-news"))
+            .filter((entry) => isCityOfficialChange(entry.data))
+            .sort(Arrays.sortByDate((entry) => entry.data.date))
+            .reverse();
+    }
+}

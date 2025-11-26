@@ -1,13 +1,13 @@
 ---
-layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
+layout: "@layouts/news/city-act.astro"
 institution: council
-headline: Zoning Ordinance Update
+headline: PLACEHOLDER Zoning Ordinance Update
 date: 2024-05-20 12:00:00 +0000
-excerpt: Added new residential zone designations.
+excerpt: "PLACEHOLDER "
 document:
   type: markdown
-  value: ""
+  value: "PLACEHOLDER "
 changes:
   - kind: amendment
     target: zoning-ordinance

@@ -1,0 +1,18 @@
+council_term: Current Term
+mayor:
+  name: ExampleMayor
+  icon: https://cdn.discordapp.com/embed/avatars/0.png
+councillors:
+  - seat: 1
+    name: Councillor1
+    icon: https://cdn.discordapp.com/embed/avatars/2.png
+  - seat: 2
+    name: Councillor2
+    icon: https://cdn.discordapp.com/embed/avatars/3.png
+  - seat: 3
+    name: Councillor3
+    icon: https://cdn.discordapp.com/embed/avatars/4.png
+  - seat: 4
+    name: John
+  - seat: 5
+    name: ping

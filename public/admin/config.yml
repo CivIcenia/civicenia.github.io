@@ -123,6 +123,184 @@ collections:
                 widget: "boolean"
                 default: false
                 hint: "Flip this on if this city law has been repealed"
+      - label: "Government Officials"
+        name: "officials"
+        file: "src/data/officials.yml"
+        fields:
+          - label: "Senate Term"
+            name: "senate_term"
+            widget: "string"
+            required: true
+            hint: "The current Senate term label, e.g: September 2025"
+          # Executive Branch - Fixed Slots
+          - label: "President"
+            name: "president"
+            widget: "object"
+            collapsed: true
+            fields:
+              - label: "Name"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The President's in-game name"
+              - label: "Discord Icon"
+                name: "icon"
+                widget: "string"
+                required: false
+                hint: "Discord avatar URL for the President role. Use https://toolscord.com/"
+          - label: "Secretary of Defense"
+            name: "secretary_of_defense"
+            widget: "object"
+            collapsed: true
+            fields:
+              - label: "Name"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The Secretary's in-game name (leave empty if vacant)"
+              - label: "Discord Icon"
+                name: "icon"
+                widget: "string"
+                required: false
+                hint: "Discord avatar URL for this role. Use https://toolscord.com/"
+          - label: "Secretary of Interior"
+            name: "secretary_of_interior"
+            widget: "object"
+            collapsed: true
+            fields:
+              - label: "Name"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The Secretary's in-game name (leave empty if vacant)"
+              - label: "Discord Icon"
+                name: "icon"
+                widget: "string"
+                required: false
+                hint: "Discord avatar URL for this role. Use https://toolscord.com/"
+          - label: "Secretary of Treasury"
+            name: "secretary_of_treasury"
+            widget: "object"
+            collapsed: true
+            fields:
+              - label: "Name"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The Secretary's in-game name (leave empty if vacant)"
+              - label: "Discord Icon"
+                name: "icon"
+                widget: "string"
+                required: false
+                hint: "Discord avatar URL for this role. Use https://toolscord.com/"
+          - label: "Secretary of State"
+            name: "secretary_of_state"
+            widget: "object"
+            collapsed: true
+            fields:
+              - label: "Name"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The Secretary's in-game name (leave empty if vacant)"
+              - label: "Discord Icon"
+                name: "icon"
+                widget: "string"
+                required: false
+                hint: "Discord avatar URL for this role. Use https://toolscord.com/"
+          # Speaker of Senate - Fixed Slot
+          - label: "Speaker of the Senate"
+            name: "speaker"
+            widget: "object"
+            collapsed: true
+            fields:
+              - label: "Name"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The Speaker's in-game name"
+              - label: "Discord Icon"
+                name: "icon"
+                widget: "string"
+                required: false
+                hint: "Discord avatar URL for the Speaker role. Use https://toolscord.com/"
+          # Senate Seats - Numbered Slots
+          - label: "Senate Seats"
+            label_singular: "Senate Seat"
+            name: "senators"
+            widget: "list"
+            default: []
+            summary: "Seat {{seat}}: {{name}}"
+            fields:
+              - label: "Seat Number"
+                name: "seat"
+                widget: "number"
+                value_type: "int"
+                min: 1
+                max: 10
+                required: true
+                hint: "The seat number (1-10)"
+              - label: "Name"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The Senator's in-game name"
+              - label: "Discord Icon"
+                name: "icon"
+                widget: "string"
+                required: false
+                hint: "Discord avatar URL for this seat. Use https://toolscord.com/"
+      - label: "City Councillors"
+        name: "councillors"
+        file: "src/data/councillors.yml"
+        fields:
+          - label: "Council Term"
+            name: "council_term"
+            widget: "string"
+            required: true
+            hint: "The current Council term label, e.g: 2025 Term"
+          # Mayor - Fixed Slot
+          - label: "Mayor"
+            name: "mayor"
+            widget: "object"
+            collapsed: true
+            fields:
+              - label: "Name"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The Mayor's in-game name"
+              - label: "Discord Icon"
+                name: "icon"
+                widget: "string"
+                required: false
+                hint: "Discord avatar URL for the Mayor role. Use https://toolscord.com/"
+          # Councillor Seats - Numbered Slots
+          - label: "Councillor Seats"
+            label_singular: "Councillor Seat"
+            name: "councillors"
+            widget: "list"
+            default: []
+            summary: "Seat {{seat}}: {{name}}"
+            fields:
+              - label: "Seat Number"
+                name: "seat"
+                widget: "number"
+                value_type: "int"
+                min: 1
+                max: 10
+                required: true
+                hint: "The seat number (1-10)"
+              - label: "Name"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The Councillor's in-game name"
+              - label: "Discord Icon"
+                name: "icon"
+                widget: "string"
+                required: false
+                hint: "Discord avatar URL for this seat. Use https://toolscord.com/"
   #######################################################
   ## Senate Bills
   #######################################################
@@ -340,6 +518,114 @@ collections:
         hint: "The image that will appear beside the headline on the news page (default: /assets/images/election_stock.png)"
 
   #######################################################
+  ## Official Changes (Government)
+  #######################################################
+  - name: "officialchanges"
+    label: "Government Official Changes"
+    label_singular: "Government Official Change"
+    folder: "src/content/news"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{headline}}"
+    extension: "md"
+    format: "yaml-frontmatter"
+    editor: { preview: false }
+    sortable_fields: ["date"]
+    filter: { field: "officialchange", value: true }
+    fields:
+      # IsOfficialChange
+      - label: "OfficialChange"
+        name: "officialchange"
+        widget: "hidden"
+        required: true
+        default: true
+      # Layout
+      - label: "Layout"
+        name: "layout"
+        widget: "hidden"
+        required: true
+        default: "@layouts/news/official-change.astro"
+      # Type of Change
+      - label: "Type of Change"
+        name: "changetype"
+        widget: "select"
+        required: true
+        hint: "What kind of official change is this?"
+        options:
+          - {label: "Senate Election (Full)", value: "senate-election"}
+          - {label: "Senate By-Election (Certain Seats)", value: "senate-byelection"}
+          - {label: "Change in Secretary", value: "secretary-change"}
+          - {label: "Vote for Speaker of the Senate", value: "speaker-vote"}
+          - {label: "Change in President", value: "president-change"}
+        default: "senate-election"
+      # Headline
+      - label: "Title"
+        name: "headline"
+        widget: "string"
+        required: true
+        hint: "The headline, e.g: November 2025 Senate Election"
+      # Date
+      - label: "When did this change take effect?"
+        name: "date"
+        widget: "datetime"
+        required: true
+        format: "YYYY-MM-DD HH:mm:00 Z"
+      # Excerpt
+      - label: "Excerpt"
+        name: "excerpt"
+        widget: "text"
+        required: false
+        hint: "A short summary. Leave empty to infer from content."
+        default: null
+      # Officials Involved
+      - label: "Officials Involved"
+        name: "officials"
+        widget: "list"
+        default: []
+        summary: "{{name}} - {{role}} ({{action}})"
+        fields:
+          - label: "Name"
+            name: "name"
+            widget: "string"
+            required: true
+            hint: "The official's in-game name"
+          - label: "Role"
+            name: "role"
+            widget: "select"
+            required: true
+            options:
+              - {label: "Senator", value: "senator"}
+              - {label: "Secretary of Defense", value: "secretary-of-defense"}
+              - {label: "Secretary of the Interior", value: "secretary-of-interior"}
+              - {label: "Secretary of Treasury", value: "secretary-of-treasury"}
+              - {label: "Speaker of the Senate", value: "speaker-of-the-senate"}
+              - {label: "President", value: "president"}
+          - label: "Action"
+            name: "action"
+            widget: "select"
+            required: true
+            options:
+              - {label: "Elected", value: "elected"}
+              - {label: "Re-elected", value: "reelected"}
+              - {label: "Appointed", value: "appointed"}
+              - {label: "Resigned", value: "resigned"}
+              - {label: "Removed", value: "removed"}
+              - {label: "Succeeded", value: "succeeded"}
+        hint: "List all officials involved in this change"
+      # Content
+      - label: "Content"
+        name: "body"
+        widget: "markdown"
+        required: false
+        hint: "Additional details about the change, election results, etc."
+      # Icon
+      - label: "Icon"
+        name: "icon"
+        widget: "string"
+        default: "/assets/images/election_stock.png"
+        required: true
+        hint: "The image that will appear beside the headline (default: /assets/images/election_stock.png)"
+
+  #######################################################
   ## City Law Changes
   #######################################################
   - name: "citylawchanges"
@@ -490,7 +776,7 @@ collections:
       - label: "Headline"
         name: "headline"
         widget: "string"
-        hint: "What headline would you give this election? e.g: January Council Election (2024)"
+        hint: "What headline would you give this election? e.g: October Council (2025), October By-Election (2025)"
       # Term Number
       - label: "Term Number"
         name: "term"
@@ -522,7 +808,7 @@ collections:
             name: "role"
             widget: "string"
             required: false
-            hint: "Optional role, e.g: Mayor, Deputy Mayor"
+            hint: "Optional role, e.g: Mayor, Treasurer, etc."
         hint: "List the elected councillors"
       # Content
       - label: "Content"
@@ -530,6 +816,108 @@ collections:
         widget: "markdown"
         required: false
         hint: "Include election results and any other relevant information."
+      # Icon
+      - label: "Icon"
+        name: "icon"
+        widget: "string"
+        default: "/assets/images/election_stock.png"
+        required: true
+        hint: "The image that will appear beside the headline (default: /assets/images/election_stock.png)"
+
+  #######################################################
+  ## City Official Changes
+  #######################################################
+  - name: "cityofficialchanges"
+    label: "City Official Changes"
+    label_singular: "City Official Change"
+    folder: "src/content/city-news"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{headline}}"
+    extension: "md"
+    format: "yaml-frontmatter"
+    editor: { preview: false }
+    sortable_fields: ["date"]
+    filter: { field: "cityofficialchange", value: true }
+    fields:
+      # IsCityOfficialChange
+      - label: "CityOfficialChange"
+        name: "cityofficialchange"
+        widget: "hidden"
+        required: true
+        default: true
+      # Layout
+      - label: "Layout"
+        name: "layout"
+        widget: "hidden"
+        required: true
+        default: "@layouts/news/city-official-change.astro"
+      # Type of Change
+      - label: "Type of Change"
+        name: "changetype"
+        widget: "select"
+        required: true
+        hint: "What kind of city official change is this?"
+        options:
+          - {label: "Council Election (Full)", value: "council-election"}
+          - {label: "Council By-Election (Certain Seats)", value: "council-byelection"}
+          - {label: "Mayor Voting", value: "mayor-vote"}
+        default: "council-election"
+      # Headline
+      - label: "Title"
+        name: "headline"
+        widget: "string"
+        required: true
+        hint: "The headline, e.g: November 2025 Council Election"
+      # Date
+      - label: "When did this change take effect?"
+        name: "date"
+        widget: "datetime"
+        required: true
+        format: "YYYY-MM-DD HH:mm:00 Z"
+      # Excerpt
+      - label: "Excerpt"
+        name: "excerpt"
+        widget: "text"
+        required: false
+        hint: "A short summary. Leave empty to infer from content."
+        default: null
+      # Officials Involved
+      - label: "Officials Involved"
+        name: "officials"
+        widget: "list"
+        default: []
+        summary: "{{name}} - {{role}} ({{action}})"
+        fields:
+          - label: "Name"
+            name: "name"
+            widget: "string"
+            required: true
+            hint: "The official's in-game name"
+          - label: "Role"
+            name: "role"
+            widget: "string"
+            required: true
+            options:
+              - {label: "Councillor", value: "councillor"}
+              - {label: "Mayor", value: "mayor"}
+          - label: "Action"
+            name: "action"
+            widget: "select"
+            required: true
+            options:
+              - {label: "Elected", value: "elected"}
+              - {label: "Re-elected", value: "reelected"}
+              - {label: "Appointed", value: "appointed"}
+              - {label: "Resigned", value: "resigned"}
+              - {label: "Removed", value: "removed"}
+              - {label: "Succeeded", value: "succeeded"}
+        hint: "List all officials involved in this change"
+      # Content
+      - label: "Content"
+        name: "body"
+        widget: "markdown"
+        required: false
+        hint: "Additional details about the change, election results, etc."
       # Icon
       - label: "Icon"
         name: "icon"

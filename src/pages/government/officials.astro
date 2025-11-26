@@ -1,27 +1,15 @@
 ---
-import { Structs } from "@helpers";
+import { GovOfficials } from "@collections";
 import PageLayout from "@layouts/page.astro";
 
 const BASE = (import.meta.env.BASE_URL ?? "/");
 
-// Use https://toolscord.com/ to get the pfps
-const officials = [
-    Structs.official(["President"], "ChrisChrispie", "https://cdn.discordapp.com/avatars/161282206113857537/0e246c5d1e815473a2035868cc7ed72a?size=1024"),
-    Structs.official(["Secretary of Defense"], "Anvil", "https://cdn.discordapp.com/avatars/164188981293088769/2c254c3c8280692107fdbc64612118f6?size=1024"),
-    Structs.official(["Secretary of Interior"], "SneedChungus", "https://cdn.discordapp.com/avatars/1224526027514970216/bb2b2edf8284811f3038f17c1c2cbdcb?size=1024"),
-    Structs.official(["Secretary of Treasury"], "7Misun", "https://cdn.discordapp.com/avatars/143920509833314304/9bd4216b49f9d15a0766379e76a7c85e?size=1024"),
-];
-
-// Current Senate members
-const senators = [
-    Structs.official(["Speaker of the Senate"], "Oko", "https://cdn.discordapp.com/avatars/165189955012919296/4fe990172cfe1f3ab768aa11c0326543?size=1024"),
-    Structs.official(["Senator"], "Dr_Bacon_Hair", "https://cdn.discordapp.com/avatars/689297659907145831/f5a93ea6ed6d9d23de6b15b1768b511d.png?size=1024"),
-    Structs.official(["Senator"], "yodabird19", "https://cdn.discordapp.com/avatars/282286523011825666/5d8c2b301ab4a6008a341b04441ee5dd.png?size=1024"),
-    Structs.official(["Senator"], "itsalreadygold", "https://cdn.discordapp.com/avatars/532060480651526146/a6507514df79cc631659b2068a9d29e0.png?size=1024"),
-    Structs.official(["Senator"], "Zolo17", "https://cdn.discordapp.com/avatars/284408888109957130/9b643a71831d986540b1267d0ab458f8.png?size=1024"),
-    Structs.official(["Senator"], "HsmNewfriend", "https://cdn.discordapp.com/avatars/1080275805277540423/a95d5aeab1df4316903742ae66cb75b2.png?size=1024"),
-    Structs.official(["Senator"], "Jaimiemie", "https://cdn.discordapp.com/avatars/206334799160279041/5a0f6567c77a7d66f8cb5294e70058ac?size=1024"),
-];
+// Load officials from data file (managed via Decap CMS)
+const president = GovOfficials.getPresident();
+const speaker = GovOfficials.getSpeaker();
+const secretaries = GovOfficials.getSecretaries();
+const senators = GovOfficials.getSenators();
+const senateTerm = GovOfficials.getSenateTerm();
 
 // Default avatar for officials without profile pictures
 const defaultAvatar = "https://cdn.discordapp.com/embed/avatars/0.png";
@@ -59,25 +47,55 @@ const defaultAvatar = "https://cdn.discordapp.com/embed/avatars/0.png";
     <div class="officials-centred">
         <h2 class="section-title">Executive Branch</h2>
         <div class="officials-parent">
-            {officials.map((official) => (
+            <!-- President -->
+            <div class="officials-wrapper">
+                <div class="official-card">
+                    <img src={president.icon || defaultAvatar} class="official-pfp" width="120px" height="120px" alt={president.name}/>
+                    <span class="official-name">{president.name}</span>
+                    <span class="official-titles">
+                        <span class="official-title">President</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Secretaries (Cabinet) -->
+            {secretaries.map((secretary) => (
                 <div class="officials-wrapper">
                     <div class="official-card">
-                        <img src={official.pfp || defaultAvatar} class="official-pfp" width="120px" height="120px" alt={official.name}/>
-                        <span class="official-name">{official.name}</span>
-                        <span class="official-titles">{official.titles.map((title) => <span class="official-title">{title}</span>)}</span>
+                        <img src={secretary.slot.icon || defaultAvatar} class="official-pfp" width="120px" height="120px" alt={secretary.slot.name}/>
+                        <span class="official-name">{secretary.slot.name}</span>
+                        <span class="official-titles">
+                            <span class="official-title">{secretary.title}</span>
+                        </span>
                     </div>
                 </div>
             ))}
         </div>
 
-        <h2 class="section-title">Senate of September 2025</h2>
+        <h2 class="section-title">Senate of {senateTerm}</h2>
         <div class="officials-parent">
+            <!-- Speaker of the Senate -->
+            {speaker.name && (
+                <div class="officials-wrapper">
+                    <div class="official-card">
+                        <img src={speaker.icon || defaultAvatar} class="official-pfp" width="120px" height="120px" alt={speaker.name}/>
+                        <span class="official-name">{speaker.name}</span>
+                        <span class="official-titles">
+                            <span class="official-title">Speaker of the Senate</span>
+                        </span>
+                    </div>
+                </div>
+            )}
+
+            <!-- Senators -->
             {senators.map((senator) => (
                 <div class="officials-wrapper">
                     <div class="official-card">
-                        <img src={senator.pfp || defaultAvatar} class="official-pfp" width="120px" height="120px" alt={senator.name}/>
+                        <img src={senator.icon || defaultAvatar} class="official-pfp" width="120px" height="120px" alt={senator.name}/>
                         <span class="official-name">{senator.name}</span>
-                        <span class="official-titles">{senator.titles.map((title) => <span class="official-title">{title}</span>)}</span>
+                        <span class="official-titles">
+                            <span class="official-title">Senator (Seat {senator.seat})</span>
+                        </span>
                     </div>
                 </div>
             ))}

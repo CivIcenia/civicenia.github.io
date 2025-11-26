@@ -1,6 +1,6 @@
 ---
 import DefaultLayout from "@layouts/default.astro";
-import { Astros} from "@helpers";
+import { Astros } from "@helpers";
 import { getBordersLink } from "@comptime";
 
 const BASE = (import.meta.env.BASE_URL ?? "/");
@@ -8,143 +8,555 @@ const title = "Icenia City";
 const description = "Welcome to Icenia City, the capital of the Republic of Icenia.";
 ---
 <DefaultLayout title={title} description={description}>
-    <!-- Hero Section -->
+
+    <!-- Full-width Hero Section -->
     <section class="city-hero">
+        <div class="city-hero-overlay"></div>
         <div class="city-hero-content">
-            <h1>Welcome to Icenia City</h1>
-            <p class="govuk-body-l">The capital of the Republic</p>
+            <h1>Icenia City</h1>
+            <p class="city-hero-subtitle">Heart of the Republic</p>
+            <div class="city-hero-actions">
+                <a href={BASE + "guide/"} class="icenia-btn">New Player Guide</a>
+                <a href="https://discord.gg/dfwSjCjRN5" target="_blank" class="icenia-btn icenia-btn-secondary icenia-btn-tertiary" style="text-decoration: none;">Join Discord</a>
+            </div>
+        </div>
+        <div class="city-hero-scroll-hint">
+            <span>Scroll to explore</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M5 12l7 7 7-7"/>
+            </svg>
         </div>
     </section>
 
+
+
     <div class="govuk-width-container">
         <main class="govuk-main-wrapper">
-            <!-- Introduction -->
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-two-thirds">
-                    <h2 class="govuk-heading-l">About Icenia City</h2>
-                    <p class="govuk-body-l">
-                        Icenia City is the vibrant capital and central hub of the Republic of Icenia. 
-                        Home to our government buildings, bustling markets, and public spaces, the city 
-                        stands as the heart of Icenian culture and commerce.
-                    </p>
-                    <p class="govuk-body">
-                        Whether you're a new resident looking to set up shop, a citizen seeking 
-                        government services, or a visitor exploring the -,- quadrant, Icenia City 
-                        welcomes you.
-                    </p>
-                </div>
-                <div class="govuk-grid-column-one-third">
-                    <img class="govuk-image" src="/assets/images/icenia_logo.png" alt="Icenia City Emblem" style="width: 100%; max-width: 180px; display: block; margin: 0 auto;" />
-                </div>
-            </div>
-
-            <!-- Quick Links Section -->
-            <div class="govuk-grid-row govuk-!-margin-top-6">
-                <div class="govuk-grid-column-full">
-                    <h2 class="govuk-heading-l">Quick Links</h2>
-                </div>
-            </div>
             
-            <div class="equal-cards">
-                <div class="govuk-grid-row">
-                    <div class="icenia-card">
-                        <h3 class="govuk-heading-m">📜 City Laws</h3>
-                        <p class="govuk-body">
-                            View the city charter, ordinances, and regulations that govern Icenia City.
-                        </p>
-                        <a href={BASE + "icenia-city/laws/"} class="govuk-link govuk-!-font-weight-bold">View City Laws →</a>
-                    </div>
-
-                    <div class="icenia-card">
-                        <h3 class="govuk-heading-m">🏛️ City Council</h3>
-                        <p class="govuk-body">
-                            Meet the elected officials who govern Icenia City and represent its residents.
-                        </p>
-                        <a href={BASE + "icenia-city/council/"} class="govuk-link govuk-!-font-weight-bold">View Council →</a>
-                    </div>
-
-                    <div class="icenia-card">
-                        <h3 class="govuk-heading-m">🏪 Shops</h3>
-                        <p class="govuk-body">
-                            Browse the shops and markets of Icenia City, including the renowned Enron Exchange.
-                        </p>
-                        <a href={BASE + "icenia-city/shops/"} class="govuk-link govuk-!-font-weight-bold">View Shops →</a>
-                    </div>
-
-                    <div class="icenia-card">
-                        <h3 class="govuk-heading-m">🚀 Join Us</h3>
-                        <p class="govuk-body">
-                            New to Icenia? Learn how to become a citizen and start your journey with us.
-                        </p>
-                        <a href={BASE + "guide/"} class="govuk-link govuk-!-font-weight-bold">New Player Guide →</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Additional Information -->
-            <div class="govuk-grid-row govuk-!-margin-bottom-6">
-                <div class="govuk-grid-column-full">
-                    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-                </div>
-            </div>
-
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-one-half">
-                    <h3 class="govuk-heading-m">🏛️ Government District</h3>
-                    <p class="govuk-body">
-                        The Government District houses the Senate chambers, administrative offices, 
-                        and the Presidential residence. All official state business is conducted here.
+            <!-- Redesigned About Section -->
+            <section class="city-about-section">
+                <div class="city-about-header">
+                    <h2 class="govuk-heading-l">Welcome to the Capital</h2>
+                    <p class="govuk-body-l city-about-lead">
+                        Where government, commerce, and community converge in the heart of the Republic.
                     </p>
-                    <a href={BASE + "government/officials/"} class="govuk-link">View Government Officials →</a>
                 </div>
-                <div class="govuk-grid-column-one-half">
-                    <h3 class="govuk-heading-m">🗺️ Getting Around</h3>
-                    <p class="govuk-body">
-                        Icenia City is well-connected via the international rail network and has 
-                        easy access to all states of the Republic.
-                    </p>
-                    <a href={Astros.isDevMode() ? BASE + "government/map" : getBordersLink(Astro)} target="_blank" class="govuk-link">View CivMC Map →</a>
+                
+                <div class="city-about-grid">
+                    <div class="city-about-feature">
+                        <div class="city-about-feature-icon">🏛️</div>
+                        <h3>Seat of Power</h3>
+                        <p>Home to the Senate, Presidential offices, and the administrative heart of the Republic.</p>
+                    </div>
+                    <div class="city-about-feature">
+                        <div class="city-about-feature-icon">💰</div>
+                        <h3>Trade Hub</h3>
+                        <p>The Enron Exchange and bustling markets make this the commercial center of the -,- quadrant.</p>
+                    </div>
+                    <div class="city-about-feature">
+                        <div class="city-about-feature-icon">🚂</div>
+                        <h3>Connected</h3>
+                        <p>International rail links and well-planned infrastructure connect you to the world.</p>
+                    </div>
+                    <div class="city-about-feature">
+                        <div class="city-about-feature-icon">🏠</div>
+                        <h3>Welcoming</h3>
+                        <p>Whether trading, building, or exploring — Icenia City has a place for everyone.</p>
+                    </div>
                 </div>
-            </div>
 
-            <div class="govuk-grid-row govuk-!-margin-top-6">
-            </div>
+                <div class="city-about-image-showcase">
+                    <img src="/assets/images/city_skyline_north.png" alt="Icenia City skyline looking north" />
+                </div>
+            </section>
+
+            <!-- Services Grid -->
+            <section class="city-services-section">
+                <h2 class="govuk-heading-l city-section-title">City Services</h2>
+                <p class="govuk-body-l city-section-intro">
+                    Everything you need to know about living in and visiting Icenia City.
+                </p>
+                
+                <div class="city-services-grid">
+                    <a href={BASE + "icenia-city/laws/"} class="city-service-card">
+                        <div class="city-service-icon">📜</div>
+                        <h3 class="city-service-title">City Laws</h3>
+                        <p class="city-service-desc">
+                            View the city charter, ordinances, and regulations governing Icenia City.
+                        </p>
+                        <span class="city-service-link">View Laws →</span>
+                    </a>
+
+                    <a href={BASE + "icenia-city/council/"} class="city-service-card">
+                        <div class="city-service-icon">🏛️</div>
+                        <h3 class="city-service-title">City Council</h3>
+                        <p class="city-service-desc">
+                            Meet the elected officials who govern and represent city residents.
+                        </p>
+                        <span class="city-service-link">View Council →</span>
+                    </a>
+
+                    <a href={BASE + "icenia-city/shops/"} class="city-service-card">
+                        <div class="city-service-icon">🏪</div>
+                        <h3 class="city-service-title">Shops & Markets</h3>
+                        <p class="city-service-desc">
+                            Browse our commercial district, featuring the renowned Enron Exchange.
+                        </p>
+                        <span class="city-service-link">View Shops →</span>
+                    </a>
+
+                    <a href={Astros.isDevMode() ? BASE + "government/map" : getBordersLink(Astro)} target="_blank" class="city-service-card">
+                        <div class="city-service-icon">🗺️</div>
+                        <h3 class="city-service-title">City Map</h3>
+                        <p class="city-service-desc">
+                            Explore Icenia City and the surrounding region on the CivMC map.
+                        </p>
+                        <span class="city-service-link">Open Map →</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Featured Locations -->
+            <section class="city-locations-section">
+                <h2 class="govuk-heading-l city-section-title">Notable Locations</h2>
+                <p class="govuk-body-l city-section-intro">
+                    Discover the landmarks that define Icenia City.
+                </p>
+                
+                <div class="city-locations-grid">
+                    <div class="city-location-card city-location-featured">
+                        <div class="city-location-image" style="background-image: url('/assets/images/city_monument.png')"></div>
+                        <div class="city-location-content">
+                            <h3>Government District</h3>
+                            <p>
+                                The seat of the Senate and home to national monuments. While many key government buildings are here, the judiciary and some other offices are located elsewhere in the city.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="city-location-card city-location-featured">
+                        <div class="city-location-image" style="background-image: url('/assets/images/enron.png')"></div>
+                        <div class="city-location-content">
+                            <h3>Enron Exchange</h3>
+                            <p>
+                                The premier marketplace of the -,- quadrant. Discover a growing currency exchange, top-tier shops, and the region’s most advanced ore processing facilities.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="city-location-card city-location-featured">
+                        <div class="city-location-image" style="background-image: url('/assets/images/jah_park.png')"></div>
+                        <div class="city-location-content">
+                            <h3>Jah Park</h3>
+                            <p>
+                                A tranquil green oasis at the heart of Icenia City, Jah Park is surrounded by the rail station, markets, factories, businesses, and apartments—offering a peaceful retreat amid the city’s vibrant activity.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="city-location-card city-location-featured">
+                        <div class="city-location-image" style="background-image: url('/assets/images/central_station.png')"></div>
+                        <div class="city-location-content">
+                            <h3>Central Station</h3>
+                            <p>
+                                Connected to the international rail network with easy access to all states of the Republic and beyond.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Call to Action -->
+            <section class="city-cta-section">
+                <div class="city-cta-content">
+                    <h2 class="govuk-heading-l">Ready to Join Us?</h2>
+                    <p class="govuk-body-l">
+                        Whether you're a new player looking for a home or an experienced builder 
+                        seeking new opportunities, Icenia City has a place for you.
+                    </p>
+                    <div class="city-cta-actions">
+                        <a href={BASE + "guide/"} class="icenia-btn">Read the Guide</a>
+                        <a href="https://discord.gg/dfwSjCjRN5" target="_blank" class="icenia-btn-secondary">Join Our Discord</a>
+                    </div>
+                </div>
+            </section>
 
         </main>
     </div>
 </DefaultLayout>
 
 <style>
+    /* ==========================================
+       HERO SECTION
+       ========================================== */
     .city-hero {
-        background: linear-gradient(rgba(28, 112, 184, 0.85), rgba(28, 112, 184, 0.85)), url('/assets/images/nation_render.png') center/cover no-repeat;
-        padding: 60px 20px;
+        position: relative;
+        background: url('/assets/images/city_monument.png') center/cover no-repeat;
+        height: calc(100vh - var(--header-height-desktop, 56px) - var(--navbar-height, 54px));
+        min-height: 500px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         text-align: center;
         color: white;
+        overflow: hidden;
+    }
+
+    :global(body.menu-mode) .city-hero {
+        height: calc(100vh - var(--header-height-desktop, 56px));
+    }
+
+    @media (max-width: 768px) {
+        .city-hero {
+            height: calc(100vh - var(--header-height-mobile, 44px) - var(--navbar-height, 54px));
+            min-height: 400px;
+        }
+        :global(body.menu-mode) .city-hero {
+            height: calc(100vh - var(--header-height-mobile, 44px));
+        }
+    }
+
+    .city-hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            to bottom,
+            rgba(28, 112, 184, 0.3) 0%,
+            rgba(11, 12, 12, 0.7) 100%
+        );
+        z-index: 1;
+    }
+
+    .city-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 700px;
+        padding: 0 1.5rem;
     }
 
     .city-hero h1 {
         margin: 0 0 0.5rem 0;
-        font-size: clamp(1.75rem, 4vw, 2.5rem);
-        line-height: 1.1;
+        font-size: clamp(2.5rem, 8vw, 4.5rem);
         font-weight: 700;
-        color: white;
+        line-height: 1;
+        text-shadow: 0 2px 20px rgba(0,0,0,0.3);
     }
 
-    .city-hero p {
-        margin: 0;
-        color: rgba(255, 255, 255, 0.95);
+    .city-hero-subtitle {
+        font-size: clamp(1.125rem, 3vw, 1.5rem);
+        margin: 0 0 2rem 0;
+        opacity: 0.95;
     }
 
-    /* Adjust equal-cards for three columns */
-    .equal-cards .govuk-grid-column-one-third {
-        flex: 1 1 calc(33.333% - 1rem);
+    .city-hero-actions {
         display: flex;
-        min-width: 260px;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .city-hero-scroll-hint {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        color: rgba(255,255,255,0.7);
+        font-size: 0.875rem;
+        animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    @media (max-width: 768px) {
+        .city-hero-scroll-hint { display: none; }
+    }
+
+    /* ==========================================
+       ABOUT SECTION - Redesigned
+       ========================================== */
+    .city-about-section {
+        padding: 3rem 0 4rem;
+    }
+
+    .city-about-header {
+        text-align: center;
+        max-width: 700px;
+        margin: 0 auto 3rem;
+    }
+
+    .city-about-header h2 {
+        margin-bottom: 0.75rem;
+    }
+
+    .city-about-lead {
+        color: var(--icenia-muted, #6f777b);
+        margin: 0;
+    }
+
+    .city-about-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .city-about-feature {
+        text-align: center;
+        padding: 1.5rem 1rem;
+        background: white;
+        border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .city-about-feature:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    .city-about-feature-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .city-about-feature h3 {
+        font-size: 1.125rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+        color: #0b0c0c;
+    }
+
+    .city-about-feature p {
+        font-size: 0.9375rem;
+        color: var(--icenia-muted, #6f777b);
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    .city-about-image-showcase {
+        position: relative;
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+    }
+
+    .city-about-image-showcase img {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        display: block;
     }
 
     @media (max-width: 900px) {
-        .equal-cards .govuk-grid-column-one-third {
-            flex: 1 1 100%;
+        .city-about-grid {
+            grid-template-columns: repeat(2, 1fr);
         }
+    }
+
+    @media (max-width: 500px) {
+        .city-about-grid {
+            grid-template-columns: 1fr;
+        }
+        .city-about-image-showcase img {
+            height: 250px;
+        }
+    }
+
+    /* ==========================================
+       SERVICES SECTION
+       ========================================== */
+    .city-services-section {
+        padding: 3rem 0;
+    }
+
+    .city-section-title {
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .city-section-intro {
+        text-align: center;
+        color: var(--icenia-muted, #6f777b);
+        margin-bottom: 2rem;
+    }
+
+    .city-services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .city-service-card {
+        background: white;
+        padding: 1.5rem;
+        border-top: 4px solid var(--icenia-blue, #1C70B8);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .city-service-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    .city-service-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .city-service-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+        color: #0b0c0c;
+    }
+
+    .city-service-desc {
+        font-size: 0.9375rem;
+        color: var(--icenia-muted, #6f777b);
+        margin: 0 0 1rem 0;
+        flex: 1;
+    }
+
+    .city-service-link {
+        font-weight: 700;
+        color: var(--icenia-blue, #1C70B8);
+    }
+
+    /* ==========================================
+       LOCATIONS SECTION
+       ========================================== */
+    .city-locations-section {
+        padding: 3rem 0;
+    }
+
+    .city-locations-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 1.5rem;
+    }
+
+    .city-location-card {
+        background: white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        overflow: hidden;
+    }
+
+    .city-location-featured {
+        grid-row: span 2;
+    }
+
+    .city-location-image {
+        height: 100%;
+        min-height: 200px;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .city-location-featured .city-location-image {
+        height: 50%;
+    }
+
+    .city-location-content {
+        padding: 1.5rem;
+    }
+
+    .city-location-content h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+        color: #0b0c0c;
+    }
+
+    .city-location-content p {
+        margin: 0;
+        color: var(--icenia-muted, #6f777b);
+        font-size: 0.9375rem;
+    }
+
+    @media (max-width: 768px) {
+        .city-locations-grid {
+            grid-template-columns: 1fr;
+        }
+        .city-location-featured {
+            grid-row: span 1;
+        }
+        .city-location-featured .city-location-image {
+            height: 200px;
+        }
+    }
+
+    /* ==========================================
+       CTA SECTION
+       ========================================== */
+    .city-cta-section {
+        background: var(--icenia-blue, #1C70B8);
+        margin: auto;
+        padding: 4rem 2rem;
+        text-align: center;
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .city-cta-section {
+            margin: 3rem -15px;
+            padding: 3rem 0 !important;
+        }
+    }
+
+    .city-cta-content {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .city-cta-content h2 {
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+    .city-cta-content p {
+        color: rgba(255,255,255,0.9);
+        margin-bottom: 2rem;
+    }
+
+    .city-cta-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .city-cta-actions .icenia-btn {
+        background: white;
+        color: var(--icenia-blue, #1C70B8);
+    }
+
+    .city-cta-actions .icenia-btn:hover {
+        background: var(--off-white, #eeeeee);
+    }
+
+    .city-cta-actions .icenia-btn-secondary {
+        border-color: white;
+        color: white;
+    }
+
+    .city-cta-actions .icenia-btn-secondary:hover {
+        background: white;
+        color: var(--icenia-blue, #1C70B8);
     }
 </style>
