@@ -1,18 +1,30 @@
-council_term: Current Term
+# City Councillors Data
+# This file is managed through Decap CMS and synced from City Official Change posts
+# Use https://toolscord.com/ to get Discord profile pictures
+
+council_term: "Current Term"
+
 mayor:
-  name: ExampleMayor
-  icon: https://cdn.discordapp.com/embed/avatars/0.png
+  name: "CreepilyCreep"
+  icon: "https://cdn.discordapp.com/embed/avatars/0.png"
+
+deputy_mayor:
+  name: ""
+  icon: "https://cdn.discordapp.com/embed/avatars/0.png"
+
 councillors:
   - seat: 1
-    name: Councillor1
-    icon: https://cdn.discordapp.com/embed/avatars/2.png
+    name: "Dr_Bacon_Hair"
+    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
   - seat: 2
-    name: Councillor2
-    icon: https://cdn.discordapp.com/embed/avatars/3.png
+    name: "Ratat0ing"
+    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
   - seat: 3
-    name: Councillor3
-    icon: https://cdn.discordapp.com/embed/avatars/4.png
+    name: "JuniorTide"
+    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
   - seat: 4
-    name: John
+    name: "SpeedyJustice"
+    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
   - seat: 5
-    name: ping
+    name: "ping"
+    icon: "https://cdn.discordapp.com/embed/avatars/0.png"

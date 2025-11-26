@@ -418,107 +418,8 @@ collections:
         required: true
         hint: "The image that will appear beside the headline on the news page (default: /assets/images/law_stock.jpeg)"
   #######################################################
-  ## Elections
-  #######################################################
-  - name: "elections"
-    label: "Elections"
-    label_singular: "Election"
-    folder: "src/content/news"
-    create: true
-    slug: "{{year}}-{{month}}-{{day}}-senate-election"
-    identifier_field: "headline"
-    summary: "[Term: {{term}}] {{headline}}"
-    description: "DecapCMS doesn't support auto-increment yet. You'll need to make sure to enter a properly incremented term number! Best to sort by Term Number in descending order and see the top result."
-    extension: "md"
-    format: "yaml-frontmatter"
-    editor: { preview: false }
-    sortable_fields: ["term", "date"]
-    filter: { field: "election", value: true }
-    fields:
-      # IsElection
-      - label: "Election"
-        name: "election"
-        widget: "hidden"
-        required: true
-        default: true
-      # Layout
-      - label: "Layout"
-        name: "layout"
-        widget: "hidden"
-        required: true
-        default: "@layouts/news/election.astro"
-      # Headline
-      - label: "Headline"
-        name: "headline"
-        widget: "string"
-        hint: "What headline would you give this election? e.g: October Senate (2022)"
-      # Term Number
-      - label: "Term Number"
-        name: "term"
-        widget: "number"
-        value_type: "int"
-        min: 1
-        step: 1
-        hint: "THIS WILL NOT AUTO-INCREMENT! PLEASE MANUALLY CHECK THAT THIS IS 1-HIGHER THAN THE PREVIOUS ELECTION!"
-      # Date
-      - label: "When was the election certified?"
-        name: "date"
-        widget: "datetime"
-        required: true
-        # https://day.js.org/docs/en/display/format
-        format: "YYYY-MM-DD HH:mm:00 Z"
-      # Custom Parties
-      - label: "Parties"
-        name: "parties"
-        widget: "list"
-        default: []
-        summary: "{{name}}"
-        collapsed: true
-        fields:
-          - label: "Party Name"
-            name: "name"
-            widget: "string"
-            required: true
-            hint: "You should also include a parenthesised acronym/initialism if applicable (eg: Homeowner's Association (HOA))"
-          - label: "Background Colour"
-            name: "bgcolour"
-            widget: "color"
-            allowInput: true
-            default: "#A3A3A3"
-          - label: "Text Colour"
-            name: "txtcolour"
-            widget: "color"
-            allowInput: true
-            default: "#3D3D3D"
-          - label: "Current Members"
-            name: "members"
-            widget: "list"
-            allow_add: true
-            default: []
-            hint: "Which members of this party got elected? (As a comma-separated list)"
-          - label: "Former Members"
-            name: "exmembers"
-            widget: "list"
-            allow_add: true
-            default: []
-            hint: "The Senators who defected from this party (or resigned) during their term. (As a comma-separated list)"
-        hint: "Put the parties in order of campaign announcement. Independents should always go last."
-      # Content
-      - label: "Content"
-        name: "body"
-        widget: "markdown"
-        required: false
-        hint: "You should include the election results here. Also any other information like Senators resigning, by-elections, etc."
-      # Icon
-      - label: "Icon"
-        name: "icon"
-        widget: "string"
-        default: "/assets/images/election_stock.png"
-        required: true
-        hint: "The image that will appear beside the headline on the news page (default: /assets/images/election_stock.png)"
-
-  #######################################################
   ## Official Changes (Government)
+  ## Note: Elections are now managed through this collection
   #######################################################
   - name: "officialchanges"
     label: "Government Official Changes"
@@ -526,10 +427,34 @@ collections:
     folder: "src/content/news"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{headline}}"
+    identifier_field: "headline"
+    summary: "{{headline}}{{#term}} [Term {{term}}]{{/term}}"
     extension: "md"
     format: "yaml-frontmatter"
     editor: { preview: false }
-    sortable_fields: ["date"]
+    sortable_fields: ["date", "term", "changetype"]
+    view_filters:
+      - label: "Senate Elections"
+        field: changetype
+        pattern: "senate-election"
+      - label: "Senate By-Elections"
+        field: changetype
+        pattern: "senate-byelection"
+      - label: "Secretary Changes"
+        field: changetype
+        pattern: "secretary-change"
+      - label: "Speaker Votes"
+        field: changetype
+        pattern: "speaker-vote"
+      - label: "President Changes"
+        field: changetype
+        pattern: "president-change"
+    view_groups:
+      - label: "Type"
+        field: changetype
+      - label: "Year"
+        field: date
+        pattern: \d{4}
     filter: { field: "officialchange", value: true }
     fields:
       # IsOfficialChange
@@ -569,13 +494,20 @@ collections:
         widget: "datetime"
         required: true
         format: "YYYY-MM-DD HH:mm:00 Z"
+      # Term Number
+      - label: "Term Number"
+        name: "term"
+        widget: "number"
+        required: false
+        value_type: "int"
+        min: 1
+        hint: "Optional: The Senate term number (for elections). Check the previous election to increment correctly."
       # Excerpt
       - label: "Excerpt"
         name: "excerpt"
         widget: "text"
         required: false
         hint: "A short summary. Leave empty to infer from content."
-        default: null
       # Officials Involved
       - label: "Officials Involved"
         name: "officials"
@@ -597,6 +529,7 @@ collections:
               - {label: "Secretary of Defense", value: "secretary-of-defense"}
               - {label: "Secretary of the Interior", value: "secretary-of-interior"}
               - {label: "Secretary of Treasury", value: "secretary-of-treasury"}
+              - {label: "Secretary of State", value: "secretary-of-state"}
               - {label: "Speaker of the Senate", value: "speaker-of-the-senate"}
               - {label: "President", value: "president"}
           - label: "Action"
@@ -610,7 +543,20 @@ collections:
               - {label: "Resigned", value: "resigned"}
               - {label: "Removed", value: "removed"}
               - {label: "Succeeded", value: "succeeded"}
-        hint: "List all officials involved in this change"
+          - label: "Discord Icon URL"
+            name: "icon"
+            widget: "string"
+            required: false
+            hint: "Discord avatar URL (get from https://toolscord.com/). Leave empty to keep existing."
+          - label: "Seat Number"
+            name: "seat"
+            widget: "number"
+            required: false
+            value_type: "int"
+            min: 1
+            max: 7
+            hint: "For Senators only: which seat (1-7)?"
+        hint: "List all officials involved in this change. Icons will sync to the officials page."
       # Content
       - label: "Content"
         name: "body"
@@ -743,89 +689,8 @@ collections:
         hint: "The image that will appear beside the headline (default: /assets/images/law_stock.jpeg)"
 
   #######################################################
-  ## Council Elections
-  #######################################################
-  - name: "councilelections"
-    label: "Council Elections"
-    label_singular: "Council Election"
-    folder: "src/content/city-news"
-    create: true
-    slug: "{{year}}-{{month}}-{{day}}-council-election"
-    identifier_field: "headline"
-    summary: "[Term: {{term}}] {{headline}}"
-    description: "Record city council election results."
-    extension: "md"
-    format: "yaml-frontmatter"
-    editor: { preview: false }
-    sortable_fields: ["term", "date"]
-    filter: { field: "councilelection", value: true }
-    fields:
-      # IsCouncilElection
-      - label: "CouncilElection"
-        name: "councilelection"
-        widget: "hidden"
-        required: true
-        default: true
-      # Layout
-      - label: "Layout"
-        name: "layout"
-        widget: "hidden"
-        required: true
-        default: "@layouts/news/council-election.astro"
-      # Headline
-      - label: "Headline"
-        name: "headline"
-        widget: "string"
-        hint: "What headline would you give this election? e.g: October Council (2025), October By-Election (2025)"
-      # Term Number
-      - label: "Term Number"
-        name: "term"
-        widget: "number"
-        value_type: "int"
-        min: 1
-        step: 1
-        hint: "The council term number. Please manually check this is correctly incremented!"
-      # Date
-      - label: "When was the election certified?"
-        name: "date"
-        widget: "datetime"
-        required: true
-        format: "YYYY-MM-DD HH:mm:00 Z"
-      # Councillors
-      - label: "Councillors"
-        name: "councillors"
-        widget: "list"
-        default: []
-        summary: "{{name}}"
-        collapsed: true
-        fields:
-          - label: "Name"
-            name: "name"
-            widget: "string"
-            required: true
-            hint: "The councillor's name"
-          - label: "Role"
-            name: "role"
-            widget: "string"
-            required: false
-            hint: "Optional role, e.g: Mayor, Treasurer, etc."
-        hint: "List the elected councillors"
-      # Content
-      - label: "Content"
-        name: "body"
-        widget: "markdown"
-        required: false
-        hint: "Include election results and any other relevant information."
-      # Icon
-      - label: "Icon"
-        name: "icon"
-        widget: "string"
-        default: "/assets/images/election_stock.png"
-        required: true
-        hint: "The image that will appear beside the headline (default: /assets/images/election_stock.png)"
-
-  #######################################################
   ## City Official Changes
+  ## Note: Council Elections are now managed through this collection
   #######################################################
   - name: "cityofficialchanges"
     label: "City Official Changes"
@@ -833,10 +698,28 @@ collections:
     folder: "src/content/city-news"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{headline}}"
+    identifier_field: "headline"
+    summary: "{{headline}}{{#term}} [Term {{term}}]{{/term}}"
     extension: "md"
     format: "yaml-frontmatter"
     editor: { preview: false }
-    sortable_fields: ["date"]
+    sortable_fields: ["date", "term", "changetype"]
+    view_filters:
+      - label: "Council Elections"
+        field: changetype
+        pattern: "council-election"
+      - label: "Council By-Elections"
+        field: changetype
+        pattern: "council-byelection"
+      - label: "Mayor Votes"
+        field: changetype
+        pattern: "mayor-vote"
+    view_groups:
+      - label: "Type"
+        field: changetype
+      - label: "Year"
+        field: date
+        pattern: \d{4}
     filter: { field: "cityofficialchange", value: true }
     fields:
       # IsCityOfficialChange
@@ -874,13 +757,20 @@ collections:
         widget: "datetime"
         required: true
         format: "YYYY-MM-DD HH:mm:00 Z"
+      # Term Number
+      - label: "Term Number"
+        name: "term"
+        widget: "number"
+        required: false
+        value_type: "int"
+        min: 1
+        hint: "Optional: The Council term number (for elections). Check the previous election to increment correctly."
       # Excerpt
       - label: "Excerpt"
         name: "excerpt"
         widget: "text"
         required: false
         hint: "A short summary. Leave empty to infer from content."
-        default: null
       # Officials Involved
       - label: "Officials Involved"
         name: "officials"
@@ -895,10 +785,11 @@ collections:
             hint: "The official's in-game name"
           - label: "Role"
             name: "role"
-            widget: "string"
+            widget: "select"
             required: true
             options:
               - {label: "Councillor", value: "councillor"}
+              - {label: "Deputy Mayor", value: "deputy-mayor"}
               - {label: "Mayor", value: "mayor"}
           - label: "Action"
             name: "action"
@@ -911,7 +802,20 @@ collections:
               - {label: "Resigned", value: "resigned"}
               - {label: "Removed", value: "removed"}
               - {label: "Succeeded", value: "succeeded"}
-        hint: "List all officials involved in this change"
+          - label: "Discord Icon URL"
+            name: "icon"
+            widget: "string"
+            required: false
+            hint: "Discord avatar URL (get from https://toolscord.com/). Leave empty to keep existing."
+          - label: "Seat Number"
+            name: "seat"
+            widget: "number"
+            required: false
+            value_type: "int"
+            min: 1
+            max: 5
+            hint: "For Councillors only: which seat (1-5)?"
+        hint: "List all officials involved in this change. Icons will sync to the council page."
       # Content
       - label: "Content"
         name: "body"

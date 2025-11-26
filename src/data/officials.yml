@@ -1,9 +1,9 @@
 # Government Officials Data
-# This file is managed through Decap CMS
+# This file is managed through Decap CMS and synced from Official Change posts
 # Use https://toolscord.com/ to get Discord profile pictures
 
 # Senate term label (e.g., "September 2025")
-senate_term: "September 2025"
+senate_term: "April 2025"
 
 # Executive Branch Officials - Fixed slots with role icons
 president:
@@ -34,23 +34,23 @@ speaker:
 # Senate Seats - Fixed numbered slots (7 seats)
 senators:
   - seat: 1
-    name: "Dr_Bacon_Hair"
-    icon: "https://cdn.discordapp.com/avatars/689297659907145831/f5a93ea6ed6d9d23de6b15b1768b511d.png?size=1024"
+    name: "1Kayotic"
+    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
   - seat: 2
-    name: "yodabird19"
-    icon: "https://cdn.discordapp.com/avatars/282286523011825666/5d8c2b301ab4a6008a341b04441ee5dd.png?size=1024"
+    name: "Quanton_Biscuit"
+    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
   - seat: 3
-    name: "itsalreadygold"
-    icon: "https://cdn.discordapp.com/avatars/532060480651526146/a6507514df79cc631659b2068a9d29e0.png?size=1024"
+    name: "LopsterBisque"
+    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
   - seat: 4
-    name: "Zolo17"
-    icon: "https://cdn.discordapp.com/avatars/284408888109957130/9b643a71831d986540b1267d0ab458f8.png?size=1024"
+    name: "Raeders"
+    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
   - seat: 5
-    name: "HsmNewfriend"
-    icon: "https://cdn.discordapp.com/avatars/1080275805277540423/a95d5aeab1df4316903742ae66cb75b2.png?size=1024"
+    name: "7_Misun"
+    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
   - seat: 6
-    name: "Jaimiemie"
-    icon: "https://cdn.discordapp.com/avatars/206334799160279041/5a0f6567c77a7d66f8cb5294e70058ac?size=1024"
+    name: "Zhirall"
+    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
   - seat: 7
-    name: "Oko"
-    icon: "https://cdn.discordapp.com/avatars/165189955012919296/4fe990172cfe1f3ab768aa11c0326543?size=1024"
+    name: "minemaster933"
+    icon: "https://cdn.discordapp.com/embed/avatars/0.png"

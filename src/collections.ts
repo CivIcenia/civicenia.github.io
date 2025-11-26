@@ -14,53 +14,6 @@ export const NewsItemSchema = CollectionItemSchema.extend({
 });
 
 // ############################################################
-// Elections
-// ############################################################
-
-export namespace Elections {
-    export type Election = z.infer<typeof Schema>;
-    export const Schema = NewsItemSchema.extend({
-        "layout": z.literal("@layouts/news/election.astro"),
-        "election": z.literal(true),
-        "term": z.coerce.number().int().positive(),
-        "parties": z.array(z.object({
-            "name": z.string(),
-            "bgcolour": z.string(),
-            "txtcolour": z.string(),
-            "members": z.array(z.string()).optional().default([]),
-            "exmembers": z.array(z.string()).optional().default([])
-        }))
-    });
-
-    export function isElection(
-        frontmatter: any
-    ) {
-        return frontmatter["election"] === true;
-    }
-
-    export function ensureElection(
-        frontmatter: MarkdownLayoutProps<Election>["frontmatter"]
-    ): Election {
-        frontmatter.parties ??= [];
-        for (const party of frontmatter.parties) {
-            party.members ??= [];
-            party.exmembers ??= [];
-        }
-        return frontmatter;
-    }
-
-    /**
-     * Retrieves all terms sorted from newest to oldest.
-     */
-    export async function getElections() {
-        return (await getCollection("news"))
-            .filter((entry) => isElection(entry.data))
-            .sort(Arrays.sortByDate((entry) => entry.data.date))
-            .reverse();
-    }
-}
-
-// ############################################################
 // Acts
 // ############################################################
 
@@ -239,46 +192,6 @@ export namespace CityActs {
 }
 
 // ############################################################
-// Council Elections
-// ############################################################
-
-export namespace CouncilElections {
-    export type CouncilElection = z.infer<typeof Schema>;
-    export const Schema = NewsItemSchema.extend({
-        "layout": z.literal("@layouts/news/council-election.astro"),
-        "councilelection": z.literal(true),
-        "term": z.coerce.number().int().positive(),
-        "councillors": z.array(z.object({
-            "name": z.string(),
-            "role": z.string().optional(),
-        })).optional().default([])
-    });
-
-    export function isCouncilElection(
-        frontmatter: any
-    ) {
-        return frontmatter["councilelection"] === true;
-    }
-
-    export function ensureCouncilElection(
-        frontmatter: MarkdownLayoutProps<CouncilElection>["frontmatter"]
-    ): CouncilElection {
-        frontmatter.councillors ??= [];
-        return frontmatter;
-    }
-
-    /**
-     * Retrieves all council elections sorted from newest to oldest.
-     */
-    export async function getCouncilElections() {
-        return (await getCollection("city-news"))
-            .filter((entry) => isCouncilElection(entry.data))
-            .sort(Arrays.sortByDate((entry) => entry.data.date))
-            .reverse();
-    }
-}
-
-// ############################################################
 // Government Officials
 // ############################################################
 
@@ -429,10 +342,13 @@ export namespace OfficialChanges {
             "speaker-vote",
             "president-change"
         ]),
+        "term": z.coerce.number().int().positive().optional(),
         "officials": z.array(z.object({
             "name": z.string(),
             "role": z.string(),
-            "action": z.enum(["elected", "reelected", "appointed", "resigned", "removed", "succeeded"])
+            "action": z.enum(["elected", "reelected", "appointed", "resigned", "removed", "succeeded"]),
+            "icon": z.string().optional(),
+            "seat": z.number().optional()
         }))
     });
     export type OfficialChange = z.infer<typeof Schema>;
@@ -474,10 +390,13 @@ export namespace CityOfficialChanges {
             "council-byelection",
             "mayor-vote"
         ]),
+        "term": z.coerce.number().int().positive().optional(),
         "officials": z.array(z.object({
             "name": z.string(),
             "role": z.string(),
-            "action": z.enum(["elected", "reelected", "appointed", "resigned", "removed", "succeeded"])
+            "action": z.enum(["elected", "reelected", "appointed", "resigned", "removed", "succeeded"]),
+            "icon": z.string().optional(),
+            "seat": z.number().optional()
         }))
     });
     export type CityOfficialChange = z.infer<typeof Schema>;

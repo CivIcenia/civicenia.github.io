@@ -20,11 +20,11 @@ There is a script called `admin.ts`, which runs [Astro](https://docs.astro.build
 
 ## Updating the Site
 
-You either locally host and edit the site, or use the NetlifyCMS dashboard.
+You either locally host and edit the site, or use the DecapCMS dashboard.
 
 **New Change:** https://civicenia.github.io/admin now hosts a DecapCMS edit page! Any edits made here will become pull requests on the website repo which can be approved by repo maintainers.
 
-The NetlifyCMS dashboard is extremely helpful when entering new bills and laws, but can be cumbersome with elections. I recommend using both the dashboard and your IDE with elections since you can then copy-paste party names and colours wholesale. DO NOT REMOVE REPEALED LAWS! Just toggle the "EXPIRED" switch in the dashboard, so all legal text can be archived.
+The DecapCMS dashboard is extremely helpful when entering new bills, laws, and official changes. DO NOT REMOVE REPEALED LAWS! Just toggle the "EXPIRED" switch in the dashboard, so all legal text can be archived.
 
 ## Saving in the Dashboard
 
@@ -79,15 +79,46 @@ If you clicked on **In Review** instead, this means you do not have edit permiss
     - Paste your PDF's name prefixed by `/archive/` (eg: `/archive/648f32f8-b3cb-4cdc-98e5-8adef925ebf7.pdf`)
 
 
-- Elections:
+- Government Official Changes (Senate Elections, Secretary Changes, etc.):
   - Run `admin.ts`
   - Open http://localhost:4000/admin/index.html
-  - Click "Elections" in the sidebar.
-  - Click "New Election"
-  - For "PARTIES":
-    - You may find it infinitely easier to edit these in your IDE since you can then copy-paste parties (and their colours) straight over.
-    - Put the parties in order of appearance in #campaign-announcements, with an "Independents" pseudo-party (keep the default colours), which should always be the last party.
-    - ONLY INCLUDE PARTY MEMBERS THAT WERE ELECTED!
+  - Click "Government Official Changes" in the sidebar.
+  - Click "New Government Official Change"
+  - For "TYPE OF CHANGE", select the appropriate type:
+    - **Senate Election (Full)**: Full Senate election with all seats
+    - **Senate By-Election (Certain Seats)**: Filling specific vacant seats
+    - **Change in Secretary**: Appointment or resignation of a Secretary
+    - **Vote for Speaker of the Senate**: Election of Speaker
+    - **Change in President**: Presidential succession
+  - For "OFFICIALS INVOLVED":
+    - Add each official affected by the change
+    - For Senators, **ALWAYS include a seat number (1-7)**
+    - Include Discord Icon URL (from https://toolscord.com/ or https://discord.id/) for automatic sync
+  - **Automatic Sync**: The `sync-officials.ts` script runs at build time and automatically updates `src/data/officials.yml` with the latest officials from these posts
+
+- City Official Changes (Council Elections, Mayor Votes, etc.):
+  - Run `admin.ts`
+  - Open http://localhost:4000/admin/index.html
+  - Click "City Official Changes" in the sidebar.
+  - Click "New City Official Change"
+  - For "TYPE OF CHANGE", select the appropriate type:
+    - **Council Election (Full)**: Full Council election
+    - **Council By-Election (Certain Seats)**: Filling specific vacant seats
+    - **Mayor Voting**: Election of Mayor
+  - For "OFFICIALS INVOLVED":
+    - Add each official affected by the change
+    - For Councillors, **ALWAYS include a seat number (1-5)**
+    - Include Discord Icon URL for automatic sync
+  - **Automatic Sync**: The `sync-officials.ts` script runs at build time and automatically updates `src/data/councillors.yml`
+
+- How Officials Sync Works:
+  - The `sync-officials.ts` script reads all Government/City Official Changes posts
+  - It extracts the latest holder for each role based on post dates
+  - Officials with resignation/removal actions clear their positions
+  - The script updates `officials.yml` and `councillors.yml` automatically
+  - **IMPORTANT**: For Senators/Councillors, always include seat numbers or they won't sync
+  - Run manually with `bun run sync-officials.ts` for local testing
+  - The script runs automatically during `bun run build`
 
 
 - Border Polygons:
@@ -143,13 +174,11 @@ If you clicked on **In Review** instead, this means you do not have edit permiss
 
 
 - Officials:
-  - Run `admin.ts`
-  - Open `src/pages/government/officials.astro` in your IDE.
-  - Use https://toolscord.com/ to get the profile-pictures of each official.
-  - Note: I (Shadno) have found https://discord.id/ to be much quicker, since toolscord has added a manual captcha puzzle for each lookup
-  - Use their IGN, if known. Or otherwise use their Discord name, simplified if necessary.
-  - Include each position, even if obvious (eg: that the Chief Magistrate is also a Magistrate)
-  - Roles should be ordered as such: executive, then legislative, then judicial.
+  - **NOTE:** Officials are now managed automatically through Official Change posts (see above)
+  - The officials pages (`government/officials` and `icenia-city/council`) read from YAML data files
+  - These YAML files are automatically updated by `sync-officials.ts` at build time
+  - You can still manually edit `src/data/officials.yml` and `src/data/councillors.yml` if needed
+  - Use https://toolscord.com/ or https://discord.id/ to get Discord profile pictures
 
 
 - Publishing

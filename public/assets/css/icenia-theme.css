@@ -19,6 +19,20 @@
     --navbar-height: 54px; /* nav links (~44px) + blue border (10px) */
 }
 
+.scroll-container {
+  /* Hide scrollbar for WebKit browsers (Chrome, Safari, Opera) */
+  &::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  /* Hide scrollbar for IE, Edge */
+  -ms-overflow-style: none !important;
+
+  /* Hide scrollbar for Firefox */
+  scrollbar-width: none !important;
+}
+
+
 code {
     background-color: #f0f0f0 !important;
     padding: 2px 6px;

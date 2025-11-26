@@ -5,7 +5,8 @@
     "scripts": {
         "dev": "bunx astro dev",
         "start": "bunx astro dev",
-        "build": "bunx astro check && astro build",
+        "sync-officials": "bun run sync-officials.ts",
+        "build": "bun run sync-officials.ts && bunx astro check && astro build",
         "preview": "bunx astro preview",
         "astro": "bunx astro"
     },

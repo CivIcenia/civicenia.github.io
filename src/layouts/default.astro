@@ -1,5 +1,5 @@
 ---
-import { Astros, Structs } from "@helpers";
+import { Astros } from "@helpers";
 import { TITLE, DESCRIPTION, getBordersLink } from "@comptime";
 
 interface Props {
@@ -304,6 +304,16 @@ const HEADER_HEIGHT_MOBILE = 44;
                     menuLinks.forEach(link => {
                         const href = link.getAttribute('href');
                         if (!href) return;
+                        
+                        // Skip external links (different origin) - they should never be marked active
+                        try {
+                            const linkUrl = new URL(href, window.location.origin);
+                            if (linkUrl.origin !== window.location.origin) return;
+                        } catch (e) {
+                            // If URL parsing fails, skip this link
+                            return;
+                        }
+                        
                         let linkPath;
                         try { linkPath = new URL(href, window.location.origin).pathname; } catch (e) { linkPath = href; }
                         const normLink = normalize(linkPath);
