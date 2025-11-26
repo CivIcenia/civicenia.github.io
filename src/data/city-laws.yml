@@ -1,0 +1,46 @@
+entries:
+  - hidden: false
+    slug: city-charter
+    name: Icenia City Charter
+    fullname: The Charter of Icenia City
+    googledoc: https://docs.google.com/document/d/example-city-charter/preview
+    kind: charter
+  - hidden: false
+    slug: building-code
+    name: City Building Code
+    fullname: Icenia City Building Standards and Regulations
+    googledoc: https://docs.google.com/document/d/example-building-code/preview
+    kind: ordinance
+  - hidden: false
+    slug: zoning-ordinance
+    name: Zoning Ordinance
+    fullname: Icenia City Zoning and Land Use Ordinance
+    googledoc: https://docs.google.com/document/d/example-zoning/preview
+    kind: ordinance
+  - hidden: false
+    slug: shop-regulations
+    name: Shop Regulations
+    fullname: Commercial District and Shop Regulations
+    googledoc: https://docs.google.com/document/d/example-shop-regs/preview
+    kind: ordinance
+  - hidden: false
+    slug: public-spaces-act
+    name: Public Spaces Act
+    fullname: Maintenance and Use of Public Spaces Act
+    googledoc: https://docs.google.com/document/d/example-public-spaces/preview
+    kind: ordinance
+
+# Recent amendments - these will be shown in the Recent Amendments section
+amendments:
+  - date: 2024-06-15
+    title: Building Code Amendment - Height Restrictions
+    description: Updated maximum building heights in the commercial district.
+    law_slug: building-code
+  - date: 2024-05-20
+    title: Zoning Ordinance Update
+    description: Added new residential zone designations.
+    law_slug: zoning-ordinance
+  - date: 2024-04-10
+    title: Shop Regulations - Opening Hours
+    description: Clarified requirements for shop signage and operating guidelines.
+    law_slug: shop-regulations

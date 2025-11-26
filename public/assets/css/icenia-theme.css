@@ -54,7 +54,7 @@ code {
 
 /* Hero: use straight overlay and let govuk typography apply */
 .icenia-hero {
-	background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('../images/nation_render.png') center/cover no-repeat;
+	background: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('../images/nation_render.png') center/cover no-repeat;
     height: 70vh;
     display: flex;
     flex-direction: column;

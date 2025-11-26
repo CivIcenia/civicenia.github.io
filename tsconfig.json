@@ -13,7 +13,8 @@
             "@helpers": ["src/helpers.ts"],
             "@collections": ["src/collections.ts"],
             "@layouts/*": ["src/layouts/*"],
-            "@components/*": ["src/components/*"]
+            "@components/*": ["src/components/*"],
+            "@data/*": ["src/data/*"]
         }
     }
 }

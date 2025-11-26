@@ -148,3 +148,49 @@ export namespace Laws {
             .filter((changer) => changer.target === law.slug);
     }
 }
+
+// ############################################################
+// City Laws
+// ############################################################
+
+import CityLawsData from "./data/city-laws.yml";
+export namespace CityLaws {
+    export type CityLaw = z.infer<typeof Schema>;
+    export const Schema = z.object({
+        "slug": z.string(),
+        "name": z.string(),
+        "fullname": z.string().optional(),
+        "kind": z.enum(["charter", "ordinance"]),
+        "googledoc": z.string(),
+        "hidden": z.boolean(),
+    });
+
+    export type Amendment = z.infer<typeof AmendmentSchema>;
+    export const AmendmentSchema = z.object({
+        "date": z.coerce.date(),
+        "title": z.string(),
+        "description": z.string(),
+        "law_slug": z.string(),
+    });
+
+    export async function getCityLaws(): Promise<CityLaw[]> {
+        return (CityLawsData["entries"] || [])
+            .map((law) => Schema.safeParse(law))
+            .filter((parsed) => parsed.success)
+            .map((parsed) => parsed["data"]);
+    }
+
+    export async function getAmendments(): Promise<Amendment[]> {
+        return (CityLawsData["amendments"] || [])
+            .map((amendment) => AmendmentSchema.safeParse(amendment))
+            .filter((parsed) => parsed.success)
+            .map((parsed) => parsed["data"])
+            .sort((a, b) => b.date.getTime() - a.date.getTime());
+    }
+
+    export function getFullTitle(
+        law: CityLaw
+    ): string {
+        return law.fullname || law.name;
+    }
+}

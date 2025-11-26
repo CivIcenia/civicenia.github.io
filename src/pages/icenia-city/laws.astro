@@ -1,0 +1,245 @@
+---
+import PageLayout from "@layouts/page.astro";
+import { CityLaws } from "@collections";
+
+const BASE = (import.meta.env.BASE_URL ?? "/");
+
+// Get city laws and amendments from collections
+const cityLaws = await CityLaws.getCityLaws();
+const amendments = (await CityLaws.getAmendments()).slice(0, 5);
+
+const currentLaws = cityLaws.filter((law) => law.hidden !== true);
+const expiredLaws = cityLaws.filter((law) => law.hidden === true);
+
+// Helper function to get law name by slug
+function getLawName(slug: string): string {
+    const law = cityLaws.find((l) => l.slug === slug);
+    return law?.name || slug;
+}
+
+// Helper function to format date
+function formatDate(date: Date): string {
+    return date.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+}
+---
+<style>
+    div.law-card {
+        display: block;
+        margin-bottom: 25px;
+        box-shadow: 0 1px 1px 0 rgba(60, 64, 67, .08), 0 1px 3px 1px rgba(60, 64, 67, .16);
+        color: #373151;
+        text-decoration: none;
+        font-family: "nta", Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.25;
+    }
+
+    div.law-card-internal {
+        position: relative;
+        display: flex;
+        padding: 10px 15px 10px 15px;
+        border-left: 10px solid #1D70B8;
+        justify-content: space-between;
+        flex-direction: column;
+        background: white;
+    }
+
+    div.law-card-content {
+        flex-grow: 1;
+    }
+
+    div.law-card-title {
+        font-size: 20px;
+        font-weight: 500;
+    }
+
+    a.open-law-link {
+        float: right;
+    }
+
+    /* Recent Amendments Section */
+    .amendments-section {
+        background: #f3f2f1;
+        padding: 20px;
+        margin-bottom: 30px;
+        border-left: 6px solid #1D70B8;
+    }
+
+    .amendment-item {
+        padding: 15px 0;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .amendment-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .amendment-date {
+        color: #6f777b;
+        font-size: 0.875rem;
+        margin-bottom: 5px;
+    }
+
+    .amendment-title {
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .amendment-description {
+        color: #505a5f;
+        font-size: 0.9375rem;
+    }
+
+    .amendment-law-link {
+        display: inline-block;
+        margin-top: 5px;
+        font-size: 0.875rem;
+    }
+
+    /* Page header */
+    .page-header {
+        background: linear-gradient(rgba(28, 112, 184, 0.9), rgba(28, 112, 184, 0.9));
+        padding: 30px 20px;
+        margin-bottom: 30px;
+        color: white;
+    }
+
+    .page-header h1 {
+        color: white;
+        margin: 0 0 10px 0;
+    }
+
+    .page-header p {
+        color: rgba(255, 255, 255, 0.9);
+        margin: 0;
+    }
+
+    .breadcrumb-link {
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .breadcrumb-link:hover {
+        color: white;
+    }
+
+    .repealed-card {
+        opacity: 0.7;
+    }
+
+    .repealed-card .law-card-internal {
+        border-left-color: #6f777b;
+    }
+</style>
+
+<PageLayout chin={false} title="City Laws - Icenia City" description="View the charter, ordinances, and regulations governing Icenia City.">
+    <!-- Page Header -->
+    <div class="page-header">
+        <p class="govuk-body-s" style="margin-bottom: 10px;">
+            <a href={BASE + "icenia-city/"} class="govuk-link breadcrumb-link">&larr; Back to Icenia City</a>
+        </p>
+        <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Icenia City Laws</h1>
+        <p class="govuk-body-l">The charter, ordinances, and regulations governing the capital city.</p>
+    </div>
+
+    <!-- Recent Amendments Section -->
+    {amendments.length > 0 && (
+        <div class="amendments-section">
+            <h2 class="govuk-heading-m" style="margin-top: 0;">Recent Amendments</h2>
+            {amendments.map((amendment) => (
+                <div class="amendment-item">
+                    <div class="amendment-date">
+                        {formatDate(amendment.date)}
+                    </div>
+                    <div class="amendment-title">{amendment.title}</div>
+                    <div class="amendment-description">{amendment.description}</div>
+                    <a href={"#law-" + amendment.law_slug} class="govuk-link amendment-law-link">
+                        View {getLawName(amendment.law_slug)} &rarr;
+                    </a>
+                </div>
+            ))}
+        </div>
+    )}
+
+    <!-- Laws Grid -->
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-half">
+            <h2 class="govuk-heading-l">City Charter</h2>
+            {currentLaws.filter((law) => law.kind === "charter").length > 0 ? (
+                currentLaws.filter((law) => law.kind === "charter").map((law) => (
+                    <div class="law-card" id={"law-" + law.slug}>
+                        <div class="law-card-internal">
+                            <div class="law-card-content">
+                                <div class="law-card-title">
+                                    <a href={law.googledoc} class="govuk-link open-law-link" target="_blank">Open</a>
+                                    {law.name}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))
+            ) : (
+                <p class="govuk-body">No city charter documents available.</p>
+            )}
+        </div>
+        <div class="govuk-grid-column-one-half">
+            <h2 class="govuk-heading-l">City Ordinances</h2>
+            {currentLaws.filter((law) => law.kind === "ordinance").length > 0 ? (
+                currentLaws.filter((law) => law.kind === "ordinance").map((law) => (
+                    <div class="law-card" id={"law-" + law.slug}>
+                        <div class="law-card-internal">
+                            <div class="law-card-content">
+                                <div class="law-card-title">
+                                    <a href={law.googledoc} class="govuk-link open-law-link" target="_blank">Open</a>
+                                    {law.name}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))
+            ) : (
+                <p class="govuk-body">No city ordinances available.</p>
+            )}
+        </div>
+    </div>
+
+    <!-- Expired/Repealed Laws Section -->
+    {expiredLaws.length > 0 && (
+        <>
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        View repealed ordinances ({expiredLaws.length})
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    {expiredLaws.map((law) => (
+                        <div class="law-card repealed-card">
+                            <div class="law-card-internal">
+                                <div class="law-card-content">
+                                    <div class="law-card-title">
+                                        <a href={law.googledoc} class="govuk-link open-law-link" target="_blank">Open</a>
+                                        {law.name} <span style="color: #6f777b;">(Repealed)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </details>
+        </>
+    )}
+
+    <!-- Link to Republic Laws -->
+    <div class="govuk-grid-row govuk-!-margin-top-6">
+        <div class="govuk-grid-column-full">
+            <div class="govuk-inset-text">
+                <p class="govuk-body">
+                    Looking for national legislation? View the <a href={BASE + "laws/"} class="govuk-link">Republic of Icenia Laws</a>, 
+                    including the Constitution, statutes, and international treaties.
+                </p>
+            </div>
+        </div>
+    </div>
+</PageLayout>
