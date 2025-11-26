@@ -29,18 +29,3 @@ entries:
     fullname: Maintenance and Use of Public Spaces Act
     googledoc: https://docs.google.com/document/d/example-public-spaces/preview
     kind: ordinance
-
-# Recent amendments - these will be shown in the Recent Amendments section
-amendments:
-  - date: 2024-06-15
-    title: Building Code Amendment - Height Restrictions
-    description: Updated maximum building heights in the commercial district.
-    law_slug: building-code
-  - date: 2024-05-20
-    title: Zoning Ordinance Update
-    description: Added new residential zone designations.
-    law_slug: zoning-ordinance
-  - date: 2024-04-10
-    title: Shop Regulations - Opening Hours
-    description: Clarified requirements for shop signage and operating guidelines.
-    law_slug: shop-regulations

@@ -93,7 +93,13 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     }
 </style>
 
-<PageLayout chin={true}>
+<PageLayout chin={false} title="News - Republic of Icenia" description="Latest news and announcements from the Republic of Icenia.">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Republic News</h1>
+        <p class="govuk-body-l">Legislative updates, announcements, and official communications.</p>
+    </div>
+
     {news.map((entry) => (
         <a class="news-item-wrapper" href={PERMALINK_ROOTS.news + entry.slug}>
             <div class="news-item-internal">

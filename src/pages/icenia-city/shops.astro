@@ -5,39 +5,10 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
 const title = "Shops - Icenia City";
 const description = "Browse the shops and markets of Icenia City.";
 ---
-<style>
-    .page-header {
-        background: linear-gradient(rgba(28, 112, 184, 0.9), rgba(28, 112, 184, 0.9));
-        padding: 30px 20px;
-        margin-bottom: 30px;
-        color: white;
-    }
-
-    .page-header h1 {
-        color: white;
-        margin: 0 0 10px 0;
-    }
-
-    .page-header p {
-        color: rgba(255, 255, 255, 0.9);
-        margin: 0;
-    }
-
-    .breadcrumb-link {
-        color: rgba(255, 255, 255, 0.8);
-    }
-
-    .breadcrumb-link:hover {
-        color: white;
-    }
-</style>
 
 <PageLayout chin={false} title={title} description={description}>
     <!-- Page Header -->
     <div class="page-header">
-        <p class="govuk-body-s" style="margin-bottom: 10px;">
-            <a href={BASE + "icenia-city/"} class="govuk-link breadcrumb-link">← Back to Icenia City</a>
-        </p>
         <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Shops & Markets</h1>
         <p class="govuk-body-l">Commercial directory for Icenia City.</p>
     </div>

@@ -1,0 +1,120 @@
+---
+import { type MarkdownLayoutProps } from "astro";
+import { Nullish, Arrays, Strings } from "@helpers";
+import { CityActs, CityLaws } from "@collections";
+import { getActChangeColours } from "@comptime";
+
+import PostLayout from "@layouts/news/post.astro";
+
+export type Props = MarkdownLayoutProps<CityActs.CityAct>;
+const { frontmatter } = Astro.props as Props;
+const act = CityActs.ensureCityAct(frontmatter);
+const laws = Arrays.toMap(await CityLaws.getCityLaws(), (law) => law.slug);
+const BASE = (import.meta.env.BASE_URL ?? "/");
+---
+<PostLayout chin={false}>
+    <div class="govuk-panel govuk-panel--confirmation" style="background-color: #1d70b8;">
+        <h1 class="govuk-panel__title">
+            {act.headline}
+        </h1>
+        <div class="govuk-panel__body">
+            {Strings.formatDate(act.date, "dS mmmm yyyy")} &bull; Icenia City
+        </div>
+    </div>
+
+    <div class="govuk-width-container">
+        <div class="govuk-grid-row">
+
+            <div class="govuk-grid-column-two-thirds">
+                {act.document.value === "" ? <slot><br/></slot> : (<>{function(){
+                    switch (act.document.type) {
+                        case "markdown":
+                            return <>
+                                <style>
+                                    added {
+                                        font-style: italic;
+                                        color: #38761d;
+                                    }
+                                    added:before { content: "\""; }
+                                    added:after { content: "\""; }
+                                    removed {
+                                        font-style: italic;
+                                        color: #FF0000;
+                                    }
+                                    removed:before { content: "\""; }
+                                    removed:after { content: "\""; }
+                                </style>
+                                <div set:html={Strings.parseMarkdown(act.document.value)}/>
+                            </>;
+                        case "local-file": {
+                            const url = act.document.value?.startsWith("/") ? BASE + act.document.value.replace(/^\//, "") : act.document.value;
+                            return <iframe src={url} style="width: 100%; min-width: 100%; max-width: 100%; aspect-ratio: 1 / 1.4142;"></iframe>;
+                        }
+                        case "remote-file":
+                            return <iframe src={act.document.value} style="width: 100%; min-width: 100%; max-width: 100%; aspect-ratio: 1 / 1.4142;"></iframe>;
+                        default:
+                            return "UNKNOWN DOCUMENT EMBED!";
+                    }
+                }()}</>)}
+            </div>
+
+            <div class="govuk-grid-column-one-third">
+                {act.document.value !== "" ? <slot><br/></slot> : ``}
+
+                <style>
+                    a.law-link {
+                        text-decoration: none;
+                    }
+                    a.law-link:hover {
+                        filter: brightness(85%);
+                    }
+
+                    div.law-change {
+                        width: 100%;
+                        text-align: center;
+                        padding: 15px 0;
+                        margin-bottom: 10px;
+                    }
+                    div.law-change:active {
+                        border-bottom: 4px solid #000;
+                        margin-bottom: 6px;
+                    }
+                </style>
+
+                {act.changes.map((change) => {
+                    const law = laws.get(change.target);
+                    if (!law) return null;
+                    const colours = getActChangeColours(change.kind);
+                    return (
+                        <a class="govuk-link law-link" href={law.googledoc} target="_blank">
+                            <div class="law-change" style={`background: #${colours.background}; color: #${colours.text};`}>
+                                <b>
+                                    {function () {
+                                        switch (change.kind) {
+                                            case "passage":
+                                                return "Enacted";
+                                            case "amendment":
+                                                return "Amended";
+                                            case "repeal":
+                                                return "Repealed";
+                                            default:
+                                                return "UNKNOWN";
+                                        }
+                                    }()}
+                                </b>
+                                <br/>
+                                {law.name}
+                            </div>
+                        </a>
+                    );
+                })}
+
+                <div class="govuk-inset-text" style="margin-top: 20px;">
+                    <p class="govuk-body-s">
+                        <a href={BASE + "icenia-city/laws/"} class="govuk-link">&larr; Back to City Laws</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</PostLayout>

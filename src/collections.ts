@@ -165,14 +165,6 @@ export namespace CityLaws {
         "hidden": z.boolean(),
     });
 
-    export type Amendment = z.infer<typeof AmendmentSchema>;
-    export const AmendmentSchema = z.object({
-        "date": z.coerce.date(),
-        "title": z.string(),
-        "description": z.string(),
-        "law_slug": z.string(),
-    });
-
     export async function getCityLaws(): Promise<CityLaw[]> {
         return (CityLawsData["entries"] || [])
             .map((law) => Schema.safeParse(law))
@@ -180,17 +172,108 @@ export namespace CityLaws {
             .map((parsed) => parsed["data"]);
     }
 
-    export async function getAmendments(): Promise<Amendment[]> {
-        return (CityLawsData["amendments"] || [])
-            .map((amendment) => AmendmentSchema.safeParse(amendment))
-            .filter((parsed) => parsed.success)
-            .map((parsed) => parsed["data"])
-            .sort((a, b) => b.date.getTime() - a.date.getTime());
-    }
-
     export function getFullTitle(
         law: CityLaw
     ): string {
         return law.fullname || law.name;
+    }
+
+    export async function getChangers(
+        law: CityLaw
+    ) {
+        return (await CityActs.getCityActs())
+            .flatMap((act) => {
+                const data = act.data as CityActs.CityAct;
+                return data.changes.map((change) => ({
+                    kind: change.kind,
+                    target: change.target,
+                    act
+                }));
+            })
+            .filter((changer) => changer.target === law.slug);
+    }
+}
+
+// ############################################################
+// City Acts (Changes to City Law)
+// ############################################################
+
+export namespace CityActs {
+    export const Schema = NewsItemSchema.extend({
+        "layout": z.literal("@layouts/news/city-act.astro"),
+        "changetocitylaw": z.literal(true),
+        "institution": z.enum(["council", "mayor", "referendum"]),
+        "document": z.object({
+            "type": z.enum(["local-file", "remote-file", "markdown"]),
+            "value": z.string()
+        }),
+        "changes": z.array(z.object({
+            "kind": z.enum(["passage", "amendment", "repeal"]),
+            "target": z.string()
+        }))
+    });
+    export type CityAct = z.infer<typeof Schema>;
+
+    export function isCityAct(
+        frontmatter: any
+    ) {
+        return frontmatter["changetocitylaw"] === true;
+    }
+
+    export function ensureCityAct(
+        frontmatter: MarkdownLayoutProps<CityAct>["frontmatter"]
+    ): CityAct {
+        frontmatter.changes ??= [];
+        return frontmatter;
+    }
+
+    /**
+     * Retrieves all city acts sorted from newest to oldest.
+     */
+    export async function getCityActs() {
+        return (await getCollection("city-news"))
+            .filter((entry) => isCityAct(entry.data))
+            .sort(Arrays.sortByDate((entry) => entry.data.date))
+            .reverse();
+    }
+}
+
+// ############################################################
+// Council Elections
+// ############################################################
+
+export namespace CouncilElections {
+    export type CouncilElection = z.infer<typeof Schema>;
+    export const Schema = NewsItemSchema.extend({
+        "layout": z.literal("@layouts/news/council-election.astro"),
+        "councilelection": z.literal(true),
+        "term": z.coerce.number().int().positive(),
+        "councillors": z.array(z.object({
+            "name": z.string(),
+            "role": z.string().optional(),
+        })).optional().default([])
+    });
+
+    export function isCouncilElection(
+        frontmatter: any
+    ) {
+        return frontmatter["councilelection"] === true;
+    }
+
+    export function ensureCouncilElection(
+        frontmatter: MarkdownLayoutProps<CouncilElection>["frontmatter"]
+    ): CouncilElection {
+        frontmatter.councillors ??= [];
+        return frontmatter;
+    }
+
+    /**
+     * Retrieves all council elections sorted from newest to oldest.
+     */
+    export async function getCouncilElections() {
+        return (await getCollection("city-news"))
+            .filter((entry) => isCouncilElection(entry.data))
+            .sort(Arrays.sortByDate((entry) => entry.data.date))
+            .reverse();
     }
 }

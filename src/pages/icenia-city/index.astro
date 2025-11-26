@@ -1,5 +1,7 @@
 ---
 import DefaultLayout from "@layouts/default.astro";
+import { Astros} from "@helpers";
+import { getBordersLink } from "@comptime";
 
 const BASE = (import.meta.env.BASE_URL ?? "/");
 const title = "Icenia City";
@@ -45,40 +47,42 @@ const description = "Welcome to Icenia City, the capital of the Republic of Icen
             
             <div class="equal-cards">
                 <div class="govuk-grid-row">
-                    <div class="govuk-grid-column-one-third">
-                        <div class="icenia-card">
-                            <h3 class="govuk-heading-m">📜 City Laws</h3>
-                            <p class="govuk-body">
-                                View the city charter, ordinances, and regulations that govern Icenia City.
-                            </p>
-                            <a href={BASE + "icenia-city/laws/"} class="govuk-link govuk-!-font-weight-bold">View City Laws →</a>
-                        </div>
+                    <div class="icenia-card">
+                        <h3 class="govuk-heading-m">📜 City Laws</h3>
+                        <p class="govuk-body">
+                            View the city charter, ordinances, and regulations that govern Icenia City.
+                        </p>
+                        <a href={BASE + "icenia-city/laws/"} class="govuk-link govuk-!-font-weight-bold">View City Laws →</a>
                     </div>
 
-                    <div class="govuk-grid-column-one-third">
-                        <div class="icenia-card">
-                            <h3 class="govuk-heading-m">🏪 Shops</h3>
-                            <p class="govuk-body">
-                                Browse the shops and markets of Icenia City, including the renowned Enron Exchange.
-                            </p>
-                            <a href={BASE + "icenia-city/shops/"} class="govuk-link govuk-!-font-weight-bold">View Shops →</a>
-                        </div>
+                    <div class="icenia-card">
+                        <h3 class="govuk-heading-m">🏛️ City Council</h3>
+                        <p class="govuk-body">
+                            Meet the elected officials who govern Icenia City and represent its residents.
+                        </p>
+                        <a href={BASE + "icenia-city/council/"} class="govuk-link govuk-!-font-weight-bold">View Council →</a>
                     </div>
 
-                    <div class="govuk-grid-column-one-third">
-                        <div class="icenia-card">
-                            <h3 class="govuk-heading-m">🚀 Join Us</h3>
-                            <p class="govuk-body">
-                                New to Icenia? Learn how to become a citizen and start your journey with us.
-                            </p>
-                            <a href={BASE + "guide/"} class="govuk-link govuk-!-font-weight-bold">New Player Guide →</a>
-                        </div>
+                    <div class="icenia-card">
+                        <h3 class="govuk-heading-m">🏪 Shops</h3>
+                        <p class="govuk-body">
+                            Browse the shops and markets of Icenia City, including the renowned Enron Exchange.
+                        </p>
+                        <a href={BASE + "icenia-city/shops/"} class="govuk-link govuk-!-font-weight-bold">View Shops →</a>
+                    </div>
+
+                    <div class="icenia-card">
+                        <h3 class="govuk-heading-m">🚀 Join Us</h3>
+                        <p class="govuk-body">
+                            New to Icenia? Learn how to become a citizen and start your journey with us.
+                        </p>
+                        <a href={BASE + "guide/"} class="govuk-link govuk-!-font-weight-bold">New Player Guide →</a>
                     </div>
                 </div>
             </div>
 
             <!-- Additional Information -->
-            <div class="govuk-grid-row govuk-!-margin-top-6">
+            <div class="govuk-grid-row govuk-!-margin-bottom-6">
                 <div class="govuk-grid-column-full">
                     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
                 </div>
@@ -99,8 +103,11 @@ const description = "Welcome to Icenia City, the capital of the Republic of Icen
                         Icenia City is well-connected via the international rail network and has 
                         easy access to all states of the Republic.
                     </p>
-                    <a href="https://map.civmc.tk/" target="_blank" class="govuk-link">View CivMC Map →</a>
+                    <a href={Astros.isDevMode() ? BASE + "government/map" : getBordersLink(Astro)} target="_blank" class="govuk-link">View CivMC Map →</a>
                 </div>
+            </div>
+
+            <div class="govuk-grid-row govuk-!-margin-top-6">
             </div>
 
         </main>

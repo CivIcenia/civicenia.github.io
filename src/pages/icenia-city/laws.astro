@@ -1,133 +1,75 @@
 ---
 import PageLayout from "@layouts/page.astro";
-import { CityLaws } from "@collections";
+import CityCard from "@components/laws/city-card.astro";
+import { CityLaws, CityActs } from "@collections";
+import { Arrays, Strings } from "@helpers";
+import { getActChangeColours } from "@comptime";
 
 const BASE = (import.meta.env.BASE_URL ?? "/");
 
-// Get city laws and amendments from collections
+// Get city laws and recent acts
 const cityLaws = await CityLaws.getCityLaws();
-const amendments = (await CityLaws.getAmendments()).slice(0, 5);
+const recentActs = (await CityActs.getCityActs()).slice(0, 5);
 
 const currentLaws = cityLaws.filter((law) => law.hidden !== true);
 const expiredLaws = cityLaws.filter((law) => law.hidden === true);
 
-// Helper function to get law name by slug
-function getLawName(slug: string): string {
-    const law = cityLaws.find((l) => l.slug === slug);
-    return law?.name || slug;
-}
-
-// Helper function to format date
-function formatDate(date: Date): string {
-    return date.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
-}
+// Organize laws by type
+const charterLaws = currentLaws.filter((law) => law.kind === "charter");
+const ordinanceLaws = currentLaws.filter((law) => law.kind === "ordinance");
 ---
 <style>
-    div.law-card {
-        display: block;
-        margin-bottom: 25px;
-        box-shadow: 0 1px 1px 0 rgba(60, 64, 67, .08), 0 1px 3px 1px rgba(60, 64, 67, .16);
-        color: #373151;
-        text-decoration: none;
-        font-family: "nta", Arial, sans-serif;
-        font-size: 16px;
-        line-height: 1.25;
-    }
-
-    div.law-card-internal {
-        position: relative;
-        display: flex;
-        padding: 10px 15px 10px 15px;
-        border-left: 10px solid #1D70B8;
-        justify-content: space-between;
-        flex-direction: column;
-        background: white;
-    }
-
-    div.law-card-content {
-        flex-grow: 1;
-    }
-
-    div.law-card-title {
-        font-size: 20px;
-        font-weight: 500;
-    }
-
-    a.open-law-link {
-        float: right;
-    }
-
-    /* Recent Amendments Section */
-    .amendments-section {
+    /* Recent Changes Section */
+    .recent-changes-section {
         background: #f3f2f1;
         padding: 20px;
         margin-bottom: 30px;
         border-left: 6px solid #1D70B8;
     }
 
-    .amendment-item {
-        padding: 15px 0;
+    .change-item {
+        padding: 12px 0;
         border-bottom: 1px solid #ddd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
     }
 
-    .amendment-item:last-child {
+    .change-item:last-child {
         border-bottom: none;
         padding-bottom: 0;
     }
 
-    .amendment-date {
+    .change-info {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .change-date {
         color: #6f777b;
         font-size: 0.875rem;
-        margin-bottom: 5px;
+        margin-bottom: 3px;
     }
 
-    .amendment-title {
+    .change-title {
         font-weight: 700;
-        margin-bottom: 5px;
     }
 
-    .amendment-description {
-        color: #505a5f;
-        font-size: 0.9375rem;
+    .change-title a {
+        text-decoration: none;
     }
 
-    .amendment-law-link {
-        display: inline-block;
-        margin-top: 5px;
-        font-size: 0.875rem;
-    }
-
-    /* Page header */
-    .page-header {
-        background: linear-gradient(rgba(28, 112, 184, 0.9), rgba(28, 112, 184, 0.9));
-        padding: 30px 20px;
-        margin-bottom: 30px;
-        color: white;
-    }
-
-    .page-header h1 {
-        color: white;
-        margin: 0 0 10px 0;
-    }
-
-    .page-header p {
-        color: rgba(255, 255, 255, 0.9);
-        margin: 0;
-    }
-
-    .breadcrumb-link {
-        color: rgba(255, 255, 255, 0.8);
-    }
-
-    .breadcrumb-link:hover {
-        color: white;
+    .change-title a:hover {
+        text-decoration: underline;
     }
 
     .repealed-card {
         opacity: 0.7;
     }
 
-    .repealed-card .law-card-internal {
+    .repealed-card div.law-card-internal {
         border-left-color: #6f777b;
     }
 </style>
@@ -135,27 +77,33 @@ function formatDate(date: Date): string {
 <PageLayout chin={false} title="City Laws - Icenia City" description="View the charter, ordinances, and regulations governing Icenia City.">
     <!-- Page Header -->
     <div class="page-header">
-        <p class="govuk-body-s" style="margin-bottom: 10px;">
-            <a href={BASE + "icenia-city/"} class="govuk-link breadcrumb-link">&larr; Back to Icenia City</a>
-        </p>
         <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Icenia City Laws</h1>
         <p class="govuk-body-l">The charter, ordinances, and regulations governing the capital city.</p>
     </div>
 
-    <!-- Recent Amendments Section -->
-    {amendments.length > 0 && (
-        <div class="amendments-section">
-            <h2 class="govuk-heading-m" style="margin-top: 0;">Recent Amendments</h2>
-            {amendments.map((amendment) => (
-                <div class="amendment-item">
-                    <div class="amendment-date">
-                        {formatDate(amendment.date)}
+    <!-- Recent Changes Section -->
+    {recentActs.length > 0 && (
+        <div class="recent-changes-section">
+            <h2 class="govuk-heading-m" style="margin-top: 0;">Recent Changes to City Law</h2>
+            {recentActs.map((act) => (
+                <div class="change-item">
+                    <div class="change-info">
+                        <div class="change-date">
+                            {Strings.formatDate(act.data.date, "dS mmmm yyyy")}
+                        </div>
+                        <div class="change-title">
+                            <a href={BASE + "icenia-city/news/" + act.slug} class="govuk-link">
+                                {act.data.headline}
+                            </a>
+                        </div>
                     </div>
-                    <div class="amendment-title">{amendment.title}</div>
-                    <div class="amendment-description">{amendment.description}</div>
-                    <a href={"#law-" + amendment.law_slug} class="govuk-link amendment-law-link">
-                        View {getLawName(amendment.law_slug)} &rarr;
-                    </a>
+                    <div class="change-tags">
+                        {(act.data as CityActs.CityAct).changes.map((change) => (
+                            <strong class="govuk-tag govuk-tag--small" style={`background-color: #${getActChangeColours(change.kind).background}; margin-left: 5px;`}>
+                                {change.kind === "passage" ? "Enacted" : change.kind === "amendment" ? "Amended" : change.kind === "repeal" ? "Repealed" : "Changed"}
+                            </strong>
+                        ))}
+                    </div>
                 </div>
             ))}
         </div>
@@ -165,38 +113,16 @@ function formatDate(date: Date): string {
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-half">
             <h2 class="govuk-heading-l">City Charter</h2>
-            {currentLaws.filter((law) => law.kind === "charter").length > 0 ? (
-                currentLaws.filter((law) => law.kind === "charter").map((law) => (
-                    <div class="law-card" id={"law-" + law.slug}>
-                        <div class="law-card-internal">
-                            <div class="law-card-content">
-                                <div class="law-card-title">
-                                    <a href={law.googledoc} class="govuk-link open-law-link" target="_blank">Open</a>
-                                    {law.name}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ))
+            {charterLaws.length > 0 ? (
+                charterLaws.map((law) => <CityCard law={law} />)
             ) : (
                 <p class="govuk-body">No city charter documents available.</p>
             )}
         </div>
         <div class="govuk-grid-column-one-half">
             <h2 class="govuk-heading-l">City Ordinances</h2>
-            {currentLaws.filter((law) => law.kind === "ordinance").length > 0 ? (
-                currentLaws.filter((law) => law.kind === "ordinance").map((law) => (
-                    <div class="law-card" id={"law-" + law.slug}>
-                        <div class="law-card-internal">
-                            <div class="law-card-content">
-                                <div class="law-card-title">
-                                    <a href={law.googledoc} class="govuk-link open-law-link" target="_blank">Open</a>
-                                    {law.name}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ))
+            {ordinanceLaws.length > 0 ? (
+                ordinanceLaws.map((law) => <CityCard law={law} />)
             ) : (
                 <p class="govuk-body">No city ordinances available.</p>
             )}
@@ -215,15 +141,8 @@ function formatDate(date: Date): string {
                 </summary>
                 <div class="govuk-details__text">
                     {expiredLaws.map((law) => (
-                        <div class="law-card repealed-card">
-                            <div class="law-card-internal">
-                                <div class="law-card-content">
-                                    <div class="law-card-title">
-                                        <a href={law.googledoc} class="govuk-link open-law-link" target="_blank">Open</a>
-                                        {law.name} <span style="color: #6f777b;">(Repealed)</span>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="repealed-card">
+                            <CityCard law={law} />
                         </div>
                     ))}
                 </div>
