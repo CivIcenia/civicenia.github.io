@@ -8,12 +8,19 @@ import { getActChangeColours } from "@comptime";
 
 // Had to rename because it weirdly conflicts with laws.astro
 // There's probably some weird Astro shenanigans going on
-import { Laws as AllLaws, Acts } from "@collections";
+import { Laws as AllLaws, Acts, LawIncorporations } from "@collections";
 const laws = await AllLaws.getLaws();
 const recentActs = (await Acts.getActs()).slice(0, 5);
 
 const currentLaws = laws.filter((law) => law.hidden !== true);
 const expiredLaws = laws.filter((law) => law.hidden === true);
+
+// Calculate pending incorporations count
+let pendingCount = 0;
+for (const law of currentLaws) {
+    const pending = await AllLaws.getPendingChanges(law);
+    pendingCount += pending.length;
+}
 
 const BASE = import.meta.env.BASE_URL ?? "/";
 ---
@@ -74,6 +81,30 @@ const BASE = import.meta.env.BASE_URL ?? "/";
     a.open-law-link {
         float: right;
     }
+
+    .pending-banner {
+        background: #fef7f3;
+        border-left: 6px solid #f47738;
+        padding: 15px 20px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .pending-banner-text {
+        margin: 0;
+    }
+
+    .pending-count-badge {
+        background: #f47738;
+        color: white;
+        padding: 2px 10px;
+        border-radius: 15px;
+        font-weight: bold;
+    }
 </style>
 
 <PageLayout chin={false} title="Republic Laws - Republic of Icenia" description="The Constitution, statutes, and treaties of the Republic of Icenia.">
@@ -82,6 +113,17 @@ const BASE = import.meta.env.BASE_URL ?? "/";
         <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Republic Laws</h1>
         <p class="govuk-body-l">The Constitution, statutes, and treaties of the Republic of Icenia.</p>
     </div>
+
+    <!-- Pending Incorporations Banner -->
+    {pendingCount > 0 && (
+        <div class="pending-banner">
+            <p class="pending-banner-text govuk-body">
+                <span class="pending-count-badge">{pendingCount}</span>
+                {pendingCount === 1 ? " amendment needs" : " amendments need"} to be incorporated into master documents.
+            </p>
+            <a href={BASE + "laws/incorporations/"} class="govuk-link">View Tracker →</a>
+        </div>
+    )}
 
     <!-- Laws Information -->
     <div class="laws-info">
@@ -168,7 +210,7 @@ const BASE = import.meta.env.BASE_URL ?? "/";
 
     <!-- Links Section -->
     <div class="govuk-grid-row govuk-!-margin-top-6">
-        <div class="govuk-grid-column-one-half">
+        <div class="govuk-grid-column-one-third">
             <div class="govuk-inset-text">
                 <h3 class="govuk-heading-s">Government Officials</h3>
                 <p class="govuk-body-s">
@@ -177,13 +219,22 @@ const BASE = import.meta.env.BASE_URL ?? "/";
                 <a href={BASE + "government/officials/"} class="govuk-link">View Officials &rarr;</a>
             </div>
         </div>
-        <div class="govuk-grid-column-one-half">
+        <div class="govuk-grid-column-one-third">
             <div class="govuk-inset-text">
                 <h3 class="govuk-heading-s">City Laws</h3>
                 <p class="govuk-body-s">
                     View ordinances and regulations specific to Icenia City.
                 </p>
                 <a href={BASE + "icenia-city/laws/"} class="govuk-link">View City Laws &rarr;</a>
+            </div>
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <div class="govuk-inset-text">
+                <h3 class="govuk-heading-s">Incorporation Tracker</h3>
+                <p class="govuk-body-s">
+                    Track pending updates to master legal documents.
+                </p>
+                <a href={BASE + "laws/incorporations/"} class="govuk-link">View Tracker &rarr;</a>
             </div>
         </div>
     </div>

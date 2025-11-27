@@ -1,0 +1,429 @@
+---
+import PageLayout from "@layouts/page.astro";
+import { CityLaws, CityActs, CityLawIncorporations } from "@collections";
+import { Strings } from "@helpers";
+import { getActChangeColours } from "@comptime";
+
+const BASE = import.meta.env.BASE_URL ?? "/";
+
+// Get all city laws and their pending changes
+const laws = await CityLaws.getCityLaws();
+const currentLaws = laws.filter((law) => law.hidden !== true);
+
+// Build a list of all pending incorporations
+type PendingItem = {
+    law: CityLaws.CityLaw;
+    changer: CityLaws.ChangerInfo;
+};
+
+const pendingItems: PendingItem[] = [];
+
+for (const law of currentLaws) {
+    const pending = await CityLaws.getPendingChanges(law);
+    for (const changer of pending) {
+        pendingItems.push({ law, changer });
+    }
+}
+
+// Sort by date (newest first)
+pendingItems.sort((a, b) => 
+    new Date(b.changer.act.data.date).getTime() - new Date(a.changer.act.data.date).getTime()
+);
+
+// Get all incorporations for the log
+const incorporations = CityLawIncorporations.getIncorporations();
+const sortedIncorporations = [...incorporations].sort((a, b) => 
+    b.incorporated_at.getTime() - a.incorporated_at.getTime()
+);
+
+// Get law names for display
+const lawsBySlug = new Map(laws.map(l => [l.slug, l]));
+---
+<style>
+    .pending-section {
+        background: #fef7f3;
+        border-left: 6px solid #f47738;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .pending-count {
+        font-size: 48px;
+        font-weight: bold;
+        color: #f47738;
+        display: inline-block;
+        margin-right: 15px;
+    }
+
+    .pending-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .pending-item {
+        background: white;
+        border: 1px solid #b1b4b6;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .pending-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .pending-item-law {
+        font-size: 18px;
+        font-weight: 600;
+        color: #0b0c0c;
+    }
+
+    .pending-item-change {
+        color: #505a5f;
+        margin-top: 5px;
+    }
+
+    .pending-item-date {
+        color: #6f777b;
+        font-size: 14px;
+    }
+
+    .incorporation-log {
+        background: #f3f2f1;
+        padding: 20px;
+        margin-top: 30px;
+    }
+
+    .log-entry {
+        border-bottom: 1px solid #b1b4b6;
+        padding: 12px 0;
+    }
+
+    .log-entry:last-child {
+        border-bottom: none;
+    }
+
+    .log-date {
+        font-weight: 600;
+        color: #0b0c0c;
+    }
+
+    .log-by {
+        color: #505a5f;
+    }
+
+    .log-law {
+        color: #1d70b8;
+    }
+
+    .log-changes {
+        font-size: 14px;
+        color: #505a5f;
+        margin-top: 4px;
+    }
+
+    .log-notes {
+        color: #6f777b;
+        font-size: 14px;
+        margin-top: 5px;
+        font-style: italic;
+    }
+
+    .info-box {
+        background: #f3f2f1;
+        padding: 20px;
+        margin-bottom: 30px;
+        border-left: 6px solid #1D70B8;
+    }
+
+    .success-message {
+        background: #e6f4ea;
+        border-left: 6px solid #00703c;
+        padding: 15px;
+        margin-bottom: 30px;
+    }
+
+    .tag-amendment {
+        background-color: #ffdd00;
+        color: #0b0c0c;
+    }
+
+    .tag-repeal {
+        background-color: #d4351c;
+        color: white;
+    }
+
+    .pending-item-actions {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid #e0e0e0;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .mark-btn {
+        display: inline-block;
+        padding: 8px 16px;
+        background: #00703c;
+        color: white;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+    }
+
+    .mark-btn:hover {
+        background: #005a30;
+        color: white;
+    }
+
+    .copy-btn {
+        display: inline-block;
+        padding: 8px 12px;
+        background: #f3f2f1;
+        color: #0b0c0c;
+        text-decoration: none;
+        font-size: 14px;
+        border: 1px solid #b1b4b6;
+        cursor: pointer;
+    }
+
+    .copy-btn:hover {
+        background: #e0e0e0;
+    }
+
+    .slug-code {
+        font-family: monospace;
+        font-size: 12px;
+        color: #6f777b;
+        background: #f3f2f1;
+        padding: 2px 6px;
+        border-radius: 2px;
+    }
+
+    .help-section {
+        background: #fff;
+        border: 1px solid #b1b4b6;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .help-section h3 {
+        margin-top: 0;
+    }
+
+    .help-steps {
+        counter-reset: step;
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .help-steps li {
+        counter-increment: step;
+        margin-bottom: 12px;
+        padding-left: 35px;
+        position: relative;
+    }
+
+    .help-steps li::before {
+        content: counter(step);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 24px;
+        height: 24px;
+        background: #1d70b8;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 24px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+</style>
+
+<PageLayout chin={false} title="City Law Incorporation Tracker - Icenia City" description="Track which city legislative changes have been incorporated into master legal documents.">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">City Law Incorporation Tracker</h1>
+        <p class="govuk-body-l">Track and manage incorporation of city legislative changes into master documents.</p>
+    </div>
+
+    <!-- Info Box -->
+    <div class="info-box">
+        <h2 class="govuk-heading-s" style="margin-top: 0;">About This Page</h2>
+        <p class="govuk-body" style="margin-bottom: 0;">
+            When the City Council passes an amendment to city ordinances, the master document (typically a Google Doc or PDF) needs 
+            to be manually updated to reflect the changes. This page tracks which changes are still pending 
+            incorporation and maintains a log of completed updates.
+        </p>
+    </div>
+
+    <!-- How To Guide -->
+    <details class="govuk-details" style="margin-bottom: 30px;">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">How to mark a change as incorporated</span>
+        </summary>
+        <div class="govuk-details__text">
+            <h3 class="govuk-heading-s">Option 1: Using the CMS (recommended)</h3>
+            <ol class="help-steps">
+                <li>
+                    <strong>Update the master document</strong> — Click the law name below to open the Google Doc/PDF, 
+                    then edit it to reflect the legislative change(s).
+                </li>
+                <li>
+                    <strong>Open the CMS</strong> — Go to <a href={BASE + "admin/#/collections/data/entries/city-law-incorporations"} class="govuk-link" target="_blank">City Law Incorporations Log</a> in the CMS (Data → City Law Incorporations Log).
+                </li>
+                <li>
+                    <strong>Add an entry to the list</strong> — Click the "Add incorporations +" button. 
+                    For "Change Article Slugs", <strong>search by title and select one or more city acts</strong> that you incorporated. 
+                    You can select multiple acts if you incorporated several changes at once.
+                </li>
+                <li>
+                    <strong>Select the city law</strong> — Use the "City Law Identifier" dropdown to select which city law's master document was updated.
+                </li>
+                <li>
+                    <strong>Fill in details and save</strong> — Set the date/time, enter your name, add optional notes, then click "Publish".
+                </li>
+            </ol>
+
+            <h3 class="govuk-heading-s" style="margin-top: 20px;">Option 2: Direct file edit (for advanced users)</h3>
+            <p class="govuk-body">
+                Edit <a href="https://github.com/CivIcenia/civicenia.github.io/edit/master/src/data/city-law-incorporations.yml" class="govuk-link" target="_blank">city-law-incorporations.yml on GitHub</a> directly. 
+                Add entries in this format:
+            </p>
+            <pre style="background: #f3f2f1; padding: 15px; font-size: 13px; overflow-x: auto; margin-bottom: 15px; white-space: pre-wrap;">  - change_slugs:
+      - first-city-act-slug-here
+      - second-city-act-slug-here
+    law_slug: PASTE-LAW-SLUG-HERE
+    incorporated_at: 2025-11-28 12:00:00 +00:00
+    incorporated_by: Your Name
+    notes: Optional notes</pre>
+            <p class="govuk-body" style="margin-bottom: 0;">
+                <strong>Tip:</strong> Use the "Copy change slug" button on each pending item to get the exact slug needed. 
+                Use <code class="slug-code">change_slugs</code> (array) for multiple acts, or <code class="slug-code">change_slug</code> (string) for a single act.
+            </p>
+        </div>
+    </details>
+
+    <!-- Pending Section -->
+    {pendingItems.length > 0 ? (
+        <div class="pending-section">
+            <div class="pending-header">
+                <span class="pending-count">{pendingItems.length}</span>
+                <div>
+                    <h2 class="govuk-heading-m" style="margin: 0;">Pending Incorporations</h2>
+                    <p class="govuk-body" style="margin: 0;">These changes need to be added to the master documents.</p>
+                </div>
+            </div>
+
+            {pendingItems.map((item) => {
+                return (
+                <div class="pending-item">
+                    <div class="pending-item-header">
+                        <div>
+                            <div class="pending-item-law">
+                                <a href={item.law.masterdoc} target="_blank" class="govuk-link">
+                                    {item.law.name}
+                                </a>
+                                <span class="slug-code" style="margin-left: 8px;">{item.law.slug}</span>
+                            </div>
+                            <div class="pending-item-change">
+                                <a href={BASE + "icenia-city/news/" + item.changer.act.slug} class="govuk-link">
+                                    {item.changer.act.data.headline}
+                                </a>
+                            </div>
+                            <div class="pending-item-date">
+                                {Strings.formatDate(item.changer.act.data.date, "dS mmmm yyyy")}
+                            </div>
+                        </div>
+                        <div>
+                            <strong class="govuk-tag" style={`background-color: #${getActChangeColours(item.changer.kind).background};`}>
+                                {item.changer.kind === "amendment" ? "Amendment" : "Repeal"}
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="pending-item-actions">
+                        <button class="copy-btn" data-copy={item.changer.act.slug} onclick="navigator.clipboard.writeText(this.dataset.copy); this.textContent='Copied!'; setTimeout(() => this.textContent='Copy change slug', 2000)">
+                            Copy change slug
+                        </button>
+                        <span class="slug-code">{item.changer.act.slug}</span>
+                    </div>
+                </div>
+            )})}
+
+            <p class="govuk-body" style="margin-top: 20px; margin-bottom: 0;">
+                <a href={BASE + "admin/#/collections/data/entries/city-law-incorporations"} class="mark-btn" target="_blank" style="text-decoration: none;">
+                    Open CMS to Record Incorporations
+                </a>
+            </p>
+        </div>
+    ) : (
+        <div class="success-message">
+            <h2 class="govuk-heading-m" style="margin-top: 0;">✓ All Changes Incorporated</h2>
+            <p class="govuk-body" style="margin-bottom: 0;">
+                All city legislative amendments and repeals have been incorporated into their master documents.
+            </p>
+        </div>
+    )}
+
+    <!-- Incorporation Log -->
+    <div class="incorporation-log">
+        <h2 class="govuk-heading-m" style="margin-top: 0;">Incorporation Log</h2>
+        <p class="govuk-body">A record of when master documents were updated to reflect city legislative changes.</p>
+
+        {sortedIncorporations.length > 0 ? (
+            <div>
+                {sortedIncorporations.map((inc) => {
+                    const law = lawsBySlug.get(inc.law_slug);
+                    return (
+                        <div class="log-entry">
+                            <span class="log-date">{Strings.formatDate(inc.incorporated_at, "dS mmmm yyyy")}</span>
+                            {" — "}
+                            <span class="log-law">{law?.name || inc.law_slug}</span>
+                            {" updated by "}
+                            <span class="log-by">{inc.incorporated_by}</span>
+                            <div class="log-changes">
+                                {inc.change_slugs.length === 1 ? (
+                                    <span>
+                                        {"From: "}
+                                        <a href={BASE + "icenia-city/news/" + inc.change_slugs[0]} class="govuk-link">{inc.change_slugs[0]}</a>
+                                    </span>
+                                ) : (
+                                    <span>
+                                        {"From " + inc.change_slugs.length + " changes: "}
+                                        {inc.change_slugs.map((slug, i) => (
+                                            <span>
+                                                {i > 0 && ", "}
+                                                <a href={BASE + "icenia-city/news/" + slug} class="govuk-link">{slug}</a>
+                                            </span>
+                                        ))}
+                                    </span>
+                                )}
+                            </div>
+                            {inc.notes && (
+                                <div class="log-notes">Note: {inc.notes}</div>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+        ) : (
+            <p class="govuk-body" style="color: #6f777b;">
+                No incorporations logged yet. Entries will appear here when maintainers record updates to master documents.
+            </p>
+        )}
+    </div>
+
+    <!-- Link Back -->
+    <div class="govuk-!-margin-top-6">
+        <a href={BASE + "icenia-city/laws/"} class="govuk-link">← Back to City Laws</a>
+    </div>
+</PageLayout>

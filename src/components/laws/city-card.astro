@@ -1,5 +1,6 @@
 ---
 import { CityLaws } from "@collections";
+import { Strings } from "@helpers";
 import { getActChangeColours } from "@comptime";
 
 interface Props {
@@ -8,7 +9,10 @@ interface Props {
 
 const { law } = Astro.props;
 
-const changers = await CityLaws.getChangers(law);
+const changers = await CityLaws.getChanges(law);
+const pendingChanges = await CityLaws.getPendingChanges(law);
+const hasPending = pendingChanges.length > 0;
+
 const BASE = (import.meta.env.BASE_URL ?? "/");
 ---
 <style>
@@ -31,6 +35,10 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         justify-content: space-between;
         flex-direction: column;
         background: white;
+    }
+
+    div.law-card-internal.has-pending {
+        border-left-color: #f47738;
     }
 
     div.law-card-content {
@@ -62,14 +70,49 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     a.open-law-link {
         float: right;
     }
+
+    .pending-badge {
+        display: inline-block;
+        background-color: #f47738;
+        color: white;
+        font-size: 12px;
+        padding: 2px 8px;
+        border-radius: 3px;
+        margin-left: 10px;
+        vertical-align: middle;
+    }
+
+    .incorporation-status {
+        font-size: 12px;
+        margin-left: 10px;
+    }
+
+    .incorporated {
+        color: #00703c;
+    }
+
+    .pending {
+        color: #f47738;
+    }
+
+    .incorporation-info {
+        font-size: 11px;
+        color: #6f777b;
+        margin-top: 3px;
+    }
 </style>
 
 <div class="law-card" id={"law-" + law.slug}>
-    <div class="law-card-internal">
+    <div class={`law-card-internal ${hasPending ? 'has-pending' : ''}`}>
         <div class="law-card-content">
             <div class="law-card-title">
                 <a href={law.masterdoc} class="govuk-link open-law-link" target="_blank">Open</a>
                 {law.name}
+                {hasPending && (
+                    <span class="pending-badge" title={`${pendingChanges.length} amendment(s) not yet incorporated into master document`}>
+                        {pendingChanges.length} pending
+                    </span>
+                )}
             </div>
             <div class="law-card-supplement">
                 <details class="govuk-details law-details" data-module="govuk-details">
@@ -88,6 +131,16 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                                                 <a href={BASE + "icenia-city/news/" + changer.act.slug} class="govuk-link">
                                                     {changer.act.data.headline}
                                                 </a>
+                                                {changer.kind !== "passage" && (
+                                                    <span class={`incorporation-status ${changer.incorporated ? 'incorporated' : 'pending'}`}>
+                                                        {changer.incorporated ? '✓ Incorporated' : '⏳ Pending'}
+                                                    </span>
+                                                )}
+                                                {changer.incorporation && (
+                                                    <div class="incorporation-info">
+                                                        Updated by {changer.incorporation.incorporated_by} on {Strings.formatDate(changer.incorporation.incorporated_at, "dS mmmm yyyy")}
+                                                    </div>
+                                                )}
                                             </th>
                                             <td class="govuk-table__cell govuk-!-text-align-right">
                                                 <strong class="govuk-tag" style={`background-color: #${getActChangeColours(changer.kind).background};`}>

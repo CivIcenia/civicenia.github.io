@@ -18,7 +18,21 @@ const expiredLaws = cityLaws.filter((law) => law.hidden === true);
 const charterLaws = currentLaws.filter((law) => law.kind === "charter");
 const ordinanceLaws = currentLaws.filter((law) => law.kind === "ordinance");
 
+// Count total pending changes
+let totalPending = 0;
+for (const law of currentLaws) {
+    const pending = await CityLaws.getPendingChanges(law);
+    totalPending += pending.length;
+}
 ---
+<style>
+    .pending-banner {
+        background: #fef7f3;
+        border-left: 6px solid #f47738;
+        padding: 15px 20px;
+        margin-bottom: 30px;
+    }
+</style>
 
 <PageLayout chin={false} title="City Laws - Icenia City" description="View the charter, ordinances, and regulations governing Icenia City.">
     <!-- Page Header -->
@@ -26,6 +40,17 @@ const ordinanceLaws = currentLaws.filter((law) => law.kind === "ordinance");
         <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Icenia City Laws</h1>
         <p class="govuk-body-l">The charter, ordinances, and regulations governing the capital city.</p>
     </div>
+
+    <!-- Pending Incorporations Banner -->
+    {totalPending > 0 && (
+        <div class="pending-banner">
+            <strong>{totalPending} pending incorporation{totalPending > 1 ? 's' : ''}</strong> — 
+            Some amendments need to be added to master documents.
+            <a href={BASE + "icenia-city/laws/incorporations/"} class="govuk-link" style="margin-left: 10px;">
+                View tracker →
+            </a>
+        </div>
+    )}
 
     <!-- Recent Changes Section -->
     {recentActs.length > 0 && (

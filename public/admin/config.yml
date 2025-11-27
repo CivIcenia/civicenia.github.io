@@ -72,6 +72,83 @@ collections:
                 widget: "boolean"
                 default: false
                 hint: "Flip this on if this law has been repealed"
+      - label: "Law Incorporations Log"
+        name: "law-incorporations"
+        file: "src/data/law-incorporations.yml"
+        description: "Track when legislative changes have been incorporated into master documents"
+        fields:
+          - label: "Incorporations"
+            label_singular: "Incorporation"
+            name: "incorporations"
+            widget: "list"
+            default: []
+            summary: "{{law_slug}} ← {{change_slugs}} (by {{incorporated_by}})"
+            fields:
+              # Change Slugs - now supports multiple
+              - label: "Change Article Slugs"
+                name: "change_slugs"
+                widget: "relation"
+                collection: "lawchanges"
+                search_fields: ["headline", "slug"]
+                value_field: "{{slug}}"
+                display_fields: ["headline"]
+                multiple: true
+                required: true
+                hint: "Select one or more news articles/acts that were incorporated. Search by title."
+              # Law Slug - using select widget with explicit options for reliability
+              - label: "Law Identifier"
+                name: "law_slug"
+                widget: "select"
+                required: true
+                hint: "Which law's master document was updated?"
+                options:
+                  # Constitutional
+                  - { label: "Constitution of Icenia", value: "third-constitution" }
+                  - { label: "Articles of War", value: "articles-of-war" }
+                  # Statutes
+                  - { label: "Statute of Territory", value: "statute-of-territory" }
+                  - { label: "Safe Icenia Act", value: "safe-icenia-act" }
+                  - { label: "Hansard Act", value: "hansard-act" }
+                  - { label: "NameLayer Act", value: "namelayer-act" }
+                  - { label: "Political Parties Act", value: "political-parties-act" }
+                  - { label: "Contract Law Act", value: "contracts-act" }
+                  - { label: "Medal and Award Act", value: "medal-awards-act" }
+                  - { label: "Building Standards and Processes Act", value: "building-regulations-act" }
+                  - { label: "Dbugingrad Act", value: "dbugingrad-act" }
+                  - { label: "Icenian Flag Act", value: "icenian-flag-act" }
+                  # Statehood
+                  - { label: "State of Bloom", value: "statehood-for-bloom" }
+                  - { label: "State of Southshire", value: "statehood-for-southshire" }
+                  - { label: "State of Icarus", value: "statehood-for-icarus" }
+                  - { label: "State of Selsey", value: "statehood-of-selsey" }
+                  - { label: "State of Alenarith", value: "state-of-alenarith" }
+                  # Treaties
+                  - { label: "MDSC Treaty", value: "mdsc-treaty" }
+                  - { label: "Dawn Guard Pact", value: "dawn-guard-pact" }
+                  - { label: "Red Rocks Pact", value: "red-rocks-pact" }
+                  - { label: "Pavia CUB Treaty", value: "pavia-cub-treaty" }
+                  - { label: "Pavia NAP", value: "pavia-nap" }
+                  - { label: "Rivia Friendship Treaty", value: "rivia-treaty" }
+                  - { label: "The Ascendancy", value: "ascendancy-charter" }
+              # Incorporated At
+              - label: "Date Incorporated"
+                name: "incorporated_at"
+                widget: "datetime"
+                required: true
+                format: "YYYY-MM-DD HH:mm:00 Z"
+                hint: "When was the master document updated to reflect this change?"
+              # Incorporated By
+              - label: "Incorporated By"
+                name: "incorporated_by"
+                widget: "string"
+                required: true
+                hint: "Your name/username - who updated the master document?"
+              # Notes
+              - label: "Notes"
+                name: "notes"
+                widget: "text"
+                required: false
+                hint: "Optional notes about this incorporation (e.g., what sections were changed)"
       - label: "City Laws"
         name: "city-laws"
         file: "src/data/city-laws.yml"
@@ -123,6 +200,61 @@ collections:
                 widget: "boolean"
                 default: false
                 hint: "Flip this on if this city law has been repealed"
+      - label: "City Law Incorporations Log"
+        name: "city-law-incorporations"
+        file: "src/data/city-law-incorporations.yml"
+        description: "Track when city legislative changes have been incorporated into master documents"
+        fields:
+          - label: "Incorporations"
+            label_singular: "Incorporation"
+            name: "incorporations"
+            widget: "list"
+            default: []
+            summary: "{{law_slug}} ← {{change_slugs}} (by {{incorporated_by}})"
+            fields:
+              # Change Slugs - now supports multiple
+              - label: "Change Article Slugs"
+                name: "change_slugs"
+                widget: "relation"
+                collection: "citylawchanges"
+                search_fields: ["headline", "slug"]
+                value_field: "{{slug}}"
+                display_fields: ["headline"]
+                multiple: true
+                required: true
+                hint: "Select one or more city ordinance/act articles that were incorporated. Search by title."
+              # City Law Slug - using select widget with explicit options for reliability
+              - label: "City Law Identifier"
+                name: "law_slug"
+                widget: "select"
+                required: true
+                hint: "Which city law's master document was updated?"
+                options:
+                  # City Charter
+                  - { label: "Icenia City Charter", value: "city-charter" }
+                  # City Ordinances
+                  - { label: "Zoning Ordinance", value: "zoning-ordinance" }
+                  - { label: "Shop Regulations", value: "shop-regulations" }
+                  - { label: "Public Spaces Act", value: "public-spaces-act" }
+              # Incorporated At
+              - label: "Date Incorporated"
+                name: "incorporated_at"
+                widget: "datetime"
+                required: true
+                format: "YYYY-MM-DD HH:mm:00 Z"
+                hint: "When was the master document updated to reflect this change?"
+              # Incorporated By
+              - label: "Incorporated By"
+                name: "incorporated_by"
+                widget: "string"
+                required: true
+                hint: "Your name/username - who updated the master document?"
+              # Notes
+              - label: "Notes"
+                name: "notes"
+                widget: "text"
+                required: false
+                hint: "Optional notes about this incorporation (e.g., what sections were changed)"
       - label: "Government Officials"
         name: "officials"
         file: "src/data/officials.yml"

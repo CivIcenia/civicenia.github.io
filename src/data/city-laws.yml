@@ -3,29 +3,29 @@ entries:
     slug: city-charter
     name: Icenia City Charter
     fullname: The Charter of Icenia City
-    googledoc: /public/archive/Icenia-City-Charter.pdf
+    masterdoc: /public/archive/Icenia-City-Charter.pdf
     kind: charter
   - hidden: true
     slug: building-code
     name: City Building Code
     fullname: Icenia City Building Standards and Regulations
-    googledoc: https://docs.google.com/document/d/example-building-code/preview
+    masterdoc: https://docs.google.com/document/d/example-building-code/preview
     kind: ordinance
   - hidden: false
     slug: zoning-ordinance
     name: Zoning Ordinance
     fullname: Icenia City Zoning and Land Use Ordinance
-    googledoc: https://docs.google.com/document/d/example-zoning/preview
+    masterdoc: https://docs.google.com/document/d/example-zoning/preview
     kind: ordinance
   - hidden: false
     slug: shop-regulations
     name: Shop Regulations
     fullname: Commercial District and Shop Regulations
-    googledoc: https://docs.google.com/document/d/example-shop-regs/preview
+    masterdoc: https://docs.google.com/document/d/example-shop-regs/preview
     kind: ordinance
   - hidden: false
     slug: public-spaces-act
     name: Public Spaces Act
     fullname: Maintenance and Use of Public Spaces Act
-    googledoc: https://docs.google.com/document/d/example-public-spaces/preview
+    masterdoc: https://docs.google.com/document/d/example-public-spaces/preview
     kind: ordinance

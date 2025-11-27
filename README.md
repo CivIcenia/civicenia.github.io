@@ -173,6 +173,33 @@ If you clicked on **In Review** instead, this means you do not have edit permiss
       - The polygon should now be part of that feature, though it may be hidden beneath the original polygon you drew.
 
 
+- Law Incorporations (Republic Laws):
+  - When the Senate passes an amendment, you need to update the master document (Google Doc) and log the incorporation
+  - Visit https://civicenia.github.io/laws/incorporations/ to see pending incorporations
+  - **Using the CMS:**
+    - Go to Data → Law Incorporations Log in the CMS
+    - Click "Add incorporations +"
+    - For "Change Article Slugs", search and select one or more acts that were incorporated (multi-select supported)
+    - Select the law from the "Law Identifier" dropdown
+    - Fill in the date, your name, and optional notes
+    - Click Publish
+  - **Direct file edit:**
+    - Edit `src/data/law-incorporations.yml` directly
+    - Use `change_slugs` (array) for multiple acts, or `change_slug` (string) for a single act
+
+- City Law Incorporations:
+  - When the City Council passes an amendment, update the master document and log the incorporation
+  - Visit https://civicenia.github.io/icenia-city/laws/incorporations/ to see pending incorporations
+  - **Using the CMS:**
+    - Go to Data → City Law Incorporations Log in the CMS
+    - Click "Add incorporations +"
+    - For "Change Article Slugs", search and select one or more city acts (multi-select supported)
+    - Select the city law from the "City Law Identifier" dropdown
+    - Fill in the date, your name, and optional notes
+    - Click Publish
+  - **Direct file edit:**
+    - Edit `src/data/city-law-incorporations.yml` directly
+
 - Officials:
   - **NOTE:** Officials are now managed automatically through Official Change posts (see above)
   - The officials pages (`government/officials` and `icenia-city/council`) read from YAML data files

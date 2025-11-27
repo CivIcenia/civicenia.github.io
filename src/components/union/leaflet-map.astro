@@ -43,22 +43,33 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
     <div class="map-legend" id="map-legend">
         <div class="legend-section">
             <h4>Territories</h4>
-            <div class="legend-items">
-                {territories.map((territory) => (
-                    <div class="legend-item" data-id={territory.id}>
-                        <span class="legend-color" style={`background-color: ${territory.color};`}></span>
-                        <span class="legend-name">{territory.displayName}</span>
+            <div class="scroll-container">
+                <div class="legend-items" id="legend-items">
+                    {territories.map((territory) => (
+                        <div class="legend-item" data-id={territory.id}>
+                            <span class="legend-color" style={`background-color: ${territory.color};`}></span>
+                            <span class="legend-name">{territory.displayName}</span>
+                        </div>
+                    ))}
+                </div>
+                <div class="scroll-indicator" id="scroll-indicator">
+                    <div class="scroll-track">
+                        <div class="scroll-thumb"></div>
                     </div>
-                ))}
+                </div>
             </div>
         </div>
         <div class="legend-info-section">
-            <div class="legend-info-content" id="info-panel-content">
-                <div class="info-placeholder">Hover over a territory to see details</div>
+            <div class="scroll-container scroll-container-info">
+                <div class="legend-info-content" id="info-panel-content">
+                    <div class="info-placeholder">Hover over a territory to see details</div>
+                </div>
+                <div class="scroll-indicator" id="scroll-indicator-info">
+                    <div class="scroll-track">
+                        <div class="scroll-thumb"></div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="legend-toggle" id="legend-toggle">
-            <span class="toggle-icon">◀</span>
         </div>
     </div>
     
@@ -89,13 +100,13 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
     
     /* Tile layer brightness - controlled by JS hover state */
     :global(.leaflet-tile-pane) {
-        filter: brightness(0.7);
+        filter: brightness(1);
         transition: filter 0.3s ease;
     }
     
     /* Dim tiles when hovering over a territory */
     .leaflet-map-container.territory-hover :global(.leaflet-tile-pane) {
-        filter: brightness(0.4);
+        filter: brightness(0.6);
     }
     
     .map-legend {
@@ -109,9 +120,10 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         padding: 16px;
+        padding-right: 10px; /* Adjust for scroll indicator */
         border-radius: 12px;
         font-size: 12px;
-        z-index: 1000;
+        z-index: 997;
         transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.08);
@@ -121,7 +133,7 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
     
     .legend-section {
         flex-shrink: 0;
-        overflow: hidden;
+        padding-right: 6px; /* Space for scroll indicator */
     }
     
     .legend-section h4 {
@@ -134,13 +146,82 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
         letter-spacing: 1px;
     }
     
+    .scroll-container {
+        position: relative;
+        display: flex;
+        overflow: visible;
+        /* gap: 6px; */
+    }
+    
     .legend-items {
         display: flex;
         flex-direction: column;
         gap: 4px;
         max-height: 200px;
-        overflow: hidden;
+        overflow-x: hidden;
         overflow-y: auto;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+        flex: 1;
+    }
+    
+    .legend-items::-webkit-scrollbar {
+        display: none; /* Chrome/Safari/Opera */
+    }
+    
+    /* Custom scroll indicator */
+    .scroll-indicator {
+        position: absolute;
+        width: 3px;
+        height: 100%;
+        right: -6px;
+        top: 0;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .scroll-container:hover .scroll-indicator,
+    .scroll-indicator.visible {
+        opacity: 1;
+    }
+    
+    .scroll-track {
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .scroll-thumb {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 30%;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.3));
+        border-radius: 2px;
+        transition: top 0.1s ease-out;
+        box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+    }
+    
+    .scroll-thumb::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), transparent);
+        border-radius: 2px;
+        animation: scrollGlow 2s ease-in-out infinite;
+    }
+    
+    @keyframes scrollGlow {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 0.8; }
+    }
+    
+    .scroll-indicator.at-bottom .scroll-thumb::after {
+        animation: none;
+        opacity: 0.2;
     }
     
     .legend-info-section {
@@ -148,16 +229,31 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
         min-height: 0;
         margin-top: 16px;
         padding-top: 16px;
+        padding-right: 6px; /* Space for scroll indicator */
         border-top: 1px solid rgba(255, 255, 255, 0.1);
         display: flex;
         flex-direction: column;
+        overflow: hidden;
+    }
+    
+    .scroll-container-info {
+        flex: 1;
+        min-height: 0;
+        overflow: visible;
     }
     
     .legend-info-content {
         flex: 1;
         min-height: 0;
+        max-height: 100%;
         overflow-y: auto;
         color: rgba(255, 255, 255, 0.9);
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+    }
+    
+    .legend-info-content::-webkit-scrollbar {
+        display: none; /* Chrome/Safari/Opera */
     }
     
     @keyframes legendSlideIn {
@@ -244,41 +340,12 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
         color: rgba(255, 255, 255, 1);
     }
     
-    .legend-toggle {
-        position: absolute;
-        top: 50%;
-        left: -28px;
-        transform: translateY(-50%);
-        background: rgba(20, 20, 35, 0.92);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        width: 28px;
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 8px 0 0 8px;
-        cursor: pointer;
-        box-shadow: -4px 0 12px rgba(0, 0, 0, 0.3);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-right: none;
-        transition: all 0.2s ease;
-    }
-    
-    .legend-toggle:hover {
-        background: rgba(40, 40, 60, 0.95);
-        width: 32px;
-    }
-    
     .toggle-icon {
         transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         font-size: 14px;
         color: rgba(255, 255, 255, 0.7);
     }
-    
-    .legend-toggle:hover .toggle-icon {
-        color: rgba(255, 255, 255, 1);
-    }
+
     
     .map-legend.collapsed .toggle-icon {
         transform: rotate(180deg);
@@ -792,8 +859,10 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
                 if (selectedTerritoryId !== territory.id) {
                     group.setStyle({
                         fillOpacity: 0.5,
-                        weight: 3
+                        weight: 3,
+                        color: '#ffffff'
                     });
+                    group.bringToFront();
                 }
                 // Show territory info in panel on hover
                 showInfoPanel(territory);
@@ -805,7 +874,8 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
                 if (selectedTerritoryId !== territory.id) {
                     group.setStyle({
                         fillOpacity: selectedTerritoryId ? 0.15 : 0.35,
-                        weight: 2
+                        weight: 2,
+                        color: territory.color
                     });
                 }
                 // If no territory is selected, show placeholder
@@ -920,12 +990,15 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
             // Update all polygon styles
             polygonLayers.forEach((group, id) => {
                 if (id === territoryId) {
-                    // Selected territory: bright and prominent
+                    // Selected territory: bright and prominent with white border
                     group.setStyle({
                         fillOpacity: 0.6,
                         weight: 4,
-                        opacity: 1
+                        opacity: 1,
+                        color: '#ffffff'
                     });
+                    // Bring selected territory to front
+                    group.bringToFront();
                     // Add pulse class for animation
                     group.eachLayer(layer => {
                         if (layer._path) {
@@ -934,18 +1007,32 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
                         }
                     });
                 } else {
-                    // Other territories: dimmed
+                    // Other territories: dimmed, restore original color
+                    const otherTerritory = territories.find(t => t.id === id);
                     group.setStyle({
                         fillOpacity: 0.15,
                         weight: 1,
-                        opacity: 0.6
+                        opacity: 0.6,
+                        color: otherTerritory ? otherTerritory.color : group.territoryData?.color
                     });
                 }
             });
             
             // Zoom to selected territory with animation
+            // Calculate offset to account for the legend panel on the right
+            const mapDiv = document.getElementById('icenia-map');
+            const legendDiv = document.getElementById('map-legend');
+            const legendWidth = legendDiv ? legendDiv.offsetWidth : 200;
+            const mapWidth = mapDiv ? mapDiv.offsetWidth : 800;
+            
+            // Calculate padding: more on the right to shift view left
+            const rightPadding = legendWidth + 30; // legend width + some margin
+            const leftPadding = 50;
+            const verticalPadding = 50;
+            
             map.fitBounds(selectedGroup.getBounds(), { 
-                padding: [80, 80],
+                paddingTopLeft: [leftPadding, verticalPadding],
+                paddingBottomRight: [rightPadding, verticalPadding],
                 animate: true,
                 duration: 0.5
             });
@@ -970,12 +1057,14 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
             selectedTerritoryId = null;
             const legendItems = document.querySelectorAll('.legend-item');
             
-            // Reset all polygon styles
-            polygonLayers.forEach(group => {
+            // Reset all polygon styles to original colors
+            polygonLayers.forEach((group, id) => {
+                const territory = territories.find(t => t.id === id);
                 group.setStyle({
                     fillOpacity: 0.35,
                     weight: 2,
-                    opacity: 0.8
+                    opacity: 0.8,
+                    color: territory ? territory.color : group.territoryData?.color
                 });
             });
             
@@ -1017,8 +1106,10 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
                 if (group && selectedTerritoryId !== id) {
                     group.setStyle({
                         fillOpacity: selectedTerritoryId ? 0.3 : 0.6,
-                        weight: 4
+                        weight: 4,
+                        color: '#ffffff'
                     });
+                    group.bringToFront();
                 }
                 // Show territory info in panel on legend hover
                 const territory = territories.find(t => t.id === id);
@@ -1032,9 +1123,11 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
             item.addEventListener('mouseleave', () => {
                 const group = polygonLayers.get(id);
                 if (group && selectedTerritoryId !== id) {
+                    const territory = territories.find(t => t.id === id);
                     group.setStyle({
                         fillOpacity: selectedTerritoryId ? 0.15 : 0.35,
-                        weight: 2
+                        weight: 2,
+                        color: territory ? territory.color : group.territoryData?.color
                     });
                 }
                 // Reset info panel if no territory selected
@@ -1054,14 +1147,66 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
             });
         });
         
-        // Legend toggle
-        const legend = document.getElementById('map-legend');
-        const toggle = document.getElementById('legend-toggle');
-        if (toggle && legend) {
-            toggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                legend.classList.toggle('collapsed');
+        // Custom scroll indicator helper function
+        function setupScrollIndicator(scrollEl, indicatorEl) {
+            if (!scrollEl || !indicatorEl) return;
+            
+            const scrollThumb = indicatorEl.querySelector('.scroll-thumb');
+            
+            function updateScrollIndicator() {
+                const { scrollTop, scrollHeight, clientHeight } = scrollEl;
+                const scrollableHeight = scrollHeight - clientHeight;
+                
+                // Hide indicator if no scrolling needed
+                if (scrollableHeight <= 0) {
+                    indicatorEl.style.display = 'none';
+                    return;
+                }
+                indicatorEl.style.display = 'block';
+                
+                // Calculate thumb position (0 to 70% to leave room for thumb height)
+                const scrollPercent = scrollTop / scrollableHeight;
+                const thumbTop = scrollPercent * 70;
+                scrollThumb.style.top = thumbTop + '%';
+                
+                // Add/remove at-bottom class to stop glow animation
+                if (scrollPercent > 0.95) {
+                    indicatorEl.classList.add('at-bottom');
+                } else {
+                    indicatorEl.classList.remove('at-bottom');
+                }
+                
+                // Show indicator briefly when scrolling
+                indicatorEl.classList.add('visible');
+            }
+            
+            scrollEl.addEventListener('scroll', updateScrollIndicator);
+            
+            // Initial check
+            updateScrollIndicator();
+            
+            // Return update function for external calls (e.g., when content changes)
+            return updateScrollIndicator;
+        }
+        
+        // Setup scroll indicator for legend items
+        const legendItemsEl = document.getElementById('legend-items');
+        const scrollIndicator = document.getElementById('scroll-indicator');
+        setupScrollIndicator(legendItemsEl, scrollIndicator);
+        
+        // Setup scroll indicator for info panel
+        const infoPanelEl = document.getElementById('info-panel-content');
+        const scrollIndicatorInfo = document.getElementById('scroll-indicator-info');
+        const updateInfoScrollIndicator = setupScrollIndicator(infoPanelEl, scrollIndicatorInfo);
+        
+        // Update info panel scroll indicator when content changes
+        // We need to observe mutations since content is dynamically inserted
+        if (infoPanelEl && updateInfoScrollIndicator) {
+            const observer = new MutationObserver(() => {
+                // Small delay to let content render
+                setTimeout(updateInfoScrollIndicator, 50);
             });
+            observer.observe(infoPanelEl, { childList: true, subtree: true });
         }
     });
 </script>
