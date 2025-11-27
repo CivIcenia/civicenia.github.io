@@ -1,30 +1,23 @@
-# City Councillors Data
-# This file is managed through Decap CMS and synced from City Official Change posts
-# Use https://toolscord.com/ to get Discord profile pictures
-
-council_term: "Current Term"
-
+council_term: Current Term
 mayor:
-  name: "CreepilyCreep"
-  icon: "https://cdn.discordapp.com/embed/avatars/0.png"
-
+  name: Ratat0ing
+  icon: https://cdn.discordapp.com/embed/avatars/0.png
 deputy_mayor:
   name: ""
-  icon: "https://cdn.discordapp.com/embed/avatars/0.png"
-
+  icon: https://cdn.discordapp.com/embed/avatars/0.png
 councillors:
   - seat: 1
-    name: "Dr_Bacon_Hair"
-    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
+    name: CreepilyCreep
+    icon: https://cdn.discordapp.com/embed/avatars/0.png
   - seat: 2
-    name: "Ratat0ing"
-    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
+    name: EscarchaKing333
+    icon: https://cdn.discordapp.com/embed/avatars/0.png
   - seat: 3
-    name: "JuniorTide"
-    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
+    name: HsmNewfriend
+    icon: https://cdn.discordapp.com/embed/avatars/0.png
   - seat: 4
-    name: "SpeedyJustice"
-    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
+    name: Ratat0ing
+    icon: https://cdn.discordapp.com/embed/avatars/0.png
   - seat: 5
-    name: "ping"
-    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
+    name: TheRecycler
+    icon: https://cdn.discordapp.com/embed/avatars/0.png
