@@ -1,0 +1,1067 @@
+---
+/**
+ * Interactive Leaflet Map of Icenian Territories
+ * Uses CivMC map tiles from map.civinfo.net as background
+ * with territory polygon overlays supporting named subregions
+ */
+import { territories as allTerritories, type Territory, type SubRegion } from "@data/territories";
+
+const BASE = (import.meta.env.BASE_URL ?? "/");
+
+// Filter and prepare territories for display
+// Territories now get their polygon computed from subregions
+const territories = allTerritories
+    .filter(t => t.subregions && t.subregions.length > 0)
+    .map(t => ({
+        ...t,
+        displayName: t.name === "Icenia" ? "Icenia Federal Territory" : 
+                     t.name === "Alenarith Protectorate" ? "Cortesia Del Mar" : 
+                     t.name
+    }));
+
+// Serialize territories for client-side use
+// Keep coordinates as [x, z] - we'll convert in JS with proper CRS handling
+const territoriesJson = JSON.stringify(territories.map(t => ({
+    name: t.displayName,
+    id: t.id,
+    color: t.color,
+    notes: t.notes,
+    // All polygon data now comes from subregions
+    subregions: t.subregions?.map(sr => ({
+        name: sr.name,
+        color: sr.color,
+        polygon: sr.polygon,
+        isCutout: sr.isCutout
+    }))
+})));
+---
+
+<div class="leaflet-map-container">
+    <div id="icenia-map" class="leaflet-map"></div>
+    
+    <!-- Legend with integrated info panel -->
+    <div class="map-legend" id="map-legend">
+        <div class="legend-section">
+            <h4>Territories</h4>
+            <div class="legend-items">
+                {territories.map((territory) => (
+                    <div class="legend-item" data-id={territory.id}>
+                        <span class="legend-color" style={`background-color: ${territory.color};`}></span>
+                        <span class="legend-name">{territory.displayName}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+        <div class="legend-info-section">
+            <div class="legend-info-content" id="info-panel-content">
+                <div class="info-placeholder">Hover over a territory to see details</div>
+            </div>
+        </div>
+        <div class="legend-toggle" id="legend-toggle">
+            <span class="toggle-icon">◀</span>
+        </div>
+    </div>
+    
+    <!-- Controls info -->
+    <div class="map-controls-info">
+        <span>🖱️ Scroll to zoom • Drag to pan</span>
+    </div>
+</div>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+<style>
+    .leaflet-map-container {
+        position: relative;
+        width: 100%;
+        border-radius: 12px;
+        overflow: hidden;
+        margin: 20px 0;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+    
+    .leaflet-map {
+        width: 100%;
+        height: 550px;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    }
+    
+    /* Tile layer brightness - controlled by JS hover state */
+    :global(.leaflet-tile-pane) {
+        filter: brightness(0.7);
+        transition: filter 0.3s ease;
+    }
+    
+    /* Dim tiles when hovering over a territory */
+    .leaflet-map-container.territory-hover :global(.leaflet-tile-pane) {
+        filter: brightness(0.4);
+    }
+    
+    .map-legend {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        bottom: 10px;
+        display: flex;
+        flex-direction: column;
+        background: rgba(20, 20, 35, 0.92);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 16px;
+        border-radius: 12px;
+        font-size: 12px;
+        z-index: 1000;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        animation: legendSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        width: 200px;
+    }
+    
+    .legend-section {
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+    
+    .legend-section h4 {
+        margin: 0 0 12px 0;
+        font-size: 13px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        padding-right: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .legend-items {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        max-height: 200px;
+        overflow: hidden;
+        overflow-y: auto;
+    }
+    
+    .legend-info-section {
+        flex: 1;
+        min-height: 0;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .legend-info-content {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        color: rgba(255, 255, 255, 0.9);
+    }
+    
+    @keyframes legendSlideIn {
+        from {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    .map-legend.collapsed {
+        transform: translateX(calc(100% - 30px));
+    }
+    
+    .map-legend.collapsed .legend-section,
+    .map-legend.collapsed .legend-info-section {
+        opacity: 0;
+        pointer-events: none;
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 10px;
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 8px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .legend-item::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 0;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.15), transparent);
+        transition: width 0.3s ease;
+    }
+    
+    .legend-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateX(4px);
+    }
+    
+    .legend-item:hover::before {
+        width: 100%;
+    }
+    
+    .legend-item.active {
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+    }
+    
+    .legend-color {
+        width: 18px;
+        height: 18px;
+        border-radius: 5px;
+        flex-shrink: 0;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .legend-item:hover .legend-color {
+        transform: scale(1.15);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+    
+    .legend-name {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 13px;
+        font-weight: 500;
+        transition: color 0.2s ease;
+    }
+    
+    .legend-item:hover .legend-name {
+        color: rgba(255, 255, 255, 1);
+    }
+    
+    .legend-toggle {
+        position: absolute;
+        top: 50%;
+        left: -28px;
+        transform: translateY(-50%);
+        background: rgba(20, 20, 35, 0.92);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        width: 28px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px 0 0 8px;
+        cursor: pointer;
+        box-shadow: -4px 0 12px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-right: none;
+        transition: all 0.2s ease;
+    }
+    
+    .legend-toggle:hover {
+        background: rgba(40, 40, 60, 0.95);
+        width: 32px;
+    }
+    
+    .toggle-icon {
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .legend-toggle:hover .toggle-icon {
+        color: rgba(255, 255, 255, 1);
+    }
+    
+    .map-legend.collapsed .toggle-icon {
+        transform: rotate(180deg);
+    }
+    
+    .map-controls-info {
+        position: absolute;
+        bottom: 12px;
+        left: 12px;
+        background: rgba(20, 20, 35, 0.85);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: rgba(255, 255, 255, 0.8);
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-size: 12px;
+        z-index: 1000;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        animation: fadeInUp 0.6s ease forwards;
+        animation-delay: 0.3s;
+        opacity: 0;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Leaflet popup styling */
+    :global(.leaflet-popup-content-wrapper) {
+        background: rgba(20, 20, 35, 0.95) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 12px !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+        animation: popupFadeIn 0.25s ease forwards;
+    }
+    
+    @keyframes popupFadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    :global(.leaflet-popup-tip) {
+        background: rgba(20, 20, 35, 0.95) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    :global(.leaflet-popup-close-button) {
+        color: rgba(255, 255, 255, 0.6) !important;
+        font-size: 20px !important;
+        transition: color 0.2s ease !important;
+    }
+    
+    :global(.leaflet-popup-close-button:hover) {
+        color: rgba(255, 255, 255, 1) !important;
+    }
+    
+    :global(.territory-popup) {
+        font-family: "nta", Arial, sans-serif;
+    }
+    
+    :global(.territory-popup h3) {
+        margin: 0 0 10px 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.95);
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    :global(.territory-popup p) {
+        margin: 0;
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.5;
+    }
+    
+    :global(.territory-popup .subregion-list) {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    :global(.territory-popup .subregion-list strong) {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    :global(.territory-popup .subregion-item) {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.65);
+        padding: 4px 0;
+        transition: color 0.2s ease;
+    }
+    
+    :global(.territory-popup .subregion-item:hover) {
+        color: rgba(255, 255, 255, 0.9);
+    }
+    
+    :global(.subregion-tooltip) {
+        background: rgba(20, 20, 35, 0.95) !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 8px !important;
+        color: rgba(255, 255, 255, 0.95) !important;
+        font-size: 12px !important;
+        padding: 6px 12px !important;
+        font-weight: 500;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    :global(.subregion-tooltip::before) {
+        display: none !important;
+    }
+    
+    /* Territory polygon animations */
+    :global(.territory-layer) {
+        transition: fill-opacity 0.3s ease, stroke-width 0.3s ease, stroke-opacity 0.3s ease !important;
+    }
+    
+    /* Pulse animation for selected territory */
+    :global(.territory-pulse) {
+        animation: territoryPulse 0.6s ease-out !important;
+    }
+    
+    @keyframes territoryPulse {
+        0% {
+            stroke-width: 4px;
+            filter: drop-shadow(0 0 0 currentColor);
+        }
+        50% {
+            stroke-width: 8px;
+            filter: drop-shadow(0 0 20px currentColor);
+        }
+        100% {
+            stroke-width: 4px;
+            filter: drop-shadow(0 0 8px currentColor);
+        }
+    }
+    
+    /* Selected territory glow effect */
+    :global(.territory-selected) {
+        filter: drop-shadow(0 0 10px currentColor);
+    }
+
+    /* Zoom controls styling */
+    :global(.leaflet-control-zoom) {
+        border: none !important;
+        border-radius: 10px !important;
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    :global(.leaflet-control-zoom a) {
+        background: rgba(20, 20, 35, 0.92) !important;
+        color: rgba(255, 255, 255, 0.8) !important;
+        border: none !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        width: 36px !important;
+        height: 36px !important;
+        line-height: 36px !important;
+        font-size: 18px !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    :global(.leaflet-control-zoom a:last-child) {
+        border-bottom: none !important;
+    }
+    
+    :global(.leaflet-control-zoom a:hover) {
+        background: rgba(40, 40, 60, 0.95) !important;
+        color: rgba(255, 255, 255, 1) !important;
+    }
+    
+    :global(.leaflet-control-attribution) {
+        background: rgba(20, 20, 35, 0.8) !important;
+        color: rgba(255, 255, 255, 0.6) !important;
+        padding: 4px 8px !important;
+        border-radius: 6px 0 0 0 !important;
+        font-size: 11px !important;
+    }
+    
+    :global(.leaflet-control-attribution a) {
+        color: rgba(255, 255, 255, 0.8) !important;
+    }
+    
+    /* Remove focus outline from interactive map elements */
+    :global(.leaflet-interactive) {
+        outline: none !important;
+    }
+    
+    :global(.leaflet-interactive:focus) {
+        outline: none !important;
+    }
+    
+    :global(.leaflet-container:focus) {
+        outline: none !important;
+    }
+    
+    /* Info Section Styles (inside legend) - using :global() for dynamically inserted content */
+    :global(.info-placeholder) {
+        color: rgba(255, 255, 255, 0.4) !important;
+        font-size: 12px;
+        text-align: center;
+        font-style: italic;
+        padding: 10px 0;
+    }
+    
+    :global(.info-panel-header) {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    :global(.info-panel-color) {
+        width: 18px;
+        height: 18px;
+        border-radius: 5px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        flex-shrink: 0;
+    }
+    
+    :global(.info-panel-title) {
+        font-size: 13px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0;
+    }
+    
+    :global(.info-panel-notes) {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.5;
+        margin-bottom: 10px;
+    }
+    
+    :global(.info-panel-subregions) {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 10px;
+    }
+    
+    :global(.info-panel-subregions-title) {
+        font-size: 11px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.6);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+    }
+    
+    :global(.info-panel-subregion) {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.65);
+        padding: 3px 0;
+    }
+
+    @media (max-width: 768px) {
+        .leaflet-map {
+            height: 400px;
+        }
+        
+        .map-legend {
+            max-width: 180px;
+            font-size: 11px;
+            padding: 12px;
+            width: auto;
+        }
+        
+        .legend-section h4 {
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .legend-items {
+            max-height: 150px;
+        }
+        
+        .legend-item {
+            padding: 6px 8px;
+        }
+        
+        .legend-name {
+            font-size: 11px;
+        }
+        
+        .legend-color {
+            width: 14px;
+            height: 14px;
+        }
+        
+        .map-controls-info {
+            font-size: 11px;
+            padding: 6px 10px;
+        }
+        
+        .info-panel-title {
+            font-size: 12px;
+        }
+    }
+</style>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<script define:vars={{ territoriesJson }}>
+    document.addEventListener('DOMContentLoaded', () => {
+        const territories = JSON.parse(territoriesJson);
+        
+        // CivMC tile server uses custom URL format:
+        // https://civmc-map.duckdns.org/tiles/terrain/z{zoom}/{x},{z}.png
+        // Tiles are 256x256 pixels, at zoom 0 each tile covers 256 blocks
+        // Minecraft coords: x increases east, z increases south
+        
+        // For Leaflet Simple CRS, we'll use [z, x] directly
+        // This means north is negative z (up on screen), south is positive z (down)
+        // But Leaflet y increases upward, so we need to handle this
+        
+        // Convert Minecraft [x, z] to Leaflet [lat, lng]
+        // We use z directly for lat, x for lng
+        // The map will appear "upside down" from typical Leaflet usage
+        // but will match CivMC orientation (north = up requires negative z)
+        function mcToLatLng(x, z) {
+            // Use z for lat (vertical), x for lng (horizontal)
+            // Negate z so north (negative MC z) is up (positive Leaflet y)
+            if (typeof x !== 'number' || typeof z !== 'number' || isNaN(x) || isNaN(z)) {
+                console.error('Invalid coord:', x, z);
+                return [0, 0];
+            }
+            return [-z, x];
+        }
+        
+        // Convert a polygon ring from MC coords to Leaflet coords
+        function convertRing(ring) {
+            if (!Array.isArray(ring)) {
+                console.error('convertRing called with non-array:', ring);
+                return [];
+            }
+            return ring.map(coord => {
+                if (!Array.isArray(coord) || coord.length < 2) {
+                    console.error('Invalid coord in ring:', coord);
+                    return [0, 0];
+                }
+                const [x, z] = coord;
+                return mcToLatLng(x, z);
+            });
+        }
+        
+        // Check if polygon data is multi-ring (has holes)
+        // Single ring: [[x,z], [x,z], ...] - first element is [number, number]
+        // Multi-ring: [[[x,z], ...], [[x,z], ...]] - first element is array of [number, number]
+        function isMultiRing(polygon) {
+            return Array.isArray(polygon[0]) && Array.isArray(polygon[0][0]);
+        }
+        
+        // Convert polygon (single or multi-ring) to Leaflet format
+        // For Leaflet L.polygon():
+        // - Simple polygon: [[lat,lng], [lat,lng], ...]
+        // - Polygon with holes: [[[lat,lng]...], [[lat,lng]...]] where first is outer, rest are holes
+        function convertPolygon(polygon) {
+            if (!polygon || !Array.isArray(polygon) || polygon.length === 0) {
+                console.error('Invalid polygon data:', polygon);
+                return [];
+            }
+            
+            // Debug: log first few coords to understand format
+            // console.log('Converting polygon, first elem:', polygon[0], 'isMultiRing:', isMultiRing(polygon));
+            
+            if (isMultiRing(polygon)) {
+                // Multi-ring polygon (with holes): convert each ring
+                // Returns format: [[[lat,lng]...], [[lat,lng]...], ...]
+                const result = polygon.map(ring => convertRing(ring));
+                // console.log('Multi-ring result structure:', result.length, 'rings');
+                return result;
+            } else {
+                // Single ring: return as simple polygon format [[lat,lng], [lat,lng], ...]
+                const result = convertRing(polygon);
+                // console.log('Single-ring result, points:', result.length);
+                return result;
+            }
+        }
+        
+        // Initialize map with Simple CRS (no projection, just pixel coords)
+        const map = L.map('icenia-map', {
+            crs: L.CRS.Simple,
+            minZoom: -5,
+            maxZoom: 0,
+            zoomSnap: 0.5,
+            zoomDelta: 0.5,
+            attributionControl: false
+        });
+        
+        // Set an initial view - required before adding layers to prevent clipping errors
+        // This will be overwritten by fitBounds later
+        map.setView([0, 0], -3);
+        
+        // Custom tile layer for CivMC with correct URL format
+        // CivMC tiles: z{zoom}/{x},{z}.png where x,z are tile indices
+        // At zoom level z, each tile covers 256 * 2^(-z) blocks
+        // Tile (0,0) at zoom 0 covers world blocks (0-255, 0-255)
+        const CivMCTileLayer = L.TileLayer.extend({
+            getTileUrl: function(coords) {
+                const zoom = coords.z;
+                // Leaflet tile coords at this zoom
+                // coords.x = horizontal tile index
+                // coords.y = vertical tile index (increases downward in Leaflet internals)
+                // 
+                // Our coordinate mapping: lat = -mcZ, lng = mcX
+                // So Leaflet's y (which represents lat) = -mcZ
+                // Therefore: mcZ = -lat
+                // 
+                // For tiles, Leaflet y increases "downward" in tile coordinates
+                // but we've mapped lat = -z, so larger y = larger -z = smaller z (more north)
+                // We need to flip: tileZ = -coords.y - 1
+                const tileX = coords.x;
+                const tileZ = coords.y;
+                return `https://civmc-map.duckdns.org/tiles/terrain/z${zoom}/${tileX},${tileZ}.png`;
+            }
+        });
+        
+        // Add the custom tile layer
+        new CivMCTileLayer('', {
+            minZoom: -5,
+            maxZoom: 0,
+            maxNativeZoom: 0,
+            minNativeZoom: -5,
+            tileSize: 256,
+            noWrap: true,
+            errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
+        }).addTo(map);
+        
+        // Add attribution
+        L.control.attribution({
+            prefix: '<a href="https://map.civinfo.net" target="_blank">CivMap</a>'
+        }).addTo(map);
+        
+        // Store polygon layers for interaction
+        const polygonLayers = new Map();
+        
+        // Add territory polygons from subregions
+        territories.forEach(territory => {
+            if (!territory.subregions || territory.subregions.length === 0) return;
+            
+            // Filter to non-cutout subregions for main territory display
+            const mainSubregions = territory.subregions.filter(sr => !sr.isCutout);
+            if (mainSubregions.length === 0) return;
+            
+            // Create polygons from all non-cutout subregions
+            // Each subregion can have a single ring or multiple rings (with holes)
+            const polygons = [];
+            mainSubregions.forEach(sr => {
+                try {
+                    const latLngs = convertPolygon(sr.polygon);
+                    if (!latLngs || latLngs.length === 0) {
+                        console.warn(`Empty polygon for ${territory.name} - ${sr.name}`);
+                        return;
+                    }
+                    const poly = L.polygon(latLngs, {
+                        color: territory.color,
+                        weight: 2,
+                        opacity: 0.8,
+                        fillColor: territory.color,
+                        fillOpacity: 0.35,
+                        className: 'territory-layer'
+                    });
+                    
+                    // Add tooltip with subregion name directly to each polygon
+                    poly.bindTooltip(sr.name, {
+                        permanent: false,
+                        direction: 'center',
+                        className: 'subregion-tooltip'
+                    });
+                    
+                    polygons.push(poly);
+                } catch (e) {
+                    console.error(`Error creating polygon for ${territory.name} - ${sr.name}:`, e, sr.polygon);
+                }
+            });
+            
+            if (polygons.length === 0) return;
+            
+            // Create a feature group for this territory
+            const group = L.featureGroup(polygons).addTo(map);
+            polygonLayers.set(territory.id, group);
+            
+            // Store territory data for info panel
+            group.territoryData = territory;
+            
+            // Hover effects for main territory (only when not selected)
+            group.on('mouseover', () => {
+                if (selectedTerritoryId !== territory.id) {
+                    group.setStyle({
+                        fillOpacity: 0.5,
+                        weight: 3
+                    });
+                }
+                // Show territory info in panel on hover
+                showInfoPanel(territory);
+                // Dim tiles on hover
+                setTilesDimmed(true);
+            });
+            
+            group.on('mouseout', () => {
+                if (selectedTerritoryId !== territory.id) {
+                    group.setStyle({
+                        fillOpacity: selectedTerritoryId ? 0.15 : 0.35,
+                        weight: 2
+                    });
+                }
+                // If no territory is selected, show placeholder
+                if (!selectedTerritoryId) {
+                    hideInfoPanel();
+                } else {
+                    // Show the selected territory's info
+                    const selectedTerritory = territories.find(t => t.id === selectedTerritoryId);
+                    if (selectedTerritory) {
+                        showInfoPanel(selectedTerritory);
+                    }
+                }
+                // Restore tile brightness (unless a territory is selected)
+                if (!selectedTerritoryId) {
+                    setTilesDimmed(false);
+                }
+            });
+            
+            // Click to select territory
+            group.on('click', (e) => {
+                L.DomEvent.stopPropagation(e);
+                selectTerritory(territory.id);
+            });
+        });
+        
+        // Track selected territory
+        let selectedTerritoryId = null;
+        let initialBounds = null;
+        
+        // Fit map to show all territories
+        const allBounds = [];
+        polygonLayers.forEach(group => {
+            allBounds.push(group.getBounds());
+        });
+        if (allBounds.length > 0) {
+            const combinedBounds = allBounds.reduce((acc, bounds) => acc.extend(bounds), allBounds[0]);
+            initialBounds = combinedBounds;
+            map.fitBounds(combinedBounds, { padding: [20, 20] });
+        } else {
+            // Default view centered on Icenia City (approx -3900, -4600)
+            map.setView(mcToLatLng(-3900, -4600), -1);
+        }
+        
+        // Info panel functions
+        const infoPanel = document.getElementById('info-panel-content');
+        
+        function showInfoPanel(territory) {
+            if (!infoPanel) return;
+            
+            const displaySubregions = territory.subregions ? territory.subregions.filter(sr => !sr.isCutout) : [];
+            
+            let html = `
+                <div class="info-panel-header">
+                    <div class="info-panel-color" style="background-color: ${territory.color};"></div>
+                    <h3 class="info-panel-title">${territory.name}</h3>
+                </div>`;
+            
+            if (territory.notes) {
+                html += `<div class="info-panel-notes">${territory.notes}</div>`;
+            }
+            
+            if (displaySubregions.length > 1) {
+                html += `<div class="info-panel-subregions">
+                    <div class="info-panel-subregions-title">Regions</div>`;
+                displaySubregions.forEach(sr => {
+                    html += `<div class="info-panel-subregion">• ${sr.name}</div>`;
+                });
+                html += `</div>`;
+            }
+            
+            infoPanel.innerHTML = html;
+        }
+        
+        function hideInfoPanel() {
+            if (!infoPanel) return;
+            infoPanel.innerHTML = '<div class="info-placeholder">Hover over a territory to see details</div>';
+        }
+        
+        // Tile dimming helper function
+        const mapContainer = document.querySelector('.leaflet-map-container');
+        function setTilesDimmed(dimmed) {
+            if (mapContainer) {
+                if (dimmed) {
+                    mapContainer.classList.add('territory-hover');
+                } else {
+                    mapContainer.classList.remove('territory-hover');
+                }
+            }
+        }
+        
+        // Select territory function
+        function selectTerritory(territoryId) {
+            const legendItems = document.querySelectorAll('.legend-item');
+            
+            // If clicking the same territory, deselect
+            if (selectedTerritoryId === territoryId) {
+                deselectTerritory();
+                return;
+            }
+            
+            selectedTerritoryId = territoryId;
+            const selectedGroup = polygonLayers.get(territoryId);
+            
+            if (!selectedGroup) return;
+            
+            // Show territory info in panel
+            const territory = territories.find(t => t.id === territoryId);
+            if (territory) {
+                showInfoPanel(territory);
+            }
+            
+            // Update all polygon styles
+            polygonLayers.forEach((group, id) => {
+                if (id === territoryId) {
+                    // Selected territory: bright and prominent
+                    group.setStyle({
+                        fillOpacity: 0.6,
+                        weight: 4,
+                        opacity: 1
+                    });
+                    // Add pulse class for animation
+                    group.eachLayer(layer => {
+                        if (layer._path) {
+                            layer._path.classList.add('territory-pulse');
+                            setTimeout(() => layer._path.classList.remove('territory-pulse'), 600);
+                        }
+                    });
+                } else {
+                    // Other territories: dimmed
+                    group.setStyle({
+                        fillOpacity: 0.15,
+                        weight: 1,
+                        opacity: 0.6
+                    });
+                }
+            });
+            
+            // Zoom to selected territory with animation
+            map.fitBounds(selectedGroup.getBounds(), { 
+                padding: [80, 80],
+                animate: true,
+                duration: 0.5
+            });
+            
+            // Update legend highlight
+            legendItems.forEach(item => {
+                if (item.getAttribute('data-id') === territoryId) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
+            // Dim tiles when territory is selected
+            setTilesDimmed(true);
+        }
+        
+        // Deselect territory function
+        function deselectTerritory() {
+            if (!selectedTerritoryId) return;
+            
+            selectedTerritoryId = null;
+            const legendItems = document.querySelectorAll('.legend-item');
+            
+            // Reset all polygon styles
+            polygonLayers.forEach(group => {
+                group.setStyle({
+                    fillOpacity: 0.35,
+                    weight: 2,
+                    opacity: 0.8
+                });
+            });
+            
+            // Reset info panel
+            hideInfoPanel();
+            
+            // Zoom back to show all territories
+            if (initialBounds) {
+                map.fitBounds(initialBounds, { 
+                    padding: [20, 20],
+                    animate: true,
+                    duration: 0.5
+                });
+            }
+            
+            // Clear legend highlight
+            legendItems.forEach(item => item.classList.remove('active'));
+            
+            // Remove tile dimming
+            setTilesDimmed(false);
+        }
+        
+        // Click on map background to deselect
+        map.on('click', () => {
+            deselectTerritory();
+        });
+        
+        // Legend interaction
+        const legendItems = document.querySelectorAll('.legend-item');
+        legendItems.forEach(item => {
+            const id = item.getAttribute('data-id');
+            
+            item.addEventListener('click', () => {
+                selectTerritory(id);
+            });
+            
+            item.addEventListener('mouseenter', () => {
+                const group = polygonLayers.get(id);
+                if (group && selectedTerritoryId !== id) {
+                    group.setStyle({
+                        fillOpacity: selectedTerritoryId ? 0.3 : 0.6,
+                        weight: 4
+                    });
+                }
+                // Show territory info in panel on legend hover
+                const territory = territories.find(t => t.id === id);
+                if (territory) {
+                    showInfoPanel(territory);
+                }
+                // Dim tiles on legend hover
+                setTilesDimmed(true);
+            });
+            
+            item.addEventListener('mouseleave', () => {
+                const group = polygonLayers.get(id);
+                if (group && selectedTerritoryId !== id) {
+                    group.setStyle({
+                        fillOpacity: selectedTerritoryId ? 0.15 : 0.35,
+                        weight: 2
+                    });
+                }
+                // Reset info panel if no territory selected
+                if (!selectedTerritoryId) {
+                    hideInfoPanel();
+                } else {
+                    // Show selected territory's info
+                    const selectedTerritory = territories.find(t => t.id === selectedTerritoryId);
+                    if (selectedTerritory) {
+                        showInfoPanel(selectedTerritory);
+                    }
+                }
+                // Restore tile brightness (unless a territory is selected)
+                if (!selectedTerritoryId) {
+                    setTilesDimmed(false);
+                }
+            });
+        });
+        
+        // Legend toggle
+        const legend = document.getElementById('map-legend');
+        const toggle = document.getElementById('legend-toggle');
+        if (toggle && legend) {
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                legend.classList.toggle('collapsed');
+            });
+        }
+    });
+</script>

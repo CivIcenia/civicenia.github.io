@@ -145,10 +145,10 @@ body.menu-mode .icenia-hero {
     font-size: 1rem;
     line-height: 1.25;
     box-sizing: border-box;
-    transition: background-color 0.3s, color 0.3s;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
-.icenia-btn:hover, .icenia-btn:focus { background-color: #154f86; color: var(--icenia-white); }
+.icenia-btn:hover, .icenia-btn:focus { background-color: #154f86; border-color: #154f86; color: var(--icenia-white); }
 
 .icenia-btn-secondary {
     display: inline-block;
@@ -162,7 +162,7 @@ body.menu-mode .icenia-hero {
     line-height: 1.25;
 }
 
-.icenia-btn-secondary:hover, .icenia-btn-secondary:focus { background-color: var(--icenia-blue); color: var(--icenia-white); }
+.icenia-btn-secondary:hover, .icenia-btn-secondary:focus { background-color: var(--icenia-blue); border-color: var(--icenia-blue); color: var(--icenia-white); }
 
 .icenia-btn-tertiary {
     background: rgba(255,255,255,0.1);

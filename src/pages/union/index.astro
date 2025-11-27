@@ -1,5 +1,6 @@
 ---
 import PageLayout from "@layouts/page.astro";
+import LeafletMap from "@components/union/leaflet-map.astro";
 import { getBordersLink } from "@comptime";
 
 const BASE = (import.meta.env.BASE_URL ?? "/");
@@ -12,15 +13,17 @@ const states = [
         description: "The heartlands of Icenia, encompassing a large portion of the -,- quadrant. Stretches from lush forests and snowy mountains to sprawling plains and deserts.",
         color: "#3AB3DA",
         coordinates: "-4554 -4938",
-        notes: "Icenia's original territory established on 15th May 2022"
+        notes: "Icenia's original territory established on 15th May 2022",
+        flag: "icenia.png"
     },
     {
         name: "Icenia City",
         type: "Capital Territory",
         description: "The administrative and economic center of the Republic, hosting key government buildings, bustling markets, and the historic core of Icenian society.",
-        color: "#3AB3DA",
+        color: "#1D70B8",
         coordinates: "-3920, -4274",
-        notes: "Formed from federal territory on 19th November 2025"
+        notes: "Formed from federal territory on 19th November 2025",
+        flag: ""
     },
     {
         name: "Icarus",
@@ -28,7 +31,8 @@ const states = [
         description: "Desert and savanna biomes characterize this western frontier. Home to the legendary 'Ikea' vault and gateway to the western territories.",
         color: "#B22234",
         coordinates: "-5790 232",
-        notes: "Became a State of Icenia on 28th August 2024 via the Icarus-Icenia Merger"
+        notes: "Became a State of Icenia on 28th August 2024 via the Icarus-Icenia Merger",
+        flag: "icarus.svg"
     },
     {
         name: "Cortesia Del Mar",
@@ -36,7 +40,8 @@ const states = [
         description: "Comparatively recently returned sovereign nation that joined the Union. Coastal territory known for its maritime heritage and strategic southern position.",
         color: "#2F9AFF",
         coordinates: "2449 4460",
-        notes: "Became a State of Icenia on 23rd September 2024"
+        notes: "Became a State of Icenia on 23rd September 2024",
+        flag: "cdm.png"
     },
     {
         name: "Southshire",
@@ -44,7 +49,8 @@ const states = [
         description: "Historical territory with deep roots in Icenian culture. Home to Castle Batavia and the Batavian Plains. Once an allied and friendly nation to Icenia, later became a state.",
         color: "#013201",
         coordinates: "-7042 -4982",
-        notes: "Became a State of Icenia on 30th April 2023"
+        notes: "Became a State of Icenia on 30th April 2023",
+        flag: "southshire.png"
     },
     {
         name: "Riemark",
@@ -52,7 +58,8 @@ const states = [
         description: "Originally a small village, later achieved statehood through the Mandate of Selsey.",
         color: "#FFFF55",
         coordinates: "-2619 -4993",
-        notes: "Became a State of Icenia on 9th July 2024 via the Mandate of Selsey"
+        notes: "Became a State of Icenia on 9th July 2024 via the Mandate of Selsey",
+        flag: "riemark.png"
     },
 ];
 ---
@@ -122,6 +129,28 @@ const states = [
         border-radius: 4px;
     }
 
+    .state-flag {
+        width: 80px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        background-color: #f3f2f1;
+    }
+
+    .flag-placeholder {
+        width: 80px;
+        height: 50px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        color: #666;
+        text-align: center;
+    }
+
     .btn {
         display: inline-block;
         padding: 10px 20px;
@@ -167,13 +196,15 @@ const states = [
 
     <!-- Interactive Map -->
     <div class="map-card">
-        <h3 class="govuk-heading-m" style="margin-top: 0; color: #1D70B8;">Interactive Map</h3>
+        <h3 class="govuk-heading-m" style="margin-top: 0; color: #1D70B8;">Interactive Territory Map</h3>
         <p class="govuk-body">
-            View our territories on the official CivMC map. Our borders are maintained and updated through 
-            <code>borders.json.ts</code> for accurate representation.
+            Explore Icenian territories on the CivMC map. Scroll to zoom, drag to pan, and click territories for details.
         </p>
-        <a href={getBordersLink(Astro)} target="_blank" class="btn">View Map</a>
-        <a href={BASE + "government/borders.json"} class="btn btn-secondary">Download Borders JSON</a>
+        <LeafletMap />
+        <div style="margin-top: 15px;">
+            <a href={getBordersLink(Astro)} target="_blank" class="btn">Open in CivMap</a>
+            <a href={BASE + "government/borders.json"} class="btn btn-secondary">Download Borders JSON</a>
+        </div>
     </div>
 
     <h3 class="govuk-heading-l" style="color: #0b0c0c;">States and Territories</h3>
@@ -182,9 +213,20 @@ const states = [
         {states.map((state) => (
             <div class="state-card" style={`border-left-color: ${state.color}`}>
                 <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 10px;">
-                    <div>
-                        <h4 class="state-name">{state.name}</h4>
-                        <p class="state-type">{state.type}</p>
+                    <div style="display: flex; gap: 15px; align-items: start;">
+                        <div class="flag-placeholder" style={`background-color: ${state.color}20;`}>
+                            <img 
+                                src={BASE + "assets/images/flags/" + state.flag} 
+                                alt={`Flag of ${state.name}`}
+                                class="state-flag"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                            />
+                            <div class="flag-placeholder" style="display: none;">No flag</div>
+                        </div>
+                        <div>
+                            <h4 class="state-name">{state.name}</h4>
+                            <p class="state-type">{state.type}</p>
+                        </div>
                     </div>
                     <div class="color-indicator" style={`background-color: ${state.color};`}></div>
                 </div>
