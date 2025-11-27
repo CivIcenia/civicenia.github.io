@@ -3,9 +3,9 @@ entries:
     slug: city-charter
     name: Icenia City Charter
     fullname: The Charter of Icenia City
-    googledoc: https://docs.google.com/document/d/example-city-charter/preview
+    googledoc: /public/archive/Icenia-City-Charter.pdf
     kind: charter
-  - hidden: false
+  - hidden: true
     slug: building-code
     name: City Building Code
     fullname: Icenia City Building Standards and Regulations

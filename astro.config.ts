@@ -6,9 +6,8 @@ export default defineConfig({
     // When hosting as a GitHub Pages project site under
     // `https://<username>.github.io/<repo>/` set `site`
     // and `base` accordingly so generated links and redirects are
-    // rooted at the repository path. Use `${BASE}` so absolute URLs
-    // include the build-time base path.
-    site: "https://civicenia.github.io${BASE}",
+    // rooted at the repository path.
+    site: "https://civicenia.github.io",
     base: "/",  // have this as "/" if hosting as a user/organization site
 
     build: {

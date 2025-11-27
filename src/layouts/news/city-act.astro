@@ -86,7 +86,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                     if (!law) return null;
                     const colours = getActChangeColours(change.kind);
                     return (
-                        <a class="govuk-link law-link" href={law.googledoc} target="_blank">
+                        <a class="govuk-link law-link" href={law.masterdoc} target="_blank">
                             <div class="law-change" style={`background: #${colours.background}; color: #${colours.text};`}>
                                 <b>
                                     {function () {

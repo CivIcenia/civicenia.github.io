@@ -69,7 +69,7 @@ export namespace Laws {
         "name": z.string(),
         "fullname": z.string().optional(),
         "kind": z.enum(["constitution", "statute", "statehood", "treaty"]),
-        "googledoc": z.string(),
+        "masterdoc": z.string(),
         "hidden": z.boolean(),
     });
 
@@ -114,7 +114,7 @@ export namespace CityLaws {
         "name": z.string(),
         "fullname": z.string().optional(),
         "kind": z.enum(["charter", "ordinance"]),
-        "googledoc": z.string(),
+        "masterdoc": z.string(),
         "hidden": z.boolean(),
     });
 
@@ -393,7 +393,7 @@ export namespace CityOfficialChanges {
         "term": z.coerce.number().int().positive().optional(),
         "officials": z.array(z.object({
             "name": z.string(),
-            "role": z.string(),
+            "role": z.union([z.string(), z.array(z.string())]),
             "action": z.enum(["elected", "reelected", "appointed", "resigned", "removed", "succeeded"]),
             "icon": z.string().optional(),
             "seat": z.number().optional()

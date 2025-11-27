@@ -3,13 +3,14 @@ import PageLayout from "@layouts/page.astro";
 import LawSection from "@components/laws/section.astro";
 import Card from "@components/laws/card.astro";
 
-import { Arrays } from "@helpers";
-
+import { Arrays, Strings } from "@helpers";
+import { getActChangeColours } from "@comptime";
 
 // Had to rename because it weirdly conflicts with laws.astro
 // There's probably some weird Astro shenanigans going on
-import { Laws as AllLaws } from "@collections";
+import { Laws as AllLaws, Acts } from "@collections";
 const laws = await AllLaws.getLaws();
+const recentActs = (await Acts.getActs()).slice(0, 5);
 
 const currentLaws = laws.filter((law) => law.hidden !== true);
 const expiredLaws = laws.filter((law) => law.hidden === true);
@@ -91,6 +92,34 @@ const BASE = import.meta.env.BASE_URL ?? "/";
             in accordance with the Constitution.
         </p>
     </div>
+
+        <!-- Recent Changes Section -->
+    {recentActs.length > 0 && (
+        <div class="recent-changes-section">
+            <h2 class="govuk-heading-m" style="margin-top: 0;">Recent Changes to Legislation</h2>
+            {recentActs.map((act) => (
+                <div class="change-item">
+                    <div class="change-info">
+                        <div class="change-date">
+                            {Strings.formatDate(act.data.date, "dS mmmm yyyy")}
+                        </div>
+                        <div class="change-title">
+                             <a href={BASE + "news/" + act.slug} class="govuk-link">
+                                {act.data.headline}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="change-tags">
+                        {(act.data as Acts.Act).changes.map((change) => (
+                            <strong class="govuk-tag govuk-tag--small" style={`background-color: #${getActChangeColours(change.kind).background}; margin-left: 5px;`}>
+                                {change.kind === "passage" ? "Enacted" : change.kind === "amendment" ? "Amended" : change.kind === "repeal" ? "Repealed" : "Changed"}
+                            </strong>
+                        ))}
+                    </div>
+                </div>
+            ))}
+        </div>
+    )}
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-half">

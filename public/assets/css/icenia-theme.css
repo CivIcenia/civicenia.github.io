@@ -145,7 +145,7 @@ body.menu-mode .icenia-hero {
     font-size: 1rem;
     line-height: 1.25;
     box-sizing: border-box;
-    transition: background-color 0.3s, color 0.3s !important;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .icenia-btn:hover, .icenia-btn:focus { background-color: #154f86; color: var(--icenia-white); }
@@ -931,3 +931,191 @@ body.menu-open {
     overflow: hidden;
 }
 
+/* ==========================================================================
+   Service/Feature Cards - Shared Card Styles
+   Used on home page, city page, and other service grid layouts
+   ========================================================================== */
+
+.icenia-section-title {
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.icenia-section-intro {
+    text-align: center;
+    color: var(--icenia-muted, #6f777b);
+    margin-bottom: 2rem;
+}
+
+.icenia-services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.icenia-service-card {
+    background: white;
+    padding: 1.5rem;
+    border-top: 4px solid var(--icenia-blue, #1C70B8);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.icenia-service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.icenia-service-card:focus {
+    outline: 3px solid var(--icenia-blue);
+    outline-offset: 2px;
+}
+
+.icenia-service-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.icenia-service-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    color: #0b0c0c;
+}
+
+.icenia-service-desc {
+    font-size: 0.9375rem;
+    color: var(--icenia-muted, #6f777b);
+    margin: 0 0 1rem 0;
+    flex: 1;
+}
+
+.icenia-service-link {
+    font-weight: 700;
+    color: var(--icenia-blue, #1C70B8);
+}
+
+/* ==========================================================================
+   CTA Section - Call to Action Banner
+   Used on home page, city page, and other landing pages
+   ========================================================================== */
+
+.icenia-cta-section {
+    background: var(--icenia-blue, #1C70B8);
+    margin: 3rem auto;
+    padding: 4rem 2rem;
+    text-align: center;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .icenia-cta-section {
+        margin: 3rem -15px;
+        padding: 3rem 1rem;
+    }
+}
+
+.icenia-cta-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.icenia-cta-content h2 {
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.icenia-cta-content p {
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 2rem;
+}
+
+.icenia-cta-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.icenia-cta-actions .icenia-btn {
+    background: white;
+    color: var(--icenia-blue, #1C70B8);
+    border-color: white;
+}
+
+.icenia-cta-actions .icenia-btn:hover {
+    background: var(--off-white, #eeeeee);
+}
+
+.icenia-cta-actions .icenia-btn-secondary {
+    background: transparent;
+    border-color: white;
+    color: white;
+}
+
+.icenia-cta-actions .icenia-btn-secondary:hover {
+    background: white;
+    color: var(--icenia-blue, #1C70B8);
+}
+
+/* ==========================================================================
+   Recent Changes Section
+   Used on law pages to show recent amendments/changes
+   ========================================================================== */
+
+.recent-changes-section {
+    background: #f3f2f1;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-left: 6px solid #1D70B8;
+}
+
+.change-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.change-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.change-info {
+    flex: 1;
+    min-width: 200px;
+}
+
+.change-date {
+    color: #6f777b;
+    font-size: 0.875rem;
+    margin-bottom: 3px;
+}
+
+.change-title {
+    font-weight: 700;
+}
+
+.change-title a {
+    text-decoration: none;
+}
+
+.change-title a:hover {
+    text-decoration: underline;
+}
+
+.repealed-card {
+    opacity: 0.7;
+}
+
+.repealed-card div.law-card-internal {
+    border-left-color: #6f777b;
+}

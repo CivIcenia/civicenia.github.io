@@ -60,12 +60,12 @@ collections:
                   - {label: "Constitutional Law", value: "constitution"}
                   - {label: "Statehood Agreement", value: "statehood"}
                   - {label: "Treaty", value: "treaty"}
-              # Google Doc
-              - label: "Google Doc"
-                name: "googledoc"
+              # Updated Document
+              - label: "Updated Document"
+                name: "masterdoc"
                 widget: "string"
                 required: true
-                hint: "What's the Google Doc link? Make sure it ends in `/preview`. And make sure it's an archived copy owned by Icenia."
+                hint: "What's the updated document link? It can be a local file such as `/public/archive/Icenia-City-Charter.pdf`. It can be Google Doc but make sure it ends in `/preview`. And make sure it's an archived copy owned by Icenia."
               # Expired?
               - label: "Expired"
                 name: "hidden"
@@ -111,12 +111,12 @@ collections:
                 options:
                   - {label: "City Charter", value: "charter"}
                   - {label: "City Ordinance", value: "ordinance"}
-              # Google Doc
-              - label: "Google Doc"
-                name: "googledoc"
+              # Updated Document
+              - label: "Updated Document"
+                name: "masterdoc"
                 widget: "string"
                 required: true
-                hint: "What's the Google Doc link? Make sure it ends in `/preview`."
+                hint: "What's the updated document link? It can be a local file such as `/public/archive/Icenia-City-Charter.pdf`. It can be Google Doc but make sure it ends in `/preview`. And make sure it's an archived copy owned by Icenia."
               # Expired?
               - label: "Repealed"
                 name: "hidden"
@@ -305,14 +305,15 @@ collections:
   ## Senate Bills
   #######################################################
   - name: "lawchanges"
-    label: "Changes to Law"
-    label_singular: "Change to Law"
+    label: "Changes to Legislation"
+    label_singular: "Change to Legislation"
     folder: "src/content/news"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{headline}}"
     extension: "md"
     format: "yaml-frontmatter"
     editor: { preview: false }
+    search: true
     sortable_fields: ["date"]
     filter: { field: "changetolaw", value: true }
     fields:
@@ -395,7 +396,7 @@ collections:
             display_fields: ["entries.*.name"]
             default: ""
             hint: "Just start typing and it'll search for that legislation. Click the correct result. The law needs to already exist in the 'Laws' collection."
-          - label: "How"
+          - label: "What is done?"
             name: "kind"
             widget: "select"
             options:
@@ -550,12 +551,14 @@ collections:
             hint: "Discord avatar URL (get from https://toolscord.com/). Leave empty to keep existing."
           - label: "Seat Number"
             name: "seat"
-            widget: "number"
+            widget: "relation"
+            collection: "data"
+            file: "officials"
+            search_fields: ["senators.*.name"]
+            value_field: "senators.*.seat"
+            display_fields: ["Seat", "senators.*.seat", ": ", "senators.*.name"]
             required: false
-            value_type: "int"
-            min: 1
-            max: 7
-            hint: "For Senators only: which seat (1-7)?"
+            hint: "For Senators only: which seat?"
         hint: "List all officials involved in this change. Icons will sync to the officials page."
       # Content
       - label: "Content"
@@ -575,8 +578,8 @@ collections:
   ## City Law Changes
   #######################################################
   - name: "citylawchanges"
-    label: "Changes to City Law"
-    label_singular: "Change to City Law"
+    label: "Changes to City Legislation"
+    label_singular: "Change to City Legislation"
     folder: "src/content/city-news"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{headline}}"
@@ -665,7 +668,7 @@ collections:
             display_fields: ["entries.*.name"]
             default: ""
             hint: "Start typing to search for the city law. The law needs to already exist in the 'City Laws' collection."
-          - label: "How"
+          - label: "What is done?"
             name: "kind"
             widget: "select"
             options:
@@ -809,12 +812,14 @@ collections:
             hint: "Discord avatar URL (get from https://toolscord.com/). Leave empty to keep existing."
           - label: "Seat Number"
             name: "seat"
-            widget: "number"
+            widget: "relation"
+            collection: "data"
+            file: "councillors"
+            search_fields: ["councillors.*.name"]
+            value_field: "councillors.*.seat"
+            display_fields: ["Seat", "councillors.*.seat", ": ", "councillors.*.name"]
             required: false
-            value_type: "int"
-            min: 1
-            max: 5
-            hint: "For Councillors only: which seat (1-5)?"
+            hint: "For Councillors only: select the seat"
         hint: "List all officials involved in this change. Icons will sync to the council page."
       # Content
       - label: "Content"

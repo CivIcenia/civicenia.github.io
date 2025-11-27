@@ -59,252 +59,422 @@ const citizenshipTiers = [
     description="Learn how to join the Third Republic of Icenia and become part of our thriving community."
 >
 
-    <div class="govuk-width-container">
-        <main class="govuk-main-wrapper">
-        
-        <!-- How to Join Section -->
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <div class="icenia-card" style="margin-bottom: 30px; background-color: var(--icenia-blue); color: white;">
-                    <h3 class="govuk-heading-m" style="color: white; display: flex; align-items: center; gap: 10px;">
-                        <span>🚀</span> Getting Started
-                    </h3>
-                    <p class="govuk-body-l" style="color: white; margin-bottom: 20px;">
-                        Join the Third Republic of Icenia and become part of one of CivMC's most vibrant communities!
-                    </p>
-                    <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-                        <a href="https://discord.gg/dfwSjCjRN5" target="_blank" class="govuk-button" style="margin:0 !important;">Join Discord</a>
-                        <a href={getBordersLink(Astro)} target="_blank" class="govuk-button" style="margin:0 !important;">View Map</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    <!-- Quick Start Steps -->
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <h3 class="govuk-heading-l" style="color: var(--icenia-blue);">Quick Start Guide</h3>
-        </div>
-    </div>
-        
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <div class="icenia-card" style="border-left: 5px solid var(--icenia-blue); margin-bottom: 20px;">
-                    <h4 class="govuk-heading-s" style="color: var(--icenia-blue); margin-top: 0;">Step 1: Join our Discord</h4>
-                    <p class="govuk-body">
-                        The first step to becoming an Icenian is joining our Discord server. This is where our 
-                        community communicates, organizes events, and conducts government business.
-                    </p>
-                    <a href="https://discord.gg/dfwSjCjRN5" target="_blank" class="govuk-link govuk-!-font-weight-bold" style="background-color: var(--icenia-white); color: var(--icenia-blue);">Join Discord →</a>
-                </div>
-
-                <div class="icenia-card" style="border-left: 5px solid var(--icenia-blue); margin-bottom: 20px;">
-                    <h4 class="govuk-heading-s" style="color: var(--icenia-blue); margin-top: 0;">Step 2: Connect to CivMC</h4>
-                    <p class="govuk-body">
-                        Connect to the CivMC server at <code>play.civmc.net</code> using Minecraft Java Edition. Make sure to read the server rules!
-                    </p>
-                </div>
-
-                <div class="icenia-card" style="border-left: 5px solid var(--icenia-blue); margin-bottom: 20px;">
-                    <h4 class="govuk-heading-s" style="color: var(--icenia-blue); margin-top: 0;">Step 3: Travel to Icenia</h4>
-                    <p class="govuk-body">
-                        Our capital is located at coordinates <strong>-3920, -4274</strong> in the -,- quadrant. 
-                        You can use the one-time teleport `/otp` command to teleport to an Icenian citizen, or travel on the overworld railways. Ask in Discord for the best route!
-                    </p>
-                </div>
-
-                <div class="icenia-card" style="border-left: 5px solid var(--icenia-blue); margin-bottom: 20px;">
-                    <h4 class="govuk-heading-s" style="color: var(--icenia-blue); margin-top: 0;">Step 4: Introduce Yourself</h4>
-                    <p class="govuk-body">
-                        Once you arrive, introduce yourself in our Discord! Let us know your in-game name, 
-                        what interests you (building, trading, politics, etc.), and how you'd like to contribute.
-                    </p>
-                </div>
-
-                <div class="icenia-card" style="border-left: 5px solid var(--icenia-blue); margin-bottom: 20px;">
-                    <h4 class="govuk-heading-s" style="color: var(--icenia-blue); margin-top: 0;">Step 5: Find a Home</h4>
-                    <p class="govuk-body">
-                        Look for available plots in Icenia City or one of our states. You can rent initially 
-                        and eventually purchase property as you become more established in the community.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-    <!-- Citizenship Tiers -->
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <h3 class="govuk-heading-l" style="color: var(--icenia-blue);">Citizenship Tiers</h3>
-            <p class="govuk-body">
-                Icenia has a tiered citizenship system (six tiers in total) that rewards activity and
-                commitment. <br> Rights and requirements are cumulative — each tier includes the rights
-                and requirements of the tier(s) below it unless explicitly stated otherwise. 
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="govuk-width-container">
+            <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">New Player Guide</h1>
+            <p class="govuk-body-l" style="margin: 0;">
+                Join the Third Republic of Icenia and become part of one of CivMC's most vibrant communities!
             </p>
         </div>
     </div>
 
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-            {citizenshipTiers.map((tier) => (
-                <div class="state-card" style="margin-bottom: 20px;">
-                    <h4 class="govuk-heading-m" style="color: var(--icenia-blue); margin: 0 0 10px 0; display: flex; align-items: center; gap: 10px;">
-                        <span style="font-size: 2rem;">{tier.icon}</span>
-                        {tier.tier}
-                    </h4>
-                    
-                    <div style="margin: 20px 0;">
-                        <strong style="color: var(--icenia-blue);">Requirements:</strong>
-                        <ul class="govuk-list govuk-list--bullet">
-                            {tier.requirements.map((req) => (
-                                <li>{req}</li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    <div style="margin: 20px 0;">
-                        <strong style="color: var(--icenia-blue);">Benefits:</strong>
-                        <ul class="govuk-list govuk-list--bullet">
-                            {tier.benefits.map((benefit) => (
-                                <li>{benefit}</li>
-                            ))}
-                        </ul>
-                    </div>
-                </div>
-            ))}
-            </div>
-        </div>
-
-        <!-- What to Do in Icenia -->
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <h3 class="govuk-heading-l" style="color: var(--icenia-blue);">What to Do in Icenia</h3>
-        </div>
-    </div>
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper">
         
-        <div class="equal-cards"></>
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-one-half">
-                    <div class="icenia-card">
-                        <h4 class="govuk-heading-s" style="color: var(--icenia-blue); margin-top: 0;">🏗️ Build</h4>
-                        <p class="govuk-body">Create amazing structures in our cities and territories. From medieval castles to modern skyscrapers, express your creativity!</p>
+            <!-- Quick Actions -->
+            <section class="guide-quick-actions">
+                <div class="icenia-services-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                    <a href="https://discord.gg/dfwSjCjRN5" target="_blank" class="icenia-service-card">
+                        <div class="icenia-service-icon">💬</div>
+                        <h3 class="icenia-service-title">Join Discord</h3>
+                        <p class="icenia-service-desc">Connect with our community and start your journey.</p>
+                        <span class="icenia-service-link">Join Now →</span>
+                    </a>
+
+                    <a href={getBordersLink(Astro)} target="_blank" class="icenia-service-card">
+                        <div class="icenia-service-icon">🗺️</div>
+                        <h3 class="icenia-service-title">View Map</h3>
+                        <p class="icenia-service-desc">Find Icenia at coordinates -3920, -4274.</p>
+                        <span class="icenia-service-link">Open Map →</span>
+                    </a>
+
+                    <a href={BASE + "laws/"} class="icenia-service-card">
+                        <div class="icenia-service-icon">📜</div>
+                        <h3 class="icenia-service-title">Read Laws</h3>
+                        <p class="icenia-service-desc">Understand our constitution and legislation.</p>
+                        <span class="icenia-service-link">View Laws →</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Quick Start Steps -->
+            <section class="guide-section">
+                <h2 class="govuk-heading-l icenia-section-title">Quick Start Guide</h2>
+                <p class="govuk-body-l icenia-section-intro">
+                    Five simple steps to becoming an Icenian citizen.
+                </p>
+                
+                <div class="guide-steps">
+                    <div class="guide-step">
+                        <div class="guide-step-number">1</div>
+                        <div class="guide-step-content">
+                            <h3 class="govuk-heading-m">Join our Discord</h3>
+                            <p class="govuk-body">
+                                The first step to becoming an Icenian is joining our Discord server. This is where our 
+                                community communicates, organizes events, and conducts government business.
+                            </p>
+                            <a href="https://discord.gg/dfwSjCjRN5" target="_blank" class="govuk-link govuk-!-font-weight-bold">Join Discord →</a>
+                        </div>
+                    </div>
+
+                    <div class="guide-step">
+                        <div class="guide-step-number">2</div>
+                        <div class="guide-step-content">
+                            <h3 class="govuk-heading-m">Connect to CivMC</h3>
+                            <p class="govuk-body">
+                                Connect to the CivMC server at <code>play.civmc.net</code> using Minecraft Java Edition. Make sure to read the server rules!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="guide-step">
+                        <div class="guide-step-number">3</div>
+                        <div class="guide-step-content">
+                            <h3 class="govuk-heading-m">Travel to Icenia</h3>
+                            <p class="govuk-body">
+                                Our capital is located at coordinates <strong>-3920, -4274</strong> in the -,- quadrant. 
+                                You can use the one-time teleport <code>/otp</code> command to teleport to an Icenian citizen, or travel on the overworld railways. Ask in Discord for the best route!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="guide-step">
+                        <div class="guide-step-number">4</div>
+                        <div class="guide-step-content">
+                            <h3 class="govuk-heading-m">Introduce Yourself</h3>
+                            <p class="govuk-body">
+                                Once you arrive, introduce yourself in our Discord! Let us know your in-game name, 
+                                what interests you (building, trading, politics, etc.), and how you'd like to contribute.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="guide-step">
+                        <div class="guide-step-number">5</div>
+                        <div class="guide-step-content">
+                            <h3 class="govuk-heading-m">Find a Home</h3>
+                            <p class="govuk-body">
+                                Look for available plots in Icenia City or one of our states. You can rent initially 
+                                and eventually purchase property as you become more established in the community.
+                            </p>
+                        </div>
                     </div>
                 </div>
+            </section>
 
-                <div class="govuk-grid-column-one-half">
-                    <div class="icenia-card">
-                        <h4 class="govuk-heading-s" style="color: var(--icenia-blue); margin-top: 0;">💎 Trade</h4>
-                        <p class="govuk-body">Participate in our thriving economy. Set up shops, trade resources, and become a wealthy merchant!</p>
+            <!-- What to Do Section -->
+            <section class="guide-section">
+                <h2 class="govuk-heading-l icenia-section-title">What to Do in Icenia</h2>
+                <p class="govuk-body-l icenia-section-intro">
+                    Discover the many ways you can contribute and thrive in our community.
+                </p>
+                
+                <div class="icenia-services-grid">
+                    <div class="icenia-service-card" style="cursor: default;">
+                        <div class="icenia-service-icon">🏗️</div>
+                        <h3 class="icenia-service-title">Build</h3>
+                        <p class="icenia-service-desc">
+                            Create amazing structures in our cities and territories. From medieval castles to modern skyscrapers, express your creativity!
+                        </p>
+                    </div>
+
+                    <div class="icenia-service-card" style="cursor: default;">
+                        <div class="icenia-service-icon">💎</div>
+                        <h3 class="icenia-service-title">Trade</h3>
+                        <p class="icenia-service-desc">
+                            Participate in our thriving economy. Set up shops, trade resources, and become a wealthy merchant!
+                        </p>
+                    </div>
+
+                    <div class="icenia-service-card" style="cursor: default;">
+                        <div class="icenia-service-icon">⚖️</div>
+                        <h3 class="icenia-service-title">Politics</h3>
+                        <p class="icenia-service-desc">
+                            Run for Senate, vote in elections, or propose new legislation. Shape the future of our nation!
+                        </p>
+                    </div>
+
+                    <div class="icenia-service-card" style="cursor: default;">
+                        <div class="icenia-service-icon">🤝</div>
+                        <h3 class="icenia-service-title">Diplomacy</h3>
+                        <p class="icenia-service-desc">
+                            Represent Icenia in foreign relations, negotiate treaties, and build international partnerships.
+                        </p>
+                    </div>
+
+                    <div class="icenia-service-card" style="cursor: default;">
+                        <div class="icenia-service-icon">⚔️</div>
+                        <h3 class="icenia-service-title">Defense</h3>
+                        <p class="icenia-service-desc">
+                            Help protect our nation and allies. Join the military or contribute to defense infrastructure.
+                        </p>
+                    </div>
+
+                    <div class="icenia-service-card" style="cursor: default;">
+                        <div class="icenia-service-icon">🎉</div>
+                        <h3 class="icenia-service-title">Community</h3>
+                        <p class="icenia-service-desc">
+                            Participate in events, festivals, and community gatherings. Make friends and enjoy the social aspect!
+                        </p>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-one-half">
-                    <div class="icenia-card">
-                        <h4 class="govuk-heading-s" style="color: var(--icenia-blue); margin-top: 0;">⚖️ Politics</h4>
-                        <p class="govuk-body">Run for Senate, vote in elections, or propose new legislation. Shape the future of our nation!</p>
+            <!-- Citizenship Tiers -->
+            <section class="guide-section">
+                <h2 class="govuk-heading-l icenia-section-title">Citizenship Tiers</h2>
+                <p class="govuk-body-l icenia-section-intro">
+                    Icenia has a tiered citizenship system that rewards activity and commitment.<br>
+                    Rights and requirements are cumulative — each tier includes all below it.
+                </p>
+
+                <div class="citizenship-tiers">
+                    {citizenshipTiers.map((tier, index) => (
+                        <div class="citizenship-tier">
+                            <div class="citizenship-tier-header">
+                                <span class="citizenship-tier-icon">{tier.icon}</span>
+                                <div>
+                                    <span class="citizenship-tier-level">Tier {index + 1}</span>
+                                    <h3 class="citizenship-tier-name">{tier.tier}</h3>
+                                </div>
+                            </div>
+                            
+                            <div class="citizenship-tier-body">
+                                <div class="citizenship-tier-section">
+                                    <h4>Requirements</h4>
+                                    <ul>
+                                        {tier.requirements.map((req) => (
+                                            <li>{req}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+
+                                <div class="citizenship-tier-section">
+                                    <h4>Benefits</h4>
+                                    <ul>
+                                        {tier.benefits.map((benefit) => (
+                                            <li>{benefit}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            <!-- FAQ Section -->
+            <section class="guide-section">
+                <h2 class="govuk-heading-l icenia-section-title">Frequently Asked Questions</h2>
+                <p class="govuk-body-l icenia-section-intro">
+                    Common questions from new players.
+                </p>
+                
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <h3 class="faq-question">What is CivMC?</h3>
+                        <p class="faq-answer">
+                            CivMC is a Minecraft server focused on nation-building, politics, economics, and player interaction. 
+                            It features unique plugins that create a complex geopolitical environment.
+                        </p>
+                    </div>
+
+                    <div class="faq-item">
+                        <h3 class="faq-question">Do I need special permissions to build?</h3>
+                        <p class="faq-answer">
+                            You'll need to be added to our group permissions (Namelayer) to build. You will receive access after your residency application is approved. 
+                            Please ensure you make a request in <code>#building-requests</code> and follow our building guidelines. Officials are willing to help you out in your build request, so don't hesitate to ask!
+                        </p>
+                    </div>
+
+                    <div class="faq-item">
+                        <h3 class="faq-question">Is Icenia safe for new players?</h3>
+                        <p class="faq-answer">
+                            Yes! Icenia is well-protected with active defenders, snitches, vault infrastructure and international cooperation. We have low crime 
+                            rates and a welcoming community that helps new players get established.
+                        </p>
+                    </div>
+
+                    <div class="faq-item">
+                        <h3 class="faq-question">How do I get resources?</h3>
+                        <p class="faq-answer">
+                            We have public farms, shops where you can purchase materials, and jobs/community projects you can 
+                            contribute to. Many citizens are also happy to help new players with starter materials.
+                            The easiest way is to start by <strong>mining</strong> and completing <strong>jobs</strong>. Check out <code>#important-info</code> (the first channel) on Discord for a Money Making guide including starter tips.
+                        </p>
                     </div>
                 </div>
+            </section>
 
-                <div class="govuk-grid-column-one-half">
-                    <div class="icenia-card">
-                        <h4 class="govuk-heading-s" style="color: var(--icenia-blue); margin-top: 0;">🤝 Diplomacy</h4>
-                        <p class="govuk-body">Represent Icenia in foreign relations, negotiate treaties, and build international partnerships.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-one-half">
-                    <div class="icenia-card">
-                        <h4 class="govuk-heading-s" style="color: var(--icenia-blue); margin-top: 0;">⚔️ Defense</h4>
-                        <p class="govuk-body">Help protect our nation and allies. Join the military or contribute to defense infrastructure.</p>
-                    </div>
-                </div>
-
-                <div class="govuk-grid-column-one-half">
-                    <div class="icenia-card">
-                        <h4 class="govuk-heading-s" style="color: var(--icenia-blue); margin-top: 0;">🎉 Community</h4>
-                        <p class="govuk-body">Participate in events, festivals, and community gatherings. Make friends and enjoy the social aspect!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- FAQ -->
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <h3 class="govuk-heading-l" style="color: var(--icenia-blue);">Frequently Asked Questions</h3>
-        </div>
-    </div>
-        
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <div class="icenia-card" style="border-left: 3px solid var(--icenia-blue); margin-bottom: 20px;">
-                    <h4 class="govuk-heading-s" style="color: var(--icenia-blue); margin-top: 0;">What is CivMC?</h4>
-                    <p class="govuk-body">
-                        CivMC is a Minecraft server focused on nation-building, politics, economics, and player interaction. 
-                        It features unique plugins that create a complex geopolitical environment.
-                    </p>
-                </div>
-
-                <div class="icenia-card" style="border-left: 3px solid var(--icenia-blue); margin-bottom: 20px;">
-                    <h4 class="govuk-heading-s" style="color: var(--icenia-blue); margin-top: 0;">Do I need special permissions to build?</h4>
-                    <p class="govuk-body">
-                        You'll need to be added to our group permissions (Namelayer) to build. You will receive access after your residency application is approved. 
-                        <br> Also, please ensure you make a request in <code>#building-requests</code> and follow our building guidelines. Officials are willing to help you out in your build request, so don't hesitate to ask!
-                    </p>
-                </div>
-
-                <div class="icenia-card" style="border-left: 3px solid var(--icenia-blue); margin-bottom: 20px;">
-                    <h4 class="govuk-heading-s" style="color: var(--icenia-blue); margin-top: 0;">Is Icenia safe for new players?</h4>
-                    <p class="govuk-body">
-                        Yes! Icenia is well-protected with active defenders, snitches, vault infrastructure and international cooperation. We have low crime 
-                        rates and a welcoming community that helps new players get established.
-                    </p>
-                </div>
-
-                <div class="icenia-card" style="border-left: 3px solid var(--icenia-blue); margin-bottom: 20px;">
-                    <h4 class="govuk-heading-s" style="color: var(--icenia-blue); margin-top: 0;">How do I get resources?</h4>
-                    <p class="govuk-body">
-                        We have public farms, shops where you can purchase materials, and jobs/community projects you can 
-                        contribute to. Many citizens are also happy to help new players with starter materials.
-                        <br> The easiest way is to start by <strong>mining</strong> and completing <strong>jobs</strong>. Check out <code>#important-info</code> (the first channel) on Discord for a Money Making guide including starter tips.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Call to Action -->
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <div class="icenia-card" style="background-color: var(--icenia-blue); border: none; color: white;">
-                    <h3 class="govuk-heading-m" style="color: var(--icenia-white); margin-top: 0;">Ready to Join?</h3>
-                    <p class="govuk-body-l" style="color: var(--icenia-white); margin-bottom: 20px;">
+            <!-- Call to Action -->
+            <section class="icenia-cta-section">
+                <div class="icenia-cta-content">
+                    <h2 class="govuk-heading-l">Ready to Join?</h2>
+                    <p class="govuk-body-l">
                         Take the first step and join our Discord community today. We look forward to welcoming you to Icenia!
                     </p>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <a href="https://discord.gg/dfwSjCjRN5" target="_blank" class="govuk-button" style="margin:0 !important;">Join Discord Now</a>
-                        <a href={BASE + "laws/"} class="govuk-button" style="margin:0 !important;">Read Our Laws</a>
-                        <a href={BASE + "union/"} class="govuk-button" style="margin:0 !important;">Explore States</a>
+                    <div class="icenia-cta-actions">
+                        <a href="https://discord.gg/dfwSjCjRN5" target="_blank" class="icenia-btn">Join Discord Now</a>
+                        <a href={BASE + "union/"} class="icenia-btn icenia-btn-secondary">Explore States</a>
                     </div>
                 </div>
-            </div>
-        </div>
+            </section>
 
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full" style="margin-top: 30px; text-align: center;">
-                <a href={BASE} class="icenia-btn">← Back to Home</a>
-            </div>
-        </div>
         </main>
     </div>
 
     <style>
-        body {
-            font-family: inherit;
-            background-color: var(--off-white);
-            color: var(--icenia-black);
+        /* Guide Page Specific Styles */
+        .guide-section {
+            padding: 2rem 0 3rem;
+        }
+
+        .guide-quick-actions {
+            margin-bottom: 2rem;
+        }
+
+        /* Step Cards */
+        .guide-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .guide-step {
+            display: flex;
+            gap: 1.5rem;
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .guide-step-number {
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            background: var(--icenia-blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .guide-step-content h3 {
+            margin-top: 0;
+            color: var(--icenia-blue);
+        }
+
+        .guide-step-content p {
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .guide-step {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        /* Citizenship Tiers */
+        .citizenship-tiers {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .citizenship-tier {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }
+
+        .citizenship-tier-header {
+            background: var(--icenia-blue);
+            color: white;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .citizenship-tier-icon {
+            font-size: 2.5rem;
+        }
+
+        .citizenship-tier-level {
+            font-size: 0.875rem;
+            opacity: 0.8;
+            display: block;
+        }
+
+        .citizenship-tier-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .citizenship-tier-body {
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 700px) {
+            .citizenship-tier-body {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        .citizenship-tier-section h4 {
+            color: var(--icenia-blue);
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0 0 0.75rem 0;
+            border-bottom: 2px solid var(--icenia-blue);
+            padding-bottom: 0.5rem;
+        }
+
+        .citizenship-tier-section ul {
+            margin: 0;
+            padding-left: 1.25rem;
+        }
+
+        .citizenship-tier-section li {
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        /* FAQ */
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .faq-item {
+            background: white;
+            padding: 1.5rem;
+            border-left: 4px solid var(--icenia-blue);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .faq-question {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--icenia-blue);
+            margin: 0 0 0.75rem 0;
+        }
+
+        .faq-answer {
+            margin: 0;
+            color: #505a5f;
+            line-height: 1.6;
         }
     </style>
 </DefaultLayout>

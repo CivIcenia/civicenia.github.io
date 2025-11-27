@@ -17,62 +17,8 @@ const expiredLaws = cityLaws.filter((law) => law.hidden === true);
 // Organize laws by type
 const charterLaws = currentLaws.filter((law) => law.kind === "charter");
 const ordinanceLaws = currentLaws.filter((law) => law.kind === "ordinance");
+
 ---
-<style>
-    /* Recent Changes Section */
-    .recent-changes-section {
-        background: #f3f2f1;
-        padding: 20px;
-        margin-bottom: 30px;
-        border-left: 6px solid #1D70B8;
-    }
-
-    .change-item {
-        padding: 12px 0;
-        border-bottom: 1px solid #ddd;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    .change-item:last-child {
-        border-bottom: none;
-        padding-bottom: 0;
-    }
-
-    .change-info {
-        flex: 1;
-        min-width: 200px;
-    }
-
-    .change-date {
-        color: #6f777b;
-        font-size: 0.875rem;
-        margin-bottom: 3px;
-    }
-
-    .change-title {
-        font-weight: 700;
-    }
-
-    .change-title a {
-        text-decoration: none;
-    }
-
-    .change-title a:hover {
-        text-decoration: underline;
-    }
-
-    .repealed-card {
-        opacity: 0.7;
-    }
-
-    .repealed-card div.law-card-internal {
-        border-left-color: #6f777b;
-    }
-</style>
 
 <PageLayout chin={false} title="City Laws - Icenia City" description="View the charter, ordinances, and regulations governing Icenia City.">
     <!-- Page Header -->
@@ -84,7 +30,7 @@ const ordinanceLaws = currentLaws.filter((law) => law.kind === "ordinance");
     <!-- Recent Changes Section -->
     {recentActs.length > 0 && (
         <div class="recent-changes-section">
-            <h2 class="govuk-heading-m" style="margin-top: 0;">Recent Changes to City Law</h2>
+            <h2 class="govuk-heading-m" style="margin-top: 0;">Recent Changes to City Legislation</h2>
             {recentActs.map((act) => (
                 <div class="change-item">
                     <div class="change-info">

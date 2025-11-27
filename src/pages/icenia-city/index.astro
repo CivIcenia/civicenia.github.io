@@ -71,54 +71,54 @@ const description = "Welcome to Icenia City, the capital of the Republic of Icen
 
             <!-- Services Grid -->
             <section class="city-services-section">
-                <h2 class="govuk-heading-l city-section-title">City Services</h2>
-                <p class="govuk-body-l city-section-intro">
+                <h2 class="govuk-heading-l icenia-section-title">City Services</h2>
+                <p class="govuk-body-l icenia-section-intro">
                     Everything you need to know about living in and visiting Icenia City.
                 </p>
                 
-                <div class="city-services-grid">
-                    <a href={BASE + "icenia-city/laws/"} class="city-service-card">
-                        <div class="city-service-icon">📜</div>
-                        <h3 class="city-service-title">City Laws</h3>
-                        <p class="city-service-desc">
+                <div class="icenia-services-grid">
+                    <a href={BASE + "icenia-city/laws/"} class="icenia-service-card">
+                        <div class="icenia-service-icon">📜</div>
+                        <h3 class="icenia-service-title">City Laws</h3>
+                        <p class="icenia-service-desc">
                             View the city charter, ordinances, and regulations governing Icenia City.
                         </p>
-                        <span class="city-service-link">View Laws →</span>
+                        <span class="icenia-service-link">View Laws →</span>
                     </a>
 
-                    <a href={BASE + "icenia-city/council/"} class="city-service-card">
-                        <div class="city-service-icon">🏛️</div>
-                        <h3 class="city-service-title">City Council</h3>
-                        <p class="city-service-desc">
+                    <a href={BASE + "icenia-city/council/"} class="icenia-service-card">
+                        <div class="icenia-service-icon">🏛️</div>
+                        <h3 class="icenia-service-title">City Council</h3>
+                        <p class="icenia-service-desc">
                             Meet the elected officials who govern and represent city residents.
                         </p>
-                        <span class="city-service-link">View Council →</span>
+                        <span class="icenia-service-link">View Council →</span>
                     </a>
 
-                    <a href={BASE + "icenia-city/shops/"} class="city-service-card">
-                        <div class="city-service-icon">🏪</div>
-                        <h3 class="city-service-title">Shops & Markets</h3>
-                        <p class="city-service-desc">
+                    <a href={BASE + "icenia-city/shops/"} class="icenia-service-card">
+                        <div class="icenia-service-icon">🏪</div>
+                        <h3 class="icenia-service-title">Shops & Markets</h3>
+                        <p class="icenia-service-desc">
                             Browse our commercial district, featuring the renowned Enron Exchange.
                         </p>
-                        <span class="city-service-link">View Shops →</span>
+                        <span class="icenia-service-link">View Shops →</span>
                     </a>
 
-                    <a href={getBordersLink(Astro)} target="_blank" class="city-service-card">
-                        <div class="city-service-icon">🗺️</div>
-                        <h3 class="city-service-title">City Map</h3>
-                        <p class="city-service-desc">
+                    <a href={getBordersLink(Astro)} target="_blank" class="icenia-service-card">
+                        <div class="icenia-service-icon">🗺️</div>
+                        <h3 class="icenia-service-title">City Map</h3>
+                        <p class="icenia-service-desc">
                             Explore Icenia City and the surrounding region on the CivMC map.
                         </p>
-                        <span class="city-service-link">Open Map →</span>
+                        <span class="icenia-service-link">Open Map →</span>
                     </a>
                 </div>
             </section>
 
             <!-- Featured Locations -->
             <section class="city-locations-section">
-                <h2 class="govuk-heading-l city-section-title">Notable Locations</h2>
-                <p class="govuk-body-l city-section-intro">
+                <h2 class="govuk-heading-l icenia-section-title">Notable Locations</h2>
+                <p class="govuk-body-l icenia-section-intro">
                     Discover the landmarks that define Icenia City.
                 </p>
                 
@@ -167,16 +167,16 @@ const description = "Welcome to Icenia City, the capital of the Republic of Icen
             </section>
 
             <!-- Call to Action -->
-            <section class="city-cta-section">
-                <div class="city-cta-content">
+            <section class="icenia-cta-section">
+                <div class="icenia-cta-content">
                     <h2 class="govuk-heading-l">Ready to Join Us?</h2>
                     <p class="govuk-body-l">
                         Whether you're a new player looking for a home or an experienced builder 
                         seeking new opportunities, Icenia City has a place for you.
                     </p>
-                    <div class="city-cta-actions">
+                    <div class="icenia-cta-actions">
                         <a href={BASE + "guide/"} class="icenia-btn">Read the Guide</a>
-                        <a href="https://discord.gg/dfwSjCjRN5" target="_blank" class="icenia-btn-secondary">Join Our Discord</a>
+                        <a href="https://discord.gg/dfwSjCjRN5" target="_blank" class="icenia-btn icenia-btn-secondary">Join Our Discord</a>
                     </div>
                 </div>
             </section>
@@ -362,64 +362,6 @@ const description = "Welcome to Icenia City, the capital of the Republic of Icen
         padding: 3rem 0;
     }
 
-    .city-section-title {
-        text-align: center;
-        margin-bottom: 0.5rem;
-    }
-
-    .city-section-intro {
-        text-align: center;
-        color: var(--icenia-muted, #6f777b);
-        margin-bottom: 2rem;
-    }
-
-    .city-services-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 1.5rem;
-    }
-
-    .city-service-card {
-        background: white;
-        padding: 1.5rem;
-        border-top: 4px solid var(--icenia-blue, #1C70B8);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        text-decoration: none;
-        color: inherit;
-        display: flex;
-        flex-direction: column;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .city-service-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-    }
-
-    .city-service-icon {
-        font-size: 2rem;
-        margin-bottom: 1rem;
-    }
-
-    .city-service-title {
-        font-size: 1.25rem;
-        font-weight: 700;
-        margin: 0 0 0.5rem 0;
-        color: #0b0c0c;
-    }
-
-    .city-service-desc {
-        font-size: 0.9375rem;
-        color: var(--icenia-muted, #6f777b);
-        margin: 0 0 1rem 0;
-        flex: 1;
-    }
-
-    .city-service-link {
-        font-weight: 700;
-        color: var(--icenia-blue, #1C70B8);
-    }
-
     /* ==========================================
        LOCATIONS SECTION
        ========================================== */
@@ -482,64 +424,5 @@ const description = "Welcome to Icenia City, the capital of the Republic of Icen
         .city-location-featured .city-location-image {
             height: 200px;
         }
-    }
-
-    /* ==========================================
-       CTA SECTION
-       ========================================== */
-    .city-cta-section {
-        background: var(--icenia-blue, #1C70B8);
-        margin: auto;
-        padding: 4rem 2rem;
-        text-align: center;
-        color: white;
-    }
-
-    @media (max-width: 768px) {
-        .city-cta-section {
-            margin: 3rem -15px;
-            padding: 3rem 0 !important;
-        }
-    }
-
-    .city-cta-content {
-        max-width: 600px;
-        margin: 0 auto;
-    }
-
-    .city-cta-content h2 {
-        color: white;
-        margin-bottom: 1rem;
-    }
-
-    .city-cta-content p {
-        color: rgba(255,255,255,0.9);
-        margin-bottom: 2rem;
-    }
-
-    .city-cta-actions {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .city-cta-actions .icenia-btn {
-        background: white;
-        color: var(--icenia-blue, #1C70B8);
-    }
-
-    .city-cta-actions .icenia-btn:hover {
-        background: var(--off-white, #eeeeee);
-    }
-
-    .city-cta-actions .icenia-btn-secondary {
-        border-color: white;
-        color: white;
-    }
-
-    .city-cta-actions .icenia-btn-secondary:hover {
-        background: white;
-        color: var(--icenia-blue, #1C70B8);
     }
 </style>

@@ -26,7 +26,7 @@ const recentNews = allNews
         <p class="icenia-hero-subtitle">The Third Republic of Icenia welcomes you to the -,-.</p>
         <div class="icenia-hero-actions">
             <a href={BASE + "guide/"} class="icenia-btn">Become a Citizen</a>
-            <a href={getBordersLink(Astro)} target="_blank" class="icenia-btn icenia-btn-secondary">View the Map</a>
+            <a href={getBordersLink(Astro)} target="_blank" class="icenia-btn icenia-btn-tertiary">View the Map</a>
         </div>
         <div class="icenia-scroll-hint">
             <span>Scroll to explore</span>
@@ -54,95 +54,99 @@ const recentNews = allNews
                     </div>
                 </div>
             </div>
-            <!-- Content Grid (equal-height cards) -->
-            <div class="equal-cards">
-                <div class="govuk-grid-row">
-                    <div class="govuk-grid-column-one-half">
-                        <!-- Card 1: The Republic -->
-                        <div class="icenia-card">
-                            <h3 class="govuk-heading-m">🏛️ The Republic</h3>
-                            <p class="govuk-body">
-                                From the cityscapes of Icenia City, to of tropical beaches of <strong>Icarus</strong> 
-                                and the rivers of <strong>Cortesia Del Mar</strong>, Icenia stands united. 
-                                Explore our diverse states and territories.
-                            </p>
-                            <a href={BASE + "union/"} class="govuk-link govuk-!-font-weight-bold">Explore States →</a>
-                        </div>
-                    </div>
 
-                    <div class="govuk-grid-column-one-half">
-                        <!-- Card 2: Government -->
-                        <div class="icenia-card">
-                            <h3 class="govuk-heading-m">⚖️ Government</h3>
-                            <p class="govuk-body">
-                                Icenia is a Semi-Democratic Republic. Our democratically voted <strong>Senate</strong> meets regularly to pass 
-                                legislation. Led by President <strong>ChrisChrispie</strong>, we strive for transparent and 
-                                accountable governance.
-                            </p>
-                            <a href={BASE + "government/officials/"} class="govuk-link govuk-!-font-weight-bold">View Officials →</a>
-                        </div>
+            <!-- Services Grid - Modern Card Design -->
+            <section class="home-services-section">
+                <h2 class="govuk-heading-l icenia-section-title">Discover Icenia</h2>
+                <p class="govuk-body-l icenia-section-intro">
+                    Explore the diverse facets of the Third Republic.
+                </p>
+                
+                <div class="icenia-services-grid">
+                    <a href={BASE + "union/"} class="icenia-service-card">
+                        <div class="icenia-service-icon">🏛️</div>
+                        <h3 class="icenia-service-title">The Republic</h3>
+                        <p class="icenia-service-desc">
+                            From the cityscapes of Icenia City, to the tropical beaches of Icarus 
+                            and the rivers of Cortesia Del Mar. Explore our diverse states and territories.
+                        </p>
+                        <span class="icenia-service-link">Explore States →</span>
+                    </a>
+
+                    <a href={BASE + "government/officials/"} class="icenia-service-card">
+                        <div class="icenia-service-icon">⚖️</div>
+                        <h3 class="icenia-service-title">Government</h3>
+                        <p class="icenia-service-desc">
+                            Icenia is a Semi-Democratic Republic. Our democratically elected Senate meets regularly, 
+                            led by President ChrisChrispie with transparent governance.
+                        </p>
+                        <span class="icenia-service-link">View Officials →</span>
+                    </a>
+
+                    <a href={BASE + "laws/"} class="icenia-service-card">
+                        <div class="icenia-service-icon">📜</div>
+                        <h3 class="icenia-service-title">Legislation</h3>
+                        <p class="icenia-service-desc">
+                            Governed by clear laws and a written constitution ensuring due process, 
+                            accountability, and rights for all citizens.
+                        </p>
+                        <span class="icenia-service-link">View Laws →</span>
+                    </a>
+
+                    <a href={BASE + "icenia-city/shops/"} class="icenia-service-card">
+                        <div class="icenia-service-icon">💰</div>
+                        <h3 class="icenia-service-title">Economy</h3>
+                        <p class="icenia-service-desc">
+                            A thriving economy centered in Icenia City. Home to the server-renowned 
+                            Enron Exchange — the economic heart of the -,- quadrant.
+                        </p>
+                        <span class="icenia-service-link">View Shops →</span>
+                    </a>
+
+                    <a href="https://discord.gg/6qn4gSDUFN" target="_blank" class="icenia-service-card">
+                        <div class="icenia-service-icon">🏗️</div>
+                        <h3 class="icenia-service-title">Infrastructure</h3>
+                        <p class="icenia-service-desc">
+                            Extensive iceroad and rail networks and public farm complexes like 
+                            Wholefoods. Icenia continues to grow and modernize.
+                        </p>
+                        <span class="icenia-service-link">Find Jobs →</span>
+                    </a>
+
+                    <a href={BASE + "guide/"} class="icenia-service-card">
+                        <div class="icenia-service-icon">👋</div>
+                        <h3 class="icenia-service-title">Join Us</h3>
+                        <p class="icenia-service-desc">
+                            Whether you're a builder, miner, PvPer, shopkeeper, or lawmaker — 
+                            Icenia has a role for you. Jobs, resources, and events await.
+                        </p>
+                        <span class="icenia-service-link">Get Started →</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Call to Action -->
+            <section class="icenia-cta-section">
+                <div class="icenia-cta-content">
+                    <h2 class="govuk-heading-l">Ready to Join Us?</h2>
+                    <p class="govuk-body-l">
+                        Whether you're a new player looking for a home or an experienced player 
+                        seeking new opportunities, Icenia has a place for you.
+                    </p>
+                    <div class="icenia-cta-actions">
+                        <a href={BASE + "guide/"} class="icenia-btn">Read the Guide</a>
+                        <a href="https://discord.gg/dfwSjCjRN5" target="_blank" class="icenia-btn icenia-btn-secondary">Join Our Discord</a>
                     </div>
                 </div>
+            </section>
 
-                <div class="govuk-grid-row">
-                    <div class="govuk-grid-column-one-half">
-                        <!-- Card 3: Diplomacy -->
-                        <div class="icenia-card">
-                            <h3 class="govuk-heading-m">⚖️ Legislation</h3>
-                            <p class="govuk-body">
-                                Icenia is governed by a clear body of laws and a written constitution that ensure due process,
-                                accountability, and the rights of citizens. Find our constitution, statutes, international treaties and legal framework here.
-                            </p>
-                            <a href={BASE + "laws/"} class="govuk-link govuk-!-font-weight-bold">View Laws & Constitution →</a>
-                        </div>
-                    </div>
-
-                    <div class="govuk-grid-column-one-half">
-                        <!-- Card 4: Economy -->
-                        <div class="icenia-card">
-                            <h3 class="govuk-heading-m">💰 Economy</h3>
-                            <p class="govuk-body">
-                                Icenia boasts a thriving economy centered in Icenia City. 
-                                From the server-renowned <strong>Enron Exchange</strong> to XP production and shops, we're the economic heart of the -,- quadrant.
-                            </p>
-                            <a href={BASE + "shops/"} class="govuk-link govuk-!-font-weight-bold">UNDER CONSTRUCTION View Icenia Shops →</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="govuk-grid-row">
-                    <div class="govuk-grid-column-one-half">
-                        <!-- Card 5: Infrastructure -->
-                        <div class="icenia-card">
-                            <h3 class="govuk-heading-m">🏗️ Infrastructure</h3>
-                            <p class="govuk-body">
-                                With extensive iceroad and rail networks and publically operatable farms complexes such as <strong>Wholefoods</strong>, Icenia continues to grow and modernize.
-                            </p>
-                            <a href={"https://discord.gg/6qn4gSDUFN"} class="govuk-link govuk-!-font-weight-bold">Find Jobs →</a>
-                        </div>
-                    </div>
-
-                    <div class="govuk-grid-column-one-half">
-                        <!-- Card 6: Join Us -->
-                        <div class="icenia-card">
-                            <h3 class="govuk-heading-m">👋 Join Us</h3>
-                            <p class="govuk-body">
-                                Whether you're a builder, miner, PvPer, coder, botter, shopkeeper, writer, lawmaker, or have any other interests or skills, Icenia has a role for you. Choose a citizenship tier, read the guide, and get involved — jobs, resources, and events await.
-                            </p>
-                            <a href={BASE + "guide/"} class="govuk-link govuk-!-font-weight-bold">Citizenship Guide →</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        </main>
+    </div>
 
     <style>
-        body {
-            margin: 0;
-            font-family: inherit; /* use govuk-frontend fonts */
-            background-color: var(--off-white);
-            color: var(--icenia-black);
+        .home-services-section {
+            padding: 2rem 0 3rem;
         }
 
-        a { transition: color 0.2s; }
     </style>
 </DefaultLayout>

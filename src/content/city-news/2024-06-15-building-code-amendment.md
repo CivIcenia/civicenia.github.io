@@ -9,7 +9,7 @@ document:
   type: markdown
   value: "PLACEHOLDER "
 changes:
-  - kind: amendment
+  - kind: repeal
     target: building-code
 icon: /assets/images/law_stock.jpeg
 ---
