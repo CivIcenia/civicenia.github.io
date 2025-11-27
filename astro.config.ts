@@ -11,6 +11,10 @@ export default defineConfig({
     site: "https://civicenia.github.io${BASE}",
     base: "/",  // have this as "/" if hosting as a user/organization site
 
+    build: {
+        assets: 'astro', // Changes output from '_astro' to 'astro'
+    },
+
     server: {
         port: 4000,
     },
