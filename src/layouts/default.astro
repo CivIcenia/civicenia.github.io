@@ -44,7 +44,7 @@ const navigationItems: NavItem[] = [
         // href: BASE,
         children: [
             { label: "The Republic", href: BASE + "union/" },
-            { label: "CivMap", href: Astros.isDevMode() ? BASE + "government/map" : getBordersLink(Astro), target: "_blank" },
+            { label: "CivMap", href: getBordersLink(Astro), target: "_blank" },
         ]
     },
     {

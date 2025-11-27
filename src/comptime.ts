@@ -1,4 +1,5 @@
 import { type AstroGlobal } from "astro";
+import { Astros } from "@helpers";
 
 export const TITLE = "Government of Icenia";
 export const DESCRIPTION = "They work for you.";
@@ -29,5 +30,5 @@ export function getBordersLink(
     astro: AstroGlobal
 ) {
     const BASE = (import.meta.env.BASE_URL ?? "/");
-    return "https://map.civinfo.net/#url=" + astro.url.origin + BASE + "government/borders.json"
+    return Astros.isDevMode() ? BASE + "government/map" : "https://map.civinfo.net/#url=" + astro.url.origin + BASE + "government/borders.json"
 }

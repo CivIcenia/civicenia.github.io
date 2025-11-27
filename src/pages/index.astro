@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import DefaultLayout from "@layouts/default.astro";
 import { Strings, Arrays } from "@helpers";
 import { PERMALINK_ROOTS } from "@comptime";
+import { getBordersLink } from "@comptime";
 
 const BASE = (import.meta.env.BASE_URL ?? "/");
 
@@ -25,7 +26,7 @@ const recentNews = allNews
         <p class="icenia-hero-subtitle">The Third Republic of Icenia welcomes you to the -,-.</p>
         <div class="icenia-hero-actions">
             <a href={BASE + "guide/"} class="icenia-btn">Become a Citizen</a>
-            <a href="https://map.civmc.tk/" target="_blank" class="icenia-btn icenia-btn-secondary">View the Map</a>
+            <a href={getBordersLink(Astro)} target="_blank" class="icenia-btn icenia-btn-secondary">View the Map</a>
         </div>
         <div class="icenia-scroll-hint">
             <span>Scroll to explore</span>

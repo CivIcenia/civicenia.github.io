@@ -1,6 +1,5 @@
 ---
 import DefaultLayout from "@layouts/default.astro";
-import { Astros } from "@helpers";
 import { getBordersLink } from "@comptime";
 
 const BASE = (import.meta.env.BASE_URL ?? "/");
@@ -105,7 +104,7 @@ const description = "Welcome to Icenia City, the capital of the Republic of Icen
                         <span class="city-service-link">View Shops →</span>
                     </a>
 
-                    <a href={Astros.isDevMode() ? BASE + "government/map" : getBordersLink(Astro)} target="_blank" class="city-service-card">
+                    <a href={getBordersLink(Astro)} target="_blank" class="city-service-card">
                         <div class="city-service-icon">🗺️</div>
                         <h3 class="city-service-title">City Map</h3>
                         <p class="city-service-desc">
