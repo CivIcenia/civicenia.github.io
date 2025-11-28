@@ -98,15 +98,20 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
         background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     }
     
-    /* Tile layer brightness - controlled by JS hover state */
+    /* Tile layer brightness - controlled by JS hover/select state */
     :global(.leaflet-tile-pane) {
-        filter: brightness(1);
-        transition: filter 0.3s ease;
+        filter: brightness(0.8);
+        transition: filter 0.4s ease;
     }
     
     /* Dim tiles when hovering over a territory */
     .leaflet-map-container.territory-hover :global(.leaflet-tile-pane) {
-        filter: brightness(0.6);
+        filter: brightness(0.5);
+    }
+    
+    /* Brighten tiles when a territory is selected (to see inside the polygon) */
+    .leaflet-map-container.territory-selected :global(.leaflet-tile-pane) {
+        filter: brightness(1) contrast(1.1);
     }
     
     .map-legend {
@@ -857,8 +862,9 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
             // Hover effects for main territory (only when not selected)
             group.on('mouseover', () => {
                 if (selectedTerritoryId !== territory.id) {
+                    // Make polygon more opaque (less see-through) on hover
                     group.setStyle({
-                        fillOpacity: 0.5,
+                        fillOpacity: 0.65,
                         weight: 3,
                         color: '#ffffff'
                     });
@@ -872,9 +878,12 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
             
             group.on('mouseout', () => {
                 if (selectedTerritoryId !== territory.id) {
+                    // If a territory is selected, hide this one (mask covers it)
+                    // Otherwise restore normal opacity
                     group.setStyle({
-                        fillOpacity: selectedTerritoryId ? 0.15 : 0.35,
-                        weight: 2,
+                        fillOpacity: selectedTerritoryId ? 0 : 0.35,
+                        weight: selectedTerritoryId ? 0 : 2,
+                        opacity: selectedTerritoryId ? 0 : 0.8,
                         color: territory.color
                     });
                 }
@@ -894,10 +903,13 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
                 }
             });
             
-            // Click to select territory
+            // Click to select territory - zoom to the specific subregion clicked
             group.on('click', (e) => {
                 L.DomEvent.stopPropagation(e);
-                selectTerritory(territory.id);
+                // Get the bounds of the specific polygon (subregion) that was clicked
+                const clickedLayer = e.layer || e.target;
+                const subregionBounds = clickedLayer && clickedLayer.getBounds ? clickedLayer.getBounds() : null;
+                selectTerritory(territory.id, subregionBounds);
             });
         });
         
@@ -913,7 +925,7 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
         if (allBounds.length > 0) {
             const combinedBounds = allBounds.reduce((acc, bounds) => acc.extend(bounds), allBounds[0]);
             initialBounds = combinedBounds;
-            map.fitBounds(combinedBounds, { padding: [20, 20] });
+            map.fitBounds (combinedBounds, { padding: [20, 20], animate: true });
         } else {
             // Default view centered on Icenia City (approx -3900, -4600)
             map.setView(mcToLatLng(-3900, -4600), -1);
@@ -954,7 +966,7 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
             infoPanel.innerHTML = '<div class="info-placeholder">Hover over a territory to see details</div>';
         }
         
-        // Tile dimming helper function
+        // Tile dimming/brightening helper functions
         const mapContainer = document.querySelector('.leaflet-map-container');
         function setTilesDimmed(dimmed) {
             if (mapContainer) {
@@ -966,8 +978,102 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
             }
         }
         
+        function setTilesSelected(selected) {
+            if (mapContainer) {
+                if (selected) {
+                    mapContainer.classList.remove('territory-hover');
+                    mapContainer.classList.add('territory-selected');
+                } else {
+                    mapContainer.classList.remove('territory-selected');
+                }
+            }
+        }
+        
+        // Mask overlay for selected territory (covers area outside the polygon)
+        let maskOverlay = null;
+        let cutoutOverlays = []; // Separate overlays for polygon cutouts
+        
+        function createMaskOverlay(territory, selectedGroup) {
+            // Remove existing mask
+            removeMaskOverlay();
+            
+            // Use original territory data to build the mask
+            // This is more reliable than extracting from Leaflet layers
+            const outerRings = [];  // These become holes in the mask (reveal the territory)
+            const innerRings = [];  // These are holes within polygons that need to be filled back
+            
+            // Process all non-cutout subregions from the original territory data
+            const mainSubregions = territory.subregions?.filter(sr => !sr.isCutout) || [];
+            
+            mainSubregions.forEach(sr => {
+                if (!sr.polygon || !Array.isArray(sr.polygon) || sr.polygon.length === 0) return;
+                
+                if (isMultiRing(sr.polygon)) {
+                    // Multi-ring polygon: first ring is outer, rest are holes
+                    // Outer ring becomes a hole in the mask (reveals territory)
+                    outerRings.push(convertRing(sr.polygon[0]));
+                    // Inner rings (holes in the polygon) need to be filled back in
+                    for (let i = 1; i < sr.polygon.length; i++) {
+                        innerRings.push(convertRing(sr.polygon[i]));
+                    }
+                } else {
+                    // Single ring polygon
+                    outerRings.push(convertRing(sr.polygon));
+                }
+            });
+            
+            // Create a huge outer boundary (covers the whole map)
+            const outerBounds = [
+                [90000, -90000],   // far north-west
+                [90000, 90000],    // far north-east  
+                [-90000, 90000],   // far south-east
+                [-90000, -90000]   // far south-west
+            ];
+            
+            // Create main mask polygon with holes for the territory outer rings
+            // This reveals the territory areas
+            const maskCoords = [outerBounds, ...outerRings];
+            
+            maskOverlay = L.polygon(maskCoords, {
+                color: 'transparent',
+                weight: 0,
+                fillColor: territory.color,
+                fillOpacity: 0.45,
+                interactive: false,
+                className: 'territory-mask'
+            }).addTo(map);
+            
+            // Create separate filled polygons for each inner ring (hole within a polygon)
+            // These cover up the cutout areas that were revealed by the outer ring holes
+            innerRings.forEach(ring => {
+                const cutoutOverlay = L.polygon(ring, {
+                    color: 'transparent',
+                    weight: 0,
+                    fillColor: territory.color,
+                    fillOpacity: 0.45,
+                    interactive: false,
+                    className: 'territory-mask-cutout'
+                }).addTo(map);
+                cutoutOverlays.push(cutoutOverlay);
+            });
+        }
+        
+        function removeMaskOverlay() {
+            if (maskOverlay) {
+                map.removeLayer(maskOverlay);
+                maskOverlay = null;
+            }
+            // Remove all cutout overlays
+            cutoutOverlays.forEach(overlay => {
+                map.removeLayer(overlay);
+            });
+            cutoutOverlays = [];
+        }
+        
         // Select territory function
-        function selectTerritory(territoryId) {
+        // zoomBounds: optional bounds to zoom to (for subregion-specific zoom when clicking polygon)
+        // If not provided, zooms to full territory bounds (for legend clicks)
+        function selectTerritory(territoryId, zoomBounds = null) {
             const legendItems = document.querySelectorAll('.legend-item');
             
             // If clicking the same territory, deselect
@@ -990,9 +1096,9 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
             // Update all polygon styles
             polygonLayers.forEach((group, id) => {
                 if (id === territoryId) {
-                    // Selected territory: bright and prominent with white border
+                    // Selected territory: nearly transparent to see map inside, white border
                     group.setStyle({
-                        fillOpacity: 0.6,
+                        fillOpacity: 0,
                         weight: 4,
                         opacity: 1,
                         color: '#ffffff'
@@ -1010,15 +1116,21 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
                     // Other territories: dimmed, restore original color
                     const otherTerritory = territories.find(t => t.id === id);
                     group.setStyle({
-                        fillOpacity: 0.15,
-                        weight: 1,
-                        opacity: 0.6,
+                        fillOpacity: 0,
+                        weight: 0,
+                        opacity: 0,
                         color: otherTerritory ? otherTerritory.color : group.territoryData?.color
                     });
                 }
             });
             
-            // Zoom to selected territory with animation
+            // Create mask overlay to tint areas outside the selected territory
+            createMaskOverlay(territory, selectedGroup);
+            
+            // Zoom to selected area with animation
+            // Use zoomBounds if provided (subregion click), otherwise use full territory bounds (legend click)
+            const boundsToZoom = zoomBounds || selectedGroup.getBounds();
+            
             // Calculate offset to account for the legend panel on the right
             const mapDiv = document.getElementById('icenia-map');
             const legendDiv = document.getElementById('map-legend');
@@ -1030,11 +1142,12 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
             const leftPadding = 50;
             const verticalPadding = 50;
             
-            map.fitBounds(selectedGroup.getBounds(), { 
+            map.flyToBounds(boundsToZoom, { 
                 paddingTopLeft: [leftPadding, verticalPadding],
                 paddingBottomRight: [rightPadding, verticalPadding],
                 animate: true,
-                duration: 0.5
+                maxZoom: -1,
+                duration: 0.3,
             });
             
             // Update legend highlight
@@ -1046,8 +1159,8 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
                 }
             });
             
-            // Dim tiles when territory is selected
-            setTilesDimmed(true);
+            // Brighten tiles when territory is selected
+            setTilesSelected(true);
         }
         
         // Deselect territory function
@@ -1056,6 +1169,9 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
             
             selectedTerritoryId = null;
             const legendItems = document.querySelectorAll('.legend-item');
+            
+            // Remove mask overlay
+            removeMaskOverlay();
             
             // Reset all polygon styles to original colors
             polygonLayers.forEach((group, id) => {
@@ -1073,18 +1189,18 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
             
             // Zoom back to show all territories
             if (initialBounds) {
-                map.fitBounds(initialBounds, { 
+                map.flyToBounds(initialBounds, { 
                     padding: [20, 20],
                     animate: true,
-                    duration: 0.5
+                    duration: 0.3
                 });
             }
             
             // Clear legend highlight
             legendItems.forEach(item => item.classList.remove('active'));
             
-            // Remove tile dimming
-            setTilesDimmed(false);
+            // Remove tile selection state
+            setTilesSelected(false);
         }
         
         // Click on map background to deselect
@@ -1104,8 +1220,9 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
             item.addEventListener('mouseenter', () => {
                 const group = polygonLayers.get(id);
                 if (group && selectedTerritoryId !== id) {
+                    // Make polygon more opaque (less see-through) on hover
                     group.setStyle({
-                        fillOpacity: selectedTerritoryId ? 0.3 : 0.6,
+                        fillOpacity: 0.65,
                         weight: 4,
                         color: '#ffffff'
                     });
@@ -1116,17 +1233,22 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
                 if (territory) {
                     showInfoPanel(territory);
                 }
-                // Dim tiles on legend hover
-                setTilesDimmed(true);
+                // Dim tiles on legend hover (only if no territory selected)
+                if (!selectedTerritoryId) {
+                    setTilesDimmed(true);
+                }
             });
             
             item.addEventListener('mouseleave', () => {
                 const group = polygonLayers.get(id);
                 if (group && selectedTerritoryId !== id) {
                     const territory = territories.find(t => t.id === id);
+                    // If a territory is selected, hide this one again (mask covers it)
+                    // Otherwise restore normal opacity
                     group.setStyle({
-                        fillOpacity: selectedTerritoryId ? 0.15 : 0.35,
-                        weight: 2,
+                        fillOpacity: selectedTerritoryId ? 0 : 0.35,
+                        weight: selectedTerritoryId ? 0 : 2,
+                        opacity: selectedTerritoryId ? 0 : 0.8,
                         color: territory ? territory.color : group.territoryData?.color
                     });
                 }
