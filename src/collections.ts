@@ -13,6 +13,12 @@ export const NewsItemSchema = CollectionItemSchema.extend({
     "icon": z.string()
 });
 
+// Helper to handle empty strings from CMS as undefined
+const emptyStringToUndefined = z.preprocess(
+    (val) => (val === "" ? undefined : val),
+    z.number().optional()
+);
+
 // ############################################################
 // Acts
 // ############################################################
@@ -534,7 +540,7 @@ export namespace OfficialChanges {
             "role": z.string(),
             "action": z.enum(["elected", "reelected", "appointed", "resigned", "removed", "succeeded"]),
             "icon": z.string().optional(),
-            "seat": z.number().optional()
+            "seat": emptyStringToUndefined
         }))
     });
     export type OfficialChange = z.infer<typeof Schema>;
@@ -582,7 +588,7 @@ export namespace CityOfficialChanges {
             "role": z.union([z.string(), z.array(z.string())]),
             "action": z.enum(["elected", "reelected", "appointed", "resigned", "removed", "succeeded"]),
             "icon": z.string().optional(),
-            "seat": z.number().optional()
+            "seat": emptyStringToUndefined
         }))
     });
     export type CityOfficialChange = z.infer<typeof Schema>;
