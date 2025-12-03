@@ -10,5 +10,7 @@ document:
 changes:
   - target: statehood-for-bloom
     kind: repeal
+  - target: treaty-of-bloom
+    kind: passage
 icon: /assets/images/law_stock.jpeg
 ---
