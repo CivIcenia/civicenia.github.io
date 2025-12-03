@@ -5,7 +5,7 @@ entries:
     fullname: The Constitution of the Third Republic of Icenia
     masterdoc: https://docs.google.com/document/d/1YC47ZhmtJOioTLmCmHyEfUNGs0QwyY1r/preview#heading=h.gjdgxs
     kind: constitution
-  - hidden: false
+  - hidden: true
     slug: statehood-for-bloom
     name: State of Bloom
     fullname: Statehood for Bloom
@@ -242,7 +242,7 @@ entries:
     masterdoc: https://docs.google.com/document/d/164nWHg6sKj6Lo5A9zyp4AT_TubAzebiSpUGWuYM91pM/preview
   - hidden: false
     slug: statehood-of-selsey
-    name: State of Selsey
+    name: State of Riemark
     kind: statehood
     masterdoc: https://docs.google.com/document/d/1WZM5dHksOxdSy06YF0YRezuRJcA8r83fpRqp4-myke0/preview
   - hidden: false
@@ -262,7 +262,7 @@ entries:
     masterdoc: https://docs.google.com/document/d/1I_-2IMwvc56_BHSvek9wIlCqa2qbGJ473k7OgxR24kY/preview
   - hidden: false
     slug: alenarith-protectorate
-    name: Alenarith Protectorate
+    name: Cortesia Del Mar
     kind: statehood
     masterdoc: https://docs.google.com/document/d/1RcEzXm2tuQ0jly7TXjtsflrCS_mZyZp4p8mnqBg1LH0/preview
   - hidden: false
@@ -282,7 +282,7 @@ entries:
     slug: head-of-transportation-act
     kind: constitution
     masterdoc: https://docs.google.com/document/d/1R-LiZdiTGfvil8h_oLpiOcgwGAw9VNDgDotlDfPjCwc/preview
-  - hidden: false
+  - hidden: true
     slug: wesbury-treaty
     name: Treaty of Wesbury
     kind: treaty
@@ -337,3 +337,9 @@ entries:
     fullname: Western Anti-Raider Defence Alliance (WARDA)
     kind: treaty
     masterdoc: https://docs.google.com/document/d/1sEgGjZwA_6CRYTsV6wIpNPbkuuhRkH8DP_M_EmCD66A/preview
+  - hidden: false
+    slug: treaty-of-bloom
+    name: Treaty of Bloom
+    fullname: The Treaty of Bloom
+    kind: treaty
+    masterdoc: https://docs.google.com/document/d/1-MYwwpGgwS37SHC6rQ0hiPW23QB9s2XwVTxpaPCSq88/preview
