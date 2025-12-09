@@ -8,23 +8,19 @@ senate_term: "April 2025"
 # Executive Branch Officials - Fixed slots with role icons
 president:
   name: "ChrisChrispie"
-  icon: "https://cdn.discordapp.com/avatars/161282206113857537/0e246c5d1e815473a2035868cc7ed72a?size=1024"
+  icon: "https://cdn.discordapp.com/avatars/161282206113857537/197e439992431a37b9b0d01df622fc99.webp?size=256"
 
 secretary_of_defense:
-  name: "Anvil"
-  icon: "https://cdn.discordapp.com/avatars/164188981293088769/2c254c3c8280692107fdbc64612118f6?size=1024"
+  name: "JuniorTide"
+  icon: "https://cdn.discordapp.com/avatars/662116538211368960/7f03c9cbcc4436a0e539d144207d4713.webp?size=256"
 
 secretary_of_interior:
-  name: "SneedChungus"
-  icon: "https://cdn.discordapp.com/avatars/1224526027514970216/bb2b2edf8284811f3038f17c1c2cbdcb?size=1024"
+  name: "Xcios"
+  icon: "https://cdn.discordapp.com/guilds/558071874161082368/users/574380122539294726/avatars/c5662043b9be8a6896710bb4b65adb07.webp?size=256"
 
 secretary_of_treasury:
-  name: "7Misun"
-  icon: "https://cdn.discordapp.com/avatars/143920509833314304/9bd4216b49f9d15a0766379e76a7c85e?size=1024"
-
-secretary_of_state:
-  name: ""
-  icon: "https://cdn.discordapp.com/embed/avatars/0.png"
+  name: "Anvil"
+  icon: "https://cdn.discordapp.com/avatars/164188981293088769/0d209f4d82a63c91f97960d9d6221763.webp?size=256"
 
 # Speaker of the Senate - Fixed slot
 speaker:

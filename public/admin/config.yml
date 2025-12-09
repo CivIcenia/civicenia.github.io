@@ -325,21 +325,6 @@ collections:
                 widget: "string"
                 required: false
                 hint: "Discord avatar URL for this role. Use https://toolscord.com/"
-          - label: "Secretary of State"
-            name: "secretary_of_state"
-            widget: "object"
-            collapsed: true
-            fields:
-              - label: "Name"
-                name: "name"
-                widget: "string"
-                required: true
-                hint: "The Secretary's in-game name (leave empty if vacant)"
-              - label: "Discord Icon"
-                name: "icon"
-                widget: "string"
-                required: false
-                hint: "Discord avatar URL for this role. Use https://toolscord.com/"
           # Speaker of Senate - Fixed Slot
           - label: "Speaker of the Senate"
             name: "speaker"
@@ -635,6 +620,15 @@ collections:
         value_type: "int"
         min: 1
         hint: "Optional: The Senate term number (for elections). Check the previous election to increment correctly."
+      # Senate Size
+      - label: "Senate Size"
+        name: "senate_size"
+        widget: "number"
+        required: false
+        value_type: "int"
+        min: 1
+        default: 7
+        hint: "Optional: The number of senators in this term. Defaults to 7."
       # Excerpt
       - label: "Excerpt"
         name: "excerpt"

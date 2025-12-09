@@ -411,7 +411,6 @@ export namespace GovOfficials {
         "secretary_of_defense": RoleSlotSchema,
         "secretary_of_interior": RoleSlotSchema,
         "secretary_of_treasury": RoleSlotSchema,
-        "secretary_of_state": RoleSlotSchema,
         "speaker": RoleSlotSchema,
         "senators": z.array(SenatorSeatSchema),
     });
@@ -430,7 +429,6 @@ export namespace GovOfficials {
             secretary_of_defense: defaultSlot,
             secretary_of_interior: defaultSlot,
             secretary_of_treasury: defaultSlot,
-            secretary_of_state: defaultSlot,
             speaker: defaultSlot,
             senators: []
         };
@@ -446,7 +444,6 @@ export namespace GovOfficials {
             { title: "Secretary of Defense", slot: data.secretary_of_defense },
             { title: "Secretary of Interior", slot: data.secretary_of_interior },
             { title: "Secretary of Treasury", slot: data.secretary_of_treasury },
-            { title: "Secretary of State", slot: data.secretary_of_state },
         ].filter(s => s.slot.name !== "");
     }
 

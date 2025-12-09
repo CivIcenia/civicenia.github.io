@@ -31,6 +31,7 @@ interface ChangePost {
     changetype: string;
     officials: OfficialEntry[];
     headline: string;
+    senate_size?: number;
 }
 
 // Role mappings for government officials
@@ -39,7 +40,6 @@ const GOV_ROLE_MAP: Record<string, string> = {
     "secretary-of-defense": "secretary_of_defense",
     "secretary-of-interior": "secretary_of_interior",
     "secretary-of-treasury": "secretary_of_treasury",
-    "secretary-of-state": "secretary_of_state",
     "speaker-of-the-senate": "speaker",
     "senator": "senator"
 };
@@ -75,7 +75,8 @@ function readChangesPosts(directory: string, filterField: string): ChangePost[] 
                 date: parseDate(data.date),
                 changetype: data.changetype,
                 officials: data.officials,
-                headline: data.headline
+                headline: data.headline,
+                senate_size: data.senate_size
             });
         }
     }
@@ -103,6 +104,7 @@ function syncGovernmentOfficials() {
     const latestOfficials: Record<string, { name: string; icon: string; seat?: number }> = {};
     const latestSenators: Map<number, { name: string; icon: string }> = new Map();
     let latestSenateTerm = "";
+    let latestSenateSize = 7; // Default to 7
 
     // Process changes from oldest to newest (so newest overwrites)
     const sortedChanges = [...changes].reverse();
@@ -114,6 +116,12 @@ function syncGovernmentOfficials() {
             const termMatch = change.headline.match(/^(\w+\s+\d{4})/);
             if (termMatch) {
                 latestSenateTerm = termMatch[1];
+            }
+            
+            // Update senate size if specified in the post
+            // We need to cast change to any because we're accessing a property that might not be in the interface yet
+            if ((change as any).senate_size) {
+                latestSenateSize = (change as any).senate_size;
             }
         }
 
@@ -179,22 +187,18 @@ secretary_of_treasury:
   name: "${latestOfficials.secretary_of_treasury?.name || extractValue(currentContent, 'secretary_of_treasury', 'name')}"
   icon: "${latestOfficials.secretary_of_treasury?.icon || extractValue(currentContent, 'secretary_of_treasury', 'icon') || DEFAULT_ICON}"
 
-secretary_of_state:
-  name: "${latestOfficials.secretary_of_state?.name || extractValue(currentContent, 'secretary_of_state', 'name')}"
-  icon: "${latestOfficials.secretary_of_state?.icon || extractValue(currentContent, 'secretary_of_state', 'icon') || DEFAULT_ICON}"
-
 # Speaker of the Senate - Fixed slot
 speaker:
   name: "${latestOfficials.speaker?.name || extractValue(currentContent, 'speaker', 'name')}"
   icon: "${latestOfficials.speaker?.icon || extractValue(currentContent, 'speaker', 'icon') || DEFAULT_ICON}"
 
-# Senate Seats - Fixed numbered slots (7 seats)
+# Senate Seats - Fixed numbered slots (${latestSenateSize} seats)
 senators:
 `;
 
     // Add senators
     const currentSenators = extractSenators(currentContent);
-    for (let seat = 1; seat <= 7; seat++) {
+    for (let seat = 1; seat <= latestSenateSize; seat++) {
         const senator = latestSenators.get(seat) || currentSenators.get(seat) || { name: "", icon: DEFAULT_ICON };
         newContent += `  - seat: ${seat}
     name: "${senator.name}"

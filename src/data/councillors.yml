@@ -2,11 +2,11 @@
 # This file is managed through Decap CMS and synced from City Official Change posts
 # Use https://toolscord.com/ to get Discord profile pictures
 
-council_term: "Current Term"
+council_term: "November 2025"
 
 mayor:
-  name: "CreepilyCreep"
-  icon: "https://cdn.discordapp.com/embed/avatars/0.png"
+  name: "Ratat0ing"
+  icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=2048"
 
 deputy_mayor:
   name: ""
@@ -14,17 +14,17 @@ deputy_mayor:
 
 councillors:
   - seat: 1
-    name: "Dr_Bacon_Hair"
-    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
-  - seat: 2
     name: "Ratat0ing"
-    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
+    icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=2048"
+  - seat: 2
+    name: "HsmNewfriend"
+    icon: "https://cdn.discordapp.com/avatars/1080275805277540423/a95d5aeab1df4316903742ae66cb75b2.webp?size=256"
   - seat: 3
-    name: "JuniorTide"
-    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
+    name: "CreepilyCreep"
+    icon: "https://cdn.discordapp.com/avatars/452620205064060939/4f6c907988fabe211c61d04cbadb5eb2.webp?size=240"
   - seat: 4
-    name: "SpeedyJustice"
-    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
+    name: "TheRecycler"
+    icon: "https://cdn.discordapp.com/avatars/300468634193756160/9321d33e1752ae3873fa4ef50363d9d9.webp?size=240"
   - seat: 5
-    name: "ping"
-    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
+    name: "Escarchaking333"
+    icon: "https://cdn.discordapp.com/avatars/852281978421510154/cacc04ffc4bfef7a1e5c0470e911bcc0.webp?size=240"
