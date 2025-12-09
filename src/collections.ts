@@ -19,6 +19,12 @@ const emptyStringToUndefined = z.preprocess(
     z.number().optional()
 );
 
+// Helper for optional positive integers (handles empty strings)
+const optionalPositiveInt = z.preprocess(
+    (val) => (val === "" ? undefined : val),
+    z.coerce.number().int().positive().optional()
+);
+
 // ############################################################
 // Acts
 // ############################################################
@@ -531,7 +537,8 @@ export namespace OfficialChanges {
             "speaker-vote",
             "president-change"
         ]),
-        "term": z.coerce.number().int().positive().optional(),
+        "term": optionalPositiveInt,
+        "senate_size": optionalPositiveInt,
         "officials": z.array(z.object({
             "name": z.string(),
             "role": z.string(),
@@ -579,7 +586,7 @@ export namespace CityOfficialChanges {
             "council-byelection",
             "mayor-vote"
         ]),
-        "term": z.coerce.number().int().positive().optional(),
+        "term": optionalPositiveInt,
         "officials": z.array(z.object({
             "name": z.string(),
             "role": z.union([z.string(), z.array(z.string())]),
