@@ -2,7 +2,7 @@
 cityofficialchange: true
 layout: "@layouts/news/city-official-change.astro"
 changetype: council-election
-headline: October Council (2025) Council Election
+headline: October 2025 Council Election
 date: 2025-10-23T14:41:00.000Z
 term: 1
 officials:
