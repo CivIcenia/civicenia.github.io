@@ -276,7 +276,7 @@ body::-webkit-scrollbar {
 /*
  * GOV.UK sets a 10px bottom border on the inner header container
  * in `govuk-frontend-4.3.1.min.css` (.govuk-header__container {
- *   ... border-bottom: 10px solid #1d70b8;
+ *   ... border-bottom: 10px solid #1C70B8;
  * }) which is the blue bar you see.
  *
  * Override it here to change or remove the bar.
@@ -1071,7 +1071,7 @@ body.menu-open {
     background: #f3f2f1;
     padding: 20px;
     margin-bottom: 30px;
-    border-left: 6px solid #1D70B8;
+    border-left: 6px solid #1C70B8;
 }
 
 .change-item {

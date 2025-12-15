@@ -15,7 +15,7 @@ function getActionColours(action: string): { background: string; text: string } 
         case "appointed":
         case "elected":
         case "reelected":
-            return { background: "28a745", text: "ffffff" };
+            return { background: "3A8017", text: "ffffff" };
         case "resigned":
             return { background: "ffc107", text: "000000" };
         case "removed":
@@ -42,7 +42,7 @@ function getChangeTypeLabel(changetype: string): string {
 }
 ---
 <PostLayout chin={false}>
-    <div class="govuk-panel govuk-panel--confirmation" style="background-color: #1D70B8;">
+    <div class="govuk-panel govuk-panel--confirmation" style="background-color: #1C70B8;">
         <h1 class="govuk-panel__title">
             {change.headline}
         </h1>

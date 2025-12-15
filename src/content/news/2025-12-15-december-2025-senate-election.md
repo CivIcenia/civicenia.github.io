@@ -38,16 +38,18 @@ officials:
     action: elected
 icon: /assets/images/election_stock.png
 ---
-**ELECTION RESULTS**
+From ChrisChrisPie:
 
-December Senate
-
-@CreepilyCreep 
-@Anvil 
-@Seared 
-@Lopster Bisque 
-@Senator Bacon Hair 
-
-*I have, as has the Minister of Defense and current speaker of the Senate, made the decision to not seat Luci due to clear bribery—which is illegal per the Icenian Constitution. Slushii was clapped for this a few years back, and it is only right to do it again. Do not bribe people to vote for you with gifts/rewards*
+> **ELECTION RESULTS**
+>
+> December Senate
+>
+> @CreepilyCreep 
+> @Anvil 
+> @Seared 
+> @Lopster Bisque 
+> @Senator Bacon Hair 
+>
+> *I have, as has the Minister of Defense and current speaker of the Senate, made the decision to not seat Luci due to clear bribery—which is illegal per the Icenian Constitution. Slushii was clapped for this a few years back, and it is only right to do it again. Do not bribe people to vote for you with gifts/rewards*
 
 Anvil was voted in unanimously as the Speaker by the Senate on the 14th of December

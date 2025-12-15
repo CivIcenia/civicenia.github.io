@@ -90,7 +90,7 @@ export const territories: Territory[] = [
     {
         name: "Icenia City",
         id: "23418165-54bb-43d0-b19e-b665b297d8e7",
-        color: "#1D70B8",
+        color: "#1C70B8",
         notes: "Formed from federal territory on 19th November 2025",
         subregions: [
             {

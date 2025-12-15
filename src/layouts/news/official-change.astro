@@ -15,7 +15,7 @@ function getActionColours(action: string): { background: string; text: string } 
         case "appointed":
         case "elected":
         case "reelected":
-            return { background: "28a745", text: "ffffff" };
+            return { background: "3A8017", text: "ffffff" };
         case "resigned":
             return { background: "ffc107", text: "000000" };
         case "removed":
@@ -44,9 +44,17 @@ function getChangeTypeLabel(changetype: string): string {
             return "Official Change";
     }
 }
+
+// Format role names from kebab-case to Title Case
+function formatRoleName(role: string): string {
+    return role
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
 ---
 <PostLayout chin={false}>
-    <div class="govuk-panel govuk-panel--confirmation" style="background-color: #1D70B8;">
+    <div class="govuk-panel govuk-panel--confirmation">
         <h1 class="govuk-panel__title">
             {change.headline}
         </h1>
@@ -64,40 +72,38 @@ function getChangeTypeLabel(changetype: string): string {
 
             <div class="govuk-grid-column-one-third">
                 <style>
+                    a.official-link {
+                        text-decoration: none;
+                    }
+                    a.official-link:hover {
+                        filter: brightness(85%);
+                    }
+
                     div.official-change-card {
                         width: 100%;
                         text-align: center;
-                        padding: 15px;
+                        padding: 15px 0;
                         margin-bottom: 10px;
-                        border-radius: 4px;
+                    }
+                    div.official-change-card:active {
+                        border-bottom: 4px solid #000;
+                        margin-bottom: 6px;
                     }
 
                     span.change-type-badge {
+                        width: 100%;
+                        text-align: center;
+                        padding: 15px 0;
+                        margin-bottom: 10px;
                         display: inline-block;
-                        padding: 4px 12px;
-                        background: #f3f2f1;
-                        border-radius: 4px;
-                        font-size: 0.875rem;
-                        margin-bottom: 15px;
-                        color: #0b0c0c;
-                    }
-
-                    .official-name {
+                        padding: 8px 16px;
+                        background: #1C70B8;
+                        color: #ffffff;
+                        /* border-radius: 4px; */
+                        font-size: 1.5rem;
                         font-weight: 700;
-                        font-size: 1.125rem;
-                    }
-
-                    .official-role {
-                        font-size: 0.9375rem;
-                        margin-top: 4px;
-                    }
-
-                    .official-action {
-                        text-transform: uppercase;
-                        font-size: 0.75rem;
-                        font-weight: 700;
-                        letter-spacing: 0.5px;
-                        margin-top: 8px;
+                        /* margin-bottom: 15px; */
+                        letter-spacing: 0.3px;
                     }
                 </style>
 
@@ -106,11 +112,15 @@ function getChangeTypeLabel(changetype: string): string {
                 {change.officials.map((official) => {
                     const colours = getActionColours(official.action);
                     return (
-                        <div class="official-change-card" style={`background: #${colours.background}; color: #${colours.text};`}>
-                            <div class="official-name">{official.name}</div>
-                            <div class="official-role">{official.role}</div>
-                            <div class="official-action">{official.action}</div>
-                        </div>
+                        <a class="govuk-link official-link" href="#">
+                            <div class="official-change-card" style={`background: #${colours.background}; color: #${colours.text};`}>
+                                <b>{formatRoleName(official.action)}</b>
+                                <br/>
+                                {official.name} as {formatRoleName(official.role)}
+                                <br/>
+                                {/* <span style="text-transform: uppercase; font-size: 1rem; font-weight: 700; letter-spacing: 0.5px;">{official.action}</span> */}
+                            </div>
+                        </a>
                     );
                 })}
             </div>
