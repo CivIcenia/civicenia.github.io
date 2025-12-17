@@ -255,6 +255,105 @@ collections:
                 widget: "text"
                 required: false
                 hint: "Optional notes about this incorporation (e.g., what sections were changed)"
+      - label: "Role Configuration"
+        name: "role-config"
+        file: "src/data/role-config.yml"
+        description: "Configure available city and republic roles, including whether they have multiple seats"
+        fields:
+          - label: "Republic Roles"
+            label_singular: "Republic Role"
+            name: "republic_roles"
+            widget: "list"
+            default: []
+            summary: "{{display_name}} ({{id}}){{#multi_seat}} - {{num_seats}} seats{{/multi_seat}}"
+            fields:
+              - label: "Role ID"
+                name: "id"
+                widget: "string"
+                required: true
+                pattern: ["^[a-z_]+$", "Must be lowercase with underscores only (e.g., secretary_of_defense)"]
+                hint: "Unique identifier for this role (e.g., president, senator, secretary_of_defense)"
+              - label: "Display Name"
+                name: "display_name"
+                widget: "string"
+                required: true
+                hint: "Human-readable name shown on the website (e.g., Secretary of Defense)"
+              - label: "Section"
+                name: "section"
+                widget: "select"
+                required: true
+                default: "executive"
+                options:
+                  - {label: "Executive Branch", value: "executive"}
+                  - {label: "Legislative (Senate)", value: "legislative"}
+                hint: "Which section of the page should this role appear in?"
+              - label: "Has Multiple Seats?"
+                name: "multi_seat"
+                widget: "boolean"
+                default: false
+                hint: "Toggle ON for roles like Senator that have numbered seats (Seat 1, 2, 3...)"
+              - label: "Number of Seats"
+                name: "num_seats"
+                widget: "number"
+                value_type: "int"
+                min: 1
+                max: 20
+                required: false
+                hint: "Only applies if 'Has Multiple Seats' is ON. How many seats does this role have?"
+              - label: "Display Order"
+                name: "order"
+                widget: "number"
+                value_type: "int"
+                min: 1
+                required: true
+                hint: "Controls the order roles appear on the page (lower numbers appear first)"
+          - label: "City Roles"
+            label_singular: "City Role"
+            name: "city_roles"
+            widget: "list"
+            default: []
+            summary: "{{display_name}} ({{id}}){{#multi_seat}} - {{num_seats}} seats{{/multi_seat}}"
+            fields:
+              - label: "Role ID"
+                name: "id"
+                widget: "string"
+                required: true
+                pattern: ["^[a-z_]+$", "Must be lowercase with underscores only (e.g., deputy_mayor)"]
+                hint: "Unique identifier for this role (e.g., mayor, councillor)"
+              - label: "Display Name"
+                name: "display_name"
+                widget: "string"
+                required: true
+                hint: "Human-readable name shown on the website (e.g., Mayor)"
+              - label: "Section"
+                name: "section"
+                widget: "select"
+                required: true
+                default: "executive"
+                options:
+                  - {label: "City Executive", value: "executive"}
+                  - {label: "City Council", value: "council"}
+                hint: "Which section of the page should this role appear in?"
+              - label: "Has Multiple Seats?"
+                name: "multi_seat"
+                widget: "boolean"
+                default: false
+                hint: "Toggle ON for roles like Councillor that have numbered seats (Seat 1, 2, 3...)"
+              - label: "Number of Seats"
+                name: "num_seats"
+                widget: "number"
+                value_type: "int"
+                min: 1
+                max: 20
+                required: false
+                hint: "Only applies if 'Has Multiple Seats' is ON. How many seats does this role have?"
+              - label: "Display Order"
+                name: "order"
+                widget: "number"
+                value_type: "int"
+                min: 1
+                required: true
+                hint: "Controls the order roles appear on the page (lower numbers appear first)"
       - label: "Government Officials"
         name: "officials"
         file: "src/data/officials.yml"
@@ -652,13 +751,13 @@ collections:
             widget: "select"
             required: true
             options:
-              - {label: "Senator", value: "senator"}
+              - {label: "President", value: "president"}
               - {label: "Secretary of Defense", value: "secretary-of-defense"}
               - {label: "Secretary of the Interior", value: "secretary-of-interior"}
               - {label: "Secretary of Treasury", value: "secretary-of-treasury"}
-              - {label: "Secretary of State", value: "secretary-of-state"}
-              - {label: "Speaker of the Senate", value: "speaker-of-the-senate"}
-              - {label: "President", value: "president"}
+              - {label: "Speaker of the Senate", value: "speaker"}
+              - {label: "Senator", value: "senator"}
+              - {label: "Head of Transportation", value: "head-of-transportation"}
           - label: "Action"
             name: "action"
             widget: "select"
@@ -843,6 +942,9 @@ collections:
       - label: "Mayor Votes"
         field: changetype
         pattern: "mayor-vote"
+      - label: "Other Appointments"
+        field: changetype
+        pattern: "other-appointments"
     view_groups:
       - label: "Type"
         field: changetype
@@ -873,6 +975,7 @@ collections:
           - {label: "Council Election (Full)", value: "council-election"}
           - {label: "Council By-Election (Certain Seats)", value: "council-byelection"}
           - {label: "Mayor Voting", value: "mayor-vote"}
+          - {label: "Other Appointments", value: "other-appointments"}
         default: "council-election"
       # Headline
       - label: "Title"
@@ -917,9 +1020,9 @@ collections:
             widget: "select"
             required: true
             options:
-              - {label: "Councillor", value: "councillor"}
-              - {label: "Deputy Mayor", value: "deputy-mayor"}
               - {label: "Mayor", value: "mayor"}
+              - {label: "Councillor", value: "councillor"}
+              - {label: "CTA Commissioner", value: "cta-commissioner"}
           - label: "Action"
             name: "action"
             widget: "select"

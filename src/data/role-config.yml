@@ -1,0 +1,54 @@
+republic_roles:
+  - id: president
+    display_name: President
+    multi_seat: false
+    section: executive
+    order: 1
+  - id: secretary_of_defense
+    display_name: Secretary of Defense
+    multi_seat: false
+    section: executive
+    order: 2
+  - id: secretary_of_interior
+    display_name: Secretary of the Interior
+    multi_seat: false
+    section: executive
+    order: 3
+  - id: secretary_of_treasury
+    display_name: Secretary of Treasury
+    multi_seat: false
+    section: executive
+    order: 4
+  - id: speaker
+    display_name: Speaker of the Senate
+    multi_seat: false
+    section: legislative
+    order: 5
+  - id: senator
+    display_name: Senator
+    multi_seat: true
+    num_seats: 5
+    section: legislative
+    order: 6
+  - id: head_of_transportation
+    display_name: Head of Transportation
+    multi_seat: false
+    section: executive
+    order: 7
+city_roles:
+  - id: mayor
+    display_name: Mayor
+    multi_seat: false
+    section: executive
+    order: 1
+  - id: councillor
+    display_name: Councillor
+    multi_seat: true
+    num_seats: 5
+    section: council
+    order: 2
+  - id: cta_commissioner
+    display_name: CTA Commissioner
+    multi_seat: false
+    section: executive
+    order: 3

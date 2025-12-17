@@ -15,6 +15,8 @@ const NEWS_DIR = path.join(process.cwd(), "src/content/news");
 const CITY_NEWS_DIR = path.join(process.cwd(), "src/content/city-news");
 const OFFICIALS_FILE = path.join(process.cwd(), "src/data/officials.yml");
 const COUNCILLORS_FILE = path.join(process.cwd(), "src/data/councillors.yml");
+const ROLE_CONFIG_FILE = path.join(process.cwd(), "src/data/role-config.yml");
+const CMS_CONFIG_FILE = path.join(process.cwd(), "public/admin/config.yml");
 
 const DEFAULT_ICON = "https://cdn.discordapp.com/embed/avatars/0.png";
 
@@ -34,22 +36,60 @@ interface ChangePost {
     senate_size?: number;
 }
 
-// Role mappings for government officials
-const GOV_ROLE_MAP: Record<string, string> = {
-    "president": "president",
-    "secretary-of-defense": "secretary_of_defense",
-    "secretary-of-interior": "secretary_of_interior",
-    "secretary-of-treasury": "secretary_of_treasury",
-    "speaker-of-the-senate": "speaker",
-    "senator": "senator"
-};
+interface RoleDefinition {
+    id: string;
+    display_name: string;
+    multi_seat: boolean;
+    num_seats?: number;
+    order: number;
+}
 
-// Role mappings for city officials
-const CITY_ROLE_MAP: Record<string, string> = {
-    "mayor": "mayor",
-    "deputy-mayor": "deputy_mayor",
-    "councillor": "councillor"
-};
+interface RoleConfig {
+    republic_roles: RoleDefinition[];
+    city_roles: RoleDefinition[];
+}
+
+// Load role configuration
+function loadRoleConfig(): RoleConfig {
+    try {
+        const content = fs.readFileSync(ROLE_CONFIG_FILE, "utf-8");
+        // Parse YAML using gray-matter (which we already have as a dependency)
+        const parsed = matter(`---\n${content}\n---`);
+        const config = parsed.data as RoleConfig;
+        return config;
+    } catch (error) {
+        console.error("Error loading role config, using defaults:", error);
+        return {
+            republic_roles: [
+                { id: "president", display_name: "President", multi_seat: false, order: 1 },
+                { id: "secretary_of_defense", display_name: "Secretary of Defense", multi_seat: false, order: 2 },
+                { id: "secretary_of_interior", display_name: "Secretary of the Interior", multi_seat: false, order: 3 },
+                { id: "secretary_of_treasury", display_name: "Secretary of Treasury", multi_seat: false, order: 4 },
+                { id: "speaker", display_name: "Speaker of the Senate", multi_seat: false, order: 5 },
+                { id: "senator", display_name: "Senator", multi_seat: true, num_seats: 5, order: 6 },
+            ],
+            city_roles: [
+                { id: "mayor", display_name: "Mayor", multi_seat: false, order: 1 },
+                { id: "councillor", display_name: "Councillor", multi_seat: true, num_seats: 5, order: 2 },
+            ]
+        };
+    }
+}
+
+// Helper function to convert snake_case to kebab-case
+function toKebabCase(snakeCase: string): string {
+    return snakeCase.replace(/_/g, '-');
+}
+
+// Helper function to build role mappings from role config
+function buildRoleMappings(roles: RoleDefinition[]): Record<string, string> {
+    const mappings: Record<string, string> = {};
+    for (const role of roles) {
+        const kebabCase = toKebabCase(role.id);
+        mappings[kebabCase] = role.id;
+    }
+    return mappings;
+}
 
 function parseDate(dateStr: string | Date): Date {
     if (dateStr instanceof Date) return dateStr;
@@ -96,6 +136,13 @@ function syncGovernmentOfficials() {
         return;
     }
 
+    // Load role configuration
+    const roleConfig = loadRoleConfig();
+    const republicRoles = roleConfig.republic_roles;
+    
+    // Build role mappings automatically from config
+    const GOV_ROLE_MAP = buildRoleMappings(republicRoles);
+
     // Read current officials file
     const currentContent = fs.readFileSync(OFFICIALS_FILE, "utf-8");
     const lines = currentContent.split("\n");
@@ -104,7 +151,10 @@ function syncGovernmentOfficials() {
     const latestOfficials: Record<string, { name: string; icon: string; seat?: number }> = {};
     const latestSenators: Map<number, { name: string; icon: string }> = new Map();
     let latestSenateTerm = "";
-    let latestSenateSize = 7; // Default to 7
+    
+    // Get number of senate seats from role config
+    const senatorRole = republicRoles.find(r => r.id === "senator");
+    let latestSenateSize = senatorRole?.num_seats || 7;
 
     // Process changes from oldest to newest (so newest overwrites)
     const sortedChanges = [...changes].reverse();
@@ -162,7 +212,7 @@ function syncGovernmentOfficials() {
         }
     }
 
-    // Now rebuild the YAML file
+    // Build YAML dynamically based on role config
     let newContent = `# Government Officials Data
 # This file is managed through Decap CMS and synced from Official Change posts
 # Use https://toolscord.com/ to get Discord profile pictures
@@ -170,34 +220,24 @@ function syncGovernmentOfficials() {
 # Senate term label (e.g., "September 2025")
 senate_term: "${latestSenateTerm || extractCurrentTerm(currentContent)}"
 
-# Executive Branch Officials - Fixed slots with role icons
-president:
-  name: "${latestOfficials.president?.name || extractValue(currentContent, 'president', 'name')}"
-  icon: "${latestOfficials.president?.icon || extractValue(currentContent, 'president', 'icon') || DEFAULT_ICON}"
-
-secretary_of_defense:
-  name: "${latestOfficials.secretary_of_defense?.name || extractValue(currentContent, 'secretary_of_defense', 'name')}"
-  icon: "${latestOfficials.secretary_of_defense?.icon || extractValue(currentContent, 'secretary_of_defense', 'icon') || DEFAULT_ICON}"
-
-secretary_of_interior:
-  name: "${latestOfficials.secretary_of_interior?.name || extractValue(currentContent, 'secretary_of_interior', 'name')}"
-  icon: "${latestOfficials.secretary_of_interior?.icon || extractValue(currentContent, 'secretary_of_interior', 'icon') || DEFAULT_ICON}"
-
-secretary_of_treasury:
-  name: "${latestOfficials.secretary_of_treasury?.name || extractValue(currentContent, 'secretary_of_treasury', 'name')}"
-  icon: "${latestOfficials.secretary_of_treasury?.icon || extractValue(currentContent, 'secretary_of_treasury', 'icon') || DEFAULT_ICON}"
-
-# Speaker of the Senate - Fixed slot
-speaker:
-  name: "${latestOfficials.speaker?.name || extractValue(currentContent, 'speaker', 'name')}"
-  icon: "${latestOfficials.speaker?.icon || extractValue(currentContent, 'speaker', 'icon') || DEFAULT_ICON}"
-
-# Senate Seats - Fixed numbered slots (${latestSenateSize} seats)
-senators:
 `;
 
-    // Add senators
+    // Add single-seat roles - ensure ALL roles from config are included
+    for (const role of republicRoles.filter(r => !r.multi_seat)) {
+        const official = latestOfficials[role.id] || { name: extractValue(currentContent, role.id, 'name'), icon: extractValue(currentContent, role.id, 'icon') || DEFAULT_ICON };
+        newContent += `# ${role.display_name}
+${role.id}:
+  name: "${official.name || ''}"
+  icon: "${official.icon || DEFAULT_ICON}"
+
+`;
+    }
+
+    // Add multi-seat roles (senators)
     const currentSenators = extractSenators(currentContent);
+    newContent += `# Senate Seats - ${latestSenateSize} seats
+senators:
+`;
     for (let seat = 1; seat <= latestSenateSize; seat++) {
         const senator = latestSenators.get(seat) || currentSenators.get(seat) || { name: "", icon: DEFAULT_ICON };
         newContent += `  - seat: ${seat}
@@ -221,6 +261,13 @@ function syncCityOfficials() {
         return;
     }
 
+    // Load role configuration
+    const roleConfig = loadRoleConfig();
+    const cityRoles = roleConfig.city_roles;
+    
+    // Build role mappings automatically from config
+    const CITY_ROLE_MAP = buildRoleMappings(cityRoles);
+
     // Read current councillors file
     const currentContent = fs.readFileSync(COUNCILLORS_FILE, "utf-8");
     
@@ -228,6 +275,10 @@ function syncCityOfficials() {
     const latestOfficials: Record<string, { name: string; icon: string }> = {};
     const latestCouncillors: Map<number, { name: string; icon: string }> = new Map();
     let latestCouncilTerm = "";
+    
+    // Get number of councillor seats from role config
+    const councillorRole = cityRoles.find(r => r.id === "councillor");
+    const councillorSeats = councillorRole?.num_seats || 5;
 
     // Process changes from oldest to newest (so newest overwrites)
     const sortedChanges = [...changes].reverse();
@@ -273,27 +324,32 @@ function syncCityOfficials() {
         }
     }
 
-    // Now rebuild the YAML file
+    // Build YAML dynamically based on role config
     let newContent = `# City Councillors Data
 # This file is managed through Decap CMS and synced from City Official Change posts
 # Use https://toolscord.com/ to get Discord profile pictures
 
 council_term: "${latestCouncilTerm || extractSimpleValue(currentContent, 'council_term')}"
 
-mayor:
-  name: "${latestOfficials.mayor?.name || extractValue(currentContent, 'mayor', 'name')}"
-  icon: "${latestOfficials.mayor?.icon || extractValue(currentContent, 'mayor', 'icon') || DEFAULT_ICON}"
-
-deputy_mayor:
-  name: "${latestOfficials.deputy_mayor?.name || extractValue(currentContent, 'deputy_mayor', 'name') || ''}"
-  icon: "${latestOfficials.deputy_mayor?.icon || extractValue(currentContent, 'deputy_mayor', 'icon') || DEFAULT_ICON}"
-
-councillors:
 `;
 
-    // Add councillors
+    // Add single-seat roles - ensure ALL roles from config are included
+    for (const role of cityRoles.filter(r => !r.multi_seat)) {
+        const official = latestOfficials[role.id] || { name: extractValue(currentContent, role.id, 'name'), icon: extractValue(currentContent, role.id, 'icon') || DEFAULT_ICON };
+        newContent += `# ${role.display_name}
+${role.id}:
+  name: "${official.name || ''}"
+  icon: "${official.icon || DEFAULT_ICON}"
+
+`;
+    }
+
+    // Add multi-seat roles (councillors)
     const currentCouncillors = extractCouncillors(currentContent);
-    for (let seat = 1; seat <= 5; seat++) {
+    newContent += `# Councillor Seats - ${councillorSeats} seats
+councillors:
+`;
+    for (let seat = 1; seat <= councillorSeats; seat++) {
         const councillor = latestCouncillors.get(seat) || currentCouncillors.get(seat) || { name: "", icon: DEFAULT_ICON };
         newContent += `  - seat: ${seat}
     name: "${councillor.name}"
@@ -381,9 +437,64 @@ function extractCouncillors(content: string): Map<number, { name: string; icon: 
     return councillors;
 }
 
+function syncCMSConfig() {
+    console.log("Syncing CMS config with role definitions...");
+    
+    const roleConfig = loadRoleConfig();
+    const cmsContent = fs.readFileSync(CMS_CONFIG_FILE, "utf-8");
+    
+    // Generate role options for government officials
+    const govRoleOptions = roleConfig.republic_roles
+        .map(role => `              - {label: "${role.display_name}", value: "${toKebabCase(role.id)}"}`)
+        .join('\n');
+    
+    // Generate role options for city officials
+    const cityRoleOptions = roleConfig.city_roles
+        .map(role => `              - {label: "${role.display_name}", value: "${toKebabCase(role.id)}"}`)
+        .join('\n');
+    
+    // Replace government official role options
+    let updatedContent = cmsContent.replace(
+        /(\s+- label: "Role"\s+name: "role"\s+widget: "select"\s+required: true\s+options:\s*\n)(?:\s+- \{label: "[^"]+", value: "[^"]+"\}\s*\n)+(\s+- label: "Action")/g,
+        (match, before, after) => {
+            // Check if this is in the officialchanges section (government)
+            const beforeMatch = cmsContent.substring(0, cmsContent.indexOf(match));
+            if (beforeMatch.includes('name: "officialchanges"') && !beforeMatch.includes('name: "cityofficialchanges"')) {
+                return `${before}${govRoleOptions}\n${after}`;
+            }
+            return match;
+        }
+    );
+    
+    // Replace city official role options
+    updatedContent = updatedContent.replace(
+        /(\s+- label: "Role"\s+name: "role"\s+widget: "select"\s+required: true\s+options:\s*\n)(?:\s+- \{label: "[^"]+", value: "[^"]+"\}\s*\n)+(\s+- label: "Action")/g,
+        (match, before, after) => {
+            // Check if this is in the cityofficialchanges section
+            const beforeMatch = updatedContent.substring(0, updatedContent.indexOf(match));
+            const lastOfficialChanges = beforeMatch.lastIndexOf('name: "officialchanges"');
+            const lastCityOfficialChanges = beforeMatch.lastIndexOf('name: "cityofficialchanges"');
+            
+            if (lastCityOfficialChanges > lastOfficialChanges) {
+                return `${before}${cityRoleOptions}\n${after}`;
+            }
+            return match;
+        }
+    );
+    
+    if (updatedContent !== cmsContent) {
+        fs.writeFileSync(CMS_CONFIG_FILE, updatedContent);
+        console.log("CMS config updated with role definitions!");
+    } else {
+        console.log("CMS config already up to date.");
+    }
+}
+
 // Main execution
 console.log("=== Officials Sync Script ===\n");
 syncGovernmentOfficials();
 console.log("");
 syncCityOfficials();
+console.log("");
+syncCMSConfig();
 console.log("\n=== Sync Complete ===");

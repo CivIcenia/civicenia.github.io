@@ -1,18 +1,32 @@
 ---
-import { GovOfficials } from "@collections";
+import { GovOfficials, RoleConfig } from "@collections";
 import PageLayout from "@layouts/page.astro";
 
 const BASE = (import.meta.env.BASE_URL ?? "/");
 
+// Load role configuration
+const republicRoles = RoleConfig.getRepublicRoles();
+
 // Load officials from data file (managed via Decap CMS)
-const president = GovOfficials.getPresident();
-const speaker = GovOfficials.getSpeaker();
-const secretaries = GovOfficials.getSecretaries();
-const senators = GovOfficials.getSenators();
+const officialsData = GovOfficials.getOfficials();
 const senateTerm = GovOfficials.getSenateTerm();
 
 // Default avatar for officials without profile pictures
 const defaultAvatar = "https://cdn.discordapp.com/embed/avatars/0.png";
+
+// Group roles by section
+const rolesBySection = republicRoles.reduce((acc, role) => {
+    const section = role.section || 'other';
+    if (!acc[section]) acc[section] = [];
+    acc[section].push(role);
+    return acc;
+}, {} as Record<string, typeof republicRoles>);
+
+// Define section display names
+const sectionNames: Record<string, string> = {
+    'executive': 'Executive Branch',
+    'legislative': 'Senate',
+};
 ---
 
 <style>
@@ -45,61 +59,49 @@ const defaultAvatar = "https://cdn.discordapp.com/embed/avatars/0.png";
     </div>
 
     <div class="officials-centred">
-        <h2 class="section-title">Executive Branch</h2>
-        <div class="officials-parent">
-            <!-- President -->
-            <div class="officials-wrapper">
-                <div class="official-card">
-                    <img src={president.icon || defaultAvatar} class="official-pfp" width="120px" height="120px" alt={president.name}/>
-                    <span class="official-name">{president.name}</span>
-                    <span class="official-titles">
-                        <span class="official-title">President</span>
-                    </span>
+        {Object.entries(rolesBySection).map(([section, roles]) => (
+            <>
+                <h2 class="section-title">
+                    {section === 'legislative' ? `${sectionNames[section]} of ${senateTerm}` : sectionNames[section] || section}
+                </h2>
+                <div class="officials-parent">
+                    {roles.map((role) => {
+                        if (role.multi_seat) {
+                            // Multi-seat role
+                            const seats = officialsData.senators || [];
+                            return seats.map((seat: any) => (
+                                <div class="officials-wrapper">
+                                    <div class="official-card">
+                                        <img src={seat.icon || defaultAvatar} class="official-pfp" width="120px" height="120px" alt={seat.name}/>
+                                        <span class="official-name">{seat.name}</span>
+                                        <span class="official-titles">
+                                            <span class="official-title">{role.display_name} (Seat {seat.seat})</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            ));
+                        } else {
+                            // Single-seat role
+                            const official = officialsData[role.id as keyof typeof officialsData];
+                            if (!official || typeof official === 'string') return null;
+                            const officialData = official as { name: string; icon?: string };
+                            
+                            return (
+                                <div class="officials-wrapper">
+                                    <div class="official-card">
+                                        <img src={officialData.icon || defaultAvatar} class="official-pfp" width="120px" height="120px" alt={officialData.name || 'Vacant'}/>
+                                        <span class="official-name">{officialData.name || 'Vacant'}</span>
+                                        <span class="official-titles">
+                                            <span class="official-title">{role.display_name}</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            );
+                        }
+                    })}
                 </div>
-            </div>
-
-            <!-- Secretaries (Cabinet) -->
-            {secretaries.map((secretary) => (
-                <div class="officials-wrapper">
-                    <div class="official-card">
-                        <img src={secretary.slot.icon || defaultAvatar} class="official-pfp" width="120px" height="120px" alt={secretary.slot.name}/>
-                        <span class="official-name">{secretary.slot.name}</span>
-                        <span class="official-titles">
-                            <span class="official-title">{secretary.title}</span>
-                        </span>
-                    </div>
-                </div>
-            ))}
-        </div>
-
-        <h2 class="section-title">Senate of {senateTerm}</h2>
-        <div class="officials-parent">
-            <!-- Speaker of the Senate -->
-            {speaker.name && (
-                <div class="officials-wrapper">
-                    <div class="official-card">
-                        <img src={speaker.icon || defaultAvatar} class="official-pfp" width="120px" height="120px" alt={speaker.name}/>
-                        <span class="official-name">{speaker.name}</span>
-                        <span class="official-titles">
-                            <span class="official-title">Speaker of the Senate</span>
-                        </span>
-                    </div>
-                </div>
-            )}
-
-            <!-- Senators -->
-            {senators.map((senator) => (
-                <div class="officials-wrapper">
-                    <div class="official-card">
-                        <img src={senator.icon || defaultAvatar} class="official-pfp" width="120px" height="120px" alt={senator.name}/>
-                        <span class="official-name">{senator.name}</span>
-                        <span class="official-titles">
-                            <span class="official-title">Senator (Seat {senator.seat})</span>
-                        </span>
-                    </div>
-                </div>
-            ))}
-        </div>
+            </>
+        ))}
     </div>
 
     <!-- Links Section -->
@@ -122,5 +124,6 @@ const defaultAvatar = "https://cdn.discordapp.com/embed/avatars/0.png";
                 <a href={BASE + "union/"} class="govuk-link">View the Union &rarr;</a>
             </div>
         </div>
+    </div>
     </div>
 </PageLayout>

@@ -4,14 +4,17 @@
 
 council_term: "December 2025"
 
+# Mayor
 mayor:
   name: "Ratat0ing"
   icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=2048"
 
-deputy_mayor:
-  name: ""
-  icon: "https://cdn.discordapp.com/embed/avatars/0.png"
+# CTA Commissioner
+cta_commissioner:
+  name: "Ratatoing"
+  icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=2048"
 
+# Councillor Seats - 5 seats
 councillors:
   - seat: 1
     name: "Ratat0ing"

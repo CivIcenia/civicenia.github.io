@@ -419,7 +419,7 @@ export namespace GovOfficials {
         "secretary_of_treasury": RoleSlotSchema,
         "speaker": RoleSlotSchema,
         "senators": z.array(SenatorSeatSchema),
-    });
+    }).passthrough(); // Allow additional role fields from role-config.yml
 
     const defaultSlot: RoleSlot = { name: "", icon: "https://cdn.discordapp.com/embed/avatars/0.png" };
 
@@ -492,7 +492,7 @@ export namespace Councillors {
         "council_term": z.string(),
         "mayor": RoleSlotSchema,
         "councillors": z.array(CouncillorSeatSchema),
-    });
+    }).passthrough(); // Allow additional role fields from role-config.yml
 
     const defaultSlot: RoleSlot = { name: "", icon: "https://cdn.discordapp.com/embed/avatars/0.png" };
 
@@ -584,7 +584,8 @@ export namespace CityOfficialChanges {
         "changetype": z.enum([
             "council-election",
             "council-byelection",
-            "mayor-vote"
+            "mayor-vote",
+            "other-appointments"
         ]),
         "term": optionalPositiveInt,
         "officials": z.array(z.object({
@@ -618,5 +619,54 @@ export namespace CityOfficialChanges {
             .filter((entry) => isCityOfficialChange(entry.data))
             .sort(Arrays.sortByDate((entry) => entry.data.date))
             .reverse();
+    }
+}
+
+// ############################################################
+// Role Configuration
+// ############################################################
+
+import RoleConfigData from "./data/role-config.yml";
+export namespace RoleConfig {
+    // Schema for a role definition
+    export type RoleDefinition = z.infer<typeof RoleDefinitionSchema>;
+    export const RoleDefinitionSchema = z.object({
+        "id": z.string(),
+        "display_name": z.string(),
+        "multi_seat": z.boolean(),
+        "num_seats": z.number().optional(),
+        "section": z.string().optional(),
+        "order": z.number(),
+    });
+
+    export type RoleConfigData = z.infer<typeof Schema>;
+    export const Schema = z.object({
+        "republic_roles": z.array(RoleDefinitionSchema),
+        "city_roles": z.array(RoleDefinitionSchema),
+    });
+
+    export function getRoleConfig(): RoleConfigData {
+        const parsed = Schema.safeParse(RoleConfigData);
+        if (parsed.success) {
+            return parsed.data;
+        }
+        // Return defaults if parsing fails
+        return {
+            republic_roles: [],
+            city_roles: []
+        };
+    }
+
+    export function getRepublicRoles(): RoleDefinition[] {
+        return getRoleConfig().republic_roles.sort((a, b) => a.order - b.order);
+    }
+
+    export function getCityRoles(): RoleDefinition[] {
+        return getRoleConfig().city_roles.sort((a, b) => a.order - b.order);
+    }
+
+    export function getRoleById(roleId: string, isCity: boolean = false): RoleDefinition | undefined {
+        const roles = isCity ? getCityRoles() : getRepublicRoles();
+        return roles.find(r => r.id === roleId);
     }
 }

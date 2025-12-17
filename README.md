@@ -207,6 +207,20 @@ If you clicked on **In Review** instead, this means you do not have edit permiss
   - You can still manually edit `src/data/officials.yml` and `src/data/councillors.yml` if needed
   - Use https://toolscord.com/ or https://discord.id/ to get Discord profile pictures
 
+- **Role Management (NEW):**
+  - **Dynamic Role System**: You can now add/remove roles and configure multi-seat positions
+  - **Quick Access**: Admin Panel → Data → Role Configuration
+  - **What You Can Do**:
+    - Add new official positions (e.g., Vice President, Deputy Mayor)
+    - Remove roles that are no longer needed
+    - Change number of seats for multi-seat roles (e.g., expand Senate from 5 to 7 seats)
+    - Control display order on official pages
+  - **Configuration File**: `src/data/role-config.yml`
+  - **Documentation**: 
+    - [Quick Start Guide](docs/ROLE_MANAGEMENT_QUICKSTART.md) - Common tasks and examples
+    - [Full Documentation](docs/ROLE_MANAGEMENT.md) - Complete technical details
+  - After changing roles, run `bun run sync-officials.ts` to update the officials data
+
 
 - Publishing
   - Always do `bun run build` before committing and pushing.
