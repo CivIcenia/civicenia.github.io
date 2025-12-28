@@ -1,0 +1,105 @@
+---
+import PageLayout from "@layouts/page.astro";
+
+const title = "Document Viewer";
+---
+
+<PageLayout title={title}>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-heading-xl">Document Viewer</h1>
+      
+      <div id="viewer-container" class="viewer-container">
+        <div id="loading-message" class="govuk-body">Loading document...</div>
+        <div id="error-message" class="govuk-error-message" style="display: none;"></div>
+        
+        <iframe 
+          id="doc-iframe" 
+          title="Document Viewer"
+          width="100%" 
+          height="800" 
+          frameborder="0" 
+          allowfullscreen
+          style="display: none;"
+        ></iframe>
+        
+        <div id="actions" style="margin-top: 15px; display: none; text-align: right;">
+          <a id="download-link" href="#" class="govuk-button" target="_blank">Download Document</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</PageLayout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const file = params.get('file');
+    const viewer = params.get('viewer') || 'office'; // 'office' or 'google'
+    
+    const iframe = document.getElementById('doc-iframe') as HTMLIFrameElement;
+    const loadingMsg = document.getElementById('loading-message');
+    const errorMsg = document.getElementById('error-message');
+    const actions = document.getElementById('actions');
+    const downloadLink = document.getElementById('download-link') as HTMLAnchorElement;
+
+    if (!file) {
+      if (loadingMsg) loadingMsg.style.display = 'none';
+      if (errorMsg) {
+        errorMsg.textContent = 'Error: No file specified. Please provide a "file" query parameter.';
+        errorMsg.style.display = 'block';
+      }
+      return;
+    }
+
+    // Construct full URL
+    let fullUrl = file;
+    if (file.startsWith('/')) {
+      fullUrl = window.location.origin + file;
+    } else if (!file.startsWith('http')) {
+      // If it's just a filename, assume it's in /documents/ (optional convention)
+      // But safer to assume relative to root if it doesn't start with /
+      fullUrl = window.location.origin + '/' + file;
+    }
+
+    // Update download link
+    if (downloadLink) {
+      downloadLink.href = fullUrl;
+    }
+    if (actions) {
+      actions.style.display = 'block';
+    }
+
+    const encodedUrl = encodeURIComponent(fullUrl);
+    let viewerUrl = '';
+
+    if (viewer === 'google') {
+      viewerUrl = `https://docs.google.com/gview?url=${encodedUrl}&embedded=true`;
+    } else {
+      // Microsoft Office Online Viewer
+      viewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodedUrl}`;
+    }
+
+    if (iframe) {
+      iframe.src = viewerUrl;
+      iframe.onload = () => {
+        if (loadingMsg) loadingMsg.style.display = 'none';
+        iframe.style.display = 'block';
+      };
+      // Fallback
+      setTimeout(() => {
+        if (loadingMsg) loadingMsg.style.display = 'none';
+        iframe.style.display = 'block';
+      }, 2000);
+    }
+  });
+</script>
+
+<style>
+  .viewer-container {
+    min-height: 600px;
+    background: #f3f2f1;
+    padding: 20px;
+    border: 1px solid #ccc;
+  }
+</style>

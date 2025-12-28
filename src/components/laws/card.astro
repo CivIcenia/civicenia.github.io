@@ -15,6 +15,11 @@ const hasPending = pendingChanges.length > 0;
 import { getActChangeColours } from "@comptime";
 // Use the build-time base so links work when deployed under a project site
 const BASE = (import.meta.env.BASE_URL ?? "/");
+
+const isDocx = law.masterdoc && (law.masterdoc.endsWith('.docx') || law.masterdoc.startsWith('/documents/'));
+const linkUrl = isDocx 
+    ? `${BASE}laws/viewer?file=${encodeURIComponent(law.masterdoc)}` 
+    : law.masterdoc;
 ---
 <style>
     div.law-card {
@@ -106,7 +111,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     <div class={`law-card-internal ${hasPending ? 'has-pending' : ''}`}>
         <div class="law-card-content">
             <div class="law-card-title">
-                <a href={law.masterdoc} class="govuk-link open-law-link" target="_blank">Open</a>
+                <a href={linkUrl} class="govuk-link open-law-link" target="_blank">Open</a>
                 {law.name}
                 {hasPending && (
                     <span class="pending-badge" title={`${pendingChanges.length} amendment(s) not yet incorporated into master document`}>
