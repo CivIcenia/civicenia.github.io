@@ -3,7 +3,7 @@ entries:
     slug: third-constitution
     name: Constitution of Icenia
     fullname: The Constitution of the Third Republic of Icenia
-    masterdoc: /public/documents/Constitution-of-Icenia.docx
+    masterdoc: /documents/Constitution-of-Icenia.docx
     kind: constitution
   - hidden: true
     slug: statehood-for-bloom
@@ -348,4 +348,4 @@ entries:
     name: Simple Sentences Act
     fullname: The Simple Sentences Act
     kind: statute
-    masterdoc: /public/archive/Simple_Sentences_Act_Icenia-2.pdf
+    masterdoc: /archive/Simple_Sentences_Act_Icenia-2.pdf

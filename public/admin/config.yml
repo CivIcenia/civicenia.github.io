@@ -65,7 +65,7 @@ collections:
                 name: "masterdoc"
                 widget: "string"
                 required: true
-                hint: "What's the updated document link? It can be a local file such as `/public/archive/Icenia-City-Charter.pdf`. It can be Google Doc but make sure it ends in `/preview`. And make sure it's an archived copy owned by Icenia."
+                hint: "What's the updated document link? It can be a local file such as `/archive/Icenia-City-Charter.pdf` or `/documents/Constitution-of-Icenia.docx`. It can be a Google Doc but make sure it ends in `/preview`. And make sure it's an archived copy owned by Icenia."
               # Expired?
               - label: "Expired"
                 name: "hidden"

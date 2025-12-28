@@ -3,7 +3,7 @@ entries:
     slug: city-charter
     name: Icenia City Charter
     fullname: The Charter of Icenia City
-    masterdoc: /public/archive/Icenia-City-Charter.pdf
+    masterdoc: /archive/Icenia-City-Charter.pdf
     kind: charter
   - hidden: true
     slug: building-code
