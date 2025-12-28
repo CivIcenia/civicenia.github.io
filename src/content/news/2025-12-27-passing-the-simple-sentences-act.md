@@ -23,7 +23,9 @@ excerpt: >-
 document:
   type: local-file
   value: /archive/Simple_Sentences_Act_Icenia-2.pdf
-changes: []
+changes:
+  - target: simple-sentences
+    kind: passage
 icon: /assets/images/law_stock.jpeg
 ---
 [Passed by the September 2025 Senate](https://discord.com/channels/558071874161082368/1417265074300649597)
