@@ -2,7 +2,7 @@
 changetolaw: true
 layout: "@layouts/news/act.astro"
 institution: senate
-headline: Amend the Statute of Territory
+headline: Passing the Statute of Territory Amendment of August 2025
 date: 2025-08-16 23:00:00 -04:00
 excerpt: Senator Anvil's Proposal
 document:

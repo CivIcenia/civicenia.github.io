@@ -2,12 +2,12 @@
 changetolaw: true
 layout: "@layouts/news/act.astro"
 institution: senate
-headline: Appoint Sneed Chungus as SOI
+headline: Appoint SneedChungus as SOI
 date: 2025-05-06 14:11:00 -04:00
 excerpt: Senator 1Kayotic's Proposal
 document:
   type: markdown
-  value: Appoint Sneed Chungus as SOI
+  value: Appoint SneedChungus as SOI
 changes: []
 icon: /assets/images/law_stock.jpeg
 ---

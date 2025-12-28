@@ -14,4 +14,3 @@ changes:
     kind: repeal
 icon: /assets/images/law_stock.jpeg
 ---
-repeal the Exyria NAP

@@ -2,7 +2,7 @@
 changetolaw: true
 layout: "@layouts/news/act.astro"
 institution: senate
-headline: Amend the Statute of Territory
+headline: Passing the Statute of Territory Amendment of June 2025
 date: 2025-06-11 14:33:00 -04:00
 excerpt: Amend Icarus's Territory to grant them some land negotiated by Columbia
   and Gothia

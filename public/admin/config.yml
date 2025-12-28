@@ -562,7 +562,7 @@ collections:
         name: "headline"
         widget: "string"
         required: true
-        hint: "The headline to show readers, e.g: Passing the Bill of Rights"
+        hint: "The headline to show readers, e.g: Passing the Statue of Territory Amendment of April 2025"
       # Date
       - label: "When did this change go into effect?"
         name: "date"
@@ -576,8 +576,8 @@ collections:
         name: "excerpt"
         widget: "text"
         required: false
-        hint: "Leave empty if you'd prefer it to be inferred from the content block."
-        default: null
+        default: "Proposed by NAME, Sponsored by NAME."
+        hint: "Include whatever they say in the call to vote, eg: I wrote this bill because of this and that and ...\nLeave empty if you'd prefer it to be inferred from the content block."
       # Bill Embed
       - label: "How are you embedding this?"
         name: "document"
@@ -596,6 +596,7 @@ collections:
             name: "value"
             widget: "text"
             required: true
+            hint: "If 'Local File', provide the path (e.g., /archive/bill-of-rights.pdf). If 'Remote File', provide the full URL. If 'Markdown', provide the markdown content. (> is for quotes, - for lists, ``` for code blocks, etc.)"
       # Changes
       - label: "Changes to Law"
         name: "changes"
@@ -626,7 +627,8 @@ collections:
         name: "body"
         widget: "markdown"
         required: false
-        hint: "You needn't include the title."
+        default: "[Passed by the MONTH YEAR Senate](https://discord.com/channels/link-to-senate-logs)"
+        hint: "Further details about the passing of legislation can be added here, don't add the title, nor the contents of the bill."
       # Icon
       - label: "Icon"
         name: "icon"

@@ -262,7 +262,7 @@ entries:
     masterdoc: https://docs.google.com/document/d/1I_-2IMwvc56_BHSvek9wIlCqa2qbGJ473k7OgxR24kY/preview
   - hidden: false
     slug: alenarith-protectorate
-    name: Cortesia Del Mar
+    name: State of Cortesia Del Mar
     kind: statehood
     masterdoc: https://docs.google.com/document/d/1RcEzXm2tuQ0jly7TXjtsflrCS_mZyZp4p8mnqBg1LH0/preview
   - hidden: false
@@ -343,3 +343,9 @@ entries:
     fullname: The Treaty of Bloom
     kind: treaty
     masterdoc: https://docs.google.com/document/d/1-MYwwpGgwS37SHC6rQ0hiPW23QB9s2XwVTxpaPCSq88/preview
+  - hidden: false
+    slug: simple-sentences
+    name: Simple Sentences Act
+    fullname: The Simple Sentences Act
+    kind: statute
+    masterdoc: /public/archive/Simple_Sentences_Act_Icenia-2.pdf

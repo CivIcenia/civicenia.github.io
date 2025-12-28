@@ -3,7 +3,7 @@ changetolaw: true
 layout: "@layouts/news/act.astro"
 institution: senate
 headline: Passing the Wait A Second motion
-date: 2025-04-30 19:15:00 -04:00
+date: 2025-05-01 00:30:00 +08:00
 excerpt: |-
   Proposed by ChrisChrispie don't ask how thats legal thanks
   (it isn't)

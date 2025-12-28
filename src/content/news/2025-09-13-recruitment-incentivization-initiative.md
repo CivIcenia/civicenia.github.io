@@ -2,7 +2,7 @@
 changetolaw: true
 layout: "@layouts/news/act.astro"
 institution: senate
-headline: Recruitment Incentivization Initiative
+headline: Passing the Recruitment Incentivization Initiative
 date: 2025-03-09 21:23:00 -04:00
 excerpt: Dr_Bacon_Hair's proposal was presented to the Senate by Speedy J Justice
 document:
