@@ -562,6 +562,7 @@ collections:
         name: "headline"
         widget: "string"
         required: true
+        default: "Passing the "
         hint: "The headline to show readers, e.g: Passing the Statue of Territory Amendment of April 2025"
       # Date
       - label: "When did this change go into effect?"
@@ -577,7 +578,7 @@ collections:
         widget: "text"
         required: false
         default: "Proposed by NAME, Sponsored by NAME."
-        hint: "Include whatever they say in the call to vote, eg: I wrote this bill because of this and that and ...\nLeave empty if you'd prefer it to be inferred from the content block."
+        hint: "All other details go in the main content area, as the excerpt is not markdown formatted. Leave empty to infer from content."
       # Bill Embed
       - label: "How are you embedding this?"
         name: "document"
@@ -627,8 +628,8 @@ collections:
         name: "body"
         widget: "markdown"
         required: false
-        default: "[Passed by the MONTH YEAR Senate](https://discord.com/channels/link-to-senate-logs)"
-        hint: "Further details about the passing of legislation can be added here, don't add the title, nor the contents of the bill."
+        default: "[Passed by the MONTH YEAR Senate](discord.com/link-to-senate-logs)"
+        hint: "The Bill proposal message and further details about the passing of legislation can be appended here, don't add the title, nor the contents of the bill."
       # Icon
       - label: "Icon"
         name: "icon"
@@ -833,7 +834,7 @@ collections:
         name: "institution"
         widget: "select"
         required: true
-        hint: "Who changed the city law?"
+        hint: "Who changed city law?"
         options:
           - {label: "City Council", value: "council"}
           - {label: "Mayor", value: "mayor"}
@@ -845,7 +846,7 @@ collections:
         name: "headline"
         widget: "string"
         required: true
-        hint: "The headline to show readers, e.g: Amending the Building Code"
+        hint: "The headline to show readers, e.g: Passing the Building Code Amendment of April 2025, Passing the City Flag Act"
       # Date
       - label: "When did this change go into effect?"
         name: "date"
@@ -858,8 +859,8 @@ collections:
         name: "excerpt"
         widget: "text"
         required: false
-        hint: "Leave empty if you'd prefer it to be inferred from the content block."
-        default: null
+        default: "Proposed by NAME, Sponsored by NAME."
+        hint: "All other details go in the main content area, as the excerpt is not markdown formatted. Leave empty to infer from content."
       # Document Embed
       - label: "How are you embedding this?"
         name: "document"
@@ -873,11 +874,12 @@ collections:
               - {label: "Local File", value: "local-file"}
               - {label: "Remote File", value: "remote-file"}
               - {label: "Markdown", value: "markdown"}
-            default: "markdown"
+            default: ""
           - label: "Value"
             name: "value"
             widget: "text"
             required: true
+            hint: "If 'Local File', provide the path (e.g., /archive/bill-of-rights.pdf). If 'Remote File', provide the full URL. If 'Markdown', provide the markdown content. (> is for quotes, - for lists, ``` for code blocks, etc.)"
       # Changes
       - label: "Changes to City Law"
         name: "changes"
@@ -894,7 +896,7 @@ collections:
             value_field: "entries.*.slug"
             display_fields: ["entries.*.name"]
             default: ""
-            hint: "Start typing to search for the city law. The law needs to already exist in the 'City Laws' collection."
+            hint: "Just start typing and it'll search for that legislation. Click the correct result. The law needs to already exist in the 'City Laws' collection."
           - label: "What is done?"
             name: "kind"
             widget: "select"
@@ -903,13 +905,14 @@ collections:
               - {label: "Amended", value: "amendment"}
               - {label: "Repealed", value: "repeal"}
             default: ""
-        hint: "What city laws does this ordinance affect and how?"
+        hint: "What city laws does this ordinance affect and how? The ordering should reflect what's in the ordinance itself."
       # Content
       - label: "Content"
         name: "body"
         widget: "markdown"
         required: false
-        hint: "You needn't include the title."
+        default: "[Passed by the MONTH YEAR Council](discord.com/link-to-council-logs)"
+        hint: "The Bill proposal message and further details about the passing of legislation can be appended here, don't add the title, nor the contents of the bill."
       # Icon
       - label: "Icon"
         name: "icon"

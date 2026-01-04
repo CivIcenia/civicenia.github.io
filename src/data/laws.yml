@@ -289,13 +289,13 @@ entries:
     masterdoc: https://docs.google.com/document/d/1eJ75P--_6F9UmRxbhkjGOm5SHYJDefe2iX7HGVoBkAU/preview
   - hidden: false
     slug: icenia-commercial-area-act
-    name: Commercial Area Act
-    fullname: The Icenia Commercial Area Act
+    name: Icenia SHOPS Act
+    fullname: The Icenia Substantiating Healthy Opportunities for Profitable Shopping Act
     kind: statute
     masterdoc: https://docs.google.com/document/d/e/2PACX-1vR28aO6ym_BxvOXhi-ODRiOg_hXxZcJGBsZmSOJJZeZ02523bG_rOGBFxIosipc53r6I-pN-_JWoZPt/pub
   - hidden: false
     slug: recruitment-incentivization-initiative
-    name: Recruitment Icentivization Initiative
+    name: Recruitment Incentivization Initiative
     kind: statute
     masterdoc: https://docs.google.com/document/d/e/2PACX-1vQSJdNSo1xn2lXCDqBf3-rnWjlEVzzXalqpO7-VSUjbCSLF3EpxBznzv3dgLngPtQHLxzfdcLZ1h_xB/pub
   - hidden: false
@@ -316,7 +316,7 @@ entries:
   - hidden: false
     slug: dear-program
     name: D.E.A.R. Program
-    fullname: Drop Everything & Read
+    fullname: Drop Everything & Read Program
     kind: statute
     masterdoc: https://docs.google.com/document/d/e/2PACX-1vSZdAAItYeNDrCOe4Mx7_4JxWnQLFGYT8Itj6_CrsrmIfjaWMuyCzmlfYEG-4SyqXbsBxIPBzgcX-wx/pub
   - hidden: false
@@ -327,10 +327,10 @@ entries:
     masterdoc: https://docs.google.com/document/d/e/2PACX-1vRSXOx6FdpU91hGAM4E7_DG_BEPAxLhUFPrFGz1db9PId1tpVBIBJp8nDzNq11d_g/pub
   - hidden: false
     slug: coat-of-arms
-    name: The Coat of Arms Act
+    name: Coat of Arms
     fullname: The Icenia Coat of Arms Act
-    kind: statute
-    masterdoc: https://docs.google.com/document/d/e/2PACX-1vSznmggVqBVPQaUu6J3ufS2DwGh-wZGCj17Nqd0LintssnKpkdn7aRNOc0cPmxvy-JHnl1AR3zAVrcC/pub
+    kind: constitution
+    masterdoc: /documents/Coat-of-Arms.docx
   - hidden: false
     slug: warda
     name: WARDA
@@ -349,3 +349,21 @@ entries:
     fullname: The Simple Sentences Act
     kind: statute
     masterdoc: /archive/Simple_Sentences_Act_Icenia-2.pdf
+  - hidden: true
+    slug: icenia-city-council
+    name: Icenia City Council Act
+    fullname: The Icenia City Council Act
+    kind: statute
+    masterdoc: /archive/City_Council_Act_Icenia.pdf
+  - hidden: false
+    slug: icenia-capital-territory-act
+    name: Icenia Capital Territory Act
+    fullname: The Icenia Capital Territory Act
+    kind: constitution
+    masterdoc: /documents/Icenia-Capital-Territory-Act.docx
+  - hidden: false
+    slug: federal-executives-act
+    name: Federal Executive Consolidation Act
+    fullname: The Federal Executive Consolidation Act
+    kind: statute
+    masterdoc: /documents/Federal-Executive-Consolidation-Act.docx
