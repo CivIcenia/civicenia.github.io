@@ -6,3 +6,15 @@ incorporations:
     incorporated_at: 2025-11-28 01:52:00 +08:00
     incorporated_by: asdf
     notes: adsf
+  - change_slugs:
+      - 2026-01-04-passing-the-archival-harmonization-act
+      - 2026-01-04-passing-the-archival-standards-act
+      - 2024-07-16-crimes-and-punishments-bill
+      - 2024-07-11-bill-contrivance-bill
+      - 2024-03-06-amend-article-1-of-the-hansard-act
+      - 2024-01-27-omnibus-bill
+      - 2023-04-14-passing-the-legislative-slimming-bill
+      - 2023-04-06-passing-the-regulation-of-treaties-bill
+    law_slug: hansard-act
+    incorporated_at: 2026-01-05 01:05:00 +08:00
+    incorporated_by: CreepilyCreep

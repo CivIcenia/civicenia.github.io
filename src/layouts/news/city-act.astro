@@ -50,8 +50,19 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                             const url = act.document.value?.startsWith("/") ? BASE + act.document.value.replace(/^\//, "") : act.document.value;
                             return <iframe src={url} style="width: 100%; min-width: 100%; max-width: 100%; aspect-ratio: 1 / 1.4142;"></iframe>;
                         }
-                        case "remote-file":
-                            return <iframe src={act.document.value} style="width: 100%; min-width: 100%; max-width: 100%; aspect-ratio: 1 / 1.4142;"></iframe>;
+                        case "remote-file": {
+                            // Normalize Google Docs URLs: convert /edit to /preview or append /preview if missing
+                            let url = act.document.value;
+                            if (url.includes('docs.google.com')) {
+                                // Replace /edit with /preview
+                                url = url.replace(/\/edit(\?.*)?$/, '/preview');
+                                // If no /preview or /edit, append /preview
+                                if (!url.includes('/preview') && !url.includes('/edit')) {
+                                    url = url.replace(/\/?$/, '/preview');
+                                }
+                            }
+                            return <iframe src={url} style="width: 100%; min-width: 100%; max-width: 100%; aspect-ratio: 1 / 1.4142;"></iframe>;
+                        }
                         default:
                             return "UNKNOWN DOCUMENT EMBED!";
                     }
@@ -59,8 +70,6 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             </div>
 
             <div class="govuk-grid-column-one-third">
-                {act.document.value !== "" ? <slot><br/></slot> : ``}
-
                 <style>
                     a.law-link {
                         text-decoration: none;
@@ -85,8 +94,12 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                     const law = laws.get(change.target);
                     if (!law) return null;
                     const colours = getActChangeColours(change.kind);
+                    const isDocx = law.masterdoc && (law.masterdoc.endsWith('.docx') || law.masterdoc.startsWith('/documents/'));
+                    const linkUrl = isDocx 
+                        ? `${BASE}laws/viewer?file=${encodeURIComponent(law.masterdoc)}` 
+                        : law.masterdoc;
                     return (
-                        <a class="govuk-link law-link" href={law.masterdoc} target="_blank">
+                        <a class="govuk-link law-link" href={linkUrl} target="_blank">
                             <div class="law-change" style={`background: #${colours.background}; color: #${colours.text};`}>
                                 <b>
                                     {function () {
@@ -108,6 +121,8 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                         </a>
                     );
                 })}
+
+                {act.document.value !== "" ? <slot><br/></slot> : ``}
 
                 <div class="govuk-inset-text" style="margin-top: 20px;">
                     <p class="govuk-body-s">

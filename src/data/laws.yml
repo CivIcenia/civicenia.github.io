@@ -90,7 +90,7 @@ entries:
     name: Hansard Act
     fullname: The Hansard Act
     kind: statute
-    masterdoc: https://docs.google.com/document/d/1Ax0T2ffXS6aW8D71YiZkgIevj1VZzJH9KjOEROMp0tc/preview
+    masterdoc: /documents/Hansard-Act.docx
   - hidden: true
     slug: temporal-vault-treaty
     name: Temporal Vault Treaty
@@ -276,7 +276,7 @@ entries:
     name: Benefits Awareness Act
     masterdoc: https://docs.google.com/document/d/1CGWozA4akUhYsLKTbzt-2hTdO3I08B_NHuYf_cMVNNs/preview
     kind: statute
-  - hidden: false
+  - hidden: true
     name: Head of Transportation Act
     fullname: Head of Transportation Establishment Act
     slug: head-of-transportation-act
@@ -303,7 +303,7 @@ entries:
     name: Labour Engagement Bill
     kind: statute
     masterdoc: https://docs.google.com/document/d/e/2PACX-1vSSWK1S1DwOZDGAPdOv0PtMJJN0oneBYTkYiLmAGhizNTkzXTfZ2Qr9Nrm_lT6qOLRUnlnA1kPOEFzr/pub
-  - hidden: false
+  - hidden: true
     slug: newfriend-zone-bill
     name: Newfriend Zone Bill
     kind: statute

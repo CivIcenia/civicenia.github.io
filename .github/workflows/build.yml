@@ -24,6 +24,9 @@ jobs:
       - name: Sync Officials
         run: bun run sync-officials
 
+      - name: Update Discord Avatars
+        run: bun run update-avatars
+
       - name: Commit and Push Changes
         run: |
           git config --global user.name "GitHub Actions"

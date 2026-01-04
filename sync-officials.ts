@@ -25,6 +25,7 @@ interface OfficialEntry {
     role: string;
     action: string;
     icon?: string;
+    discord_id?: string;
     seat?: number;
 }
 
@@ -147,9 +148,12 @@ function syncGovernmentOfficials() {
     const currentContent = fs.readFileSync(OFFICIALS_FILE, "utf-8");
     const lines = currentContent.split("\n");
     
+    // Get current senators early for reference when processing changes
+    const currentSenators = extractSenators(currentContent);
+    
     // Track the latest official for each role/seat
-    const latestOfficials: Record<string, { name: string; icon: string; seat?: number }> = {};
-    const latestSenators: Map<number, { name: string; icon: string }> = new Map();
+    const latestOfficials: Record<string, { name: string; icon: string; discord_id?: string; seat?: number }> = {};
+    const latestSenators: Map<number, { name: string; icon: string; discord_id?: string }> = new Map();
     let latestSenateTerm = "";
     
     // Get number of senate seats from role config
@@ -196,17 +200,26 @@ function syncGovernmentOfficials() {
             if (yamlRole === "senator") {
                 // Only update senators if they have a seat number
                 if (official.seat) {
+                    // Get existing data to preserve icon if not provided
+                    const existing = currentSenators?.get(official.seat);
                     latestSenators.set(official.seat, {
                         name: official.name,
-                        icon: official.icon || DEFAULT_ICON
+                        icon: official.icon || existing?.icon || DEFAULT_ICON,
+                        discord_id: official.discord_id || existing?.discord_id
                     });
                 } else {
                     console.warn(`  - Senator "${official.name}" has no seat number, skipping update`);
                 }
             } else {
+                // Get existing data to preserve icon if not provided
+                const existing = latestOfficials[yamlRole] || {
+                    icon: extractValue(currentContent, yamlRole, 'icon'),
+                    discord_id: extractValue(currentContent, yamlRole, 'discord_id')
+                };
                 latestOfficials[yamlRole] = {
                     name: official.name,
-                    icon: official.icon || DEFAULT_ICON
+                    icon: official.icon || existing.icon || DEFAULT_ICON,
+                    discord_id: official.discord_id || existing.discord_id
                 };
             }
         }
@@ -224,17 +237,25 @@ senate_term: "${latestSenateTerm || extractCurrentTerm(currentContent)}"
 
     // Add single-seat roles - ensure ALL roles from config are included
     for (const role of republicRoles.filter(r => !r.multi_seat)) {
-        const official = latestOfficials[role.id] || { name: extractValue(currentContent, role.id, 'name'), icon: extractValue(currentContent, role.id, 'icon') || DEFAULT_ICON };
+        const official = latestOfficials[role.id] || { 
+            name: extractValue(currentContent, role.id, 'name'), 
+            icon: extractValue(currentContent, role.id, 'icon') || DEFAULT_ICON,
+            discord_id: extractValue(currentContent, role.id, 'discord_id')
+        };
         newContent += `# ${role.display_name}
 ${role.id}:
   name: "${official.name || ''}"
   icon: "${official.icon || DEFAULT_ICON}"
-
+`;
+        if (official.discord_id) {
+            newContent += `  discord_id: "${official.discord_id}"
+`;
+        }
+        newContent += `
 `;
     }
 
     // Add multi-seat roles (senators)
-    const currentSenators = extractSenators(currentContent);
     newContent += `# Senate Seats - ${latestSenateSize} seats
 senators:
 `;
@@ -244,6 +265,10 @@ senators:
     name: "${senator.name}"
     icon: "${senator.icon}"
 `;
+        if (senator.discord_id) {
+            newContent += `    discord_id: "${senator.discord_id}"
+`;
+        }
     }
 
     fs.writeFileSync(OFFICIALS_FILE, newContent);
@@ -271,9 +296,12 @@ function syncCityOfficials() {
     // Read current councillors file
     const currentContent = fs.readFileSync(COUNCILLORS_FILE, "utf-8");
     
+    // Get current councillors early for reference when processing changes
+    const currentCouncillors = extractCouncillors(currentContent);
+    
     // Track the latest official for each role/seat
-    const latestOfficials: Record<string, { name: string; icon: string }> = {};
-    const latestCouncillors: Map<number, { name: string; icon: string }> = new Map();
+    const latestOfficials: Record<string, { name: string; icon: string; discord_id?: string }> = {};
+    const latestCouncillors: Map<number, { name: string; icon: string; discord_id?: string }> = new Map();
     let latestCouncilTerm = "";
     
     // Get number of councillor seats from role config
@@ -311,14 +339,23 @@ function syncCityOfficials() {
             }
 
             if (yamlRole === "councillor" && official.seat) {
+                // Get existing data to preserve icon if not provided
+                const existing = currentCouncillors?.get(official.seat);
                 latestCouncillors.set(official.seat, {
                     name: official.name,
-                    icon: official.icon || DEFAULT_ICON
+                    icon: official.icon || existing?.icon || DEFAULT_ICON,
+                    discord_id: official.discord_id || existing?.discord_id
                 });
             } else {
+                // Get existing data to preserve icon if not provided
+                const existing = latestOfficials[yamlRole] || {
+                    icon: extractValue(currentContent, yamlRole, 'icon'),
+                    discord_id: extractValue(currentContent, yamlRole, 'discord_id')
+                };
                 latestOfficials[yamlRole] = {
                     name: official.name,
-                    icon: official.icon || DEFAULT_ICON
+                    icon: official.icon || existing.icon || DEFAULT_ICON,
+                    discord_id: official.discord_id || existing.discord_id
                 };
             }
         }
@@ -335,17 +372,25 @@ council_term: "${latestCouncilTerm || extractSimpleValue(currentContent, 'counci
 
     // Add single-seat roles - ensure ALL roles from config are included
     for (const role of cityRoles.filter(r => !r.multi_seat)) {
-        const official = latestOfficials[role.id] || { name: extractValue(currentContent, role.id, 'name'), icon: extractValue(currentContent, role.id, 'icon') || DEFAULT_ICON };
+        const official = latestOfficials[role.id] || { 
+            name: extractValue(currentContent, role.id, 'name'), 
+            icon: extractValue(currentContent, role.id, 'icon') || DEFAULT_ICON,
+            discord_id: extractValue(currentContent, role.id, 'discord_id')
+        };
         newContent += `# ${role.display_name}
 ${role.id}:
   name: "${official.name || ''}"
   icon: "${official.icon || DEFAULT_ICON}"
-
+`;
+        if (official.discord_id) {
+            newContent += `  discord_id: "${official.discord_id}"
+`;
+        }
+        newContent += `
 `;
     }
 
     // Add multi-seat roles (councillors)
-    const currentCouncillors = extractCouncillors(currentContent);
     newContent += `# Councillor Seats - ${councillorSeats} seats
 councillors:
 `;
@@ -355,6 +400,10 @@ councillors:
     name: "${councillor.name}"
     icon: "${councillor.icon}"
 `;
+        if (councillor.discord_id) {
+            newContent += `    discord_id: "${councillor.discord_id}"
+`;
+        }
     }
 
     fs.writeFileSync(COUNCILLORS_FILE, newContent);
@@ -391,8 +440,8 @@ function extractValue(content: string, section: string, key: string): string {
     return keyMatch ? keyMatch[1].trim() : "";
 }
 
-function extractSenators(content: string): Map<number, { name: string; icon: string }> {
-    const senators = new Map<number, { name: string; icon: string }>();
+function extractSenators(content: string): Map<number, { name: string; icon: string; discord_id?: string }> {
+    const senators = new Map<number, { name: string; icon: string; discord_id?: string }>();
     
     // Find the senators section
     const senatorsStart = content.indexOf('senators:');
@@ -401,21 +450,22 @@ function extractSenators(content: string): Map<number, { name: string; icon: str
     const senatorsSection = content.slice(senatorsStart);
     
     // Match each senator entry - more flexible regex
-    const seatRegex = /-\s*seat:\s*(\d+)\s*\n\s*name:\s*"?([^"\n]*)"?\s*\n\s*icon:\s*"?([^"\n]*)"?/g;
+    const seatRegex = /-\s*seat:\s*(\d+)\s*\n\s*name:\s*"?([^"\n]*)"?\s*\n\s*icon:\s*"?([^"\n]*)"?(?:\s*\n\s*discord_id:\s*"?([^"\n]*)"?)?/g;
     
     let match;
     while ((match = seatRegex.exec(senatorsSection)) !== null) {
         const seat = parseInt(match[1]);
         const name = match[2].trim();
         const icon = match[3].trim() || DEFAULT_ICON;
-        senators.set(seat, { name, icon });
+        const discord_id = match[4]?.trim();
+        senators.set(seat, { name, icon, discord_id });
     }
     
     return senators;
 }
 
-function extractCouncillors(content: string): Map<number, { name: string; icon: string }> {
-    const councillors = new Map<number, { name: string; icon: string }>();
+function extractCouncillors(content: string): Map<number, { name: string; icon: string; discord_id?: string }> {
+    const councillors = new Map<number, { name: string; icon: string; discord_id?: string }>();
     
     // Find the councillors section
     const councillorsStart = content.indexOf('councillors:');
@@ -424,14 +474,15 @@ function extractCouncillors(content: string): Map<number, { name: string; icon: 
     const councillorsSection = content.slice(councillorsStart);
     
     // Match each councillor entry - more flexible regex
-    const seatRegex = /-\s*seat:\s*(\d+)\s*\n\s*name:\s*"?([^"\n]*)"?(?:\s*\n\s*icon:\s*"?([^"\n]*)"?)?/g;
+    const seatRegex = /-\s*seat:\s*(\d+)\s*\n\s*name:\s*"?([^"\n]*)"?(?:\s*\n\s*icon:\s*"?([^"\n]*)"?)?(?:\s*\n\s*discord_id:\s*"?([^"\n]*)"?)?/g;
     
     let match;
     while ((match = seatRegex.exec(councillorsSection)) !== null) {
         const seat = parseInt(match[1]);
         const name = match[2].trim();
         const icon = match[3]?.trim() || DEFAULT_ICON;
-        councillors.set(seat, { name, icon });
+        const discord_id = match[4]?.trim();
+        councillors.set(seat, { name, icon, discord_id });
     }
     
     return councillors;

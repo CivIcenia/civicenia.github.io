@@ -772,11 +772,11 @@ collections:
               - {label: "Resigned", value: "resigned"}
               - {label: "Removed", value: "removed"}
               - {label: "Succeeded", value: "succeeded"}
-          - label: "Discord Icon URL"
-            name: "icon"
+          - label: "Discord User ID"
+            name: "discord_id"
             widget: "string"
-            required: false
-            hint: "Discord avatar URL (get from https://toolscord.com/). Leave empty to keep existing."
+            required: true
+            hint: "Discord user ID (18-digit number). Avatar will be auto-fetched by running update-avatars script. Get ID by right-clicking user in Discord → Copy User ID (Developer Mode must be enabled)."
           - label: "Seat Number"
             name: "seat"
             widget: "relation"
@@ -1039,11 +1039,11 @@ collections:
               - {label: "Resigned", value: "resigned"}
               - {label: "Removed", value: "removed"}
               - {label: "Succeeded", value: "succeeded"}
-          - label: "Discord Icon URL"
-            name: "icon"
+          - label: "Discord User ID"
+            name: "discord_id"
             widget: "string"
-            required: false
-            hint: "Discord avatar URL (get from https://toolscord.com/). Leave empty to keep existing."
+            required: true
+            hint: "Discord user ID (18-digit number). Avatar will be auto-fetched by running update-avatars script. Get ID by right-clicking user in Discord → Copy User ID (Developer Mode must be enabled)."
           - label: "Seat Number"
             name: "seat"
             widget: "relation"

@@ -7,7 +7,7 @@ date: 2026-01-03 00:06:00 +08:00
 excerpt: Proposed by Creepily, Sponsored by Creepily.
 document:
   type: remote-file
-  value: https://docs.google.com/document/d/12gPz9pJHyhhEne3R97LkimignQApxULDbiha8ZHg2eU/edit?usp=drivesdk
+  value: https://docs.google.com/document/d/12gPz9pJHyhhEne3R97LkimignQApxULDbiha8ZHg2eU/preview
 changes:
   - target: hansard-act
     kind: amendment

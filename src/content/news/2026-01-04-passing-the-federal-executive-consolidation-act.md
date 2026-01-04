@@ -7,7 +7,7 @@ date: 2025-11-22 02:41:00 +08:00
 excerpt: Proposed by ChrisChrispie, Sponsored by ChrisChrispie.
 document:
   type: remote-file
-  value: https://docs.google.com/document/d/1WlpJIZTj6C3iGrfchpnFid3u-ZVr-mYRl9Tc9Xlo3sU/edit?usp=sharing
+  value: https://docs.google.com/document/d/1WlpJIZTj6C3iGrfchpnFid3u-ZVr-mYRl9Tc9Xlo3sU/preview
 changes:
   - target: federal-executives-act
     kind: passage

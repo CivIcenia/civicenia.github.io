@@ -13,6 +13,10 @@ const title = "Document Viewer";
         <div id="loading-message" class="govuk-body">Loading document...</div>
         <div id="error-message" class="govuk-error-message" style="display: none;"></div>
         
+        <!-- Client-side renderer container (used locally) -->
+        <div id="docx-container" style="display: none;"></div>
+        
+        <!-- External viewer iframe (used in production) -->
         <iframe 
           id="doc-iframe" 
           title="Document Viewer"
@@ -32,16 +36,20 @@ const title = "Document Viewer";
 </PageLayout>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  // Dynamic import for docx-preview to work as a module
+  async function initViewer() {
     const params = new URLSearchParams(window.location.search);
     const file = params.get('file');
     const viewer = params.get('viewer') || 'office'; // 'office' or 'google'
     
     const iframe = document.getElementById('doc-iframe') as HTMLIFrameElement;
+    const docxContainer = document.getElementById('docx-container') as HTMLDivElement;
     const loadingMsg = document.getElementById('loading-message');
     const errorMsg = document.getElementById('error-message');
     const actions = document.getElementById('actions');
     const downloadLink = document.getElementById('download-link') as HTMLAnchorElement;
+    
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
     if (!file) {
       if (loadingMsg) loadingMsg.style.display = 'none';
@@ -57,8 +65,6 @@ const title = "Document Viewer";
     if (file.startsWith('/')) {
       fullUrl = window.location.origin + file;
     } else if (!file.startsWith('http')) {
-      // If it's just a filename, assume it's in /documents/ (optional convention)
-      // But safer to assume relative to root if it doesn't start with /
       fullUrl = window.location.origin + '/' + file;
     }
 
@@ -70,29 +76,76 @@ const title = "Document Viewer";
       actions.style.display = 'block';
     }
 
-    const encodedUrl = encodeURIComponent(fullUrl);
-    let viewerUrl = '';
-
-    if (viewer === 'google') {
-      viewerUrl = `https://docs.google.com/gview?url=${encodedUrl}&embedded=true`;
+    const isDocx = file.endsWith('.docx');
+    
+    // Use client-side renderer for localhost OR when explicitly requested
+    if (isLocalhost && isDocx) {
+      try {
+        // Dynamic import for docx-preview
+        const { renderAsync } = await import('docx-preview');
+        
+        const response = await fetch(fullUrl);
+        if (!response.ok) throw new Error(`Failed to fetch document: ${response.status}`);
+        
+        const blob = await response.blob();
+        
+        await renderAsync(blob, docxContainer, undefined, {
+          className: 'docx-preview',
+          inWrapper: true,
+          ignoreWidth: false,
+          ignoreHeight: false,
+          ignoreFonts: false,
+          breakPages: true,
+          useBase64URL: true,
+          renderHeaders: true,
+          renderFooters: true,
+          renderFootnotes: true,
+          renderEndnotes: true,
+        });
+        
+        if (loadingMsg) loadingMsg.style.display = 'none';
+        docxContainer.style.display = 'block';
+      } catch (err) {
+        console.error('Error rendering docx:', err);
+        if (loadingMsg) loadingMsg.style.display = 'none';
+        if (errorMsg) {
+          errorMsg.textContent = `Error loading document: ${err instanceof Error ? err.message : 'Unknown error'}. Try downloading the file instead.`;
+          errorMsg.style.display = 'block';
+        }
+      }
     } else {
-      // Microsoft Office Online Viewer
-      viewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodedUrl}`;
-    }
+      // Use external viewer for production
+      const encodedUrl = encodeURIComponent(fullUrl);
+      let viewerUrl = '';
 
-    if (iframe) {
-      iframe.src = viewerUrl;
-      iframe.onload = () => {
-        if (loadingMsg) loadingMsg.style.display = 'none';
-        iframe.style.display = 'block';
-      };
-      // Fallback
-      setTimeout(() => {
-        if (loadingMsg) loadingMsg.style.display = 'none';
-        iframe.style.display = 'block';
-      }, 2000);
+      if (viewer === 'google') {
+        viewerUrl = `https://docs.google.com/gview?url=${encodedUrl}&embedded=true`;
+      } else {
+        // Microsoft Office Online Viewer
+        viewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodedUrl}`;
+      }
+
+      if (iframe) {
+        iframe.src = viewerUrl;
+        iframe.onload = () => {
+          if (loadingMsg) loadingMsg.style.display = 'none';
+          iframe.style.display = 'block';
+        };
+        // Fallback timeout
+        setTimeout(() => {
+          if (loadingMsg) loadingMsg.style.display = 'none';
+          iframe.style.display = 'block';
+        }, 2000);
+      }
     }
-  });
+  }
+  
+  // Run on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initViewer);
+  } else {
+    initViewer();
+  }
 </script>
 
 <style>
@@ -101,5 +154,23 @@ const title = "Document Viewer";
     background: #f3f2f1;
     padding: 20px;
     border: 1px solid #ccc;
+  }
+  
+  /* Styles for client-side docx-preview */
+  #docx-container {
+    background: white;
+    padding: 20px;
+    min-height: 800px;
+    overflow: auto;
+  }
+  
+  #docx-container :global(.docx-wrapper) {
+    background: white;
+    padding: 20px;
+  }
+  
+  #docx-container :global(.docx-wrapper > section.docx) {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
   }
 </style>

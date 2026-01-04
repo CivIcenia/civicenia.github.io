@@ -7,7 +7,7 @@ date: 2025-12-25 01:17:00 +08:00
 excerpt: Proposed by Creepily, Sponsored by Creepily.
 document:
   type: remote-file
-  value: https://docs.google.com/document/d/12gPz9pJHyhhEne3R97LkimignQApxULDbiha8ZHg2eU/
+  value: https://docs.google.com/document/d/18aI9vXgDeX1OUi-HKD_sCJME5Rislcuj8WN9LHiReZU/edit?usp=sharing
 changes:
   - target: hansard-act
     kind: amendment
