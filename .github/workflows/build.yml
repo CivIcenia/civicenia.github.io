@@ -26,6 +26,8 @@ jobs:
 
       - name: Update Discord Avatars
         run: bun run update-avatars
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
 
       - name: Commit and Push Changes
         run: |
