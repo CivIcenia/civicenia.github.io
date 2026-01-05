@@ -153,7 +153,7 @@ body.menu-mode .icenia-hero {
 .icenia-btn-secondary {
     display: inline-block;
     padding: 12px 20px;
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0);
     color: var(--icenia-blue);
     border: 2px solid var(--icenia-blue);
     border-radius: 0;
@@ -173,6 +173,27 @@ body.menu-mode .icenia-hero {
 .icenia-btn-tertiary:hover, .icenia-btn-tertiary:focus {
     background: white;
     color: var(--icenia-blue, #1C70B8);
+}
+
+.icenia-btn-warning {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #d4351c; /* GOV.UK red */
+    color: var(--icenia-white);
+    text-decoration: none;
+    border: 2px solid #d4351c;
+    border-radius: 0;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.25;
+    box-sizing: border-box;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.icenia-btn-warning:hover, .icenia-btn-warning:focus {
+    background-color: #942514; /* Darker red on hover */
+    border-color: #942514;
+    color: var(--icenia-white);
 }
 
 /* Card components - work with GOV.UK grid */
@@ -254,6 +275,61 @@ body.menu-mode .icenia-hero {
 	}
 }
 
+
+/* Icenia theme for form elements - GOV.UK style with yellow focus */
+.icenia-textarea,
+.icenia-input,
+.icenia-select {
+    font-family: "GDS Transport", arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 1.25;
+    box-sizing: border-box;
+    padding: 5px;
+    border: 2px solid #0b0c0c;
+    width: 100%;
+}
+
+.icenia-textarea {
+    display: block;
+    resize: vertical;
+}
+
+.icenia-input {
+    height: 40px;
+    line-height: 1.25;
+}
+
+.icenia-select {
+    height: 40px;
+    padding: 5px;
+}
+
+/* Reset default focus styles */
+.icenia-textarea:focus,
+.icenia-input:focus,
+.icenia-select:focus {
+    outline: none;
+    border-color: #0b0c0c;
+    box-shadow: none;
+}
+
+/* Only show yellow outline when user is navigating with keyboard */
+.is-keyboard-user .icenia-textarea:focus-visible,
+.is-keyboard-user .icenia-input:focus-visible,
+.is-keyboard-user .icenia-select:focus-visible {
+    outline: 3px solid #ffdd00 !important;
+    outline-offset: 0 !important;
+    box-shadow: inset 0 0 0 2px #0b0c0c !important;
+}
+
+.icenia-textarea:hover,
+.icenia-input:hover,
+.icenia-select:hover {
+    border-color: #0b0c0c;
+}
 
 /* Small utility adjustments */
 /* Prefer GOV.UK frontend typography if present. Provide a conservative default font stack

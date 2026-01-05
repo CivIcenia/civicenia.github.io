@@ -2,7 +2,7 @@
 changetolaw: true
 layout: "@layouts/news/act.astro"
 institution: senate
-headline: Passing the States’ Judicial Discretion Amendment of July 2022
+headline: Passing the States Judicial Discretion Amendment of July 2022
 date: 2022-07-24 18:00:00 +01:00
 document:
   type: local-file

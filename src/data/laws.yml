@@ -168,7 +168,7 @@ entries:
     slug: articles-of-war
     name: Articles of War
     kind: constitution
-    masterdoc: https://docs.google.com/document/d/1Y5VmVUy5BFtmjlk4EkUeVRtjvsLk9-yzlnfPKJpTVPY/preview
+    masterdoc: /documents/Articles-of-War.docx
   - hidden: true
     slug: citizenship-suspension-act
     name: Citizenship Suspension Act

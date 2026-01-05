@@ -1,5 +1,5 @@
 ---
-import DefaultLayout from "@layouts/default.astro";
+import PageLayout from "@layouts/page.astro";
 import { getBordersLink } from "@comptime";
 
 const BASE = (import.meta.env.BASE_URL ?? "/");
@@ -54,19 +54,12 @@ const citizenshipTiers = [
 ];
 ---
 
-<DefaultLayout 
-    title="New Player Guide - Join Icenia"
-    description="Learn how to join the Third Republic of Icenia and become part of our thriving community."
->
+<PageLayout chin={false} title="New Player Guide - Join Icenia" description="Learn how to join the Third Republic of Icenia and become part of our thriving community.">
 
     <!-- Page Header -->
     <div class="page-header">
-        <div class="govuk-width-container">
-            <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">New Player Guide</h1>
-            <p class="govuk-body-l" style="margin: 0;">
-                Join the Third Republic of Icenia and become part of one of CivMC's most vibrant communities!
-            </p>
-        </div>
+        <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">New Player Guide</h1>
+        <p class="govuk-body-l">Join the Third Republic of Icenia and become part of one of CivMC's most vibrant communities!</p>
     </div>
 
     <div class="govuk-width-container">
@@ -496,4 +489,4 @@ const citizenshipTiers = [
             line-height: 1.6;
         }
     </style>
-</DefaultLayout>
+</PageLayout>

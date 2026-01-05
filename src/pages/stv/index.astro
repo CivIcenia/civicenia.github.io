@@ -1,0 +1,3019 @@
+---
+import PageLayout from "@layouts/page.astro";
+---
+
+<PageLayout chin={false} title="Icenian STV Calculator" description="This calculator implements Single Transferable Vote (STV) as used in Icenian elections.">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Icenian STV Calculator</h1>
+        <p class="govuk-body-l">This calculator implements Single Transferable Vote (STV) as used in Icenian elections.</p>
+    </div>
+
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper govuk-body" id="main-content">
+            
+            <!-- Mode Selection -->
+            <div class="mode-selection govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                        Input Mode
+                    </legend>
+                    <div class="govuk-radios govuk-radios--inline">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="mode-simple" name="input-mode" type="radio" value="simple" checked>
+                            <label class="govuk-label govuk-radios__label" for="mode-simple">
+                                Simple Format
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="mode-discord" name="input-mode" type="radio" value="discord">
+                            <label class="govuk-label govuk-radios__label" for="mode-discord">
+                                Discord Paste
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+                
+                <!-- Import Election -->
+                <div class="govuk-!-margin-top-6" id="import-section">
+                    <h2 class="govuk-heading-s">Or Import Previous Election</h2>
+                    <p class="govuk-body-s">Load a previously exported election file to resume your work.</p>
+                    <input
+                        type="file"
+                        id="import-file-input"
+                        accept=".json"
+                        style="display: none;"
+                    />
+                    <div class="icenia-button-group">
+                        <button class="icenia-btn icenia-btn-secondary" id="import-election-button" type="button">
+                            Import Election File
+                        </button>
+                        <button class="icenia-btn icenia-btn-warning" id="clear-session-start" type="button">
+                            Clear Session
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Simple Mode (original interface) -->
+            <div id="simple-mode" class="stv-calculator">
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-label--s" for="candidates">
+                        Candidates (one per line)
+                    </label>
+                    <textarea 
+                        class="icenia-textarea" 
+                        id="candidates" 
+                        rows="8"
+                        placeholder="Enter candidate names, one per line"
+                    ></textarea>
+                </div>
+                
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-label--s" for="seats">
+                        Number of Seats to Fill
+                    </label>
+                    <input 
+                        class="icenia-input govuk-input--width-5" 
+                        id="seats" 
+                        type="number" 
+                        value="5"
+                        min="1"
+                    />
+                </div>
+                
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-label--s" for="ballots">
+                        Ballots (one per line, format: "voter: cand1, cand2, cand3")
+                    </label>
+                    <textarea 
+                        class="icenia-textarea" 
+                        id="ballots" 
+                        rows="15"
+                        placeholder="recycler: Ratat0ing, Dr_Bacon_hair, hsmnewfriend&#10;alzubloxxer11: Dr_Bacon_hair, hsmnewfriend, Ratat0ing"
+                    ></textarea>
+                </div>
+                
+                <button class="icenia-btn" id="calculate" type="button">
+                    Calculate Results
+                </button>
+                
+                <button class="icenia-btn icenia-btn-secondary" id="loadExample" type="button">
+                    Load Example Data
+                </button>
+            </div>
+
+            <!-- Discord Mode -->
+            <div id="discord-mode" class="stv-calculator" style="display: none;">
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-label--s" for="discord-candidates">
+                        Official Candidates (paste from Discord, one per line)
+                    </label>
+                    <div class="govuk-hint">
+                        Include @mentions or plain names. Example: @Mayor Ratat0ing or DinoCompactor
+                    </div>
+                    <textarea 
+                        class="icenia-textarea" 
+                        id="discord-candidates" 
+                        rows="10"
+                        placeholder="@DinoCompactor&#10;@IsraelGPT&#10;@CreepilyCreep&#10;@Dr Bacon Hair(real)"
+                    ></textarea>
+                </div>
+
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-label--s" for="discord-seats">
+                        Number of Seats to Fill
+                    </label>
+                    <input 
+                        class="icenia-input govuk-input--width-5" 
+                        id="discord-seats" 
+                        type="number" 
+                        value="5"
+                        min="1"
+                    />
+                </div>
+                
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-label--s" for="discord-ballots">
+                        Raw Discord Ballot Data (paste entire voting channel)
+                    </label>
+                    <div class="govuk-hint">
+                        Copy and paste the entire Discord channel content including usernames, timestamps, and votes
+                    </div>
+                    <textarea 
+                        class="icenia-textarea" 
+                        id="discord-ballots" 
+                        rows="20"
+                        placeholder="Ex-Councilor TheRecycler — 03/01/2026 06:12&#10;Ratat0ing&#10;Dr Bacon Hair&#10;HsmNewfriend"
+                    ></textarea>
+                </div>
+                
+                <button class="icenia-btn" id="parse-discord" type="button">
+                    Parse Discord Data
+                </button>
+            </div>
+
+            <!-- Name Matching Interface -->
+            <div id="name-matching" style="display: none;">
+                <div class="icenia-button-group govuk-!-margin-bottom-6">
+                    <button class="icenia-btn icenia-btn-secondary" id="export-election" type="button">
+                        Export Election
+                    </button>
+                    <button class="icenia-btn icenia-btn-warning" id="clear-session" type="button">
+                        Clear Session
+                    </button>
+                </div>
+                
+                <h2 class="govuk-heading-m">Review Candidate Name Matches</h2>
+                <p class="govuk-body">
+                    The following names were found in ballots. Please confirm matches or mark as invalid.
+                </p>
+                
+                <!-- Correlation Table -->
+                <div id="correlation-table-section" style="display: none;" class="govuk-!-margin-bottom-6">
+                    <details class="govuk-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                View Learned Name Correlations (<span id="correlation-count">0</span>)
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <p class="govuk-body-s">These name patterns have been learned during this session:</p>
+                            <table class="govuk-table">
+                                <thead class="govuk-table__head">
+                                    <tr class="govuk-table__row">
+                                        <th scope="col" class="govuk-table__header">Voter Name Pattern</th>
+                                        <th scope="col" class="govuk-table__header">Matched Candidate</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="govuk-table__body" id="correlation-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
+                </div>
+                
+                <div id="name-match-list"></div>
+                <div class="icenia-button-group govuk-!-margin-top-6">
+                    <button class="icenia-btn icenia-btn-secondary" id="back-to-discord" type="button">
+                        ← Back to Edit
+                    </button>
+                    <button class="icenia-btn" id="confirm-matches" type="button">
+                        Review Ballots →
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Ballot Review Interface -->
+            <div id="ballot-review" style="display: none;">
+                <div class="icenia-button-group govuk-!-margin-bottom-6">
+                    <button class="icenia-btn icenia-btn-secondary" id="export-election-review" type="button">
+                        Export Election
+                    </button>
+                    <button class="icenia-btn icenia-btn-warning" id="clear-session-review" type="button">
+                        Clear Session
+                    </button>
+                </div>
+                
+                <h2 class="govuk-heading-m">Review Ballots</h2>
+                <p class="govuk-body">
+                    Review each voter's ballot with the name mappings applied. You can edit mappings using the dropdowns.
+                </p>
+                
+                <div id="ballot-review-progress" class="match-progress"></div>
+                <div id="ballot-review-content"></div>
+                
+                <div class="icenia-button-group govuk-!-margin-top-6">
+                    <button class="icenia-btn icenia-btn-secondary" id="back-to-name-matching" type="button">
+                        ← Back to Name Matching
+                    </button>
+                    <button class="icenia-btn" id="calculate-from-review" type="button">
+                        Calculate Results →
+                    </button>
+                </div>
+            </div>
+                
+                <div id="results" style="display: none;">
+                    <h2 class="govuk-heading-m">Results</h2>
+                    <div id="log" class="stv-log"></div>
+                    <div id="winners" class="stv-winners"></div>
+                    
+                    <div class="icenia-button-group govuk-!-margin-top-6">
+                        <button class="icenia-btn icenia-btn-secondary" id="export-results" type="button">
+                            Export Election
+                        </button>
+                        <button class="icenia-btn icenia-btn-secondary" id="return-to-start" type="button">
+                            Return to Start
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .stv-calculator {
+            max-width: 800px;
+        }
+        
+        .mode-selection {
+            max-width: 800px;
+            margin-bottom: 30px;
+        }
+        
+        .stv-log {
+            background: #f3f2f1;
+            padding: 20px;
+            border-radius: 4px;
+            margin: 20px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .stv-winners {
+            background: #00703c;
+            color: white;
+            padding: 20px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .stv-log-win {
+            color: #00703c;
+            font-weight: bold;
+        }
+        
+        .stv-log-elim {
+            color: #d4351c;
+        }
+
+        #name-matching {
+            max-width: 900px;
+        }
+
+        .name-match-item {
+            background: white;
+            border: 2px solid #1d70b8;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .match-progress {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            color: #505a5f;
+            font-weight: bold;
+        }
+
+        .match-navigation {
+            margin-top: 25px;
+        }
+
+        .icenia-button-group {
+            display: flex !important;
+            gap: 16px !important;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .match-navigation.icenia-button-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .icenia-button-group > button {
+            margin: 0 !important;
+        }
+
+        .icenia-button-group button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .match-nav-button {
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .match-nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .confirmation-list {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #b1b4b6;
+            border-radius: 4px;
+            padding: 15px;
+            background: #f8f8f8;
+        }
+
+        .confirmation-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .confirmation-item .found-name {
+            font-weight: bold;
+            color: #0b0c0c;
+        }
+
+        .confirmation-item .arrow {
+            color: #505a5f;
+            margin: 0 10px;
+        }
+
+        .confirmation-item .matched-name {
+            color: #00703c;
+            font-weight: 600;
+        }
+
+        .confirmation-item .matched-name.invalid {
+            color: #d4351c;
+            font-style: italic;
+        }
+
+        .confirmation-item .edit-link {
+            cursor: pointer;
+            color: #1d70b8;
+            text-decoration: underline;
+            font-size: 0.9em;
+        }
+
+        .confirmation-item .edit-link:hover {
+            color: #003078;
+        }
+
+        .name-match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .found-name {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .match-count {
+            color: #505a5f;
+            font-size: 0.9em;
+        }
+
+        .match-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .match-option {
+            padding: 8px 12px;
+            border: 2px solid #b1b4b6;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            font-weight: normal;
+        }
+
+        .match-option:hover,
+        .match-option:focus {
+            border-color: #1d70b8;
+            background: #f3f6fc;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            outline: none;
+        }
+
+        .match-option.selected {
+            background: #1d70b8 !important;
+            color: white !important;
+            border-color: #1d70b8 !important;
+            font-weight: bold !important;
+            box-shadow: 0 2px 6px rgba(29, 112, 184, 0.3) !important;
+        }
+
+        .match-option.selected::before {
+            content: '✓ ';
+            font-weight: bold;
+            margin-right: 4px;
+        }
+
+        .match-option.invalid {
+            background: #d4351c !important;
+            color: white !important;
+            border-color: #d4351c !important;
+            font-weight: bold !important;
+            box-shadow: 0 2px 6px rgba(212, 53, 28, 0.3) !important;
+        }
+
+        .match-option.invalid::before {
+            content: '✗ ';
+            font-weight: bold;
+            margin-right: 4px;
+        }
+
+        .correlation-warning {
+            background: #fff3cd;
+            border-left: 3px solid #ffc107;
+            padding: 4px 8px;
+            margin: 0;
+            display: inline-block;
+            font-size: 0.85em;
+        }
+
+        .correlation-warning::before {
+            content: '⚠ ';
+            color: #856404;
+        }
+
+        .correlation-warning-text {
+            color: #856404;
+        }
+
+        .correlation-warning-text {
+            color: #856404;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .manual-select-wrapper {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        .manual-select-wrapper label {
+            display: block;
+            font-size: 0.9em;
+            color: #505a5f;
+            margin-bottom: 5px;
+        }
+
+        /* Ballot Review Styles */
+        #ballot-review {
+            max-width: 1200px;
+        }
+
+        .ballot-review-card {
+            background: white;
+            border: 2px solid #1d70b8;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .ballot-review-header {
+            background: #1d70b8;
+            color: white;
+            padding: 15px 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .ballot-review-body {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 0;
+            min-height: 150px;
+        }
+
+        .ballot-column {
+            padding: 15px;
+        }
+
+        .ballot-column-header {
+            font-weight: bold;
+            font-size: 0.9em;
+            color: #505a5f;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ballot-original {
+            background: #f8f8f8;
+            border-right: 1px solid #ddd;
+        }
+
+        .ballot-mapping {
+            background: #f3f6fc;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 15px 10px;
+            min-width: 200px;
+        }
+
+        .ballot-result {
+            background: white;
+            border-left: 1px solid #ddd;
+        }
+
+        .ballot-original-entry {
+            padding: 8px 10px;
+            margin-bottom: 5px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .ballot-mapping-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            width: 100%;
+            border-bottom: 1px solid #e0e6f0;
+        }
+
+        .ballot-mapping-row:last-child {
+            border-bottom: none;
+        }
+
+        .mapping-arrow {
+            color: #1d70b8;
+            font-size: 1.2em;
+            flex-shrink: 0;
+        }
+
+        .mapping-count {
+            background: #e0e6f0;
+            color: #1d70b8;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.75em;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .mapping-dropdown {
+            flex: 1;
+            font-size: 0.85em;
+            padding: 4px 6px;
+            border: 1px solid #b1b4b6;
+            border-radius: 4px;
+            max-width: 150px;
+        }
+
+        .ballot-result-entry {
+            padding: 8px 10px;
+            margin-bottom: 5px;
+            background: #e8f5e9;
+            border-radius: 4px;
+            border: 1px solid #c8e6c9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ballot-result-rank {
+            background: #00703c;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.85em;
+            flex-shrink: 0;
+        }
+
+        .ballot-result-name {
+            color: #00703c;
+            font-weight: 600;
+        }
+
+        .ballot-result-skipped {
+            background: #fff3cd;
+            border-color: #ffc107;
+        }
+
+        .ballot-result-skipped .ballot-result-name {
+            color: #856404;
+            font-style: italic;
+        }
+
+        .ballot-result-removed {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .ballot-result-removed .ballot-result-name {
+            color: #721c24;
+            font-style: italic;
+            text-decoration: line-through;
+        }
+
+        .ballot-nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .ballot-summary {
+            background: #f3f2f1;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .ballot-summary-stat {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .ballot-summary-stat strong {
+            color: #1d70b8;
+        }
+
+        /* NEW: Redesigned Ballot Review Styles */
+        .ballot-review-card {
+            max-width: 100%;
+        }
+
+        .ballot-review-card.ballot-modified {
+            border-color: #ffc107;
+        }
+
+        .ballot-review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modified-badge {
+            background: #ffc107;
+            color: #000;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .ballot-review-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            min-height: 150px;
+        }
+
+        .ballot-original-full {
+            background: #2b2b2b;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .voter-line {
+            color: #66d9ef;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .ranking-line {
+            color: #f8f8f2;
+            padding: 3px 0;
+        }
+
+        .ballot-structured {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 6px;
+            border: 2px solid #1d70b8;
+        }
+
+        .structured-header {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .structured-rankings {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .rank-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .rank-row.modified {
+            border-color: #ffc107;
+            background: #fff3cd;
+        }
+
+        .rank-number {
+            font-weight: bold;
+            color: #1d70b8;
+            width: 30px;
+            flex-shrink: 0;
+        }
+
+        .rank-dropdown {
+            flex: 1;
+            padding: 6px 8px;
+            border: 1px solid #b1b4b6;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .rank-move-btn {
+            background: #f3f2f1;
+            border: 1px solid #b1b4b6;
+            border-radius: 4px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .rank-move-btn:hover:not(:disabled) {
+            background: #e0e0e0;
+        }
+
+        .rank-move-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .rank-remove {
+            background: #d4351c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-weight: bold;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rank-remove:hover {
+            background: #942514;
+        }
+
+        .add-ranking-container {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #ddd;
+            display: flex;
+            gap: 10px;
+        }
+
+        .add-ranking-dropdown {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #b1b4b6;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .add-ranking {
+            padding: 8px 16px;
+            background: #00703c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .add-ranking:hover {
+            background: #005a30;
+        }
+
+        .reset-ballot-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 10px;
+            background: #505a5f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .reset-ballot-btn:hover {
+            background: #383f43;
+        }
+
+    </style>
+    
+    <script>
+        // Detect keyboard vs mouse navigation for proper focus-visible behavior
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab' || e.key === 'w' || e.key === 'W') {
+                document.body.classList.add('is-keyboard-user');
+            }
+        });
+
+        window.addEventListener('mousedown', function() {
+            document.body.classList.remove('is-keyboard-user');
+        });
+        
+        // STV Implementation in JavaScript
+        
+        // Track current input mode
+        let inputMode: 'simple' | 'discord' = 'simple';
+        
+        // State for Discord mode
+        let parsedData: {
+            candidates: string[];
+            ballots: Array<{voter: string, rankings: string[]}>;
+            seats: number;
+            nameMatches: Map<string, string | null>;
+            uniqueNames: string[];
+            currentNameIndex: number;
+            nameCounts: Map<string, number>;
+            learnedCorrelations: Map<string, string>;
+            correlationInfluences: Map<string, Set<string>>;
+            hasCorrelationWarning: boolean;
+            ballotOverrides: Map<string, {rank: number, candidate: string}[]>;
+            originalBallotText: Map<string, string>;
+        } = {
+            candidates: [],
+            ballots: [],
+            seats: 5,
+            nameMatches: new Map(),
+            uniqueNames: [], // Ordered list of unique names to review
+            currentNameIndex: 0, // Current position in uniqueNames array
+            nameCounts: new Map(), // Count of each name in ballots
+            learnedCorrelations: new Map(), // Store user-confirmed name correlations
+            correlationInfluences: new Map(), // Track which names were influenced by each correlation
+            hasCorrelationWarning: false, // Flag to indicate if a correlation changed
+            ballotOverrides: new Map(), // Store manual edits made during ballot review
+            originalBallotText: new Map() // Store original raw text per voter
+        };
+        
+        class Ballot {
+            name: string;
+            rankingList: number[];
+            votingPower: number;
+            candidateCount: number;
+            
+            constructor(name, rankingList, votingPower, candidateCount) {
+                this.name = name;
+                this.rankingList = [...rankingList];
+                this.votingPower = votingPower;
+                this.candidateCount = candidateCount;
+            }
+            
+            getRankedChoice(num) {
+                for (let c of this.rankingList) {
+                    if (c !== -1) {
+                        if (num === 1) {
+                            return c;
+                        } else {
+                            num--;
+                        }
+                    }
+                }
+                return 0;
+            }
+            
+            eliminate(candidateNumber) {
+                for (let i = 0; i < this.rankingList.length; i++) {
+                    if (this.rankingList[i] === candidateNumber) {
+                        this.rankingList[i] = -1;
+                    }
+                }
+            }
+            
+            isExhausted() {
+                for (let c of this.rankingList) {
+                    if (c !== -1 && c !== 0) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        
+        function ballotFromNames(name, candidateNames, candidateReferences) {
+            const rankingList: number[] = [];
+            
+            for (let candidateName of candidateNames) {
+                const num = getCandidateNumber(candidateName, candidateReferences);
+                if (num > 0) {
+                    rankingList.push(num);
+                } else {
+                    console.error(`${name}'s ballot has invalid candidate '${candidateName}'.`);
+                    return null;
+                }
+            }
+            
+            // Fill remaining spots with 0
+            for (let i = candidateNames.length; i < candidateReferences.length; i++) {
+                rankingList.push(0);
+            }
+            
+            return new Ballot(name, rankingList, 1, candidateReferences.length);
+        }
+        
+        function getCandidateNumber(candidateName, candidateReferences) {
+            const normalized = candidateName.trim().toLowerCase();
+            for (let i = 0; i < candidateReferences.length; i++) {
+                if (candidateReferences[i].toLowerCase() === normalized) {
+                    return i + 1;
+                }
+            }
+            return -2;
+        }
+        
+        function votesInFavor(ballots, candidateNumber) {
+            let count = 0;
+            let counted: Ballot[] = [];
+            
+            for (let b of ballots) {
+                if (b.getRankedChoice(1) === candidateNumber) {
+                    count += b.votingPower * 1;
+                    counted.push(b);
+                }
+                if (b.getRankedChoice(2) === candidateNumber) {
+                    count += b.votingPower * 1/1000;
+                }
+                if (b.getRankedChoice(3) === candidateNumber) {
+                    count += b.votingPower * 1/1000000;
+                }
+            }
+            
+            return { count, counted };
+        }
+        
+        function extremeCandidate(ballots, mode) {
+            if (!ballots || ballots.length === 0 || !ballots[0].rankingList) {
+                return -1;
+            }
+            
+            const candidates = new Array(ballots[0].rankingList.length).fill(0);
+            
+            for (let i = 0; i < candidates.length; i++) {
+                candidates[i] = votesInFavor(ballots, i + 1).count;
+            }
+            
+            // Find first non-zero candidate - BUGFIX: properly handle case when all are zero
+            let toReturn = -1;
+            for (let i = 0; i < candidates.length; i++) {
+                if (candidates[i] !== 0) {
+                    toReturn = i + 1;
+                    break;
+                }
+            }
+            
+            // If all candidates have 0 votes, return -1 (error state)
+            if (toReturn === -1) {
+                console.error("All candidates have 0 votes");
+                return -1;
+            }
+            
+            // Find extreme (min or max based on mode)
+            for (let i = 0; i < candidates.length; i++) {
+                if (mode * candidates[i] > mode * candidates[toReturn - 1] && candidates[i] !== 0) {
+                    toReturn = i + 1;
+                }
+            }
+            
+            return toReturn;
+        }
+        
+        function eliminateCandidate(ballots, candidateNumber) {
+            for (let b of ballots) {
+                b.eliminate(candidateNumber);
+            }
+        }
+        
+        function STV(ballots, k, candidateReferences, logCallback) {
+            logCallback(`STV with ${k} winners, ${ballots[0].rankingList.length} candidates, ${ballots.length} ballots\n\n`);
+            
+            const winners: string[] = [];
+            let totalVote = ballots.length;
+            
+            while (winners.length < k) {
+                const topCandidate = extremeCandidate(ballots, 1);
+                
+                // BUGFIX: Handle error state
+                if (topCandidate === -1) {
+                    logCallback(`\nERROR: Cannot determine top candidate. Stopping election.\n`, 'error');
+                    break;
+                }
+                
+                const { count: topCandidateVotes, counted: votesForTopCandidate } = votesInFavor(ballots, topCandidate);
+                
+                if (topCandidateVotes >= totalVote / (k + 1)) {
+                    const candidateName = candidateReferences[topCandidate - 1];
+                    winners.push(candidateName);
+                    
+                    logCallback(`✓ WIN: ${candidateName} (${topCandidateVotes.toFixed(3)} votes)\n`, 'win');
+                    
+                    eliminateCandidate(ballots, topCandidate);
+                    
+                    // Transfer surplus
+                    for (let b of votesForTopCandidate) {
+                        b.votingPower *= (topCandidateVotes - totalVote / (k + 1)) / topCandidateVotes;
+                    }
+                } else {
+                    const bottomCandidate = extremeCandidate(ballots, -1);
+                    
+                    // BUGFIX: Handle error state
+                    if (bottomCandidate === -1) {
+                        logCallback(`\nERROR: Cannot determine bottom candidate. Stopping election.\n`, 'error');
+                        break;
+                    }
+                    
+                    const candidateName = candidateReferences[bottomCandidate - 1];
+                    const { count: bottomVotes } = votesInFavor(ballots, bottomCandidate);
+                    
+                    logCallback(`✗ ELIM: ${candidateName} (${bottomVotes.toFixed(3)} votes)\n`, 'elim');
+                    
+                    eliminateCandidate(ballots, bottomCandidate);
+                }
+                
+                // Handle exhausted ballots
+                for (let b of ballots) {
+                    if (b.isExhausted()) {
+                        totalVote -= b.votingPower;
+                        b.votingPower = 0;
+                    }
+                }
+            }
+            
+            return winners;
+        }
+        
+        // ===== EXPORT/IMPORT FUNCTIONS =====
+        
+        // Export entire election state to JSON file
+        function exportElection() {
+            const exportData = {
+                version: '2.0',
+                timestamp: new Date().toISOString(),
+                inputMode: inputMode,
+                candidates: parsedData.candidates,
+                ballots: parsedData.ballots ? parsedData.ballots.map((b: any) => ({
+                    voter: b.voter,
+                    rankings: b.rankings,
+                    preferences: b.preferences
+                })) : [],
+                rawDiscordInput: {
+                    candidates: (document.getElementById('discord-candidates') as HTMLTextAreaElement)?.value || '',
+                    ballots: (document.getElementById('discord-ballots') as HTMLTextAreaElement)?.value || '',
+                    seats: parsedData.seats
+                },
+                nameMatches: Object.fromEntries(parsedData.nameMatches),
+                learnedCorrelations: Object.fromEntries(parsedData.learnedCorrelations),
+                ballotOverrides: Object.fromEntries(parsedData.ballotOverrides),
+                originalBallotText: Object.fromEntries(parsedData.originalBallotText)
+            };
+            
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `stv-election-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Import election state from JSON file
+        function importElection(file: File) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const importData = JSON.parse(e.target?.result as string);
+                    
+                    // Restore input mode
+                    if (importData.inputMode) {
+                        inputMode = importData.inputMode;
+                        localStorage.setItem('input-mode', inputMode);
+                        const modeRadio = document.querySelector(`input[name="input-mode"][value="${importData.inputMode}"]`) as HTMLInputElement;
+                        if (modeRadio) modeRadio.checked = true;
+                        
+                        // Show/hide appropriate mode
+                        if (inputMode === 'discord') {
+                            (document.getElementById('simple-mode') as HTMLElement).style.display = 'none';
+                            (document.getElementById('discord-mode') as HTMLElement).style.display = 'block';
+                        } else {
+                            (document.getElementById('simple-mode') as HTMLElement).style.display = 'block';
+                            (document.getElementById('discord-mode') as HTMLElement).style.display = 'none';
+                        }
+                    }
+                    
+                    // Restore Discord inputs if available
+                    if (importData.rawDiscordInput) {
+                        const candidatesInput = document.getElementById('discord-candidates') as HTMLTextAreaElement;
+                        const ballotsInput = document.getElementById('discord-ballots') as HTMLTextAreaElement;
+                        if (candidatesInput) {
+                            candidatesInput.value = importData.rawDiscordInput.candidates || '';
+                            localStorage.setItem('discord-candidates', candidatesInput.value);
+                        }
+                        if (ballotsInput) {
+                            ballotsInput.value = importData.rawDiscordInput.ballots || '';
+                            localStorage.setItem('discord-ballots', ballotsInput.value);
+                        }
+                    }
+                    
+                    // Restore learned correlations
+                    if (importData.learnedCorrelations) {
+                        parsedData.learnedCorrelations = new Map(Object.entries(importData.learnedCorrelations));
+                    }
+                    
+                    // Restore candidates
+                    if (importData.candidates) {
+                        parsedData.candidates = importData.candidates;
+                    }
+                    
+                    // Restore ballots
+                    if (importData.ballots && importData.ballots.length > 0) {
+                        // Need to convert back to Ballot objects properly
+                        // Store as raw data for now since we'd need candidates list
+                        parsedData.ballots = importData.ballots;
+                    }
+                    
+                    // Restore seats
+                    if (importData.rawDiscordInput?.seats) {
+                        parsedData.seats = importData.rawDiscordInput.seats;
+                    }
+                    
+                    // Restore name matches
+                    if (importData.nameMatches) {
+                        parsedData.nameMatches = new Map(
+                            Object.entries(importData.nameMatches).map(([k, v]) => 
+                                [k, v === 'null' ? null : v as string | null]
+                            )
+                        );
+                    }
+                    
+                    // Restore ballot overrides
+                    if (importData.ballotOverrides) {
+                        parsedData.ballotOverrides = new Map(
+                            Object.entries(importData.ballotOverrides).map(([k, v]) => 
+                                [k, v as {rank: number, candidate: string}[]]
+                            )
+                        );
+                    }
+                    
+                    // Restore original ballot text
+                    if (importData.originalBallotText) {
+                        parsedData.originalBallotText = new Map(
+                            Object.entries(importData.originalBallotText).map(([k, v]) => [k, v as string])
+                        );
+                    }
+                    
+                    alert('Election imported successfully!');
+                } catch (err) {
+                    alert('Failed to import election: ' + (err as Error).message);
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        // Clear all session data and start a new election
+        function clearSession() {
+            if (!confirm('Are you sure you want to clear all data and start a new election? This will reset all election data, including candidate and ballot data, and learned name correlations.')) {
+                return;
+            }
+            
+            // Clear parsed data
+            parsedData = {
+                candidates: [],
+                ballots: [],
+                seats: 0,
+                nameMatches: new Map(),
+                uniqueNames: [],
+                currentNameIndex: 0,
+                learnedCorrelations: new Map(),
+                correlationInfluences: new Map(),
+                hasCorrelationWarning: false,
+                nameCounts: new Map(),
+                ballotOverrides: new Map(),
+                originalBallotText: new Map()
+            };
+            
+            // Hide name matching, ballot review, and results
+            const nameMatching = document.getElementById('name-matching');
+            const ballotReview = document.getElementById('ballot-review');
+            const results = document.getElementById('results');
+            const importSection = document.getElementById('import-section');
+            if (nameMatching) nameMatching.style.display = 'none';
+            if (ballotReview) ballotReview.style.display = 'none';
+            if (results) results.style.display = 'none';
+            if (importSection) importSection.style.display = 'block';
+            
+            // Reset input mode to simple
+            inputMode = 'simple';
+            localStorage.setItem('input-mode', 'simple');
+            const simpleRadio = document.getElementById('mode-simple') as HTMLInputElement;
+            if (simpleRadio) simpleRadio.checked = true;
+            
+            // Show simple mode, hide discord mode
+            (document.getElementById('simple-mode') as HTMLElement).style.display = 'block';
+            (document.getElementById('discord-mode') as HTMLElement).style.display = 'none';
+            
+            // Update correlation table
+            updateCorrelationTable();
+        }
+        
+        // ===== DISCORD PARSING FUNCTIONS =====
+        
+        // Clean candidate name - remove @ symbols, extra spaces, and normalize
+        function cleanCandidateName(name) {
+            return name
+                .replace(/@/g, '')
+                .replace(/^\d+\.?\s*/, '') // Remove leading numbers like "2." or "3 "
+                .replace(/\([^)]*\)/g, '') // Remove parentheses content
+                .replace(/["']/g, '') // Remove quotes
+                .trim()
+                .replace(/\s+/g, ' '); // Normalize spaces
+        }
+        
+        // Parse official candidates from text
+        function parseOfficialCandidates(text) {
+            const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            const candidates: string[] = [];
+            
+            for (let line of lines) {
+                const cleaned = cleanCandidateName(line);
+                if (cleaned) {
+                    candidates.push(cleaned);
+                }
+            }
+            
+            return candidates;
+        }
+        
+        // Extract voter name from Discord line (before timestamp)
+        function extractVoterName(line) {
+            // Match pattern: "Name — MM/DD/YYYY HH:MM" or "Name — Yesterday at HH:MM" or "Name — Today at HH:MM"
+            const timestampMatch = line.match(/^(.+?)\s*—\s*(\d{2}\/\d{2}\/\d{4}|Yesterday at|Today at)/i);
+            if (timestampMatch) {
+                return timestampMatch[1].trim();
+            }
+            
+            // Try to extract name before timestamp
+            const parts = line.split(/\s*—\s*/);
+            if (parts.length > 0) {
+                return parts[0].trim();
+            }
+            
+            return line.trim();
+        }
+        
+        // Parse Discord ballot data
+        function parseDiscordBallots(text, officialCandidates) {
+            const lines = text.split('\n');
+            const ballots: Array<{voter: string, rankings: string[]}> = [];
+            const allFoundNames = new Set<string>();
+            const originalBallotText = new Map<string, string>();
+            
+            let currentVoter: string | null = null;
+            let currentRankings: string[] = [];
+            let lastLineWasVoter = false;
+            let ballotStartLine = 0; // Track where the current ballot started
+            
+            // Helper function to check if a line looks like a timestamp line
+            const isTimestampLine = (line: string) => /—\s*(\d{2}\/\d{2}\/\d{4}|Yesterday at|Today at)/i.test(line);
+            
+            // Helper function to look ahead and find the next non-empty line
+            const getNextNonEmptyLine = (startIndex: number): { line: string, index: number } | null => {
+                for (let j = startIndex + 1; j < lines.length; j++) {
+                    const nextLine = lines[j].trim();
+                    if (nextLine) return { line: nextLine, index: j };
+                }
+                return null;
+            };
+            
+            // Helper function to save ballot with original text
+            const saveBallot = (voter: string, rankings: string[], endLineIndex: number) => {
+                ballots.push({
+                    voter: voter,
+                    rankings: [...rankings]
+                });
+                // Store original text for this ballot
+                const originalText = lines.slice(ballotStartLine, endLineIndex + 1).join('\n');
+                originalBallotText.set(voter, originalText);
+            };
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                
+                if (!line) continue;
+                
+                // Check if this looks like a voter line (has timestamp or is at start of ballot)
+                const hasTimestamp = isTimestampLine(line);
+                const maybeCandidate = cleanCandidateName(line);
+                
+                // Check if this line might be a voter name followed by a timestamp on next non-empty line
+                // Pattern: "jammy mie\n\n — 03/01/2026" where voter name is separate from timestamp
+                let isVoterNameBeforeTimestamp = false;
+                if (!hasTimestamp && maybeCandidate) {
+                    const nextNonEmpty = getNextNonEmptyLine(i);
+                    if (nextNonEmpty && isTimestampLine(nextNonEmpty.line)) {
+                        // This line is a voter name, next line is timestamp
+                        // Check if timestamp line ONLY has timestamp (no voter name in it)
+                        const nextLineVoterName = extractVoterName(nextNonEmpty.line);
+                        // If the extracted voter name is empty or very short, use current line as voter name
+                        if (!nextLineVoterName || nextLineVoterName.length < 2 || nextLineVoterName.startsWith('—')) {
+                            isVoterNameBeforeTimestamp = true;
+                        }
+                    }
+                }
+                
+                // If line has timestamp or looks like start of new ballot
+                if (hasTimestamp || isVoterNameBeforeTimestamp || (currentRankings.length > 0 && !startsWithNumber(line) && maybeCandidate && maybeCandidate.length > 3)) {
+                    // Save previous ballot if exists
+                    if (currentVoter && currentRankings.length > 0) {
+                        saveBallot(currentVoter, currentRankings, i - 1);
+                    }
+                    
+                    // Start new ballot - mark line as start
+                    ballotStartLine = i;
+                    
+                    if (hasTimestamp) {
+                        currentVoter = extractVoterName(line);
+                        currentRankings = [];
+                        lastLineWasVoter = true;
+                        
+                        // Check if there's a candidate on the same line after timestamp
+                        const afterTimestamp = line.split(/\d{2}:\d{2}/)[1];
+                        if (afterTimestamp) {
+                            const candidateName = cleanCandidateName(afterTimestamp);
+                            if (candidateName && candidateName !== currentVoter) {
+                                currentRankings.push(candidateName);
+                                allFoundNames.add(candidateName);
+                            }
+                        }
+                    } else if (isVoterNameBeforeTimestamp) {
+                        // This line is the voter name, skip to after the timestamp line
+                        currentVoter = maybeCandidate;
+                        currentRankings = [];
+                        lastLineWasVoter = true;
+                        // Skip to the timestamp line (it will be skipped on next iteration)
+                        const nextNonEmpty = getNextNonEmptyLine(i);
+                        if (nextNonEmpty) {
+                            i = nextNonEmpty.index; // Skip to timestamp line
+                        }
+                    } else if (maybeCandidate && currentRankings.length > 0) {
+                        // This might be a new voter without timestamp
+                        if (currentVoter) {
+                            saveBallot(currentVoter, currentRankings, i - 1);
+                        }
+                        currentVoter = maybeCandidate;
+                        currentRankings = [];
+                        lastLineWasVoter = true;
+                    }
+                } else {
+                    // This is a candidate ranking
+                    const candidateName = cleanCandidateName(line);
+                    
+                    // Skip if line is too short, is just punctuation, or looks like commentary
+                    if (!candidateName || candidateName.length < 2) continue;
+                    if (/^[\d\.\)\-]+$/.test(candidateName)) continue;
+                    
+                    // Skip common non-candidate phrases
+                    const lowerName = candidateName.toLowerCase();
+                    if (lowerName.includes('wasnt i banned') || 
+                        lowerName.includes('barred') ||
+                        lowerName.includes('write-in') ||
+                        lowerName.includes('aka')) {
+                        continue;
+                    }
+                    
+                    if (currentVoter) {
+                        currentRankings.push(candidateName);
+                        allFoundNames.add(candidateName);
+                    } else if (lastLineWasVoter) {
+                        // First line after voter might be voter name itself if no timestamp
+                        currentVoter = candidateName;
+                        lastLineWasVoter = false;
+                    }
+                }
+            }
+            
+            // Don't forget last ballot
+            if (currentVoter && currentRankings.length > 0) {
+                saveBallot(currentVoter, currentRankings, lines.length - 1);
+            }
+            
+            return { ballots, allFoundNames: Array.from(allFoundNames), originalBallotText };
+        }
+        
+        function startsWithNumber(str) {
+            return /^\d+\.?/.test(str.trim());
+        }
+        
+        // Fuzzy match candidate names
+        function fuzzyMatch(name1, name2) {
+            // Normalize: handle common character substitutions (0 vs o, etc.)
+            const normalizeChars = (str: string) => str
+                .replace(/0/g, 'o')
+                .replace(/1/g, 'i')
+                .replace(/3/g, 'e')
+                .replace(/5/g, 's')
+                .replace(/7/g, 't');
+            
+            const n1 = normalizeChars(name1.toLowerCase()).replace(/[^a-z0-9]/g, '');
+            const n2 = normalizeChars(name2.toLowerCase()).replace(/[^a-z0-9]/g, '');
+            
+            // Exact match (ignoring special chars and character substitutions)
+            if (n1 === n2) return 1.0;
+            
+            // One contains the other
+            if (n1.includes(n2) || n2.includes(n1)) return 0.95;
+            
+            // Check for nickname/abbreviation matches
+            const words1 = name1.toLowerCase().split(/\s+/);
+            const words2 = name2.toLowerCase().split(/\s+/);
+            
+            // Check if shorter name is abbreviation or nickname of longer name
+            const shorter = n1.length < n2.length ? n1 : n2;
+            const longer = n1.length < n2.length ? n2 : n1;
+            
+            // Short nickname handling (e.g., "rat" -> "ratat0ing", "creep" -> "creepilycreep")
+            // If the shorter name is 3-5 chars and appears in the longer name, high score
+            if (shorter.length >= 3 && shorter.length <= 5 && longer.includes(shorter)) {
+                // Extra boost if it's at the start
+                if (longer.startsWith(shorter)) return 0.9;
+                return 0.85;
+            }
+            
+            // Abbreviation: shorter name matches start of longer (e.g., "hsm" -> "hsmnewfriend")
+            if (longer.startsWith(shorter) && shorter.length >= 3) return 0.88;
+            
+            // Common nickname patterns (e.g., "toast" in "toasttastesprettygood")
+            if (shorter.length >= 4 && longer.includes(shorter)) return 0.82;
+            
+            // Check word-by-word matches
+            let matchedWords = 0;
+            let totalWords = Math.max(words1.length, words2.length);
+            
+            for (let w1 of words1) {
+                for (let w2 of words2) {
+                    const cleanW1 = w1.replace(/[^a-z0-9]/g, '');
+                    const cleanW2 = w2.replace(/[^a-z0-9]/g, '');
+                    
+                    if (cleanW1 === cleanW2 && cleanW1.length > 0) {
+                        matchedWords++;
+                        break;
+                    }
+                    
+                    // Partial word match for longer words
+                    if (cleanW1.length >= 4 && cleanW2.length >= 4) {
+                        if (cleanW1.includes(cleanW2) || cleanW2.includes(cleanW1)) {
+                            matchedWords += 0.7;
+                            break;
+                        }
+                        
+                        // Check if one word starts with the other
+                        if (cleanW1.startsWith(cleanW2) || cleanW2.startsWith(cleanW1)) {
+                            matchedWords += 0.6;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            if (matchedWords > 0) {
+                return Math.min(0.75, 0.4 + (matchedWords / totalWords) * 0.5);
+            }
+            
+            // Check for character overlap (for typos)
+            let commonChars = 0;
+            const chars1 = n1.split('');
+            const chars2 = n2.split('');
+            
+            for (let char of chars1) {
+                if (chars2.includes(char)) {
+                    commonChars++;
+                }
+            }
+            
+            const overlapRatio = commonChars / Math.max(n1.length, n2.length);
+            if (overlapRatio > 0.6) return 0.5;
+            
+            return 0.0;
+        }
+        
+        // Find best matches for a found name
+        function findBestMatches(foundName, officialCandidates) {
+            const matches: Array<{candidate: string, score: number}> = [];
+            
+            // Check learned correlations first
+            // Extract base name (remove numbers and special chars at start/end)
+            const baseName = foundName.toLowerCase().replace(/^[\d\.\s]+/, '').replace(/[\d\s]+$/, '');
+            
+            // Check if we've learned any correlations for similar names
+            let learnedCandidate: string | null = null;
+            let highestLearnedScore = 0;
+            
+            for (let [learnedName, candidate] of parsedData.learnedCorrelations) {
+                // Check if the learned name is similar to this found name
+                const learnedBase = learnedName.toLowerCase().replace(/^[\d\.\s]+/, '').replace(/[\d\s]+$/, '');
+                
+                // If learned name matches or is contained in found name
+                if (baseName.includes(learnedBase) || learnedBase.includes(baseName)) {
+                    const similarity = Math.min(baseName.length, learnedBase.length) / Math.max(baseName.length, learnedBase.length);
+                    if (similarity > highestLearnedScore) {
+                        highestLearnedScore = similarity;
+                        learnedCandidate = candidate;
+                    }
+                }
+            }
+            
+            for (let candidate of officialCandidates) {
+                let score = fuzzyMatch(foundName, candidate);
+                
+                // Boost score significantly if this matches our learned correlation
+                if (learnedCandidate === candidate && highestLearnedScore > 0.5) {
+                    score = Math.max(score, 0.95); // Give it a very high score
+                }
+                
+                // Lower threshold to catch more potential matches
+                if (score > 0.45) {
+                    matches.push({ candidate, score });
+                }
+            }
+            
+            matches.sort((a, b) => b.score - a.score);
+            // Return top 5 matches to avoid overwhelming the user
+            return matches.slice(0, 5);
+        }
+        
+        // ===== UI EVENT HANDLERS =====
+        
+        // Mode switching
+        document.querySelectorAll('input[name="input-mode"]').forEach(radio => {
+            radio.addEventListener('change', function(this: HTMLInputElement) {
+                const simpleMode = document.getElementById('simple-mode');
+                const discordMode = document.getElementById('discord-mode');
+                const nameMatching = document.getElementById('name-matching');
+                const results = document.getElementById('results');
+                
+                // Save mode preference to localStorage
+                localStorage.setItem('input-mode', this.value);
+                
+                if (this.value === 'simple') {
+                    if (simpleMode) simpleMode.style.display = 'block';
+                    if (discordMode) discordMode.style.display = 'none';
+                    if (nameMatching) nameMatching.style.display = 'none';
+                    if (results) results.style.display = 'none';
+                } else {
+                    if (simpleMode) simpleMode.style.display = 'none';
+                    if (discordMode) discordMode.style.display = 'block';
+                    if (nameMatching) nameMatching.style.display = 'none';
+                    if (results) results.style.display = 'none';
+                }
+            });
+        });
+        
+        // Load saved discord data on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            // Restore input mode preference
+            const savedMode = localStorage.getItem('input-mode');
+            if (savedMode) {
+                const radioToCheck = document.querySelector(`input[name="input-mode"][value="${savedMode}"]`) as HTMLInputElement;
+                if (radioToCheck) {
+                    radioToCheck.checked = true;
+                    // Trigger the change event to update UI
+                    radioToCheck.dispatchEvent(new Event('change'));
+                }
+            }
+            
+            const savedCandidates = localStorage.getItem('discord-candidates');
+            const savedBallots = localStorage.getItem('discord-ballots');
+            
+            if (savedCandidates) {
+                const candidatesEl = document.getElementById('discord-candidates') as HTMLTextAreaElement;
+                if (candidatesEl) candidatesEl.value = savedCandidates;
+            }
+            
+            if (savedBallots) {
+                const ballotsEl = document.getElementById('discord-ballots') as HTMLTextAreaElement;
+                if (ballotsEl) ballotsEl.value = savedBallots;
+            }
+            
+            // Setup Import Election button
+            const importButton = document.getElementById('import-election-button');
+            const importFileInput = document.getElementById('import-file-input') as HTMLInputElement;
+            if (importButton && importFileInput) {
+                importButton.addEventListener('click', () => {
+                    importFileInput.click();
+                });
+                importFileInput.addEventListener('change', (e) => {
+                    const file = (e.target as HTMLInputElement).files?.[0];
+                    if (file) {
+                        importElection(file);
+                        // Reset file input so the same file can be imported again if needed
+                        importFileInput.value = '';
+                    }
+                });
+            }
+            
+            // Setup Export Election button
+            const exportButton = document.getElementById('export-election');
+            if (exportButton) {
+                exportButton.addEventListener('click', exportElection);
+            }
+            
+            // Setup Clear Session buttons (both on start page and name matching page)
+            const clearButton = document.getElementById('clear-session');
+            const clearButtonStart = document.getElementById('clear-session-start');
+            const clearButtonReview = document.getElementById('clear-session-review');
+            if (clearButton) {
+                clearButton.addEventListener('click', clearSession);
+            }
+            if (clearButtonStart) {
+                clearButtonStart.addEventListener('click', clearSession);
+            }
+            if (clearButtonReview) {
+                clearButtonReview.addEventListener('click', clearSession);
+            }
+            
+            // Setup Export Election button on ballot review page
+            const exportButtonReview = document.getElementById('export-election-review');
+            if (exportButtonReview) {
+                exportButtonReview.addEventListener('click', exportElection);
+            }
+            
+            // Back to name matching from ballot review
+            const backToNameMatching = document.getElementById('back-to-name-matching');
+            if (backToNameMatching) {
+                backToNameMatching.addEventListener('click', function() {
+                    const ballotReview = document.getElementById('ballot-review');
+                    const nameMatching = document.getElementById('name-matching');
+                    if (ballotReview) ballotReview.style.display = 'none';
+                    if (nameMatching) nameMatching.style.display = 'block';
+                    // Reset to first name so user can review again
+                    parsedData.currentNameIndex = 0;
+                    renderCurrentName();
+                });
+            }
+            
+            // Calculate from ballot review
+            const calculateFromReview = document.getElementById('calculate-from-review');
+            if (calculateFromReview) {
+                calculateFromReview.addEventListener('click', calculateResults);
+            }
+        });
+        
+        // Save discord data to localStorage on input
+        document.getElementById('discord-candidates')?.addEventListener('input', function(this: HTMLTextAreaElement) {
+            localStorage.setItem('discord-candidates', this.value);
+        });
+        
+        document.getElementById('discord-ballots')?.addEventListener('input', function(this: HTMLTextAreaElement) {
+            localStorage.setItem('discord-ballots', this.value);
+        });
+        
+        // Parse Discord data
+        document.getElementById('parse-discord')?.addEventListener('click', function() {
+            const candidatesEl = document.getElementById('discord-candidates') as HTMLTextAreaElement;
+            const ballotsEl = document.getElementById('discord-ballots') as HTMLTextAreaElement;
+            const seatsEl = document.getElementById('discord-seats') as HTMLInputElement;
+            
+            if (!candidatesEl || !ballotsEl || !seatsEl) return;
+            
+            const candidatesText = candidatesEl.value;
+            const ballotsText = ballotsEl.value;
+            const seats = parseInt(seatsEl.value);
+            
+            if (!candidatesText.trim()) {
+                alert('Please enter the official candidate list');
+                return;
+            }
+            
+            if (!ballotsText.trim()) {
+                alert('Please paste the Discord ballot data');
+                return;
+            }
+            
+            // Parse official candidates
+            const officialCandidates = parseOfficialCandidates(candidatesText);
+            
+            if (officialCandidates.length === 0) {
+                alert('No valid candidates found');
+                return;
+            }
+            
+            // Parse ballots
+            const { ballots, allFoundNames, originalBallotText } = parseDiscordBallots(ballotsText, officialCandidates);
+            
+            if (ballots.length === 0) {
+                alert('No valid ballots found');
+                return;
+            }
+            
+            // Store parsed data
+            parsedData.candidates = officialCandidates;
+            parsedData.ballots = ballots;
+            parsedData.seats = seats;
+            parsedData.nameMatches = new Map();
+            parsedData.currentNameIndex = 0;
+            parsedData.originalBallotText = originalBallotText;
+            parsedData.ballotOverrides = new Map();
+            
+            // Count occurrences of each name
+            const nameCounts = new Map();
+            for (let ballot of ballots) {
+                for (let name of ballot.rankings) {
+                    nameCounts.set(name, (nameCounts.get(name) || 0) + 1);
+                }
+            }
+            
+            // Store counts for later use
+            parsedData.nameCounts = nameCounts;
+            
+            // Sort names by frequency (most frequent first)
+            parsedData.uniqueNames = allFoundNames.sort((a, b) => {
+                const countA = nameCounts.get(a) || 0;
+                const countB = nameCounts.get(b) || 0;
+                return countB - countA;
+            });
+            
+            // Build initial view
+            renderCurrentName();
+            
+            // Show matching interface
+            const discordModeEl = document.getElementById('discord-mode');
+            const nameMatchingEl = document.getElementById('name-matching');
+            const importSection = document.getElementById('import-section');
+            if (discordModeEl) discordModeEl.style.display = 'none';
+            if (nameMatchingEl) nameMatchingEl.style.display = 'block';
+            if (importSection) importSection.style.display = 'none';
+        });
+        
+        // Render the current name being reviewed
+        function renderCurrentName() {
+            const nameMatchList = document.getElementById('name-match-list');
+            if (!nameMatchList) return;
+            nameMatchList.innerHTML = '';
+            
+            if (parsedData.currentNameIndex >= parsedData.uniqueNames.length) {
+                // All names reviewed, show confirmation
+                showConfirmation();
+                return;
+            }
+            
+            const foundName = parsedData.uniqueNames[parsedData.currentNameIndex];
+            const matches = findBestMatches(foundName, parsedData.candidates);
+            const count = parsedData.nameCounts.get(foundName) || 0;
+            
+            // Check if current selection was influenced by a correlation that might have changed
+            const baseName = foundName.toLowerCase().replace(/^[\d\.\s]+/, '').replace(/[\d\s]+$/, '');
+            const wasInfluenced = Array.from(parsedData.correlationInfluences.values()).some((set: Set<string>) => set.has(foundName));
+            
+            // Progress indicator
+            const progressDiv = document.createElement('div');
+            progressDiv.className = 'match-progress';
+            progressDiv.textContent = `Reviewing name ${parsedData.currentNameIndex + 1} of ${parsedData.uniqueNames.length}`;
+            
+            // Add inline warning if a correlation was changed
+            if (parsedData.hasCorrelationWarning && wasInfluenced) {
+                const warningSpan = document.createElement('span');
+                warningSpan.className = 'correlation-warning';
+                warningSpan.innerHTML = `<span class="correlation-warning-text">Affected by earlier change</span>`;
+                warningSpan.style.marginLeft = '10px';
+                progressDiv.appendChild(document.createTextNode(' '));
+                progressDiv.appendChild(warningSpan);
+            }
+            
+            nameMatchList.appendChild(progressDiv);
+            
+            // Keyboard shortcuts help
+            const helpDiv = document.createElement('div');
+            helpDiv.className = 'govuk-inset-text';
+            helpDiv.style.marginTop = '10px';
+            helpDiv.style.fontSize = '0.85em';
+            helpDiv.innerHTML = `
+                <strong>Keyboard shortcuts:</strong>
+                <span style="display: block; margin-top: 5px;">
+                    <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">←</kbd><kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">→</kbd> or <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">A</kbd><kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">D</kbd> Navigate • 
+                    <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">1</kbd>-<kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">9</kbd> Quick select • 
+                    <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">0</kbd> Skip • 
+                    <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">W</kbd> Dropdown • 
+                    <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">Enter</kbd> Confirm dropdown, Next Name
+                </span>
+            `;
+            nameMatchList.appendChild(helpDiv);
+            
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'name-match-item';
+            
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'name-match-header';
+            headerDiv.innerHTML = `
+                <span class="found-name">${foundName}</span>
+                <span class="match-count">Found in ${count} ballot${count !== 1 ? 's' : ''}</span>
+            `;
+            
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'match-options';
+            
+            let autoSelected = false;
+            
+            // Add match options
+            if (matches.length > 0) {
+                for (let i = 0; i < matches.length; i++) {
+                    const match = matches[i];
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'match-option';
+                    btn.textContent = `${match.candidate} (${Math.round(match.score * 100)}% match)`;
+                    btn.dataset.foundName = foundName;
+                    btn.dataset.candidate = match.candidate;
+                    btn.tabIndex = 0; // Make keyboard accessible
+                    
+                    // Auto-select the best match (first match) if there are any matches
+                    if (i === 0 && !autoSelected) {
+                        btn.classList.add('selected');
+                        btn.style.backgroundColor = '#1d70b8';
+                        btn.style.color = 'white';
+                        btn.style.borderColor = '#1d70b8';
+                        btn.style.fontWeight = 'bold';
+                        parsedData.nameMatches.set(foundName, match.candidate);
+                        autoSelected = true;
+                    }
+                        
+                        // Handle both click and keyboard
+                        const selectThisButton = function() {
+                            console.log('Button selected:', btn.textContent);
+                            
+                            // Deselect others for this found name
+                            optionsDiv.querySelectorAll<HTMLButtonElement>('.match-option').forEach(b => {
+                                b.classList.remove('selected', 'invalid', 'not-ballot');
+                                b.style.backgroundColor = '';
+                                b.style.color = '';
+                                b.style.borderColor = '';
+                                b.style.fontWeight = '';
+                            });
+                            
+                            // Select this button
+                            btn.classList.add('selected');
+                            // Force inline styles as backup
+                            btn.style.backgroundColor = '#1d70b8';
+                            btn.style.color = 'white';
+                            btn.style.borderColor = '#1d70b8';
+                            btn.style.fontWeight = 'bold';
+                            
+                            console.log('Selected class added, classes:', btn.className);
+                            const selectedCandidate = btn.dataset.candidate || null;
+                            
+                            // Check if we're changing an existing correlation
+                            const baseName = foundName.toLowerCase().replace(/^[\d\.\s]+/, '').replace(/[\d\s]+$/, '');
+                            const hadPreviousCorrelation = parsedData.learnedCorrelations.has(baseName);
+                            const previousCandidate = parsedData.learnedCorrelations.get(baseName);
+                            
+                            parsedData.nameMatches.set(foundName, selectedCandidate);
+                            
+                            // Store learned correlation for future matching
+                            if (selectedCandidate) {
+                                parsedData.learnedCorrelations.set(baseName, selectedCandidate);
+                                
+                                // Track which names were influenced by this correlation
+                                if (!parsedData.correlationInfluences.has(baseName)) {
+                                    parsedData.correlationInfluences.set(baseName, new Set());
+                                }
+                                parsedData.correlationInfluences.get(baseName)?.add(foundName);
+                                
+                                // If we changed a correlation, set warning flag
+                                if (hadPreviousCorrelation && previousCandidate !== selectedCandidate) {
+                                    parsedData.hasCorrelationWarning = true;
+                                    console.log(`Correlation changed: ${baseName} ${previousCandidate} -> ${selectedCandidate}`);
+                                } else {
+                                    console.log(`Learned correlation: ${baseName} -> ${selectedCandidate}`);
+                                }
+                                
+                                // Update correlation table
+                                updateCorrelationTable();
+                            }
+                        };
+                        
+                        btn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            selectThisButton();
+                        });
+                        
+                        // Keyboard support
+                        btn.addEventListener('keydown', function(e) {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                selectThisButton();
+                            }
+                        });
+                        
+                        optionsDiv.appendChild(btn);
+                    }
+                }
+                
+                // Add "Invalid/Not a candidate" option
+                const invalidBtn = document.createElement('button');
+                invalidBtn.type = 'button';
+                invalidBtn.className = 'match-option';
+                invalidBtn.textContent = 'Not a candidate (skip)';
+                invalidBtn.dataset.foundName = foundName;
+                invalidBtn.tabIndex = 0; // Make keyboard accessible
+                
+                // Auto-select invalid if no confident matches
+                if (!autoSelected) {
+                    invalidBtn.classList.add('invalid');
+                    invalidBtn.style.backgroundColor = '#d4351c';
+                    invalidBtn.style.color = 'white';
+                    invalidBtn.style.borderColor = '#d4351c';
+                    invalidBtn.style.fontWeight = 'bold';
+                    parsedData.nameMatches.set(foundName, null);
+                }
+                
+                const selectInvalidButton = function() {
+                    console.log('Invalid button selected');
+                    
+                    optionsDiv.querySelectorAll<HTMLButtonElement>('.match-option').forEach(b => {
+                        b.classList.remove('selected', 'invalid', 'not-ballot');
+                        b.style.backgroundColor = '';
+                        b.style.color = '';
+                        b.style.borderColor = '';
+                        b.style.fontWeight = '';
+                    });
+                    
+                    invalidBtn.classList.add('invalid');
+                    invalidBtn.style.backgroundColor = '#d4351c';
+                    invalidBtn.style.color = 'white';
+                    invalidBtn.style.borderColor = '#d4351c';
+                    invalidBtn.style.fontWeight = 'bold';
+                    
+                    parsedData.nameMatches.set(foundName, null);
+                };
+                
+                invalidBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    selectInvalidButton();
+                });
+                
+                invalidBtn.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        selectInvalidButton();
+                    }
+                });
+                
+                optionsDiv.appendChild(invalidBtn);
+                
+                // Add "Not a ballot entry" option (for voter names caught as ballots, etc.)
+                const notBallotBtn = document.createElement('button');
+                notBallotBtn.type = 'button';
+                notBallotBtn.className = 'match-option';
+                notBallotBtn.textContent = 'Not a ballot entry (remove)';
+                notBallotBtn.dataset.foundName = foundName;
+                notBallotBtn.tabIndex = 0;
+                
+                const selectNotBallotButton = function() {
+                    console.log('Not a ballot button selected');
+                    
+                    optionsDiv.querySelectorAll<HTMLButtonElement>('.match-option').forEach(b => {
+                        b.classList.remove('selected', 'invalid', 'not-ballot');
+                        b.style.backgroundColor = '';
+                        b.style.color = '';
+                        b.style.borderColor = '';
+                        b.style.fontWeight = '';
+                    });
+                    
+                    notBallotBtn.classList.add('not-ballot');
+                    notBallotBtn.style.backgroundColor = '#505a5f';
+                    notBallotBtn.style.color = 'white';
+                    notBallotBtn.style.borderColor = '#505a5f';
+                    notBallotBtn.style.fontWeight = 'bold';
+                    
+                    parsedData.nameMatches.set(foundName, '__NOT_A_BALLOT__');
+                };
+                
+                notBallotBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    selectNotBallotButton();
+                });
+                
+                notBallotBtn.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        selectNotBallotButton();
+                    }
+                });
+                
+                optionsDiv.appendChild(notBallotBtn);
+                
+                // Add manual dropdown selection
+                const manualWrapper = document.createElement('div');
+                manualWrapper.className = 'manual-select-wrapper';
+                
+                const dropdownLabel = document.createElement('label');
+                dropdownLabel.textContent = 'Or select manually:';
+                
+                const dropdown = document.createElement('select');
+                dropdown.className = 'icenia-select';
+                dropdown.style.width = '100%';
+                
+                // Add default option
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = '-- Select a candidate --';
+                dropdown.appendChild(defaultOption);
+                
+                // Add all official candidates to dropdown
+                for (let candidate of parsedData.candidates) {
+                    const option = document.createElement('option');
+                    option.value = candidate;
+                    option.textContent = candidate;
+                    dropdown.appendChild(option);
+                }
+                
+                // Add "Not a candidate" option to dropdown
+                const noneOption = document.createElement('option');
+                noneOption.value = '__INVALID__';
+                noneOption.textContent = 'Not a candidate - skip ranking';
+                dropdown.appendChild(noneOption);
+                
+                // Add "Not a ballot entry" option to dropdown
+                const notBallotOption = document.createElement('option');
+                notBallotOption.value = '__NOT_A_BALLOT__';
+                notBallotOption.textContent = 'Not a ballot entry - remove';
+                dropdown.appendChild(notBallotOption);
+                
+                const selectFromDropdown = function() {
+                    if (dropdown.value) {
+                        console.log('Dropdown changed to:', dropdown.value);
+                        
+                        // Deselect all buttons
+                        optionsDiv.querySelectorAll<HTMLButtonElement>('.match-option').forEach(b => {
+                            b.classList.remove('selected', 'invalid', 'not-ballot');
+                            b.style.backgroundColor = '';
+                            b.style.color = '';
+                            b.style.borderColor = '';
+                            b.style.fontWeight = '';
+                        });
+                        
+                        if (dropdown.value === '__INVALID__') {
+                            parsedData.nameMatches.set(foundName, null);
+                            // Visually indicate the invalid button
+                            invalidBtn.classList.add('invalid');
+                            invalidBtn.style.backgroundColor = '#d4351c';
+                            invalidBtn.style.color = 'white';
+                            invalidBtn.style.borderColor = '#d4351c';
+                            invalidBtn.style.fontWeight = 'bold';
+                        } else if (dropdown.value === '__NOT_A_BALLOT__') {
+                            parsedData.nameMatches.set(foundName, '__NOT_A_BALLOT__');
+                            // Visually indicate the not ballot button
+                            notBallotBtn.classList.add('not-ballot');
+                            notBallotBtn.style.backgroundColor = '#505a5f';
+                            notBallotBtn.style.color = 'white';
+                            notBallotBtn.style.borderColor = '#505a5f';
+                            notBallotBtn.style.fontWeight = 'bold';
+                        } else {
+                            parsedData.nameMatches.set(foundName, dropdown.value);
+                            
+                            // Store learned correlation for future matching
+                            const baseName = foundName.toLowerCase().replace(/^[\d\.\s]+/, '').replace(/[\d\s]+$/, '');
+                            parsedData.learnedCorrelations.set(baseName, dropdown.value);
+                            console.log(`Learned correlation: ${baseName} -> ${dropdown.value}`);
+                            
+                            // Update correlation table
+                            updateCorrelationTable();
+                            
+                            // Find and highlight the matching button if it exists
+                            optionsDiv.querySelectorAll<HTMLButtonElement>('.match-option').forEach(b => {
+                                if (b.dataset.candidate === dropdown.value) {
+                                    b.classList.add('selected');
+                                    b.style.backgroundColor = '#1d70b8';
+                                    b.style.color = 'white';
+                                    b.style.borderColor = '#1d70b8';
+                                    b.style.fontWeight = 'bold';
+                                }
+                            });
+                        }
+                    }
+                };
+                
+                dropdown.addEventListener('change', selectFromDropdown);
+                
+                // Keyboard support: Enter key on dropdown commits selection and moves to next
+                dropdown.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && dropdown.value) {
+                        e.preventDefault();
+                        selectFromDropdown();
+                        // Auto-advance to next name
+                        parsedData.currentNameIndex++;
+                        renderCurrentName();
+                    }
+                });
+                
+                // Store reference to dropdown for global keyboard handler
+                itemDiv.dataset.dropdown = 'true';
+                (itemDiv as any).__dropdown = dropdown;
+                
+                manualWrapper.appendChild(dropdownLabel);
+                manualWrapper.appendChild(dropdown);
+                
+                itemDiv.appendChild(headerDiv);
+                itemDiv.appendChild(optionsDiv);
+                itemDiv.appendChild(manualWrapper);
+                
+                // Navigation buttons
+                const navDiv = document.createElement('div');
+                navDiv.className = 'match-navigation icenia-button-group';
+                
+                const prevBtn = document.createElement('button');
+                prevBtn.type = 'button';
+                prevBtn.className = 'icenia-btn icenia-btn-secondary';
+                prevBtn.textContent = '← Previous';
+                prevBtn.disabled = parsedData.currentNameIndex === 0;
+                
+                const navigatePrevious = function() {
+                    if (parsedData.currentNameIndex > 0) {
+                        parsedData.currentNameIndex--;
+                        renderCurrentName();
+                    }
+                };
+                
+                prevBtn.addEventListener('click', navigatePrevious);
+                prevBtn.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        navigatePrevious();
+                    }
+                });
+                
+                const nextBtn = document.createElement('button');
+                nextBtn.type = 'button';
+                nextBtn.className = 'icenia-btn';
+                nextBtn.textContent = parsedData.currentNameIndex === parsedData.uniqueNames.length - 1 ? 'Review Ballots →' : 'Next →';
+                
+                const navigateNext = function() {
+                    parsedData.currentNameIndex++;
+                    renderCurrentName();
+                };
+                
+                nextBtn.addEventListener('click', navigateNext);
+                nextBtn.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        navigateNext();
+                    }
+                });
+                
+                navDiv.appendChild(prevBtn);
+                navDiv.appendChild(nextBtn);
+                itemDiv.appendChild(navDiv);
+                
+                nameMatchList.appendChild(itemDiv);
+        }
+        
+        // Update the correlation table display
+        function updateCorrelationTable() {
+            const tableBody = document.getElementById('correlation-table-body');
+            const tableSection = document.getElementById('correlation-table-section');
+            const correlationCount = document.getElementById('correlation-count');
+            
+            if (!tableBody || !tableSection || !correlationCount) return;
+            
+            const count = parsedData.learnedCorrelations.size;
+            correlationCount.textContent = count.toString();
+            
+            if (count === 0) {
+                tableSection.style.display = 'none';
+                return;
+            }
+            
+            tableSection.style.display = 'block';
+            
+            // Sort correlations alphabetically by voter name pattern
+            const sortedCorrelations = Array.from(parsedData.learnedCorrelations.entries())
+                .sort((a, b) => a[0].localeCompare(b[0]));
+            
+            tableBody.innerHTML = sortedCorrelations.map(([pattern, candidate]) => `
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">${escapeHtml(pattern)}</td>
+                    <td class="govuk-table__cell">${escapeHtml(candidate)}</td>
+                </tr>
+            `).join('');
+        }
+        
+        // Escape HTML to prevent XSS
+        function escapeHtml(text: string): string {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Track current ballot being reviewed
+        let currentBallotIndex = 0;
+        
+        // ===== STRUCTURED BALLOT EDITING FUNCTIONS =====
+        
+        // Get structured ballot for a voter (uses override if exists, otherwise builds from mappings)
+        function getStructuredBallot(voterName: string): {rank: number, candidate: string}[] {
+            // Check if there's a manual override first
+            const override = parsedData.ballotOverrides.get(voterName);
+            if (override) {
+                return [...override]; // Return copy to avoid mutation
+            }
+            
+            // Otherwise, build from automated mappings
+            const ballot = parsedData.ballots.find(b => b.voter === voterName);
+            if (!ballot) return [];
+            
+            const result: {rank: number, candidate: string}[] = [];
+            const addedCandidates = new Set<string>();
+            let rank = 1;
+            
+            for (let name of ballot.rankings) {
+                const match = parsedData.nameMatches.get(name);
+                if (match && match !== '__NOT_A_BALLOT__' && match !== null && !addedCandidates.has(match)) {
+                    result.push({ rank: rank++, candidate: match });
+                    addedCandidates.add(match);
+                }
+            }
+            
+            return result;
+        }
+        
+        // Update structured ballot (saves override)
+        function updateStructuredBallot(voterName: string, rankings: {rank: number, candidate: string}[]) {
+            parsedData.ballotOverrides.set(voterName, rankings);
+            renderBallotReview(); // Re-render to show changes
+        }
+        
+        // Remove a ranking from a ballot
+        function removeRanking(voterName: string, rankIndex: number) {
+            const current = getStructuredBallot(voterName);
+            current.splice(rankIndex, 1);
+            // Re-number ranks
+            current.forEach((r, i) => r.rank = i + 1);
+            updateStructuredBallot(voterName, current);
+        }
+        
+        // Add a ranking to a ballot
+        function addRanking(voterName: string, candidate: string) {
+            const current = getStructuredBallot(voterName);
+            current.push({ rank: current.length + 1, candidate });
+            updateStructuredBallot(voterName, current);
+        }
+        
+        // Move a ranking (reorder)
+        function moveRanking(voterName: string, fromIndex: number, toIndex: number) {
+            const current = getStructuredBallot(voterName);
+            const [moved] = current.splice(fromIndex, 1);
+            current.splice(toIndex, 0, moved);
+            // Re-number ranks
+            current.forEach((r, i) => r.rank = i + 1);
+            updateStructuredBallot(voterName, current);
+        }
+        
+        // Change candidate for a specific rank
+        function changeRankingCandidate(voterName: string, rankIndex: number, newCandidate: string) {
+            const current = getStructuredBallot(voterName);
+            if (rankIndex >= 0 && rankIndex < current.length) {
+                current[rankIndex].candidate = newCandidate;
+                updateStructuredBallot(voterName, current);
+            }
+        }
+        
+        // Show ballot review screen (replaces old showConfirmation)
+        function showConfirmation() {
+            // Switch from name matching to ballot review
+            const nameMatchingEl = document.getElementById('name-matching');
+            const ballotReviewEl = document.getElementById('ballot-review');
+            
+            if (nameMatchingEl) nameMatchingEl.style.display = 'none';
+            if (ballotReviewEl) ballotReviewEl.style.display = 'block';
+            
+            currentBallotIndex = 0;
+            renderBallotReview();
+        }
+        
+        // Render ballot review screen - REDESIGNED
+        function renderBallotReview() {
+            const content = document.getElementById('ballot-review-content');
+            const progress = document.getElementById('ballot-review-progress');
+            if (!content || !progress) return;
+            
+            const totalBallots = parsedData.ballots.length;
+            
+            // Count valid ballots (those with at least one valid ranking)
+            const validBallots = parsedData.ballots.filter(b => {
+                const structured = getStructuredBallot(b.voter);
+                return structured.length > 0;
+            }).length;
+            
+            // Count modified ballots
+            const modifiedBallots = parsedData.ballotOverrides.size;
+            
+            progress.innerHTML = `
+                <div class="ballot-summary">
+                    <span class="ballot-summary-stat">Total Ballots: <strong>${totalBallots}</strong></span>
+                    <span class="ballot-summary-stat">Valid Ballots: <strong>${validBallots}</strong></span>
+                    <span class="ballot-summary-stat">Modified: <strong>${modifiedBallots}</strong></span>
+                    <span class="ballot-summary-stat">Viewing: <strong>${currentBallotIndex + 1} of ${totalBallots}</strong></span>
+                </div>
+                <div class="govuk-inset-text" style="margin-top: 10px; font-size: 0.85em;">
+                    <strong>Keyboard shortcuts:</strong>
+                    <span style="display: block; margin-top: 5px;">
+                        <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">←</kbd><kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">→</kbd> Navigate between ballots
+                    </span>
+                </div>
+            `;
+            
+            content.innerHTML = '';
+            
+            if (totalBallots === 0) {
+                content.innerHTML = '<p class="govuk-body">No ballots to review.</p>';
+                return;
+            }
+            
+            const ballot = parsedData.ballots[currentBallotIndex];
+            const hasOverride = parsedData.ballotOverrides.has(ballot.voter);
+            
+            // Create ballot review card
+            const card = document.createElement('div');
+            card.className = 'ballot-review-card';
+            if (hasOverride) {
+                card.classList.add('ballot-modified');
+            }
+            
+            // Header with voter name and modified indicator
+            const header = document.createElement('div');
+            header.className = 'ballot-review-header';
+            header.innerHTML = `
+                <span>Ballot from: ${escapeHtml(ballot.voter)}</span>
+                ${hasOverride ? '<span class="modified-badge">✎ Modified</span>' : ''}
+            `;
+            card.appendChild(header);
+            
+            // Body with two columns: Original | Structured
+            const body = document.createElement('div');
+            body.className = 'ballot-review-body';
+            
+            // Left column: Original ballot text
+            const originalCol = document.createElement('div');
+            originalCol.className = 'ballot-column ballot-original';
+            originalCol.innerHTML = '<div class="ballot-column-header">Original Ballot</div>';
+            
+            const originalTextDiv = document.createElement('div');
+            originalTextDiv.className = 'ballot-original-full';
+            
+            // Get original text or reconstruct from ballot data
+            const originalText = parsedData.originalBallotText.get(ballot.voter);
+            if (originalText) {
+                // Parse and syntax highlight the original text
+                const originalLines = originalText.split('\n');
+                for (let i = 0; i < originalLines.length; i++) {
+                    const line = originalLines[i];
+                    const lineDiv = document.createElement('div');
+                    
+                    if (i === 0 || /—\s*(\d{2}\/\d{2}\/\d{4}|Yesterday at|Today at)/i.test(line)) {
+                        // Voter/timestamp line
+                        lineDiv.className = 'voter-line';
+                    } else if (line.trim()) {
+                        // Ranking line
+                        lineDiv.className = 'ranking-line';
+                    }
+                    
+                    lineDiv.textContent = line || ' '; // Use space for empty lines
+                    originalTextDiv.appendChild(lineDiv);
+                }
+            } else {
+                // Fallback: show reconstructed ballot
+                const voterLine = document.createElement('div');
+                voterLine.className = 'voter-line';
+                voterLine.textContent = ballot.voter;
+                originalTextDiv.appendChild(voterLine);
+                
+                for (let ranking of ballot.rankings) {
+                    const rankingLine = document.createElement('div');
+                    rankingLine.className = 'ranking-line';
+                    rankingLine.textContent = ranking;
+                    originalTextDiv.appendChild(rankingLine);
+                }
+            }
+            
+            originalCol.appendChild(originalTextDiv);
+            
+            // Right column: Structured editable ballot
+            const structuredCol = document.createElement('div');
+            structuredCol.className = 'ballot-column ballot-structured';
+            structuredCol.innerHTML = `
+                <div class="ballot-column-header">Structured Ballot (Editable)</div>
+                <div class="structured-header">
+                    <strong>Voter:</strong> ${escapeHtml(ballot.voter)}
+                </div>
+            `;
+            
+            const rankingsDiv = document.createElement('div');
+            rankingsDiv.className = 'structured-rankings';
+            
+            const structuredBallot = getStructuredBallot(ballot.voter);
+            
+            for (let i = 0; i < structuredBallot.length; i++) {
+                const ranking = structuredBallot[i];
+                const row = document.createElement('div');
+                row.className = 'rank-row';
+                if (hasOverride) {
+                    row.classList.add('modified');
+                }
+                
+                // Rank number
+                const rankNum = document.createElement('span');
+                rankNum.className = 'rank-number';
+                rankNum.textContent = `${ranking.rank}.`;
+                
+                // Move up button
+                const moveUpBtn = document.createElement('button');
+                moveUpBtn.type = 'button';
+                moveUpBtn.className = 'rank-move-btn';
+                moveUpBtn.innerHTML = '↑';
+                moveUpBtn.title = 'Move up';
+                moveUpBtn.disabled = i === 0;
+                moveUpBtn.addEventListener('click', () => {
+                    moveRanking(ballot.voter, i, i - 1);
+                });
+                
+                // Move down button
+                const moveDownBtn = document.createElement('button');
+                moveDownBtn.type = 'button';
+                moveDownBtn.className = 'rank-move-btn';
+                moveDownBtn.innerHTML = '↓';
+                moveDownBtn.title = 'Move down';
+                moveDownBtn.disabled = i === structuredBallot.length - 1;
+                moveDownBtn.addEventListener('click', () => {
+                    moveRanking(ballot.voter, i, i + 1);
+                });
+                
+                // Candidate dropdown
+                const dropdown = document.createElement('select');
+                dropdown.className = 'rank-dropdown';
+                
+                for (let candidate of parsedData.candidates) {
+                    const option = document.createElement('option');
+                    option.value = candidate;
+                    option.textContent = candidate;
+                    if (ranking.candidate === candidate) option.selected = true;
+                    dropdown.appendChild(option);
+                }
+                
+                dropdown.addEventListener('change', () => {
+                    changeRankingCandidate(ballot.voter, i, dropdown.value);
+                });
+                
+                // Remove button
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'rank-remove';
+                removeBtn.innerHTML = '×';
+                removeBtn.title = 'Remove ranking';
+                removeBtn.addEventListener('click', () => {
+                    removeRanking(ballot.voter, i);
+                });
+                
+                row.appendChild(rankNum);
+                row.appendChild(moveUpBtn);
+                row.appendChild(moveDownBtn);
+                row.appendChild(dropdown);
+                row.appendChild(removeBtn);
+                rankingsDiv.appendChild(row);
+            }
+            
+            // Add ranking button
+            const addContainer = document.createElement('div');
+            addContainer.className = 'add-ranking-container';
+            
+            const addDropdown = document.createElement('select');
+            addDropdown.className = 'add-ranking-dropdown';
+            
+            const defaultOpt = document.createElement('option');
+            defaultOpt.value = '';
+            defaultOpt.textContent = '-- Select candidate to add --';
+            addDropdown.appendChild(defaultOpt);
+            
+            // Only show candidates not already in ballot
+            const usedCandidates = new Set(structuredBallot.map(r => r.candidate));
+            for (let candidate of parsedData.candidates) {
+                if (!usedCandidates.has(candidate)) {
+                    const option = document.createElement('option');
+                    option.value = candidate;
+                    option.textContent = candidate;
+                    addDropdown.appendChild(option);
+                }
+            }
+            
+            const addBtn = document.createElement('button');
+            addBtn.type = 'button';
+            addBtn.className = 'add-ranking';
+            addBtn.textContent = '+ Add Ranking';
+            addBtn.addEventListener('click', () => {
+                if (addDropdown.value) {
+                    addRanking(ballot.voter, addDropdown.value);
+                }
+            });
+            
+            addContainer.appendChild(addDropdown);
+            addContainer.appendChild(addBtn);
+            rankingsDiv.appendChild(addContainer);
+            
+            // Reset button (if modified)
+            if (hasOverride) {
+                const resetBtn = document.createElement('button');
+                resetBtn.type = 'button';
+                resetBtn.className = 'reset-ballot-btn';
+                resetBtn.textContent = '↻ Reset to Auto-Mapped';
+                resetBtn.addEventListener('click', () => {
+                    parsedData.ballotOverrides.delete(ballot.voter);
+                    renderBallotReview();
+                });
+                rankingsDiv.appendChild(resetBtn);
+            }
+            
+            structuredCol.appendChild(rankingsDiv);
+            
+            body.appendChild(originalCol);
+            body.appendChild(structuredCol);
+            card.appendChild(body);
+            content.appendChild(card);
+            
+            // Navigation buttons
+            const navDiv = document.createElement('div');
+            navDiv.className = 'ballot-nav-buttons icenia-button-group';
+            
+            const prevBtn = document.createElement('button');
+            prevBtn.type = 'button';
+            prevBtn.className = 'icenia-btn icenia-btn-secondary';
+            prevBtn.textContent = '← Previous Ballot';
+            prevBtn.disabled = currentBallotIndex === 0;
+            prevBtn.addEventListener('click', () => {
+                if (currentBallotIndex > 0) {
+                    currentBallotIndex--;
+                    renderBallotReview();
+                }
+            });
+            
+            const nextBtn = document.createElement('button');
+            nextBtn.type = 'button';
+            nextBtn.className = 'icenia-btn';
+            nextBtn.textContent = currentBallotIndex === totalBallots - 1 ? 'Ready to Calculate' : 'Next Ballot →';
+            nextBtn.addEventListener('click', () => {
+                if (currentBallotIndex < totalBallots - 1) {
+                    currentBallotIndex++;
+                    renderBallotReview();
+                }
+            });
+            
+            navDiv.appendChild(prevBtn);
+            navDiv.appendChild(nextBtn);
+            content.appendChild(navDiv);
+        }
+        
+        // Global keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            // Don't interfere if user is typing in dropdown or another input
+            if (e.target instanceof HTMLSelectElement || e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+                return;
+            }
+            
+            // Don't interfere if user is focused on a button (they might press Enter/Space on it)
+            if (e.target instanceof HTMLButtonElement) {
+                return;
+            }
+            
+            // Handle ballot review keyboard navigation
+            const ballotReview = document.getElementById('ballot-review');
+            if (ballotReview && ballotReview.style.display === 'block') {
+                if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    if (currentBallotIndex > 0) {
+                        currentBallotIndex--;
+                        renderBallotReview();
+                    }
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    if (currentBallotIndex < parsedData.ballots.length - 1) {
+                        currentBallotIndex++;
+                        renderBallotReview();
+                    }
+                }
+                return;
+            }
+            
+            // Handle name matching keyboard navigation
+            const nameMatching = document.getElementById('name-matching');
+            if (!nameMatching || nameMatching.style.display !== 'block') return;
+            
+            // Only navigate if we're not in the confirmation screen
+            if (parsedData.currentNameIndex >= parsedData.uniqueNames.length) return;
+            
+            // 'W' key to focus dropdown
+            if (e.key === 'w' || e.key === 'W') {
+                const currentItem = document.querySelector('.name-match-item');
+                if (currentItem) {
+                    const dropdown = (currentItem as any).__dropdown;
+                    if (dropdown) {
+                        e.preventDefault();
+                        dropdown.focus();
+                    }
+                }
+                return;
+            }
+            
+            // Arrow keys and A/D keys for navigation
+            if ((e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') && parsedData.currentNameIndex > 0) {
+                e.preventDefault();
+                parsedData.currentNameIndex--;
+                renderCurrentName();
+            } else if ((e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D' || e.key === 'Enter') && parsedData.currentNameIndex < parsedData.uniqueNames.length) {
+                e.preventDefault();
+                parsedData.currentNameIndex++;
+                renderCurrentName();
+            }
+            
+            // Number keys 1-9 to quickly select match buttons
+            const numMatch = e.key.match(/^[1-9]$/);
+            if (numMatch) {
+                const index = parseInt(e.key) - 1;
+                const matchButtons = document.querySelectorAll<HTMLButtonElement>('.match-option');
+                if (matchButtons[index] && !matchButtons[index].classList.contains('invalid')) {
+                    e.preventDefault();
+                    matchButtons[index].click();
+                }
+            }
+            
+            // 0 key for "Not a candidate" button
+            if (e.key === '0') {
+                const invalidBtn = document.querySelector<HTMLButtonElement>('button.invalid-option');
+                if (invalidBtn) {
+                    e.preventDefault();
+                    invalidBtn.click();
+                }
+            }
+        });
+        
+        // Back to discord edit
+        document.getElementById('back-to-discord')?.addEventListener('click', function() {
+            const nameMatching = document.getElementById('name-matching');
+            const discordMode = document.getElementById('discord-mode');
+            if (nameMatching) nameMatching.style.display = 'none';
+            if (discordMode) discordMode.style.display = 'block';
+        });
+        
+        // Shared function to calculate and display results
+        function calculateResults() {
+            // End session by clearing learned correlations
+            parsedData.learnedCorrelations.clear();
+            parsedData.correlationInfluences.clear();
+            updateCorrelationTable();
+            console.log('Session ended - correlations cleared');
+            
+            // Convert ballots using the name matches (or overrides if they exist)
+            const candidates = parsedData.candidates;
+            const ballots: Ballot[] = [];
+            
+            for (let rawBallot of parsedData.ballots) {
+                let rankings: string[] = [];
+                
+                // Check if there's a manual override for this ballot
+                const override = parsedData.ballotOverrides.get(rawBallot.voter);
+                
+                if (override) {
+                    // Use the manually edited ballot
+                    rankings = override
+                        .filter(r => r.candidate && r.candidate !== '__NOT_A_BALLOT__')
+                        .map(r => r.candidate);
+                } else {
+                    // Use automated mapping
+                    for (let foundName of rawBallot.rankings) {
+                        const matchedCandidate = parsedData.nameMatches.get(foundName);
+                        // Skip null (invalid candidate), __NOT_A_BALLOT__, and duplicates
+                        if (matchedCandidate && matchedCandidate !== '__NOT_A_BALLOT__' && !rankings.includes(matchedCandidate)) {
+                            rankings.push(matchedCandidate);
+                        }
+                    }
+                }
+                
+                if (rankings.length > 0) {
+                    const ballot = ballotFromNames(rawBallot.voter, rankings, candidates);
+                    if (ballot) {
+                        ballots.push(ballot);
+                    }
+                }
+            }
+            
+            if (ballots.length === 0) {
+                alert('No valid ballots after name matching');
+                return;
+            }
+            
+            // Run STV
+            let logText = '';
+            const logCallback = (text, type) => {
+                logText += text;
+                if (type === 'win') {
+                    logText = logText.replace(text, `<span class="stv-log-win">${text}</span>`);
+                } else if (type === 'elim') {
+                    logText = logText.replace(text, `<span class="stv-log-elim">${text}</span>`);
+                }
+            };
+            
+            const winners = STV(ballots, parsedData.seats, candidates, logCallback);
+            
+            // Display results
+            const logEl = document.getElementById('log');
+            const winnersEl = document.getElementById('winners');
+            const resultsEl = document.getElementById('results');
+            const nameMatchingEl = document.getElementById('name-matching');
+            const ballotReviewEl = document.getElementById('ballot-review');
+            
+            if (logEl) logEl.innerHTML = logText;
+            if (winnersEl) winnersEl.innerHTML = 
+                `<strong>The winners are:</strong> ${winners.join(', ')}`;
+            if (resultsEl) resultsEl.style.display = 'block';
+            if (nameMatchingEl) nameMatchingEl.style.display = 'none';
+            if (ballotReviewEl) ballotReviewEl.style.display = 'none';
+            const importSection = document.getElementById('import-section');
+            if (importSection) importSection.style.display = 'none';
+        }
+        
+        // Confirm matches - now proceeds to ballot review instead of calculating immediately
+        document.getElementById('confirm-matches')?.addEventListener('click', function() {
+            // Check that all names have been matched
+            const nameMatchList = document.getElementById('name-match-list');
+            if (!nameMatchList) return;
+            const items = nameMatchList.querySelectorAll('.name-match-item');
+            
+            for (let item of items) {
+                const foundNameEl = item.querySelector('.found-name');
+                if (!foundNameEl || !foundNameEl.textContent) continue;
+                const foundName = foundNameEl.textContent;
+                if (!parsedData.nameMatches.has(foundName)) {
+                    alert(`Please select a match for "${foundName}" or mark it as invalid`);
+                    return;
+                }
+            }
+            
+            // Proceed to ballot review (showConfirmation now shows ballot review)
+            showConfirmation();
+        });
+        
+        // Export results button
+        document.getElementById('export-results')?.addEventListener('click', exportElection);
+        
+        // Return to start button
+        document.getElementById('return-to-start')?.addEventListener('click', function() {
+            const resultsEl = document.getElementById('results');
+            const importSection = document.getElementById('import-section');
+            const simpleMode = document.getElementById('simple-mode');
+            const discordMode = document.getElementById('discord-mode');
+            
+            if (resultsEl) resultsEl.style.display = 'none';
+            if (importSection) importSection.style.display = 'block';
+            
+            // Show the appropriate input mode
+            if (inputMode === 'simple') {
+                if (simpleMode) simpleMode.style.display = 'block';
+                if (discordMode) discordMode.style.display = 'none';
+            } else {
+                if (simpleMode) simpleMode.style.display = 'none';
+                if (discordMode) discordMode.style.display = 'block';
+            }
+        });
+        
+        // ===== SIMPLE MODE UI LOGIC =====
+        
+        // Simple mode calculate button
+        document.getElementById('calculate')?.addEventListener('click', function() {
+            const candidatesEl = document.getElementById('candidates') as HTMLTextAreaElement;
+            const ballotsEl = document.getElementById('ballots') as HTMLTextAreaElement;
+            const seatsEl = document.getElementById('seats') as HTMLInputElement;
+            
+            if (!candidatesEl || !ballotsEl || !seatsEl) return;
+            
+            const candidatesText = candidatesEl.value;
+            const ballotsText = ballotsEl.value;
+            const seats = parseInt(seatsEl.value);
+            
+            // Parse candidates
+            const candidates = candidatesText.split('\n')
+                .map(c => c.trim())
+                .filter(c => c.length > 0);
+            
+            if (candidates.length === 0) {
+                alert('Please enter at least one candidate');
+                return;
+            }
+            
+            if (seats < 1 || seats > candidates.length) {
+                alert('Number of seats must be between 1 and the number of candidates');
+                return;
+            }
+            
+            // Parse ballots
+            const ballotLines = ballotsText.split('\n')
+                .map(l => l.trim())
+                .filter(l => l.length > 0);
+            
+            if (ballotLines.length === 0) {
+                alert('Please enter at least one ballot');
+                return;
+            }
+            
+            const ballots: Ballot[] = [];
+            for (let line of ballotLines) {
+                const colonIdx = line.indexOf(':');
+                if (colonIdx === -1) {
+                    alert(`Invalid ballot format: ${line}`);
+                    return;
+                }
+                
+                const voterName = line.substring(0, colonIdx).trim();
+                const rankings = line.substring(colonIdx + 1)
+                    .split(',')
+                    .map(c => c.trim())
+                    .filter(c => c.length > 0);
+                
+                const ballot = ballotFromNames(voterName, rankings, candidates);
+                if (ballot) {
+                    ballots.push(ballot);
+                } else {
+                    alert(`Invalid ballot for ${voterName}`);
+                    return;
+                }
+            }
+            
+            // Run STV
+            let logText = '';
+            const logCallback = (text, type) => {
+                logText += text;
+                if (type === 'win') {
+                    logText = logText.replace(text, `<span class="stv-log-win">${text}</span>`);
+                } else if (type === 'elim') {
+                    logText = logText.replace(text, `<span class="stv-log-elim">${text}</span>`);
+                }
+            };
+            
+            const winners = STV(ballots, seats, candidates, logCallback);
+            
+            // Display results
+            const logEl = document.getElementById('log');
+            const winnersEl = document.getElementById('winners');
+            const resultsEl = document.getElementById('results');
+            
+            if (logEl) logEl.innerHTML = logText;
+            if (winnersEl) winnersEl.innerHTML = 
+                `<strong>The winners are:</strong> ${winners.join(', ')}`;
+            if (resultsEl) resultsEl.style.display = 'block';
+        });
+        
+        // Load example data button
+        document.getElementById('loadExample')?.addEventListener('click', function() {
+            const exampleCandidates = `DinoComparator
+Markstefr
+CreepilyCreep
+Dr_Bacon_hair
+Ratat0ing
+Complexii
+Zolo
+pemcgee
+minemaster
+hsmnewfriend
+JoshHillman`;
+            
+            const exampleBallots = `recycler: Ratat0ing, Dr_Bacon_hair, hsmnewfriend, JoshHillman, minemaster, DinoComparator, Zolo
+alzubloxxer11: Dr_Bacon_hair, hsmnewfriend, Ratat0ing, CreepilyCreep, Complexii, JoshHillman, minemaster
+stefanmakker: hsmnewfriend, Ratat0ing, Dr_Bacon_hair, pemcgee, Complexii, minemaster, JoshHillman
+lopsterbisque: Ratat0ing, CreepilyCreep, Complexii, Zolo, Markstefr, pemcgee, Dr_Bacon_hair, hsmnewfriend
+binchymonkey: Markstefr, Ratat0ing, JoshHillman
+dr_bacon_hair: minemaster, hsmnewfriend, Dr_Bacon_hair, Zolo, JoshHillman, Ratat0ing, CreepilyCreep, Markstefr, pemcgee, Complexii
+lucinnefo: JoshHillman, Dr_Bacon_hair, CreepilyCreep, DinoComparator, pemcgee, Complexii, hsmnewfriend, Markstefr
+ratat0ing: Ratat0ing, CreepilyCreep, hsmnewfriend, Zolo, Complexii, Dr_Bacon_hair, minemaster
+darkhelmet: Dr_Bacon_hair, Zolo, hsmnewfriend
+zolo: Zolo, Dr_Bacon_hair, hsmnewfriend, Complexii, CreepilyCreep, Ratat0ing, minemaster, Markstefr
+cubine: Dr_Bacon_hair, CreepilyCreep
+lena: Dr_Bacon_hair, Ratat0ing, minemaster
+markstfr: Markstefr, minemaster, Dr_Bacon_hair, Ratat0ing, CreepilyCreep, hsmnewfriend, JoshHillman, Zolo, pemcgee, Complexii
+yodabird: Complexii, CreepilyCreep, Ratat0ing, Zolo, hsmnewfriend, JoshHillman, DinoComparator, Dr_Bacon_hair, pemcgee, Markstefr, minemaster
+joshhillman: JoshHillman, Dr_Bacon_hair, CreepilyCreep, Ratat0ing, Complexii, minemaster, pemcgee, DinoComparator, hsmnewfriend, Markstefr, Zolo
+peemcgee: pemcgee, Ratat0ing, JoshHillman, CreepilyCreep, Dr_Bacon_hair
+jaimie: Dr_Bacon_hair, CreepilyCreep, hsmnewfriend, Zolo, minemaster
+sdorr: minemaster, hsmnewfriend, Dr_Bacon_hair, Zolo
+mushroomcultist: minemaster, hsmnewfriend, Dr_Bacon_hair, Zolo
+dinocomparator: DinoComparator, Ratat0ing, CreepilyCreep, minemaster, JoshHillman, hsmnewfriend, Complexii, Zolo, Dr_Bacon_hair, Markstefr
+gold: Complexii, CreepilyCreep, Ratat0ing, Zolo, hsmnewfriend, JoshHillman, DinoComparator, Dr_Bacon_hair, pemcgee, Markstefr, minemaster
+mushroomstew: Complexii, Zolo, JoshHillman, hsmnewfriend, Dr_Bacon_hair, minemaster, CreepilyCreep, Ratat0ing
+minemaster: minemaster, hsmnewfriend, Dr_Bacon_hair, Zolo, CreepilyCreep, Ratat0ing, Markstefr
+gjum: CreepilyCreep, Ratat0ing, Complexii, hsmnewfriend, Zolo, Dr_Bacon_hair, minemaster, pemcgee
+creepilycreep: CreepilyCreep, Ratat0ing, Complexii, Dr_Bacon_hair, Zolo, minemaster, pemcgee, JoshHillman
+complexii: Complexii, Ratat0ing, CreepilyCreep, Zolo, pemcgee, hsmnewfriend, Dr_Bacon_hair
+juniortide: Dr_Bacon_hair, Zolo, CreepilyCreep, Complexii, JoshHillman, Ratat0ing, pemcgee, minemaster, hsmnewfriend, DinoComparator, Markstefr
+lordchieftan: Ratat0ing, CreepilyCreep, Complexii, hsmnewfriend, Zolo, pemcgee, Dr_Bacon_hair, JoshHillman, minemaster, DinoComparator, Markstefr
+raeders: Dr_Bacon_hair, minemaster, Ratat0ing, Zolo, JoshHillman, hsmnewfriend
+speedyjustice: minemaster, hsmnewfriend, Dr_Bacon_hair, Markstefr, CreepilyCreep
+kiwi: minemaster, hsmnewfriend, Dr_Bacon_hair, Markstefr
+hsmnewfriend: minemaster, hsmnewfriend, Dr_Bacon_hair, Markstefr, Zolo, pemcgee, JoshHillman, Complexii, CreepilyCreep, DinoComparator
+chrischrispie: Complexii, CreepilyCreep, Ratat0ing, Zolo, hsmnewfriend, JoshHillman, DinoComparator, Dr_Bacon_hair, pemcgee, Markstefr, minemaster
+Entrie: minemaster, hsmnewfriend, Dr_Bacon_hair, Markstefr, CreepilyCreep, Ratat0ing
+Kronprinzkaiser: minemaster, hsmnewfriend, Dr_Bacon_hair, Markstefr, CreepilyCreep, Ratat0ing
+okiinawa: minemaster, hsmnewfriend, Dr_Bacon_hair, Markstefr, CreepilyCreep, Ratat0ing
+vilyanz: minemaster, Dr_Bacon_hair, Complexii, hsmnewfriend, Zolo, Markstefr
+escarchaking333: Ratat0ing, CreepilyCreep, Dr_Bacon_hair, Zolo, minemaster, pemcgee, JoshHillman
+sage: CreepilyCreep, hsmnewfriend, pemcgee, Dr_Bacon_hair, JoshHillman, minemaster
+xcios: Ratat0ing, CreepilyCreep, Complexii, Dr_Bacon_hair, hsmnewfriend, Markstefr, DinoComparator, Zolo, minemaster
+shadysauce: minemaster, Dr_Bacon_hair, hsmnewfriend, Zolo, Complexii
+august: minemaster, Ratat0ing, Complexii, Zolo, pemcgee, CreepilyCreep, hsmnewfriend, Markstefr, Dr_Bacon_hair, JoshHillman, DinoComparator
+silenthunterx: Dr_Bacon_hair, hsmnewfriend, Markstefr, Ratat0ing, pemcgee, Zolo, DinoComparator
+vedel: minemaster, hsmnewfriend, Dr_Bacon_hair, Markstefr, CreepilyCreep, Ratat0ing`;
+            
+            const candidatesEl = document.getElementById('candidates') as HTMLTextAreaElement;
+            const ballotsEl = document.getElementById('ballots') as HTMLTextAreaElement;
+            const seatsEl = document.getElementById('seats') as HTMLInputElement;
+            
+            if (candidatesEl) candidatesEl.value = exampleCandidates;
+            if (ballotsEl) ballotsEl.value = exampleBallots;
+            if (seatsEl) seatsEl.value = '5';
+        });
+    </script>
+</PageLayout>

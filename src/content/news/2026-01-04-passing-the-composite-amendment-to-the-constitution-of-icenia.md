@@ -10,7 +10,7 @@ document:
   value: /archive/constitution-composite-amendment.pdf
 changes:
   - target: third-constitution
-    kind: passage
+    kind: amendment
 icon: /assets/images/law_stock.jpeg
 ---
 [Passed by the October 2025 Senate](https://discord.com/channels/558071874161082368/1433969398942793790)

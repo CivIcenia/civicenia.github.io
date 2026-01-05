@@ -18,3 +18,79 @@ incorporations:
     law_slug: hansard-act
     incorporated_at: 2026-01-05 01:05:00 +08:00
     incorporated_by: CreepilyCreep
+  - change_slugs:
+      - 2026-01-04-passing-the-gravel-rats-act
+      - 2024-07-16-crimes-and-punishments-bill
+      - 2024-02-13-articles-of-war-elevation
+      - 2024-01-27-omnibus-bill
+      - 2023-12-11-state-of-war-bill
+    law_slug: articles-of-war
+    incorporated_at: 2026-01-05 22:10:00 +08:00
+    incorporated_by: CreepilyCreep
+  - change_slugs:
+      - 2026-01-04-passing-the-federal-executive-consolidation-act
+      - 2026-01-04-passing-the-icenia-capital-territory-establishment-legislative-package
+      - 2026-01-04-passing-the-ministry-of-defense-rework-bill
+      - 2026-01-04-passing-the-composite-amendment-to-the-constitution-of-icenia
+      - 2026-01-04-passing-the-citizens-bill-of-2025
+      - 2026-01-04-passing-the-amendment-to-article-viii-sec-a-b-of-the-constitution
+      - 2026-01-04-passing-the-executive-responsibilities-act
+      - 2025-12-27-passing-the-poll-tax-amendment-of-september-2025
+      - 2025-12-27-passing-the-state-representative-residency-application-approval
+      - 2025-12-27-passing-the-le-heckin-voter-tax-amendment
+      - 2025-12-27-passing-the-poll-tax-census-amendment-of-april-2025
+      - 2025-12-27-voter-registration-tax-reduction
+      - 2025-09-13-passing-the-patriotic-voters-amendment
+      - 2025-09-13-passing-the-secure-senate-act
+      - 2025-01-24-write-in-candidate-approval-amendment
+      - 2025-01-24-passing-the-poll-accessibility-amendment
+      - 2025-01-02-amendment-to-the-power-of-the-veto
+      - 2025-01-02-amendment-to-senatorial-elections
+      - 2025-01-02-amendment-to-section-2-c-of-the-constitution
+      - 2024-12-08-privy-council-amendment
+    law_slug: third-constitution
+    incorporated_at: 2026-01-05 23:14:00 +08:00
+    incorporated_by: CreepilyCreep
+  - change_slugs:
+      - 2024-12-05-voter-registration-amendment
+      - 2024-10-09-department-of-the-interior-act
+      - 2024-07-20-passing-senate-vote-counting-amendment
+      - 2024-07-18-passing-judiciary-reform-amendment
+      - 2024-07-16-passing-the-dereliction-2-amendment
+      - 2024-07-16-crimes-and-punishments-bill
+      - 2025-09-13-passing-the-secure-elections-act-sea
+      - 2024-07-16-bill-of-rights-amendment
+      - 2024-07-09-passing-the-dereliction-amendment
+      - 2024-07-09-passing-the-elections-amendment
+      - 2024-04-11-passing-the-prosecutions-amendment
+      - 2024-03-17-passing-the-tribune-amendment
+      - 2024-02-04-trial-reform-amendment
+      - 2024-01-27-omnibus-bill
+      - 2024-01-27-dereliction-amendment
+      - 2024-01-24-disqualification-of-candidates
+      - 2023-11-07-property-amendment
+      - 2023-10-25-magistrate-amendment
+      - 2023-09-14-roles-granting-amendment
+      - 2023-09-12-dereliction-amendment
+    law_slug: third-constitution
+    incorporated_at: 2026-01-05 23:20:00 +08:00
+    incorporated_by: CreepilyCreep
+  - change_slugs:
+      - 2023-09-04-treasury-amendment
+      - 2023-04-14-passing-the-legislative-slimming-bill
+      - 2023-04-09-passing-the-ninth-amendment-to-the-constitution
+      - 2023-03-10-passing-the-eighth-amendment-to-the-constitution
+      - 2022-10-30-passing-the-seventh-amendment-to-the-constitution
+      - 2022-10-26-passing-the-sixth-amendment-to-the-constitution
+      - 2022-10-11-passing-the-fifth-amendment-to-the-constitution
+      - 2022-08-19-passing-the-icenian-identity-and-security-amendment
+      - 2022-08-13-passing-the-judicial-systems-reformation-amendment
+      - 2022-07-02-passing-the-judicial-reform-amendment-of-july-2022
+    law_slug: third-constitution
+    incorporated_by: CreepilyCreep
+    incorporated_at: 2026-01-05 23:21:00 +08:00
+  - change_slugs:
+      - 2022-07-24-passing-the-states-judicial-discretion-amendment-of-july-2022
+    law_slug: third-constitution
+    incorporated_at: 2026-01-05 23:28:00 +08:00
+    incorporated_by: CreepilyCreep
