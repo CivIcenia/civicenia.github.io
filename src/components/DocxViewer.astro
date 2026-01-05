@@ -35,7 +35,11 @@ if (viewer === 'google') {
 }
 ---
 
-<div class="docx-viewer-container">
+<div class="docx-viewer-container" data-full-url={fullUrl}>
+  <div class="viewer-controls">
+    <button class="viewer-toggle active" data-viewer="google">Google Viewer</button>
+    <button class="viewer-toggle" data-viewer="office">Office Viewer</button>
+  </div>
   <iframe
     src={viewerUrl}
     width={width}
@@ -43,6 +47,7 @@ if (viewer === 'google') {
     frameborder="0"
     title={title}
     allowfullscreen
+    data-current-viewer={viewer}
   >
     <p>Your browser does not support iframes.</p>
   </iframe>
@@ -53,12 +58,91 @@ if (viewer === 'google') {
   </div>
 </div>
 
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const containers = document.querySelectorAll('.docx-viewer-container');
+    
+    containers.forEach(container => {
+      const iframe = container.querySelector('iframe') as HTMLIFrameElement;
+      const toggleButtons = container.querySelectorAll('.viewer-toggle');
+      const fullUrl = container.getAttribute('data-full-url') || '';
+      const encodedUrl = encodeURIComponent(fullUrl);
+      
+      toggleButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const viewer = button.getAttribute('data-viewer');
+          
+          // Update active state
+          toggleButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          
+          // Update iframe src
+          let newViewerUrl = '';
+          if (viewer === 'google') {
+            newViewerUrl = `https://docs.google.com/gview?url=${encodedUrl}&embedded=true`;
+          } else if (viewer === 'office') {
+            newViewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodedUrl}`;
+          }
+          
+          iframe.src = newViewerUrl;
+          iframe.setAttribute('data-current-viewer', viewer || '');
+        });
+      });
+      
+      // Set initial active state based on current viewer
+      const currentViewer = iframe.getAttribute('data-current-viewer');
+      if (currentViewer) {
+        toggleButtons.forEach(btn => {
+          if (btn.getAttribute('data-viewer') === currentViewer) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+      }
+    });
+  });
+</script>
+
 <style>
   .docx-viewer-container {
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 10px;
+  }
+  
+  .viewer-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .viewer-toggle {
+    padding: 8px 16px;
+    background-color: #f6f8fa;
+    color: #24292e;
+    border: 1px solid #d1d5da;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .viewer-toggle:hover {
+    background-color: #e1e4e8;
+    border-color: #959da5;
+  }
+  
+  .viewer-toggle.active {
+    background-color: #0366d6;
+    color: white;
+    border-color: #0366d6;
+  }
+  
+  .viewer-toggle.active:hover {
+    background-color: #0255b3;
+    border-color: #0255b3;
   }
   
   iframe {

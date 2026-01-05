@@ -17,6 +17,6 @@ changes:
     kind: repeal
 icon: /assets/images/law_stock.jpeg
 ---
-[Passed by the November 2025 Senate](https://discord.com/channels/link-to-senate-logs)[](https://discord.com/channels/link-to-senate-logs)
+[Passed by the November 2025 Senate](https://discord.com/channels/558071874161082368/1443165387201052682)
 
 > @Senator some cleanup

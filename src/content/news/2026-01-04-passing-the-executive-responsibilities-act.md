@@ -32,7 +32,7 @@ changes:
     kind: amendment
 icon: /assets/images/law_stock.jpeg
 ---
-[Passed by the MONTH YEAR Senate](https://discord.com/channels/link-to-senate-logs)
+[Passed by the MONTH YEAR Senate](https://discord.com/channels/558071874161082368/1422134356948029502)
 
 Append **IV. Government** with the following Section
 

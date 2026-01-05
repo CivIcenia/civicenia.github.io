@@ -82,6 +82,7 @@ collections:
             name: "incorporations"
             widget: "list"
             default: []
+            add_to_top: true
             summary: "{{law_slug}} ← {{change_slugs}} (by {{incorporated_by}})"
             fields:
               # Change Slugs - now supports multiple
@@ -95,41 +96,17 @@ collections:
                 multiple: true
                 required: true
                 hint: "Select one or more news articles/acts that were incorporated. Search by title."
-              # Law Slug - using select widget with explicit options for reliability
+              # Law Slug - dynamically loaded from laws data file
               - label: "Law Identifier"
                 name: "law_slug"
-                widget: "select"
+                widget: "relation"
+                collection: "data"
+                file: "laws"
+                search_fields: ["entries.*.name", "entries.*.fullname", "entries.*.slug"]
+                display_fields: ["entries.*.name"]
+                value_field: "entries.*.slug"
                 required: true
-                hint: "Which law's master document was updated?"
-                options:
-                  # Constitutional
-                  - { label: "Constitution of Icenia", value: "third-constitution" }
-                  - { label: "Articles of War", value: "articles-of-war" }
-                  # Statutes
-                  - { label: "Statute of Territory", value: "statute-of-territory" }
-                  - { label: "Safe Icenia Act", value: "safe-icenia-act" }
-                  - { label: "Hansard Act", value: "hansard-act" }
-                  - { label: "NameLayer Act", value: "namelayer-act" }
-                  - { label: "Political Parties Act", value: "political-parties-act" }
-                  - { label: "Contract Law Act", value: "contracts-act" }
-                  - { label: "Medal and Award Act", value: "medal-awards-act" }
-                  - { label: "Building Standards and Processes Act", value: "building-regulations-act" }
-                  - { label: "Dbugingrad Act", value: "dbugingrad-act" }
-                  - { label: "Icenian Flag Act", value: "icenian-flag-act" }
-                  # Statehood
-                  - { label: "State of Bloom", value: "statehood-for-bloom" }
-                  - { label: "State of Southshire", value: "statehood-for-southshire" }
-                  - { label: "State of Icarus", value: "statehood-for-icarus" }
-                  - { label: "State of Selsey", value: "statehood-of-selsey" }
-                  - { label: "State of Alenarith", value: "state-of-alenarith" }
-                  # Treaties
-                  - { label: "MDSC Treaty", value: "mdsc-treaty" }
-                  - { label: "Dawn Guard Pact", value: "dawn-guard-pact" }
-                  - { label: "Red Rocks Pact", value: "red-rocks-pact" }
-                  - { label: "Pavia CUB Treaty", value: "pavia-cub-treaty" }
-                  - { label: "Pavia NAP", value: "pavia-nap" }
-                  - { label: "Rivia Friendship Treaty", value: "rivia-treaty" }
-                  - { label: "The Ascendancy", value: "ascendancy-charter" }
+                hint: "Which law's master document was updated? Search by name."
               # Incorporated At
               - label: "Date Incorporated"
                 name: "incorporated_at"
@@ -210,6 +187,7 @@ collections:
             name: "incorporations"
             widget: "list"
             default: []
+            add_to_top: true
             summary: "{{law_slug}} ← {{change_slugs}} (by {{incorporated_by}})"
             fields:
               # Change Slugs - now supports multiple
@@ -628,7 +606,7 @@ collections:
         name: "body"
         widget: "markdown"
         required: false
-        default: "[Passed by the MONTH YEAR Senate](discord.com/link-to-senate-logs)"
+        default: "[Passed by the MONTH YEAR Senate](discord_com_link_to_senate_logs)"
         hint: "The Bill proposal message and further details about the passing of legislation can be appended here, don't add the title, nor the contents of the bill."
       # Icon
       - label: "Icon"

@@ -16,7 +16,7 @@ document:
 changes: []
 icon: /assets/images/law_stock.jpeg
 ---
-[Passed by the October 2025 Senate](https://discord.com/channels/link-to-senate-logs)
+[Passed by the October 2025 Senate](https://discord.com/channels/558071874161082368/1433919961033736242)
 
 Purpose: Allow citizens of Icenia to register to vote for the November elections without going to a voter registration booth.
 

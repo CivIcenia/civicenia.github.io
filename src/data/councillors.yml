@@ -2,26 +2,25 @@
 # This file is managed through Decap CMS and synced from City Official Change posts
 # Use https://toolscord.com/ to get Discord profile pictures
 
-# Council term label (e.g., "September 2025")
 council_term: "December 2025"
 
 # Mayor
 mayor:
   name: "Ratat0ing"
-  icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=256"
+  icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=2048"
   discord_id: "477240196564385823"
 
-# Cta Commissioner
+# CTA Commissioner
 cta_commissioner:
   name: "Ratatoing"
-  icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=256"
+  icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=2048"
   discord_id: "477240196564385823"
 
 # Councillor Seats - 5 seats
 councillors:
   - seat: 1
     name: "Ratat0ing"
-    icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=256"
+    icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=2048"
     discord_id: "477240196564385823"
   - seat: 2
     name: "Jaimiemie"
@@ -29,13 +28,13 @@ councillors:
     discord_id: "206334799160279041"
   - seat: 3
     name: "CreepilyCreep"
-    icon: "https://cdn.discordapp.com/avatars/452620205064060939/4f6c907988fabe211c61d04cbadb5eb2.webp?size=256"
+    icon: "https://cdn.discordapp.com/avatars/452620205064060939/4f6c907988fabe211c61d04cbadb5eb2.webp?size=240"
     discord_id: "452620205064060939"
   - seat: 4
     name: "Lordchieftain"
-    icon: "https://cdn.discordapp.com/avatars/493690358480502787/dcb877f0bf58802d282874232ae138cf.webp?size=256"
+    icon: "https://cdn.discordapp.com/avatars/493690358480502787/06c714843fcb6b30b5b1346fcb3c334a.webp?size=256"
     discord_id: "493690358480502787"
   - seat: 5
     name: "_peemcgee"
-    icon: "https://cdn.discordapp.com/avatars/1075170822353858620/55da0fabca6649584f28e6f22e877d6d.webp?size=256"
+    icon: "https://cdn.discordapp.com/avatars/1075170822353858620/3cce050f4abfd7f1501d0f578db481c8.webp?size=256"
     discord_id: "1075170822353858620"

@@ -31,8 +31,8 @@ entries:
   - hidden: false
     slug: namelayer-act
     name: NameLayer Act
-    fullname: The Icenian Namelayer Bill
-    masterdoc: https://docs.google.com/document/d/1tURp8O9vyJ6gTGuAm7-_539R6dEFsB39/preview
+    fullname: The Icenian Namelayer Act
+    masterdoc: /documents/Namelayer-Act.docx
     kind: statute
   - hidden: true
     slug: statehood-for-temporal-isles
@@ -83,7 +83,7 @@ entries:
   - hidden: false
     slug: statute-of-territory
     name: Statute of Territory
-    masterdoc: https://docs.google.com/document/d/1ZG6vSs7dAGa187zR1iddk6z5qbMPV9S1ZXH06I3CcwU/preview
+    masterdoc: /documents/Statute-of-Territory.docx
     kind: statute
   - hidden: false
     slug: hansard-act
@@ -110,7 +110,7 @@ entries:
     fullname: Pact of Friendship and Mutual Defense Against Raiders for Icenia and Icarus
     slug: icarus-defence-pact
   - hidden: false
-    masterdoc: https://docs.google.com/document/d/1ptmSrZMonR8dT9nP3106fZnqbhG9p12OR9MCDynZ2Nk/preview
+    masterdoc: /documents/Building-Standards-and-Processes-Act.docx
     kind: statute
     name: Building Standards and Processes Act
     slug: building-regulations-act
@@ -127,13 +127,13 @@ entries:
   - hidden: false
     slug: statehood-for-southshire
     name: State of Southshire
-    fullname: Statehood for Southshire
+    fullname: ""
     kind: statehood
-    masterdoc: https://docs.google.com/document/d/158caW83XlQYPJPfcRFHveG_TrohAb5roDbr5-8Q1Ib4/preview
+    masterdoc: /documents/State-of-Southshire.docx
   - hidden: true
     slug: statehood-for-tortugan
     name: State of Tortugán
-    fullname: Statehood for Tortugán
+    fullname: ""
     kind: statehood
     masterdoc: https://docs.google.com/document/d/18HVQFlxzW5mofHhOzfc2oJoD0ddMivhcdGTMKAyoeac/preview
   - hidden: false
@@ -145,7 +145,7 @@ entries:
     slug: statehood-for-icarus
     name: State of Icarus
     kind: statehood
-    masterdoc: https://docs.google.com/document/d/1W9U9AUlmIs6gup6C2B6LzThSaGKRAXKdq5bH402kb_I/preview
+    masterdoc: /documents/State-of-Icarus.docx
   - hidden: true
     slug: build-back-better-act
     name: Build Back Better Act
@@ -244,7 +244,7 @@ entries:
     slug: statehood-of-selsey
     name: State of Riemark
     kind: statehood
-    masterdoc: https://docs.google.com/document/d/1WZM5dHksOxdSy06YF0YRezuRJcA8r83fpRqp4-myke0/preview
+    masterdoc: /documents/State-of-Riemark.docx
   - hidden: false
     slug: icenian-flag-act
     name: Icenian Flag Act
@@ -264,13 +264,13 @@ entries:
     slug: alenarith-protectorate
     name: State of Cortesia Del Mar
     kind: statehood
-    masterdoc: https://docs.google.com/document/d/1RcEzXm2tuQ0jly7TXjtsflrCS_mZyZp4p8mnqBg1LH0/preview
+    masterdoc: /documents/State-of-Cortesia-Del-Mar.docx
   - hidden: false
     slug: privy-council-powers
     name: Privy Council Powers
     fullname: Powers of the Privy Council
     kind: constitution
-    masterdoc: https://docs.google.com/document/d/1zuuiIpFHRCVCy1w77eHqm-9B3-l7fBUVdNwujnnJfHU/preview
+    masterdoc: /documents/Privy-Council-Powers.docx
   - hidden: false
     slug: benefits-awareness-act
     name: Benefits Awareness Act
@@ -329,7 +329,7 @@ entries:
     slug: coat-of-arms
     name: Coat of Arms
     fullname: The Icenia Coat of Arms Act
-    kind: constitution
+    kind: statute
     masterdoc: /documents/Coat-of-Arms.docx
   - hidden: false
     slug: warda
