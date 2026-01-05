@@ -117,7 +117,7 @@ entries:
   - hidden: false
     slug: safe-icenia-act
     name: Safe Icenia Act
-    masterdoc: https://docs.google.com/document/d/1yUISKn-CSgHlP_ztZU5jCgojseiK3cJOErcy7rYy0vo/preview
+    masterdoc: /documents/Safe-Icenia-Act.docx
     kind: statute
   - hidden: true
     slug: icenia-snitches-act
@@ -163,7 +163,7 @@ entries:
     name: Contract Law Act
     fullname: Icenian Contract Law Act
     kind: statute
-    masterdoc: https://docs.google.com/document/d/1LO7YYgDw-5XrmzMsD0wM-WP0ZwDhroin3V1YDt_bRSg/preview
+    masterdoc: /documents/Contract-Law-Act.docx
   - hidden: false
     slug: articles-of-war
     name: Articles of War
@@ -195,7 +195,7 @@ entries:
     name: Red Rocks Pact
     kind: treaty
     masterdoc: https://docs.google.com/document/d/1lzNK1u1ThN8B4T3okVUX_Pjx9YkUGZQK13IGhv2YUkQ/preview
-  - hidden: false
+  - hidden: true
     slug: dbugingrad-act
     name: Dbugingrad Act
     kind: statute

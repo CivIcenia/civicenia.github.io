@@ -547,9 +547,16 @@ import PageLayout from "@layouts/page.astro";
             letter-spacing: 0.5px;
         }
 
+        .ballot-column {
+            display: flex;
+            flex-direction: column;
+        }
+
         .ballot-original {
             background: #f8f8f8;
-            border-right: 1px solid #ddd;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
         }
 
         .ballot-mapping {
@@ -717,6 +724,7 @@ import PageLayout from "@layouts/page.astro";
             grid-template-columns: 1fr 1fr;
             gap: 20px;
             min-height: 150px;
+            align-items: start;
         }
 
         .ballot-original-full {
@@ -728,7 +736,7 @@ import PageLayout from "@layouts/page.astro";
             font-size: 0.9em;
             white-space: pre-wrap;
             line-height: 1.6;
-            max-height: 400px;
+            max-height: 500px;
             overflow-y: auto;
         }
 
@@ -744,7 +752,7 @@ import PageLayout from "@layouts/page.astro";
         }
 
         .ballot-structured {
-            background: #f8f8f8;
+            background: #ffffff;
             padding: 15px;
             border-radius: 6px;
             border: 2px solid #1d70b8;
@@ -757,7 +765,7 @@ import PageLayout from "@layouts/page.astro";
         }
 
         .structured-rankings {
-            max-height: 350px;
+            max-height: 450px;
             overflow-y: auto;
         }
 
@@ -1128,8 +1136,18 @@ import PageLayout from "@layouts/page.astro";
         
         // Export entire election state to JSON file
         function exportElection() {
+            // Determine current section
+            let currentSection = 'import';
+            if (document.getElementById('name-matching')?.style.display !== 'none') {
+                currentSection = 'name-matching';
+            } else if (document.getElementById('ballot-review')?.style.display !== 'none') {
+                currentSection = 'ballot-review';
+            } else if (document.getElementById('results')?.style.display !== 'none') {
+                currentSection = 'results';
+            }
+            
             const exportData = {
-                version: '2.0',
+                version: '2.1',
                 timestamp: new Date().toISOString(),
                 inputMode: inputMode,
                 candidates: parsedData.candidates,
@@ -1146,7 +1164,13 @@ import PageLayout from "@layouts/page.astro";
                 nameMatches: Object.fromEntries(parsedData.nameMatches),
                 learnedCorrelations: Object.fromEntries(parsedData.learnedCorrelations),
                 ballotOverrides: Object.fromEntries(parsedData.ballotOverrides),
-                originalBallotText: Object.fromEntries(parsedData.originalBallotText)
+                originalBallotText: Object.fromEntries(parsedData.originalBallotText),
+                // Save current position
+                currentState: {
+                    section: currentSection,
+                    currentNameIndex: parsedData.currentNameIndex,
+                    currentBallotIndex: currentBallotIndex
+                }
             };
             
             const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
@@ -1241,6 +1265,42 @@ import PageLayout from "@layouts/page.astro";
                         parsedData.originalBallotText = new Map(
                             Object.entries(importData.originalBallotText).map(([k, v]) => [k, v as string])
                         );
+                    }
+                    
+                    // Restore current state and navigate to appropriate section
+                    if (importData.currentState) {
+                        // Restore indices
+                        if (typeof importData.currentState.currentNameIndex === 'number') {
+                            parsedData.currentNameIndex = importData.currentState.currentNameIndex;
+                        }
+                        if (typeof importData.currentState.currentBallotIndex === 'number') {
+                            currentBallotIndex = importData.currentState.currentBallotIndex;
+                        }
+                        
+                        // Navigate to the appropriate section
+                        const section = importData.currentState.section;
+                        if (section === 'name-matching' && parsedData.uniqueNames.length > 0) {
+                            // Go to name matching and render
+                            document.getElementById('import-section')!.style.display = 'none';
+                            document.getElementById('name-matching')!.style.display = 'block';
+                            document.getElementById('ballot-review')!.style.display = 'none';
+                            document.getElementById('results')!.style.display = 'none';
+                            renderCurrentName();
+                        } else if (section === 'ballot-review' && parsedData.ballots.length > 0) {
+                            // Go to ballot review and render
+                            document.getElementById('import-section')!.style.display = 'none';
+                            document.getElementById('name-matching')!.style.display = 'none';
+                            document.getElementById('ballot-review')!.style.display = 'block';
+                            document.getElementById('results')!.style.display = 'none';
+                            renderBallotReview();
+                        } else if (section === 'results') {
+                            // Go to results and calculate
+                            document.getElementById('import-section')!.style.display = 'none';
+                            document.getElementById('name-matching')!.style.display = 'none';
+                            document.getElementById('ballot-review')!.style.display = 'none';
+                            document.getElementById('results')!.style.display = 'block';
+                            calculateResults();
+                        }
                     }
                     
                     alert('Election imported successfully!');

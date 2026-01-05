@@ -178,3 +178,18 @@ incorporations:
       - 2026-01-05-passing-the-second-treaty-of-santiago
     incorporated_at: 2026-01-06 01:55:00 +08:00
     incorporated_by: CreepilyCreep
+  - change_slugs:
+      - 2025-12-27-passing-the-omnibus-of-september-2025
+      - 2024-07-16-crimes-and-punishments-bill
+      - 2024-06-25-amending-the-safe-icenia-act
+      - 2024-01-27-omnibus-bill
+      - 2023-03-10-passing-the-protection-of-life-bill
+    law_slug: safe-icenia-act
+    incorporated_at: 2026-01-06 02:10:00 +08:00
+    incorporated_by: CreepilyCreep
+  - change_slugs:
+      - 2024-01-31-revised-contract-law
+      - 2024-01-26-revised-contract-law
+    law_slug: contracts-act
+    incorporated_at: 2026-01-06 02:13:00 +08:00
+    incorporated_by: CreepilyCreep
