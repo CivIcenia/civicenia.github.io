@@ -23,6 +23,20 @@ const news = page.data;
 // appearing in the built HTML for project sites.
 const BASE = (import.meta.env.BASE_URL ?? "/");
 
+function getChangeDetails(entry: CollectionEntry<"news">) {
+    // Check if this is an act with changes
+    const isAct = Acts.isAct(entry.data);
+    const changes = isAct ? (entry.data as Acts.Act).changes : [];
+    
+    // Count changes by type for compact display
+    const changeCounts = changes.reduce((acc, change) => {
+        acc[change.kind] = (acc[change.kind] || 0) + 1;
+        return acc;
+    }, {} as Record<string, number>);
+
+    return { changes, changeCounts };
+}
+
 ---
 <style>
     a.news-item-wrapper {
@@ -119,15 +133,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     </div>
 
     {news.map((entry) => {
-        // Check if this is an act with changes
-        const isAct = Acts.isAct(entry.data);
-        const changes = isAct ? (entry.data as Acts.Act).changes : [];
-        
-        // Count changes by type for compact display
-        const changeCounts = changes.reduce((acc, change) => {
-            acc[change.kind] = (acc[change.kind] || 0) + 1;
-            return acc;
-        }, {});
+        const { changes, changeCounts } = getChangeDetails(entry);
         
         return (
             <a class="news-item-wrapper" href={PERMALINK_ROOTS.news + entry.slug}>
@@ -153,7 +159,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                                                    kind === "repeal" ? "Repealed" : "Changed";
                                 
                                 return (
-                                    <strong class="govuk-tag govuk-tag--small" style={`background-color: #${colours.background}; color: #${colours.text};`}>
+                                    <strong class="govuk-tag govuk-tag--small" style={{ backgroundColor: `#${colours.background}`, color: `#${colours.text}` }}>
                                         {changeLabel}{count > 1 ? ` (${count})` : ''}
                                     </strong>
                                 );

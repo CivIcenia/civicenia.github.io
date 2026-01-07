@@ -318,7 +318,7 @@ entries:
     name: D.E.A.R. Program
     fullname: Drop Everything & Read Program
     kind: statute
-    masterdoc: https://docs.google.com/document/d/e/2PACX-1vSZdAAItYeNDrCOe4Mx7_4JxWnQLFGYT8Itj6_CrsrmIfjaWMuyCzmlfYEG-4SyqXbsBxIPBzgcX-wx/pub
+    masterdoc: /documents/D.E.A.R.-Program.docx
   - hidden: false
     slug: icenia-te-nap
     name: Temporal Empire NAP
