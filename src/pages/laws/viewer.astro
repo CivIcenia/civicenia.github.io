@@ -13,6 +13,12 @@ const title = "Document Viewer";
         <div id="loading-message" class="govuk-body">Loading document...</div>
         <div id="error-message" class="govuk-error-message" style="display: none;"></div>
         
+        <!-- Viewer toggle controls -->
+        <div id="viewer-controls" class="viewer-controls" style="display: none;">
+          <button class="viewer-toggle active" data-viewer="google" type="button">Google Viewer</button>
+          <button class="viewer-toggle" data-viewer="office" type="button">Office Viewer</button>
+        </div>
+        
         <!-- Client-side renderer container (used locally) -->
         <div id="docx-container" style="display: none;"></div>
         
@@ -40,7 +46,7 @@ const title = "Document Viewer";
   async function initViewer() {
     const params = new URLSearchParams(window.location.search);
     const file = params.get('file');
-    const viewer = params.get('viewer') || 'office'; // 'office' or 'google'
+    let currentViewer = params.get('viewer') || 'google'; // 'google' or 'office' - default to google
     
     const iframe = document.getElementById('doc-iframe') as HTMLIFrameElement;
     const docxContainer = document.getElementById('docx-container') as HTMLDivElement;
@@ -48,6 +54,8 @@ const title = "Document Viewer";
     const errorMsg = document.getElementById('error-message');
     const actions = document.getElementById('actions');
     const downloadLink = document.getElementById('download-link') as HTMLAnchorElement;
+    const viewerControls = document.getElementById('viewer-controls');
+    const toggleButtons = document.querySelectorAll('.viewer-toggle');
     
     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
@@ -77,6 +85,64 @@ const title = "Document Viewer";
     }
 
     const isDocx = file.endsWith('.docx');
+    
+    // Function to load viewer with specified provider
+    function loadExternalViewer(viewer: string) {
+      const encodedUrl = encodeURIComponent(fullUrl);
+      let viewerUrl = '';
+
+      if (viewer === 'office') {
+        // Microsoft Office Online Viewer
+        viewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodedUrl}`;
+      } else {
+        // Google Docs Viewer (default)
+        viewerUrl = `https://docs.google.com/gview?url=${encodedUrl}&embedded=true`;
+      }
+
+      if (iframe) {
+        // Show loading message when switching
+        if (loadingMsg) loadingMsg.style.display = 'block';
+        iframe.style.display = 'none';
+        
+        iframe.src = viewerUrl;
+        iframe.onload = () => {
+          if (loadingMsg) loadingMsg.style.display = 'none';
+          iframe.style.display = 'block';
+        };
+        // Fallback timeout
+        setTimeout(() => {
+          if (loadingMsg) loadingMsg.style.display = 'none';
+          iframe.style.display = 'block';
+        }, 2000);
+      }
+    }
+    
+    // Set up toggle button handlers
+    function setupToggleButtons() {
+      toggleButtons.forEach(button => {
+        // Set initial active state
+        if (button.getAttribute('data-viewer') === currentViewer) {
+          button.classList.add('active');
+        } else {
+          button.classList.remove('active');
+        }
+        
+        // Add click handler
+        button.addEventListener('click', () => {
+          const viewer = button.getAttribute('data-viewer');
+          if (!viewer || viewer === currentViewer) return;
+          
+          currentViewer = viewer;
+          
+          // Update active state
+          toggleButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          
+          // Reload viewer with new provider
+          loadExternalViewer(viewer);
+        });
+      });
+    }
     
     // Use client-side renderer for localhost OR when explicitly requested
     if (isLocalhost && isDocx) {
@@ -114,29 +180,16 @@ const title = "Document Viewer";
         }
       }
     } else {
-      // Use external viewer for production
-      const encodedUrl = encodeURIComponent(fullUrl);
-      let viewerUrl = '';
-
-      if (viewer === 'google') {
-        viewerUrl = `https://docs.google.com/gview?url=${encodedUrl}&embedded=true`;
-      } else {
-        // Microsoft Office Online Viewer
-        viewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodedUrl}`;
+      // Show toggle controls for external viewers
+      if (viewerControls) {
+        viewerControls.style.display = 'flex';
       }
-
-      if (iframe) {
-        iframe.src = viewerUrl;
-        iframe.onload = () => {
-          if (loadingMsg) loadingMsg.style.display = 'none';
-          iframe.style.display = 'block';
-        };
-        // Fallback timeout
-        setTimeout(() => {
-          if (loadingMsg) loadingMsg.style.display = 'none';
-          iframe.style.display = 'block';
-        }, 2000);
-      }
+      
+      // Set up toggle buttons
+      setupToggleButtons();
+      
+      // Load initial viewer
+      loadExternalViewer(currentViewer);
     }
   }
   
@@ -154,6 +207,42 @@ const title = "Document Viewer";
     background: #f3f2f1;
     padding: 20px;
     border: 1px solid #ccc;
+  }
+  
+  .viewer-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: white;
+    border-radius: 4px;
+  }
+  
+  .viewer-toggle {
+    padding: 8px 16px;
+    background-color: #f6f8fa;
+    color: #24292e;
+    border: 1px solid #d1d5da;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .viewer-toggle:hover {
+    background-color: #e1e4e8;
+    border-color: #959da5;
+  }
+  
+  .viewer-toggle.active {
+    background-color: #0366d6;
+    color: white;
+    border-color: #0366d6;
+  }
+  
+  .viewer-toggle.active:hover {
+    background-color: #0255b3;
+    border-color: #0255b3;
   }
   
   /* Styles for client-side docx-preview */

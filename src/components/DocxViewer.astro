@@ -59,7 +59,8 @@ if (viewer === 'google') {
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  // Use a function that runs immediately, checking if DOM is ready
+  function initViewerToggles() {
     const containers = document.querySelectorAll('.docx-viewer-container');
     
     containers.forEach(container => {
@@ -101,7 +102,14 @@ if (viewer === 'google') {
         });
       }
     });
-  });
+  }
+
+  // Run immediately if DOM is ready, otherwise wait for it
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initViewerToggles);
+  } else {
+    initViewerToggles();
+  }
 </script>
 
 <style>
