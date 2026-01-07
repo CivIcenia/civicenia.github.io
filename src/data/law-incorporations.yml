@@ -1,5 +1,22 @@
 incorporations:
   - change_slugs:
+      - 2026-01-04-passing-the-newfriend-recruitment-adjustment-of-august-2025
+    law_slug: recruitment-incentivization-initiative
+    incorporated_at: 2026-01-07 14:48:00 +08:00
+    incorporated_by: CreepilyCreep
+  - change_slugs:
+      - 2024-10-05-political-parties-amendment
+      - 2026-01-04-repealing-the-political-parties-act-and-the-dbugingrad-act
+    incorporated_at: 2026-01-07 12:42:00 +08:00
+    law_slug: political-parties-act
+    incorporated_by: CreepilyCreep
+  - change_slugs:
+      - 2024-08-04-award-act-amendment
+      - 2024-08-31-second-award-act-amendment
+    law_slug: medal-awards-act
+    incorporated_at: 2026-01-07 12:41:00 +08:00
+    incorporated_by: CreepilyCreep
+  - change_slugs:
       - 2025-09-13-amend-the-statute-of-territory-1
       - 2025-03-22-wesbury-treaty
     law_slug: statute-of-territory

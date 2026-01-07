@@ -9,7 +9,7 @@ excerpt: Establishes the Icenia Commercial Area, granting the SOI additional
   standards of being maintained and stocked.
 document:
   type: remote-file
-  value: https://docs.google.com/document/d/e/2PACX-1vR28aO6ym_BxvOXhi-ODRiOg_hXxZcJGBsZmSOJJZeZ02523bG_rOGBFxIosipc53r6I-pN-_JWoZPt/pub
+  value: https://docs.google.com/document/d/14Mae7nufo3MOMCSHOr3-ziPsgyxEe0F9FpFAszmMh24/preview
 changes:
   - target: icenia-commercial-area-act
     kind: passage

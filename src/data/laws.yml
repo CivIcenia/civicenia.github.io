@@ -234,12 +234,12 @@ entries:
     name: Medal and Award Act
     fullname: Medal and Award Act
     kind: statute
-    masterdoc: https://docs.google.com/document/d/1AA-y2zKcnElLhPoky9wbJLWbPuphDqvxJsL69Tt7wD4/preview
-  - hidden: false
+    masterdoc: /documents/Medal-and-Award-Act.docx
+  - hidden: true
     slug: political-parties-act
     name: Political Parties Act
     kind: statute
-    masterdoc: https://docs.google.com/document/d/164nWHg6sKj6Lo5A9zyp4AT_TubAzebiSpUGWuYM91pM/preview
+    masterdoc: /documents/Political-Parties-Act.docx
   - hidden: false
     slug: statehood-of-selsey
     name: State of Riemark
@@ -249,12 +249,12 @@ entries:
     slug: icenian-flag-act
     name: Icenian Flag Act
     kind: statute
-    masterdoc: https://docs.google.com/document/d/1vVCZwKsIAbdQZNLt-nZO8Eut1MgRVGOGftjddodk3-s/preview
+    masterdoc: /documents/Icenian-Flag-Act.docx
   - hidden: false
     slug: legal-entities-act
     name: Legal Entities Act
     kind: statute
-    masterdoc: https://docs.google.com/document/d/1TRj0Dqx-1-lKeY5YJKGxXzbWLGxT6dr7Bdm28x5Df5w/preview
+    masterdoc: /documents/Legal-Entities-Act.docx
   - hidden: false
     slug: kallos-nap
     name: Kallos, NAP
@@ -271,10 +271,10 @@ entries:
     fullname: Powers of the Privy Council
     kind: constitution
     masterdoc: /documents/Privy-Council-Powers.docx
-  - hidden: false
+  - hidden: true
     slug: benefits-awareness-act
     name: Benefits Awareness Act
-    masterdoc: https://docs.google.com/document/d/1CGWozA4akUhYsLKTbzt-2hTdO3I08B_NHuYf_cMVNNs/preview
+    masterdoc: /documents/Benefits-Awareness-Act.docx
     kind: statute
   - hidden: true
     name: Head of Transportation Act
@@ -287,17 +287,17 @@ entries:
     name: Treaty of Wesbury
     kind: treaty
     masterdoc: https://docs.google.com/document/d/1eJ75P--_6F9UmRxbhkjGOm5SHYJDefe2iX7HGVoBkAU/preview
-  - hidden: false
+  - hidden: true
     slug: icenia-commercial-area-act
     name: Icenia SHOPS Act
     fullname: The Icenia Substantiating Healthy Opportunities for Profitable Shopping Act
     kind: statute
-    masterdoc: https://docs.google.com/document/d/e/2PACX-1vR28aO6ym_BxvOXhi-ODRiOg_hXxZcJGBsZmSOJJZeZ02523bG_rOGBFxIosipc53r6I-pN-_JWoZPt/pub
+    masterdoc: /documents/Icenia-SHOPS-Act.docx
   - hidden: false
     slug: recruitment-incentivization-initiative
     name: Recruitment Incentivization Initiative
     kind: statute
-    masterdoc: https://docs.google.com/document/d/e/2PACX-1vQSJdNSo1xn2lXCDqBf3-rnWjlEVzzXalqpO7-VSUjbCSLF3EpxBznzv3dgLngPtQHLxzfdcLZ1h_xB/pub
+    masterdoc: /documents/Recruitment-Incentivization-Initiative.docx
   - hidden: false
     slug: labour-engagement-bill
     name: Labour Engagement Bill
