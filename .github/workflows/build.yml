@@ -1,11 +1,27 @@
+# GitHub Actions Workflow: IceniaGov Site Build
+# 
+# This workflow automates the build, data synchronization, and deployment process for the IceniaGov website.
+# It triggers on pushes to the 'master' branch or manual dispatch via workflow_dispatch.
+# 
+# Key phases:
+# 1. Data Sync Phase: Updates officials data and Discord avatars, commits changes if any.
+# 2. Build & Deploy Phase: Builds the site using Bun and deploys to GitHub Pages.
+# 
+# Permissions: Requires write access to contents for pushing commits and deploying.
+# 
+# Jobs:
+# - release: Runs on ubuntu-latest, handles all steps.
+
 name: "IceniaGov Site Build"
 
+# Triggers: Push to master branch or manual dispatch
 on:
   push:
     branches:
       - "master"
   workflow_dispatch: {}
 
+# Permissions: Write access to repository contents for commits and deployments
 permissions:
   contents: write
 
@@ -13,15 +29,18 @@ jobs:
   release:
     runs-on: "ubuntu-latest"
     steps:
+      # Checkout the repository with full history for git operations
       - name: Checkout repository
         uses: "actions/checkout@v4"
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0  # Full history for better git operations
 
+      # Setup Bun runtime for JavaScript/TypeScript execution
       - name: Setup bun.sh
         uses: oven-sh/setup-bun@v1
 
+      # Install project dependencies using Bun
       - name: Installing dependencies
         run: bun install
       
@@ -29,11 +48,13 @@ jobs:
       # Data Sync Phase - Updates master branch
       # ============================================
 
+      # Sync officials data (likely from external sources)
       - name: Sync Officials
         id: sync_officials
         run: bun run sync-officials
         continue-on-error: true  # Don't fail build if sync fails
 
+      # Update Discord avatars using bot token
       - name: Update Discord Avatars
         id: update_avatars
         run: bun run update-avatars
@@ -41,6 +62,7 @@ jobs:
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
         continue-on-error: true  # Don't fail build if avatar update fails
 
+      # Check if officials.yml or councillors.yml have changes
       - name: Check for data changes
         id: check_changes
         run: |
@@ -53,6 +75,7 @@ jobs:
             git diff --stat src/data/officials.yml src/data/councillors.yml
           fi
 
+      # Commit and push changes if data was updated
       - name: Commit and Push Changes
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
@@ -66,9 +89,11 @@ jobs:
       # Build & Deploy Phase - Uses updated data
       # ============================================
 
+      # Build the site using Bun
       - name: Build site
         run: bun run build
 
+      # Deploy the built site to GitHub Pages on gh-pages branch
       - name: Deploy to GitHub Pages
         uses: crazy-max/ghaction-github-pages@v3
         with:
@@ -77,6 +102,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # Summarize deployment outcomes in the job summary
       - name: Deployment Summary
         if: always()
         run: |
