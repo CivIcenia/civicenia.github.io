@@ -10,6 +10,7 @@ const cityRoles = RoleConfig.getCityRoles();
 // Load councillors from data file (managed via Decap CMS)
 const councillorsData = Councillors.getCouncillors();
 const councilTerm = Councillors.getCouncilTerm();
+const councilTermNumber = await Councillors.getLatestCouncilTermNumber();
 
 // Default avatar for councillors without profile pictures
 const defaultAvatar = "https://cdn.discordapp.com/embed/avatars/0.png";
@@ -27,6 +28,18 @@ const sectionNames: Record<string, string> = {
     'executive': 'City Executives',
     'council': 'City Council',
 };
+
+// Format section title with term number
+function formatSectionTitle(section: string): string {
+    if (section === 'council') {
+        const baseName = sectionNames[section] || section;
+        if (councilTermNumber) {
+            return `${baseName} of ${councilTerm} (Term ${councilTermNumber})`;
+        }
+        return `${baseName} of ${councilTerm}`;
+    }
+    return sectionNames[section] || section;
+}
 ---
 
 <style>
@@ -63,7 +76,7 @@ const sectionNames: Record<string, string> = {
         {Object.entries(rolesBySection).map(([section, roles]) => (
             <>
                 <h2 class="section-title">
-                    {sectionNames[section] || section}
+                    {formatSectionTitle(section)}
                 </h2>
                 <div class="officials-parent">
                     {roles.map((role) => {

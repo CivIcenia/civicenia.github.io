@@ -478,6 +478,23 @@ export namespace GovOfficials {
     export function getSenateTerm(): string {
         return getOfficials().senate_term;
     }
+    
+    /**
+     * Get the latest Senate term number from official change posts
+     */
+    export async function getLatestSenateTermNumber(): Promise<number | null> {
+        const changes = await OfficialChanges.getOfficialChanges();
+        const elections = changes.filter(
+            (change) => 
+                (change.data.changetype === "senate-election" || 
+                 change.data.changetype === "senate-byelection") &&
+                change.data.term
+        );
+        if (elections.length > 0) {
+            return elections[0].data.term!;
+        }
+        return null;
+    }
 }
 
 // ############################################################
@@ -534,6 +551,23 @@ export namespace Councillors {
     export function getCouncilTerm(): string {
         return getCouncillors().council_term;
     }
+    
+    /**
+     * Get the latest Council term number from city official change posts
+     */
+    export async function getLatestCouncilTermNumber(): Promise<number | null> {
+        const changes = await CityOfficialChanges.getCityOfficialChanges();
+        const elections = changes.filter(
+            (change) => 
+                (change.data.changetype === "council-election" || 
+                 change.data.changetype === "council-byelection") &&
+                change.data.term
+        );
+        if (elections.length > 0) {
+            return elections[0].data.term!;
+        }
+        return null;
+    }
 }
 
 // ############################################################
@@ -549,7 +583,8 @@ export namespace OfficialChanges {
             "senate-byelection",
             "secretary-change",
             "speaker-vote",
-            "president-change"
+            "president-change",
+            "executive-change"
         ]),
         "term": optionalPositiveInt,
         "senate_size": optionalPositiveInt,
@@ -602,6 +637,7 @@ export namespace CityOfficialChanges {
             "other-appointments"
         ]),
         "term": optionalPositiveInt,
+        "council_size": optionalPositiveInt,
         "officials": z.array(z.object({
             "name": z.string(),
             "role": z.union([z.string(), z.array(z.string())]),

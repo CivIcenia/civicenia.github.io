@@ -5,6 +5,7 @@ changetype: council-election
 headline: October 2025 Council Election
 date: 2025-10-23T14:41:00.000Z
 term: 1
+council_size: 5
 officials:
   - name: Dr_Bacon_Hair
     role: councillor
@@ -25,6 +26,11 @@ officials:
     role: councillor
     action: elected
     seat: 4
+  - name: CreepilyCreep
+    role: councillor
+    action: reelected
+    discord_id: "452620205064060939"
+    seat: 3
 icon: /assets/images/election_stock.png
 ---
 ## Council Election Results

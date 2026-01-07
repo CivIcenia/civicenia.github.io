@@ -10,6 +10,7 @@ const republicRoles = RoleConfig.getRepublicRoles();
 // Load officials from data file (managed via Decap CMS)
 const officialsData = GovOfficials.getOfficials();
 const senateTerm = GovOfficials.getSenateTerm();
+const senateTermNumber = await GovOfficials.getLatestSenateTermNumber();
 
 // Default avatar for officials without profile pictures
 const defaultAvatar = "https://cdn.discordapp.com/embed/avatars/0.png";
@@ -27,6 +28,18 @@ const sectionNames: Record<string, string> = {
     'executive': 'Executive Branch',
     'legislative': 'Senate',
 };
+
+// Format section title with term number
+function formatSectionTitle(section: string): string {
+    if (section === 'legislative') {
+        const baseName = sectionNames[section] || section;
+        if (senateTermNumber) {
+            return `${baseName} of ${senateTerm} (Term ${senateTermNumber})`;
+        }
+        return `${baseName} of ${senateTerm}`;
+    }
+    return sectionNames[section] || section;
+}
 ---
 
 <style>
@@ -62,7 +75,7 @@ const sectionNames: Record<string, string> = {
         {Object.entries(rolesBySection).map(([section, roles]) => (
             <>
                 <h2 class="section-title">
-                    {section === 'legislative' ? `${sectionNames[section]} of ${senateTerm}` : sectionNames[section] || section}
+                    {formatSectionTitle(section)}
                 </h2>
                 <div class="officials-parent">
                     {roles.map((role) => {

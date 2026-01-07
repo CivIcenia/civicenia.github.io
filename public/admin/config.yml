@@ -645,6 +645,9 @@ collections:
       - label: "President Changes"
         field: changetype
         pattern: "president-change"
+      - label: "Executive Changes"
+        field: changetype
+        pattern: "executive-change"
     view_groups:
       - label: "Type"
         field: changetype
@@ -677,6 +680,7 @@ collections:
           - {label: "Change in Secretary", value: "secretary-change"}
           - {label: "Vote for Speaker of the Senate", value: "speaker-vote"}
           - {label: "Change in President", value: "president-change"}
+          - {label: "Change in Executive Officials", value: "executive-change"}
         default: "senate-election"
       # Headline
       - label: "Title"
@@ -705,8 +709,7 @@ collections:
         required: false
         value_type: "int"
         min: 1
-        default: 7
-        hint: "Optional: The number of senators in this term. MUST be filled correctly for elections to avoid display issues. Defaults to 7."
+        hint: "Optional: The number of senators in this term. MUST be filled correctly for elections to avoid display issues. Set to 7 for default."
       # Excerpt
       - label: "Excerpt"
         name: "excerpt"
@@ -994,6 +997,14 @@ collections:
         value_type: "int"
         min: 1
         hint: "Optional: The Council term number (for elections). Check the previous election to increment correctly."
+      # Council Size
+      - label: "Council Size"
+        name: "council_size"
+        widget: "number"
+        required: false
+        value_type: "int"
+        min: 1
+        hint: "Optional: The number of councillors in this term. MUST be filled correctly for elections to avoid display issues. Set to 5 for default."
       # Excerpt
       - label: "Excerpt"
         name: "excerpt"
