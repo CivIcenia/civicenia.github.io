@@ -484,14 +484,16 @@ export namespace GovOfficials {
      */
     export async function getLatestSenateTermNumber(): Promise<number | null> {
         const changes = await OfficialChanges.getOfficialChanges();
-        const elections = changes.filter(
-            (change) => 
-                (change.data.changetype === "senate-election" || 
-                 change.data.changetype === "senate-byelection") &&
-                change.data.term
-        );
+        const elections = changes.filter((change) => {
+            // Type assertion needed because getCollection returns union type
+            const data = change.data as OfficialChanges.OfficialChange;
+            return (data.changetype === "senate-election" || 
+                    data.changetype === "senate-byelection") &&
+                data.term;
+        });
         if (elections.length > 0) {
-            return elections[0].data.term!;
+            const data = elections[0].data as OfficialChanges.OfficialChange;
+            return data.term!;
         }
         return null;
     }
@@ -557,14 +559,16 @@ export namespace Councillors {
      */
     export async function getLatestCouncilTermNumber(): Promise<number | null> {
         const changes = await CityOfficialChanges.getCityOfficialChanges();
-        const elections = changes.filter(
-            (change) => 
-                (change.data.changetype === "council-election" || 
-                 change.data.changetype === "council-byelection") &&
-                change.data.term
-        );
+        const elections = changes.filter((change) => {
+            // Type assertion needed because getCollection returns union type
+            const data = change.data as CityOfficialChanges.CityOfficialChange;
+            return (data.changetype === "council-election" || 
+                    data.changetype === "council-byelection") &&
+                data.term;
+        });
         if (elections.length > 0) {
-            return elections[0].data.term!;
+            const data = elections[0].data as CityOfficialChanges.CityOfficialChange;
+            return data.term!;
         }
         return null;
     }

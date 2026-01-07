@@ -11,31 +11,31 @@ president:
   icon: "https://cdn.discordapp.com/avatars/161282206113857537/c5dab1c5f52820a26b71a6adf4bdd5dc.webp?size=256"
   discord_id: "161282206113857537"
 
-# Secretary Of Defense
+# Secretary of Defense
 secretary_of_defense:
   name: "JuniorTide"
   icon: "https://cdn.discordapp.com/avatars/662116538211368960/7f03c9cbcc4436a0e539d144207d4713.webp?size=256"
   discord_id: "662116538211368960"
 
-# Secretary Of Interior
+# Secretary of the Interior
 secretary_of_interior:
   name: "CreepilyCreep"
   icon: "https://cdn.discordapp.com/avatars/452620205064060939/4f6c907988fabe211c61d04cbadb5eb2.webp?size=256"
   discord_id: "452620205064060939"
 
-# Secretary Of Treasury
+# Secretary of Treasury
 secretary_of_treasury:
   name: "Anvil"
   icon: "https://cdn.discordapp.com/avatars/164188981293088769/0d209f4d82a63c91f97960d9d6221763.webp?size=256"
   discord_id: "164188981293088769"
 
-# Speaker
+# Speaker of the Senate
 speaker:
   name: "Anvil"
   icon: "https://cdn.discordapp.com/avatars/164188981293088769/0d209f4d82a63c91f97960d9d6221763.webp?size=256"
   discord_id: "164188981293088769"
 
-# Head Of Transportation
+# Head of Transportation
 head_of_transportation:
   name: "Ratat0ing"
   icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=256"
