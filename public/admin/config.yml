@@ -204,16 +204,14 @@ collections:
               # City Law Slug - using select widget with explicit options for reliability
               - label: "City Law Identifier"
                 name: "law_slug"
-                widget: "select"
+                widget: "relation"
+                collection: "data"
+                file: "laws"
+                search_fields: ["entries.*.name", "entries.*.fullname", "entries.*.slug"]
+                display_fields: ["entries.*.name"]
+                value_field: "entries.*.slug"
                 required: true
-                hint: "Which city law's master document was updated?"
-                options:
-                  # City Charter
-                  - { label: "Icenia City Charter", value: "city-charter" }
-                  # City Ordinances
-                  - { label: "Zoning Ordinance", value: "zoning-ordinance" }
-                  - { label: "Shop Regulations", value: "shop-regulations" }
-                  - { label: "Public Spaces Act", value: "public-spaces-act" }
+                hint: "Which city law's master document was updated? Search by name."
               # Incorporated At
               - label: "Date Incorporated"
                 name: "incorporated_at"
@@ -792,7 +790,8 @@ collections:
     extension: "md"
     format: "yaml-frontmatter"
     editor: { preview: false }
-    sortable_fields: ["date"]
+    sortable_fields: ["date", "term_number", "act_number"]
+    summary: "{{#term_number}}{{term_number}}-{{act_number}} | {{/term_number}}{{headline}}"
     filter: { field: "changetocitylaw", value: true }
     fields:
       # ChangeToCityLaw
@@ -819,6 +818,21 @@ collections:
           - {label: "City Referendum", value: "referendum"}
           - {label: "Federal Government", value: "federal"}
         default: "council"
+      # Act Numbering
+      - label: "Council Term Number"
+        name: "term_number"
+        widget: "number"
+        required: false
+        value_type: "int"
+        min: 1
+        hint: "The council term number (e.g., 1, 2, 3). This is the first number in the act reference (e.g., '01' in 01-05)."
+      - label: "Act Number"
+        name: "act_number"
+        widget: "number"
+        required: false
+        value_type: "int"
+        min: 1
+        hint: "The sequential act number within this term (e.g., 1, 2, 3). This is the second number in the act reference (e.g., '05' in 01-05). Check previous acts from the same term to determine the next number."
       # Headline
       - label: "Title"
         name: "headline"

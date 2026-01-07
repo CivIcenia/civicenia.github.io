@@ -353,7 +353,9 @@ export namespace CityActs {
     export const Schema = NewsItemSchema.extend({
         "layout": z.literal("@layouts/news/city-act.astro"),
         "changetocitylaw": z.literal(true),
-        "institution": z.enum(["council", "mayor", "referendum"]),
+        "institution": z.enum(["council", "mayor", "referendum", "federal"]),
+        "term_number": z.number().int().positive().optional(),
+        "act_number": z.number().int().positive().optional(),
         "document": z.object({
             "type": z.enum(["local-file", "remote-file", "markdown"]),
             "value": z.string()
@@ -386,6 +388,18 @@ export namespace CityActs {
             .filter((entry) => isCityAct(entry.data))
             .sort(Arrays.sortByDate((entry) => entry.data.date))
             .reverse();
+    }
+    
+    /**
+     * Formats the act number for display (e.g., "01-05" or empty if not set)
+     */
+    export function formatActNumber(act: CityAct): string {
+        if (act.term_number && act.act_number) {
+            const term = act.term_number.toString().padStart(2, '0');
+            const num = act.act_number.toString().padStart(2, '0');
+            return `${term}-${num}`;
+        }
+        return '';
     }
 }
 

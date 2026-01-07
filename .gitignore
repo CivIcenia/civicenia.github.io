@@ -24,3 +24,7 @@ pnpm-debug.log*
 # google drive sync tmp files
 .tmp.drivedownload/
 .tmp.driveupload/
+
+# temp files
+*.tmp
+*.temp

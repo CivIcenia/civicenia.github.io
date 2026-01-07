@@ -2,6 +2,8 @@
 layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
 institution: council
+term_number: 1
+act_number: 1
 headline: Passing the Icenia City Charter
 date: 2024-01-01 12:00:00 +0000
 excerpt: The foundational charter establishing Icenia City governance.
