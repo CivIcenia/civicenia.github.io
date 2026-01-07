@@ -1,8 +1,9 @@
 ---
 import { type Page } from "astro";
 import { type CollectionEntry, getCollection } from "astro:content";
-import { PERMALINK_ROOTS } from "@comptime";
+import { PERMALINK_ROOTS, getActChangeColours } from "@comptime";
 import { Astros, Arrays, Strings } from "@helpers";
+import { Acts, Laws } from "@collections";
 import PageLayout from "@layouts/page.astro";
 import Pagination from "@components/pagination.astro";
 
@@ -21,6 +22,7 @@ const news = page.data;
 // build-time base (import.meta.env.BASE_URL). This avoids raw "/assets/"
 // appearing in the built HTML for project sites.
 const BASE = (import.meta.env.BASE_URL ?? "/");
+
 ---
 <style>
     a.news-item-wrapper {
@@ -83,6 +85,22 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         font-weight: 400;
     }
 
+    div.news-item-changes {
+        padding: 10px 15px;
+        margin: 10px -15px -10px -15px;
+        border-top: 1px dotted rgb(203, 201, 205);
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    div.news-item-changes-label {
+        color: #717171;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
     @media (max-width: 768px) {
         div.news-item-internal {
             padding: 10px 15px;
@@ -100,21 +118,52 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         <p class="govuk-body-l">Legislative updates, announcements, and official communications.</p>
     </div>
 
-    {news.map((entry) => (
-        <a class="news-item-wrapper" href={PERMALINK_ROOTS.news + entry.slug}>
-            <div class="news-item-internal">
-                <div class="news-item-icon-wrapper">
-                    {/* Resolve frontmatter icon paths that begin with "/" against BASE */}
-                    <img src={(typeof entry.data.icon === "string" && entry.data.icon.startsWith("/")) ? BASE + entry.data.icon.slice(1) : entry.data.icon} width="100px" height="100px"/>
+    {news.map((entry) => {
+        // Check if this is an act with changes
+        const isAct = Acts.isAct(entry.data);
+        const changes = isAct ? (entry.data as Acts.Act).changes : [];
+        
+        // Count changes by type for compact display
+        const changeCounts = changes.reduce((acc, change) => {
+            acc[change.kind] = (acc[change.kind] || 0) + 1;
+            return acc;
+        }, {});
+        
+        return (
+            <a class="news-item-wrapper" href={PERMALINK_ROOTS.news + entry.slug}>
+                <div class="news-item-internal">
+                    <div class="news-item-icon-wrapper">
+                        {/* Resolve frontmatter icon paths that begin with "/" against BASE */}
+                        <img src={(typeof entry.data.icon === "string" && entry.data.icon.startsWith("/")) ? BASE + entry.data.icon.slice(1) : entry.data.icon} width="100px" height="100px"/>
+                    </div>
+                    <div class="news-item-content">
+                        <div class="news-item-title">{entry.data.headline}</div>
+                        <div class="news-item-excerpt">{Strings.normaliseWhitespace(Strings.stripHtml(Astros.getOrGenerateExcerpt(entry)))}</div>
+                    </div>
+                    <div class="news-item-date">{Strings.formatDate(entry.data.date, "dS mmmm yyyy")}</div>
+                    
+                    {/* Show legislation changes if present */}
+                    {changes.length > 0 && (
+                        <div class="news-item-changes">
+                            <div class="news-item-changes-label">Legislation:</div>
+                            {Object.entries(changeCounts).map(([kind, count]) => {
+                                const colours = getActChangeColours(kind);
+                                const changeLabel = kind === "passage" ? "Enacted" : 
+                                                   kind === "amendment" ? "Amended" : 
+                                                   kind === "repeal" ? "Repealed" : "Changed";
+                                
+                                return (
+                                    <strong class="govuk-tag govuk-tag--small" style={`background-color: #${colours.background}; color: #${colours.text};`}>
+                                        {changeLabel}{count > 1 ? ` (${count})` : ''}
+                                    </strong>
+                                );
+                            })}
+                        </div>
+                    )}
                 </div>
-                <div class="news-item-content">
-                    <div class="news-item-title">{entry.data.headline}</div>
-                    <div class="news-item-excerpt">{Strings.normaliseWhitespace(Strings.stripHtml(Astros.getOrGenerateExcerpt(entry)))}</div>
-                </div>
-                <div class="news-item-date">{Strings.formatDate(entry.data.date, "dS mmmm yyyy")}</div>
-            </div>
-        </a>
-    ))}
+            </a>
+        );
+    })}
 
     <Pagination {page} permalinkRoot={PERMALINK_ROOTS.news}/>
 </PageLayout>

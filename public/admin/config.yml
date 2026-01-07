@@ -708,7 +708,7 @@ collections:
         value_type: "int"
         min: 1
         default: 7
-        hint: "Optional: The number of senators in this term. Defaults to 7."
+        hint: "Optional: The number of senators in this term. MUST be filled correctly for elections to avoid display issues. Defaults to 7."
       # Excerpt
       - label: "Excerpt"
         name: "excerpt"

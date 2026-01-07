@@ -300,12 +300,12 @@ entries:
     masterdoc: /documents/Recruitment-Incentivization-Initiative.docx
   - hidden: false
     slug: labour-engagement-bill
-    name: Labour Engagement Bill
+    name: Labour Engagement Act
     kind: statute
-    masterdoc: https://docs.google.com/document/d/e/2PACX-1vSSWK1S1DwOZDGAPdOv0PtMJJN0oneBYTkYiLmAGhizNTkzXTfZ2Qr9Nrm_lT6qOLRUnlnA1kPOEFzr/pub
+    masterdoc: /documents/Labour-Engagement-Act.docx
   - hidden: true
     slug: newfriend-zone-bill
-    name: Newfriend Zone Bill
+    name: Newfriend Zone Act
     kind: statute
     masterdoc: https://docs.google.com/document/d/e/2PACX-1vTtT7TyjPH627WKFUjnNkitV-HrPKzbxhO_3JhNhOb8tpVF8pftYNkDHMY6qn0UoINNoRrgdNxYQ1oZ/pub
   - hidden: false
@@ -367,3 +367,9 @@ entries:
     fullname: The Federal Executive Consolidation Act
     kind: statute
     masterdoc: /documents/Federal-Executive-Consolidation-Act.docx
+  - hidden: false
+    slug: second-treaty-of-santiago
+    name: Second Treaty of Santiago
+    kind: treaty
+    masterdoc: /archive/Second-Treaty-of-Santiago.pdf
+    fullname: Treaty of Santiago II

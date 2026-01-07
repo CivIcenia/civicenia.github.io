@@ -11,6 +11,8 @@ document:
 changes:
   - target: alenarith-protectorate
     kind: amendment
+  - target: second-treaty-of-santiago
+    kind: passage
 icon: /assets/images/law_stock.jpeg
 ---
 [Passed by the August 2025 Senate (private)](https://discord.com/channels/558071874161082368/1409355060214759434)

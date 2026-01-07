@@ -14,7 +14,7 @@ excerpt: >-
   This bill was proposed by Dr_Bacon_Hair
 document:
   type: remote-file
-  value: https://docs.google.com/document/d/e/2PACX-1vSSWK1S1DwOZDGAPdOv0PtMJJN0oneBYTkYiLmAGhizNTkzXTfZ2Qr9Nrm_lT6qOLRUnlnA1kPOEFzr/pub
+  value: https://docs.google.com/document/d/1_5MDZCpeS-cib_agy65pLxqk9GohXNAXjxJwS1aoDSg/preview
 changes:
   - target: labour-engagement-bill
     kind: passage
