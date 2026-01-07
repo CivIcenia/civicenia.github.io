@@ -3,7 +3,7 @@
 # Use https://toolscord.com/ to get Discord profile pictures
 
 # Senate term label (e.g., "September 2025")
-senate_term: "December 2025"
+senate_term: "January 2026"
 
 # President
 president:
@@ -11,55 +11,55 @@ president:
   icon: "https://cdn.discordapp.com/avatars/161282206113857537/c5dab1c5f52820a26b71a6adf4bdd5dc.webp?size=256"
   discord_id: "161282206113857537"
 
-# Secretary of Defense
+# Secretary Of Defense
 secretary_of_defense:
   name: "JuniorTide"
   icon: "https://cdn.discordapp.com/avatars/662116538211368960/7f03c9cbcc4436a0e539d144207d4713.webp?size=256"
   discord_id: "662116538211368960"
 
-# Secretary of the Interior
+# Secretary Of Interior
 secretary_of_interior:
   name: "CreepilyCreep"
   icon: "https://cdn.discordapp.com/avatars/452620205064060939/4f6c907988fabe211c61d04cbadb5eb2.webp?size=256"
   discord_id: "452620205064060939"
 
-# Secretary of Treasury
+# Secretary Of Treasury
 secretary_of_treasury:
   name: "Anvil"
   icon: "https://cdn.discordapp.com/avatars/164188981293088769/0d209f4d82a63c91f97960d9d6221763.webp?size=256"
   discord_id: "164188981293088769"
 
-# Speaker of the Senate
+# Speaker
 speaker:
   name: "Anvil"
   icon: "https://cdn.discordapp.com/avatars/164188981293088769/0d209f4d82a63c91f97960d9d6221763.webp?size=256"
   discord_id: "164188981293088769"
 
-# Head of Transportation
+# Head Of Transportation
 head_of_transportation:
   name: "Ratat0ing"
-  icon: "https://cdn.discordapp.com/embed/avatars/0.png"
+  icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=256"
   discord_id: "477240196564385823"
 
 # Senate Seats - 5 seats
 senators:
   - seat: 1
-    name: "CreepilyCreep"
-    icon: "https://cdn.discordapp.com/avatars/452620205064060939/4f6c907988fabe211c61d04cbadb5eb2.webp?size=256"
-    discord_id: "452620205064060939"
+    name: "minemaster933"
+    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
+    discord_id: "982344847925051433"
   - seat: 2
-    name: "Anvil"
-    icon: "https://cdn.discordapp.com/avatars/164188981293088769/0d209f4d82a63c91f97960d9d6221763.webp?size=256"
-    discord_id: "164188981293088769"
-  - seat: 3
-    name: "SeaRed"
-    icon: "https://cdn.discordapp.com/avatars/185078987784060930/2c89053e81c372fd7437463dd9747a80.webp?size=256"
-    discord_id: "185078987784060930"
-  - seat: 4
-    name: "LopsterBisque"
-    icon: "https://cdn.discordapp.com/avatars/531992702099783700/1d5171f39ddb829ec6a6058b30c6671e.webp?size=256"
-    discord_id: "531992702099783700"
-  - seat: 5
     name: "Dr_Bacon_Hair"
     icon: "https://cdn.discordapp.com/avatars/689297659907145831/2782939e0ee7efe7c1898ed46825f8d7.webp?size=256"
     discord_id: "689297659907145831"
+  - seat: 3
+    name: "Ratat0ing"
+    icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=256"
+    discord_id: "477240196564385823"
+  - seat: 4
+    name: "HsmNewfriend"
+    icon: "https://cdn.discordapp.com/avatars/1080275805277540423/a95d5aeab1df4316903742ae66cb75b2.webp?size=256"
+    discord_id: "1080275805277540423"
+  - seat: 5
+    name: "CreepilyCreep"
+    icon: "https://cdn.discordapp.com/avatars/452620205064060939/4f6c907988fabe211c61d04cbadb5eb2.webp?size=256"
+    discord_id: "452620205064060939"
