@@ -205,6 +205,25 @@ import PageLayout from "@layouts/page.astro";
                 </div>
             </div>
             
+            <!-- Duplicate Voter Resolution Interface -->
+            <div id="duplicate-voters" style="display: none;">
+                <h2 class="govuk-heading-m">Resolve Duplicate Voters</h2>
+                <p class="govuk-body">
+                    Some voters submitted multiple ballots. Please select which ballot to use for each voter.
+                </p>
+                
+                <div id="duplicate-voters-content"></div>
+                
+                <div class="icenia-button-group govuk-!-margin-top-6">
+                    <button class="icenia-btn icenia-btn-secondary" id="back-to-name-matching-from-duplicates" type="button">
+                        ← Back to Name Matching
+                    </button>
+                    <button class="icenia-btn" id="proceed-to-ballot-review" type="button">
+                        Proceed to Ballot Review →
+                    </button>
+                </div>
+            </div>
+            
             <!-- Ballot Review Interface -->
             <div id="ballot-review" style="display: none;">
                 <div class="icenia-button-group govuk-!-margin-bottom-6">
@@ -240,11 +259,11 @@ import PageLayout from "@layouts/page.astro";
                     <div id="winners" class="stv-winners"></div>
                     
                     <div class="icenia-button-group govuk-!-margin-top-6">
-                        <button class="icenia-btn icenia-btn-secondary" id="export-results" type="button">
+                        <button class="icenia-btn" id="export-results" type="button">
                             Export Election
                         </button>
                         <button class="icenia-btn icenia-btn-secondary" id="return-to-start" type="button">
-                            Return to Start
+                            Return to Start (Remember to Export!)
                         </button>
                     </div>
                 </div>
@@ -506,6 +525,86 @@ import PageLayout from "@layouts/page.astro";
             margin-bottom: 5px;
         }
 
+        /* Duplicate Voters Styles */
+        #duplicate-voters {
+            max-width: 1200px;
+        }
+
+        .duplicate-voter-card {
+            background: white;
+            border: 2px solid #f47738;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .duplicate-voter-card h3 {
+            margin-top: 0;
+            color: #f47738;
+            font-size: 1.25em;
+        }
+
+        .duplicate-ballot-option {
+            border: 2px solid #b1b4b6;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .duplicate-ballot-option:hover {
+            border-color: #1d70b8;
+            background: #f3f2f1;
+        }
+
+        .duplicate-ballot-option.selected {
+            border-color: #1d70b8;
+            background: #e8f4f8;
+            border-width: 3px;
+        }
+
+        .duplicate-ballot-option.selected::before {
+            content: '✓ ';
+            color: #1d70b8;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .duplicate-ballot-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .duplicate-ballot-timestamp {
+            color: #66d9ef;
+            font-family: monospace;
+        }
+
+        .duplicate-ballot-rankings {
+            background: #2b2b2b;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .duplicate-ballot-rankings div {
+            padding: 2px 0;
+        }
+
+        .duplicate-ballot-warning {
+            color: #d4351c;
+            font-style: italic;
+            margin-top: 5px;
+        }
+
         /* Ballot Review Styles */
         #ballot-review {
             max-width: 1200px;
@@ -720,57 +819,29 @@ import PageLayout from "@layouts/page.astro";
         .ballot-row {
             display: grid !important;
             grid-template-columns: 1fr 1fr !important;
-            gap: 20px !important;
-            min-height: 44px;
-            align-items: stretch !important;
-            margin-bottom: 0 !important;
-        }
-        
-        .ballot-row-original {
-            background: #2b2b2b;
-            color: #f8f8f2;
-            padding: 8px 15px;
-            font-family: 'Courier New', Consolas, monospace;
-            font-size: 0.9em;
-            display: flex;
-            align-items: center;
-            min-height: 44px;
-        }
-        
-        .ballot-row-structured {
-            background: white;
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            min-height: 44px;
-        }
-        
-        .ballot-row-structured.spacer {
-            background: #f8f8f8;
-            border: 1px dashed #999;
-            opacity: 0.7;
-        }
-        
-        .ballot-row-structured.modified {
-            border-color: #ffc107;
-            background: #fff3cd;
+            gap: 0 !important;
+            width: 100% !important;
         }
 
-        .ballot-review-body > .ballot-column {
-            display: block !important; /* Ensure it participates in grid */
-            min-width: 0 !important; /* Allow columns to shrink below content width */
-            width: auto !important;
-            max-width: 100% !important;
-            overflow: hidden !important;
+        .ballot-row-original,
+        .ballot-row-structured {
+            padding: 2px 10px !important;
+            border-bottom: 1px solid #444 !important;
+            min-height: 28px !important;
+            display: flex !important;
+            align-items: center !important;
         }
-        
-        /* Even more specific to override everything */
-        .ballot-review-card .ballot-review-body {
-            display: grid !important;
-            grid-template-columns: 1fr 1fr !important;
+
+        .ballot-row-original {
+            background: #2b2b2b !important;
+            color: #f8f8f2 !important;
+            font-family: 'Courier New', Consolas, monospace !important;
+            font-size: 0.85em !important;
+        }
+
+        .ballot-row-structured {
+            background: #1e1e1e !important;
+            color: #e0e0e0 !important;
         }
 
         .ballot-original-full {
@@ -996,6 +1067,7 @@ import PageLayout from "@layouts/page.astro";
             ballotOverrides: Map<string, {rank: number, candidate: string}[]>;
             originalBallotText: Map<string, string>;
             reviewedNames: Set<string>; // Track which names have been reviewed by operator
+            duplicateSelections: Map<string, number>; // Track selected ballot index for duplicate voters
         } = {
             candidates: [],
             ballots: [],
@@ -1009,7 +1081,8 @@ import PageLayout from "@layouts/page.astro";
             hasCorrelationWarning: false, // Flag to indicate if a correlation changed
             ballotOverrides: new Map(), // Store manual edits made during ballot review
             originalBallotText: new Map(), // Store original raw text per voter
-            reviewedNames: new Set() // Track which names have been reviewed
+            reviewedNames: new Set(), // Track which names have been reviewed
+            duplicateSelections: new Map() // Track selected ballot for duplicate voters
         };
         
         class Ballot {
@@ -1241,6 +1314,8 @@ import PageLayout from "@layouts/page.astro";
                 ballotOverrides: Object.fromEntries(parsedData.ballotOverrides),
                 originalBallotText: Object.fromEntries(parsedData.originalBallotText),
                 reviewedNames: Array.from(parsedData.reviewedNames),
+                uniqueNames: parsedData.uniqueNames,
+                nameCounts: Object.fromEntries(parsedData.nameCounts),
                 // Save current position
                 currentState: {
                     section: currentSection,
@@ -1348,6 +1423,16 @@ import PageLayout from "@layouts/page.astro";
                         parsedData.reviewedNames = new Set(importData.reviewedNames);
                     }
                     
+                    // Restore uniqueNames (for name matching navigation)
+                    if (importData.uniqueNames && Array.isArray(importData.uniqueNames)) {
+                        parsedData.uniqueNames = importData.uniqueNames;
+                    }
+                    
+                    // Restore nameCounts
+                    if (importData.nameCounts) {
+                        parsedData.nameCounts = new Map(Object.entries(importData.nameCounts).map(([k, v]) => [k, v as number]));
+                    }
+                    
                     // Restore current state and navigate to appropriate section
                     if (importData.currentState) {
                         // Restore indices
@@ -1363,22 +1448,31 @@ import PageLayout from "@layouts/page.astro";
                         if (section === 'name-matching' && parsedData.uniqueNames.length > 0) {
                             // Go to name matching and render
                             document.getElementById('import-section')!.style.display = 'none';
+                            document.getElementById('simple-mode')!.style.display = 'none';
+                            document.getElementById('discord-mode')!.style.display = 'none';
                             document.getElementById('name-matching')!.style.display = 'block';
                             document.getElementById('ballot-review')!.style.display = 'none';
+                            document.getElementById('duplicate-voters')!.style.display = 'none';
                             document.getElementById('results')!.style.display = 'none';
                             renderCurrentName();
                         } else if (section === 'ballot-review' && parsedData.ballots.length > 0) {
                             // Go to ballot review and render
                             document.getElementById('import-section')!.style.display = 'none';
+                            document.getElementById('simple-mode')!.style.display = 'none';
+                            document.getElementById('discord-mode')!.style.display = 'none';
                             document.getElementById('name-matching')!.style.display = 'none';
                             document.getElementById('ballot-review')!.style.display = 'block';
+                            document.getElementById('duplicate-voters')!.style.display = 'none';
                             document.getElementById('results')!.style.display = 'none';
                             renderBallotReview();
                         } else if (section === 'results') {
                             // Go to results and calculate
                             document.getElementById('import-section')!.style.display = 'none';
+                            document.getElementById('simple-mode')!.style.display = 'none';
+                            document.getElementById('discord-mode')!.style.display = 'none';
                             document.getElementById('name-matching')!.style.display = 'none';
                             document.getElementById('ballot-review')!.style.display = 'none';
+                            document.getElementById('duplicate-voters')!.style.display = 'none';
                             document.getElementById('results')!.style.display = 'block';
                             calculateResults();
                         }
@@ -1412,7 +1506,8 @@ import PageLayout from "@layouts/page.astro";
                 nameCounts: new Map(),
                 ballotOverrides: new Map(),
                 originalBallotText: new Map(),
-                reviewedNames: new Set()
+                reviewedNames: new Set(),
+                duplicateSelections: new Map()
             };
             
             // Hide name matching, ballot review, and results
@@ -1526,6 +1621,7 @@ import PageLayout from "@layouts/page.astro";
             let currentRankings: string[] = [];
             let lastLineWasVoter = false;
             let ballotStartLine = 0; // Track where the current ballot started
+            const voterBallotCounts = new Map<string, number>(); // Track how many ballots each voter has submitted
             
             // Helper function to check if a line looks like a timestamp line
             const isTimestampLine = (line: string) => /—\s*(\d{1,2}\/\d{1,2}\/\d{4}|Yesterday at|Today at)/i.test(line);
@@ -1540,7 +1636,14 @@ import PageLayout from "@layouts/page.astro";
             };
             
             // Helper function to save ballot with original text
-            const saveBallot = (voter: string, rankings: string[], endLineIndex: number) => {
+            const saveBallot = (voterBaseName: string, rankings: string[], endLineIndex: number) => {
+                // Track ballot count for this voter
+                const count = (voterBallotCounts.get(voterBaseName) || 0) + 1;
+                voterBallotCounts.set(voterBaseName, count);
+                
+                // Create unique voter identifier if this is not the first ballot
+                const voter = count > 1 ? `${voterBaseName}#${count}` : voterBaseName;
+                
                 ballots.push({
                     voter: voter,
                     rankings: [...rankings]
@@ -1896,6 +1999,26 @@ import PageLayout from "@layouts/page.astro";
             const exportButtonReview = document.getElementById('export-election-review');
             if (exportButtonReview) {
                 exportButtonReview.addEventListener('click', exportElection);
+            }
+            
+            // Back to name matching from duplicate voters
+            const backToNameMatchingFromDuplicates = document.getElementById('back-to-name-matching-from-duplicates');
+            if (backToNameMatchingFromDuplicates) {
+                backToNameMatchingFromDuplicates.addEventListener('click', function() {
+                    const duplicateVoters = document.getElementById('duplicate-voters');
+                    const nameMatching = document.getElementById('name-matching');
+                    if (duplicateVoters) duplicateVoters.style.display = 'none';
+                    if (nameMatching) nameMatching.style.display = 'block';
+                    // Reset to first name so user can review again
+                    parsedData.currentNameIndex = 0;
+                    renderCurrentName();
+                });
+            }
+            
+            // Proceed to ballot review from duplicate voters
+            const proceedToBallotReviewBtn = document.getElementById('proceed-to-ballot-review');
+            if (proceedToBallotReviewBtn) {
+                proceedToBallotReviewBtn.addEventListener('click', proceedToBallotReview);
             }
             
             // Back to name matching from ballot review
@@ -2548,6 +2671,7 @@ import PageLayout from "@layouts/page.astro";
             // Re-number ranks
             current.forEach((r, i) => r.rank = i + 1);
             updateStructuredBallot(voterName, current);
+            renderBallotReview(); // Re-render to show removal
         }
         
         // Add a ranking to a ballot
@@ -2555,6 +2679,7 @@ import PageLayout from "@layouts/page.astro";
             const current = getStructuredBallot(voterName);
             current.push({ rank: current.length + 1, candidate });
             updateStructuredBallot(voterName, current);
+            renderBallotReview(); // Re-render to show new ranking
         }
         
         // Move a ranking (reorder)
@@ -2565,6 +2690,7 @@ import PageLayout from "@layouts/page.astro";
             // Re-number ranks
             current.forEach((r, i) => r.rank = i + 1);
             updateStructuredBallot(voterName, current);
+            renderBallotReview(); // Re-render to show updated order
         }
         
         // Change candidate for a specific rank
@@ -2573,15 +2699,353 @@ import PageLayout from "@layouts/page.astro";
             if (rankIndex >= 0 && rankIndex < current.length) {
                 current[rankIndex].candidate = newCandidate;
                 updateStructuredBallot(voterName, current);
+                renderBallotReview(); // Re-render to show updated candidate
             }
         }
         
         // Show ballot review screen (replaces old showConfirmation)
         function showConfirmation() {
-            // Switch from name matching to ballot review
+            // First, detect duplicate voters by grouping ballots with same base name
+            const voterToBallots = new Map<string, typeof parsedData.ballots>();
+            for (let ballot of parsedData.ballots) {
+                // Extract base voter name (remove #2, #3, etc suffix)
+                const baseVoter = ballot.voter.replace(/#\d+$/, '');
+                if (!voterToBallots.has(baseVoter)) {
+                    voterToBallots.set(baseVoter, []);
+                }
+                voterToBallots.get(baseVoter)!.push(ballot);
+            }
+            
+            // Find voters with multiple ballots
+            const duplicateVoters = Array.from(voterToBallots.entries())
+                .filter(([_, ballots]) => ballots.length > 1)
+                .map(([voter, ballots]) => ({ voter, ballots }));
+            
+            if (duplicateVoters.length > 0) {
+                // Show duplicate voter resolution UI
+                showDuplicateVoterResolution(duplicateVoters);
+            } else {
+                // No duplicates, proceed directly to ballot review
+                proceedToBallotReview();
+            }
+        }
+        
+        // Track current duplicate voter being resolved
+        let currentDuplicateIndex = 0;
+        let allDuplicateVoters: Array<{voter: string, ballots: typeof parsedData.ballots}> = [];
+        
+        // Show duplicate voter resolution UI
+        function showDuplicateVoterResolution(duplicateVoters: Array<{voter: string, ballots: typeof parsedData.ballots}>) {
+            const nameMatchingEl = document.getElementById('name-matching');
+            const duplicateVotersEl = document.getElementById('duplicate-voters');
+            const content = document.getElementById('duplicate-voters-content');
+            
+            if (nameMatchingEl) nameMatchingEl.style.display = 'none';
+            if (duplicateVotersEl) duplicateVotersEl.style.display = 'block';
+            if (!content) return;
+            
+            // Store duplicate voters globally for navigation
+            allDuplicateVoters = duplicateVoters;
+            currentDuplicateIndex = 0;
+            
+            // Store selections (default to null, will be set for each voter)
+            if (!parsedData.duplicateSelections) {
+                parsedData.duplicateSelections = new Map<string, number>(); // voter -> ballot index in original array
+            }
+            
+            // Initialize default selections for all voters
+            for (let { voter, ballots } of duplicateVoters) {
+                // Sort ballots by timestamp (newest first)
+                const sortedBallots = [...ballots].sort((a, b) => {
+                    const timeA = parsedData.originalBallotText.get(a.voter)?.match(/—\s*(\d{1,2}\/\d{1,2}\/\d{4}\s+\d{1,2}:\d{2}\s+[ap]m)/i)?.[1];
+                    const timeB = parsedData.originalBallotText.get(b.voter)?.match(/—\s*(\d{1,2}\/\d{1,2}\/\d{4}\s+\d{1,2}:\d{2}\s+[ap]m)/i)?.[1];
+                    if (!timeA || !timeB) return 0;
+                    return new Date(timeB).getTime() - new Date(timeA).getTime();
+                });
+                
+                // Determine default selection: newest ballot with valid rankings
+                let defaultIndex = -1;
+                for (let i = 0; i < sortedBallots.length; i++) {
+                    const ballot = sortedBallots[i];
+                    const validRankings = ballot.rankings.filter(name => {
+                        const match = parsedData.nameMatches.get(name);
+                        return match && match !== '__NOT_A_BALLOT__';
+                    });
+                    if (validRankings.length > 0) {
+                        defaultIndex = parsedData.ballots.indexOf(ballot);
+                        break;
+                    }
+                }
+                
+                // If no valid ballots, default to newest anyway
+                if (defaultIndex === -1 && sortedBallots.length > 0) {
+                    defaultIndex = parsedData.ballots.indexOf(sortedBallots[0]);
+                }
+                
+                // Set default selection
+                parsedData.duplicateSelections.set(voter, defaultIndex);
+            }
+            
+            // Render first duplicate voter
+            renderCurrentDuplicateVoter();
+        }
+        
+        // Render the current duplicate voter being resolved
+        function renderCurrentDuplicateVoter() {
+            const content = document.getElementById('duplicate-voters-content');
+            if (!content) return;
+            
+            content.innerHTML = '';
+            
+            if (currentDuplicateIndex >= allDuplicateVoters.length) {
+                // All resolved, proceed
+                proceedToBallotReview();
+                return;
+            }
+            
+            const { voter, ballots } = allDuplicateVoters[currentDuplicateIndex];
+            
+            // Progress indicator
+            const progress = document.createElement('div');
+            progress.className = 'match-progress';
+            progress.textContent = `Resolving duplicate ${currentDuplicateIndex + 1} of ${allDuplicateVoters.length}`;
+            content.appendChild(progress);
+            
+            // Keyboard shortcuts help
+            const helpDiv = document.createElement('div');
+            helpDiv.className = 'govuk-inset-text';
+            helpDiv.style.marginTop = '10px';
+            helpDiv.style.fontSize = '0.85em';
+            helpDiv.innerHTML = `
+                <strong>Keyboard shortcuts:</strong>
+                <span style="display: block; margin-top: 5px;">
+                    <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">↑</kbd><kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">↓</kbd> Select ballot • 
+                    <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">Enter</kbd> Confirm & next • 
+                    <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">Shift+Enter</kbd> Go back • 
+                    <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">←</kbd><kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">→</kbd> Navigate duplicates
+                </span>
+            `;
+            content.appendChild(helpDiv);
+            
+            const card = document.createElement('div');
+            card.className = 'duplicate-voter-card';
+            
+            const header = document.createElement('h3');
+            header.textContent = `Voter: ${voter} (${ballots.length} ballots found)`;
+            card.appendChild(header);
+            
+            // Sort ballots by timestamp (newest first)
+            const sortedBallots = [...ballots].sort((a, b) => {
+                const timeA = parsedData.originalBallotText.get(a.voter)?.match(/—\s*(\d{1,2}\/\d{1,2}\/\d{4}\s+\d{1,2}:\d{2}\s+[ap]m)/i)?.[1];
+                const timeB = parsedData.originalBallotText.get(b.voter)?.match(/—\s*(\d{1,2}\/\d{1,2}\/\d{4}\s+\d{1,2}:\d{2}\s+[ap]m)/i)?.[1];
+                if (!timeA || !timeB) return 0;
+                return new Date(timeB).getTime() - new Date(timeA).getTime();
+            });
+            
+            const currentSelection = parsedData.duplicateSelections.get(voter);
+            
+            // Render each ballot option
+            for (let ballot of sortedBallots) {
+                const ballotIndex = parsedData.ballots.indexOf(ballot);
+                const option = document.createElement('div');
+                option.className = 'duplicate-ballot-option';
+                option.dataset.ballotIndex = ballotIndex.toString();
+                if (ballotIndex === currentSelection) {
+                    option.classList.add('selected');
+                }
+                
+                const optionHeader = document.createElement('div');
+                optionHeader.className = 'duplicate-ballot-header';
+                
+                // Extract timestamp from original text
+                const originalText = parsedData.originalBallotText.get(ballot.voter) || '';
+                const timestampMatch = originalText.match(/—\s*(\d{1,2}\/\d{1,2}\/\d{4}\s+\d{1,2}:\d{2}\s+[ap]m)/i);
+                const timestamp = timestampMatch ? timestampMatch[1] : 'Unknown time';
+                
+                optionHeader.innerHTML = `
+                    <span>Ballot ${parsedData.ballots.indexOf(ballot) + 1}</span>
+                    <span class="duplicate-ballot-timestamp">${escapeHtml(timestamp)}</span>
+                `;
+                option.appendChild(optionHeader);
+                
+                // Show rankings
+                const rankingsDiv = document.createElement('div');
+                rankingsDiv.className = 'duplicate-ballot-rankings';
+                
+                if (ballot.rankings.length === 0) {
+                    rankingsDiv.innerHTML = '<div style="color: #999; font-style: italic;">No rankings found</div>';
+                } else {
+                    for (let i = 0; i < ballot.rankings.length; i++) {
+                        const name = ballot.rankings[i];
+                        const match = parsedData.nameMatches.get(name);
+                        const rankDiv = document.createElement('div');
+                        
+                        if (match && match !== '__NOT_A_BALLOT__') {
+                            rankDiv.textContent = `${i + 1}. ${name} → ${match}`;
+                            rankDiv.style.color = '#50fa7b';
+                        } else if (match === '__NOT_A_BALLOT__') {
+                            rankDiv.textContent = `${i + 1}. ${name} → (removed)`;
+                            rankDiv.style.color = '#999';
+                        } else {
+                            rankDiv.textContent = `${i + 1}. ${name} → (invalid)`;
+                            rankDiv.style.color = '#ff5555';
+                        }
+                        
+                        rankingsDiv.appendChild(rankDiv);
+                    }
+                }
+                option.appendChild(rankingsDiv);
+                
+                // Count valid rankings
+                const validRankings = ballot.rankings.filter(name => {
+                    const match = parsedData.nameMatches.get(name);
+                    return match && match !== '__NOT_A_BALLOT__';
+                });
+                
+                if (validRankings.length === 0) {
+                    const warning = document.createElement('div');
+                    warning.className = 'duplicate-ballot-warning';
+                    warning.textContent = '⚠ This ballot has no valid rankings';
+                    option.appendChild(warning);
+                }
+                
+                // Click to select
+                option.addEventListener('click', () => {
+                    selectDuplicateBallot(ballotIndex);
+                });
+                
+                card.appendChild(option);
+            }
+            
+            content.appendChild(card);
+            
+            // Navigation buttons
+            const navDiv = document.createElement('div');
+            navDiv.className = 'ballot-nav-buttons icenia-button-group';
+            navDiv.style.marginTop = '20px';
+            
+            const prevBtn = document.createElement('button');
+            prevBtn.type = 'button';
+            prevBtn.className = 'icenia-btn icenia-btn-secondary';
+            prevBtn.textContent = '← Previous Duplicate';
+            prevBtn.disabled = currentDuplicateIndex === 0;
+            prevBtn.addEventListener('click', () => {
+                if (currentDuplicateIndex > 0) {
+                    currentDuplicateIndex--;
+                    renderCurrentDuplicateVoter();
+                }
+            });
+            
+            const nextBtn = document.createElement('button');
+            nextBtn.type = 'button';
+            nextBtn.className = 'icenia-btn';
+            nextBtn.textContent = currentDuplicateIndex === allDuplicateVoters.length - 1 ? 'Proceed to Review →' : 'Next Duplicate →';
+            nextBtn.addEventListener('click', () => {
+                if (currentDuplicateIndex < allDuplicateVoters.length - 1) {
+                    currentDuplicateIndex++;
+                    renderCurrentDuplicateVoter();
+                } else {
+                    // Last one, proceed to ballot review
+                    proceedToBallotReview();
+                }
+            });
+            
+            navDiv.appendChild(prevBtn);
+            navDiv.appendChild(nextBtn);
+            content.appendChild(navDiv);
+        }
+        
+        // Select a ballot for the current duplicate voter
+        function selectDuplicateBallot(ballotIndex: number) {
+            const { voter } = allDuplicateVoters[currentDuplicateIndex];
+            parsedData.duplicateSelections.set(voter, ballotIndex);
+            
+            // Update UI
+            const content = document.getElementById('duplicate-voters-content');
+            if (!content) return;
+            
+            content.querySelectorAll('.duplicate-ballot-option').forEach(opt => {
+                const element = opt as HTMLElement;
+                element.classList.remove('selected');
+                if (element.dataset.ballotIndex === ballotIndex.toString()) {
+                    element.classList.add('selected');
+                }
+            });
+        }
+        
+        // Navigate to next/previous ballot option within current duplicate
+        function navigateDuplicateBallotOption(direction: 'up' | 'down') {
+            const content = document.getElementById('duplicate-voters-content');
+            if (!content) return;
+            
+            const options = Array.from(content.querySelectorAll('.duplicate-ballot-option'));
+            const selectedIndex = options.findIndex(opt => opt.classList.contains('selected'));
+            
+            if (direction === 'up' && selectedIndex > 0) {
+                const newOption = options[selectedIndex - 1] as HTMLElement;
+                selectDuplicateBallot(parseInt(newOption.dataset.ballotIndex || '0'));
+            } else if (direction === 'down' && selectedIndex < options.length - 1) {
+                const newOption = options[selectedIndex + 1] as HTMLElement;
+                selectDuplicateBallot(parseInt(newOption.dataset.ballotIndex || '0'));
+            }
+        }
+        
+        // Proceed to ballot review (after resolving duplicates or if none exist)
+        function proceedToBallotReview() {
+            // If we have duplicate selections, filter ballots to only include selected ones
+            if (parsedData.duplicateSelections && parsedData.duplicateSelections.size > 0) {
+                const originalBallots = [...parsedData.ballots];
+                
+                // Build set of voter IDs (with #N suffix) that should be kept
+                const selectedVoterIds = new Set<string>();
+                for (let [baseVoter, index] of parsedData.duplicateSelections.entries()) {
+                    selectedVoterIds.add(originalBallots[index].voter);
+                }
+                
+                // Build set of base voter names that had duplicates
+                const baseVotersWithDuplicates = new Set(parsedData.duplicateSelections.keys());
+                
+                // Filter ballots: keep selected ones and those without duplicates
+                parsedData.ballots = originalBallots.filter(b => {
+                    const baseVoter = b.voter.replace(/#\d+$/, '');
+                    // If this voter had duplicates, only keep if it's the selected one
+                    if (baseVotersWithDuplicates.has(baseVoter)) {
+                        return selectedVoterIds.has(b.voter);
+                    }
+                    // Otherwise keep it (no duplicates)
+                    return true;
+                });
+                
+                // Clean up voter IDs: remove #N suffix from selected ballots
+                // so they appear as the base voter name
+                for (let ballot of parsedData.ballots) {
+                    const originalVoter = ballot.voter;
+                    const baseVoter = originalVoter.replace(/#\d+$/, '');
+                    if (originalVoter !== baseVoter) {
+                        // Update ballot voter to base name
+                        ballot.voter = baseVoter;
+                        // Update originalBallotText map
+                        const originalText = parsedData.originalBallotText.get(originalVoter);
+                        if (originalText) {
+                            parsedData.originalBallotText.set(baseVoter, originalText);
+                            parsedData.originalBallotText.delete(originalVoter);
+                        }
+                        // Update ballotOverrides map if exists
+                        const override = parsedData.ballotOverrides.get(originalVoter);
+                        if (override) {
+                            parsedData.ballotOverrides.set(baseVoter, override);
+                            parsedData.ballotOverrides.delete(originalVoter);
+                        }
+                    }
+                }
+            }
+            
+            // Switch to ballot review
+            const duplicateVotersEl = document.getElementById('duplicate-voters');
             const nameMatchingEl = document.getElementById('name-matching');
             const ballotReviewEl = document.getElementById('ballot-review');
             
+            if (duplicateVotersEl) duplicateVotersEl.style.display = 'none';
             if (nameMatchingEl) nameMatchingEl.style.display = 'none';
             if (ballotReviewEl) ballotReviewEl.style.display = 'block';
             
@@ -2679,20 +3143,11 @@ import PageLayout from "@layouts/page.astro";
             
             const structuredBallot = getStructuredBallot(ballot.voter);
             
-            // Build a map from original name to the ranking in structuredBallot
-            const origNameToRanking = new Map<string, {rank: number, candidate: string}>();
-            for (let ranking of structuredBallot) {
-                for (let origName of ballot.rankings) {
-                    const match = parsedData.nameMatches.get(origName);
-                    if (match === ranking.candidate && !origNameToRanking.has(origName)) {
-                        origNameToRanking.set(origName, ranking);
-                        break;
-                    }
-                }
-            }
+            // NEW APPROACH: Iterate through ORIGINAL lines for left side,
+            // and ALL structured ballot rankings for right side
             
-            // Iterate through original lines and create paired rows
-            let rankCounter = 0;
+            // First, collect all original lines (including voter name)
+            const originalContentLines: Array<{text: string, isTimestamp: boolean, isVoter: boolean, origName: string | null}> = [];
             for (let i = 0; i < originalLines.length; i++) {
                 const line = originalLines[i];
                 const trimmedLine = line.trim();
@@ -2700,52 +3155,88 @@ import PageLayout from "@layouts/page.astro";
                 if (!trimmedLine) continue;
                 
                 const isVoterLine = (i === 0);
+                
                 const isTimestampLine = /—\s*(\d{2}\/\d{2}\/\d{4}|Yesterday at|Today at)/i.test(line);
                 
-                if (isVoterLine) continue; // Skip - voter in header
-                
-                // Create row container
-                const row = document.createElement('div');
-                row.className = 'ballot-row';
-                
-                // Left side: Original line
-                const originalDiv = document.createElement('div');
-                originalDiv.className = 'ballot-row-original';
-                if (isTimestampLine) {
-                    originalDiv.style.color = '#66d9ef';
-                    originalDiv.style.fontWeight = 'bold';
-                }
-                originalDiv.textContent = trimmedLine;
-                
-                // Right side: Structured element
-                const structuredDiv = document.createElement('div');
-                structuredDiv.className = 'ballot-row-structured';
-                
-                if (isTimestampLine) {
-                    // Timestamp spacer
-                    structuredDiv.classList.add('spacer');
-                    structuredDiv.innerHTML = `
-                        <span class="rank-number"></span>
-                        <span class="spacer-label" style="font-style: italic; color: #66d9ef;">${escapeHtml(trimmedLine)}</span>
-                    `;
-                } else {
-                    // Find matching original name
-                    let matchedOrigName: string | null = null;
+                // Try to match this line to an original ballot ranking
+                let matchedOrigName: string | null = null;
+                if (!isTimestampLine && !isVoterLine) {
                     for (let origName of ballot.rankings) {
                         if (trimmedLine === origName || line.includes(origName)) {
                             matchedOrigName = origName;
                             break;
                         }
                     }
-                    
-                    if (!matchedOrigName && ballot.rankings[rankCounter]) {
-                        matchedOrigName = ballot.rankings[rankCounter];
+                }
+                
+                originalContentLines.push({
+                    text: trimmedLine,
+                    isTimestamp: isTimestampLine,
+                    isVoter: isVoterLine,
+                    origName: matchedOrigName
+                });
+            }
+            
+            // Build mappings for structured ballot
+            // Map from origName to list of indices in structuredBallot
+            const origNameToStructuredIndices = new Map<string, number[]>();
+            for (let i = 0; i < structuredBallot.length; i++) {
+                const ranking = structuredBallot[i];
+                for (let origName of ballot.rankings) {
+                    const match = parsedData.nameMatches.get(origName);
+                    if (match === ranking.candidate) {
+                        if (!origNameToStructuredIndices.has(origName)) {
+                            origNameToStructuredIndices.set(origName, []);
+                        }
+                        origNameToStructuredIndices.get(origName)!.push(i);
                     }
+                }
+            }
+            
+            // Track which structured ballot indices we've rendered
+            const renderedStructuredIndices = new Set<number>();
+            
+            // Render rows by pairing original lines with structured rankings
+            for (let origLine of originalContentLines) {
+                const row = document.createElement('div');
+                row.className = 'ballot-row';
+                
+                // Left side: Original line
+                const originalDiv = document.createElement('div');
+                originalDiv.className = 'ballot-row-original';
+                if (origLine.isTimestamp) {
+                    originalDiv.style.color = '#66d9ef';
+                    originalDiv.style.fontWeight = 'bold';
+                } else if (origLine.isVoter) {
+                    originalDiv.style.color = '#50fa7b';
+                    originalDiv.style.fontWeight = 'bold';
+                }
+                originalDiv.textContent = origLine.text;
+                
+                // Right side: Structured element
+                const structuredDiv = document.createElement('div');
+                structuredDiv.className = 'ballot-row-structured';
+                
+                if (origLine.isVoter) {
+                    // Voter line - empty spacer on right
+                    structuredDiv.innerHTML = `<span class="rank-number"></span>`;
+                } else if (origLine.isTimestamp) {
+                    // Timestamp spacer on right
+                    structuredDiv.classList.add('spacer');
+                    structuredDiv.innerHTML = `
+                        <span class="rank-number"></span>
+                        <span class="spacer-label" style="font-style: italic; color: #66d9ef;">${escapeHtml(origLine.text)}</span>
+                    `;
+                } else if (origLine.origName) {
+                    // This original line corresponds to a ballot ranking
+                    const indices = origNameToStructuredIndices.get(origLine.origName) || [];
+                    const unrenderedIndex = indices.find(idx => !renderedStructuredIndices.has(idx));
                     
-                    if (matchedOrigName && origNameToRanking.has(matchedOrigName)) {
+                    if (unrenderedIndex !== undefined) {
                         // Valid ranking - create editable row
-                        const ranking = origNameToRanking.get(matchedOrigName)!;
-                        const rankIndex = structuredBallot.findIndex(r => r.rank === ranking.rank);
+                        const ranking = structuredBallot[unrenderedIndex];
+                        const rankIndex = unrenderedIndex;
+                        renderedStructuredIndices.add(rankIndex);
                         
                         if (hasOverride) structuredDiv.classList.add('modified');
                         
@@ -2778,6 +3269,13 @@ import PageLayout from "@layouts/page.astro";
                         const dropdown = document.createElement('select');
                         dropdown.className = 'rank-dropdown';
                         dropdown.style.flex = '1';
+                        
+                        // Add "Not a candidate" option
+                        const notCandidateOption = document.createElement('option');
+                        notCandidateOption.value = '';
+                        notCandidateOption.textContent = '-- Not a candidate --';
+                        dropdown.appendChild(notCandidateOption);
+                        
                         for (let candidate of parsedData.candidates) {
                             const option = document.createElement('option');
                             option.value = candidate;
@@ -2786,7 +3284,12 @@ import PageLayout from "@layouts/page.astro";
                             dropdown.appendChild(option);
                         }
                         dropdown.addEventListener('change', () => {
-                            changeRankingCandidate(ballot.voter, rankIndex, dropdown.value);
+                            if (dropdown.value === '') {
+                                // Remove this ranking
+                                removeRanking(ballot.voter, rankIndex);
+                            } else {
+                                changeRankingCandidate(ballot.voter, rankIndex, dropdown.value);
+                            }
                         });
                         
                         const removeBtn = document.createElement('button');
@@ -2802,36 +3305,151 @@ import PageLayout from "@layouts/page.astro";
                         structuredDiv.appendChild(moveDownBtn);
                         structuredDiv.appendChild(dropdown);
                         structuredDiv.appendChild(removeBtn);
-                    } else if (matchedOrigName) {
-                        // Invalid/skipped ranking - spacer
-                        structuredDiv.classList.add('spacer');
-                        const match = parsedData.nameMatches.get(matchedOrigName);
+                    } else {
+                        // Invalid/duplicate/removed ranking - show as spacer WITH controls
+                        const match = parsedData.nameMatches.get(origLine.origName);
                         
+                        // Determine label
+                        let labelText = '';
+                        if (match === '__NOT_A_BALLOT__') {
+                            labelText = `Removed: ${origLine.origName}`;
+                        } else if (match === null) {
+                            labelText = `Invalid: ${origLine.origName}`;
+                        } else {
+                            labelText = `Duplicate: ${origLine.origName}`;
+                        }
+                        
+                        // Create a fake "ranking" for this invalid/duplicate line
+                        // so operator can convert it to a valid ranking
                         const rankNum = document.createElement('span');
                         rankNum.className = 'rank-number';
                         rankNum.textContent = '—';
                         rankNum.style.color = '#999';
+                        rankNum.style.width = '30px';
+                        rankNum.style.flexShrink = '0';
                         
-                        const label = document.createElement('span');
-                        label.className = 'spacer-label';
-                        label.style.color = '#999';
-                        label.style.fontStyle = 'italic';
-                        label.style.fontSize = '0.85em';
+                        const dropdown = document.createElement('select');
+                        dropdown.className = 'rank-dropdown';
+                        dropdown.style.flex = '1';
+                        dropdown.style.fontStyle = 'italic';
+                        dropdown.style.color = '#999';
                         
-                        if (match === '__NOT_A_BALLOT__') {
-                            label.textContent = `Removed: ${matchedOrigName}`;
-                        } else if (match === null) {
-                            label.textContent = `Invalid: ${matchedOrigName}`;
-                        } else {
-                            label.textContent = `Duplicate: ${matchedOrigName}`;
+                        // Default option showing why it's invalid
+                        const defaultOption = document.createElement('option');
+                        defaultOption.value = '';
+                        defaultOption.textContent = labelText;
+                        dropdown.appendChild(defaultOption);
+                        
+                        // Add all candidates as options
+                        for (let candidate of parsedData.candidates) {
+                            const option = document.createElement('option');
+                            option.value = candidate;
+                            option.textContent = candidate;
+                            dropdown.appendChild(option);
                         }
                         
+                        dropdown.addEventListener('change', () => {
+                            if (dropdown.value) {
+                                // Convert invalid/duplicate line to a valid ranking
+                                addRanking(ballot.voter, dropdown.value);
+                            }
+                        });
+                        
                         structuredDiv.appendChild(rankNum);
-                        structuredDiv.appendChild(label);
+                        structuredDiv.appendChild(dropdown);
                     }
-                    
-                    rankCounter++;
+                } else {
+                    // Empty spacer
+                    structuredDiv.innerHTML = `<span class="rank-number"></span>`;
                 }
+                
+                row.appendChild(originalDiv);
+                row.appendChild(structuredDiv);
+                body.appendChild(row);
+            }
+            
+            // Add any structured ballot rankings that weren't rendered yet (manually added)
+            for (let i = 0; i < structuredBallot.length; i++) {
+                if (renderedStructuredIndices.has(i)) continue;
+                
+                const ranking = structuredBallot[i];
+                const row = document.createElement('div');
+                row.className = 'ballot-row';
+                
+                // Left side: Empty (no original line for this)
+                const originalDiv = document.createElement('div');
+                originalDiv.className = 'ballot-row-original';
+                originalDiv.innerHTML = '<span style="color: #666; font-style: italic;">(manually added)</span>';
+                
+                // Right side: Full controls
+                const structuredDiv = document.createElement('div');
+                structuredDiv.className = 'ballot-row-structured';
+                if (hasOverride) structuredDiv.classList.add('modified');
+                
+                const rankNum = document.createElement('span');
+                rankNum.className = 'rank-number';
+                rankNum.textContent = `${ranking.rank}.`;
+                rankNum.style.fontWeight = 'bold';
+                rankNum.style.color = '#1d70b8';
+                rankNum.style.width = '30px';
+                rankNum.style.flexShrink = '0';
+                
+                const moveUpBtn = document.createElement('button');
+                moveUpBtn.type = 'button';
+                moveUpBtn.className = 'rank-move-btn';
+                moveUpBtn.innerHTML = '↑';
+                moveUpBtn.disabled = i === 0;
+                moveUpBtn.addEventListener('click', () => {
+                    moveRanking(ballot.voter, i, i - 1);
+                });
+                
+                const moveDownBtn = document.createElement('button');
+                moveDownBtn.type = 'button';
+                moveDownBtn.className = 'rank-move-btn';
+                moveDownBtn.innerHTML = '↓';
+                moveDownBtn.disabled = i === structuredBallot.length - 1;
+                moveDownBtn.addEventListener('click', () => {
+                    moveRanking(ballot.voter, i, i + 1);
+                });
+                
+                const dropdown = document.createElement('select');
+                dropdown.className = 'rank-dropdown';
+                dropdown.style.flex = '1';
+                
+                // Add "Not a candidate" option
+                const notCandidateOption = document.createElement('option');
+                notCandidateOption.value = '';
+                notCandidateOption.textContent = '-- Not a candidate --';
+                dropdown.appendChild(notCandidateOption);
+                
+                for (let candidate of parsedData.candidates) {
+                    const option = document.createElement('option');
+                    option.value = candidate;
+                    option.textContent = candidate;
+                    if (ranking.candidate === candidate) option.selected = true;
+                    dropdown.appendChild(option);
+                }
+                dropdown.addEventListener('change', () => {
+                    if (dropdown.value === '') {
+                        removeRanking(ballot.voter, i);
+                    } else {
+                        changeRankingCandidate(ballot.voter, i, dropdown.value);
+                    }
+                });
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'rank-remove';
+                removeBtn.innerHTML = '×';
+                removeBtn.addEventListener('click', () => {
+                    removeRanking(ballot.voter, i);
+                });
+                
+                structuredDiv.appendChild(rankNum);
+                structuredDiv.appendChild(moveUpBtn);
+                structuredDiv.appendChild(moveDownBtn);
+                structuredDiv.appendChild(dropdown);
+                structuredDiv.appendChild(removeBtn);
                 
                 row.appendChild(originalDiv);
                 row.appendChild(structuredDiv);
@@ -2902,6 +3520,9 @@ import PageLayout from "@layouts/page.astro";
                 if (currentBallotIndex < totalBallots - 1) {
                     currentBallotIndex++;
                     renderBallotReview();
+                } else {
+                    // On last ballot - proceed to calculate
+                    calculateResults();
                 }
             });
             
@@ -2919,6 +3540,49 @@ import PageLayout from "@layouts/page.astro";
             
             // Don't interfere if user is focused on a button (they might press Enter/Space on it)
             if (e.target instanceof HTMLButtonElement) {
+                return;
+            }
+            
+            // Handle duplicate voters keyboard navigation
+            const duplicateVoters = document.getElementById('duplicate-voters');
+            if (duplicateVoters && duplicateVoters.style.display === 'block') {
+                if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    navigateDuplicateBallotOption('up');
+                } else if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    navigateDuplicateBallotOption('down');
+                } else if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    // Proceed to next duplicate or ballot review
+                    if (currentDuplicateIndex < allDuplicateVoters.length - 1) {
+                        currentDuplicateIndex++;
+                        renderCurrentDuplicateVoter();
+                    } else {
+                        proceedToBallotReview();
+                    }
+                } else if (e.key === 'Enter' && e.shiftKey) {
+                    e.preventDefault();
+                    // Go back to previous duplicate
+                    if (currentDuplicateIndex > 0) {
+                        currentDuplicateIndex--;
+                        renderCurrentDuplicateVoter();
+                    }
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    if (currentDuplicateIndex > 0) {
+                        currentDuplicateIndex--;
+                        renderCurrentDuplicateVoter();
+                    }
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    if (currentDuplicateIndex < allDuplicateVoters.length - 1) {
+                        currentDuplicateIndex++;
+                        renderCurrentDuplicateVoter();
+                    } else {
+                        proceedToBallotReview();
+                    }
+                }
                 return;
             }
             
