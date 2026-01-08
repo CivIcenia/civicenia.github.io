@@ -34,7 +34,7 @@ officials:
     icon: https://cdn.discordapp.com/avatars/689297659907145831/2782939e0ee7efe7c1898ed46825f8d7.webp?size=256
   - name: Anvil
     icon: https://cdn.discordapp.com/avatars/164188981293088769/0d209f4d82a63c91f97960d9d6221763.webp?size=256
-    role: speaker-of-the-senate
+    role: speaker
     action: elected
 icon: /assets/images/election_stock.png
 ---

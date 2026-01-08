@@ -199,9 +199,9 @@ import PageLayout from "@layouts/page.astro";
                     <button class="icenia-btn icenia-btn-secondary" id="back-to-discord" type="button">
                         ← Back to Edit
                     </button>
-                    <button class="icenia-btn" id="confirm-matches" type="button">
+                    <!-- <button class="icenia-btn" id="confirm-matches" type="button">
                         Review Ballots →
-                    </button>
+                    </button> -->
                 </div>
             </div>
             
@@ -228,9 +228,9 @@ import PageLayout from "@layouts/page.astro";
                     <button class="icenia-btn icenia-btn-secondary" id="back-to-name-matching" type="button">
                         ← Back to Name Matching
                     </button>
-                    <button class="icenia-btn" id="calculate-from-review" type="button">
+                    <!-- <button class="icenia-btn" id="calculate-from-review" type="button">
                         Calculate Results →
-                    </button>
+                    </button> -->
                 </div>
             </div>
                 
@@ -252,7 +252,7 @@ import PageLayout from "@layouts/page.astro";
         </div>
     </div>
     
-    <style>
+    <style is:global>
         .stv-calculator {
             max-width: 800px;
         }
@@ -527,15 +527,9 @@ import PageLayout from "@layouts/page.astro";
             font-size: 1.1em;
         }
 
-        .ballot-review-body {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            gap: 0;
-            min-height: 150px;
-        }
-
         .ballot-column {
-            padding: 15px;
+            min-width: 0; /* Ensure columns can shrink */
+            /* No width or display properties here to avoid conflicts */
         }
 
         .ballot-column-header {
@@ -547,16 +541,12 @@ import PageLayout from "@layouts/page.astro";
             letter-spacing: 0.5px;
         }
 
-        .ballot-column {
-            display: flex;
-            flex-direction: column;
-        }
-
         .ballot-original {
             background: #f8f8f8;
             border: 1px solid #ddd;
             border-radius: 6px;
             padding: 15px;
+            box-sizing: border-box;
         }
 
         .ballot-mapping {
@@ -720,11 +710,67 @@ import PageLayout from "@layouts/page.astro";
         }
 
         .ballot-review-body {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            min-height: 150px;
-            align-items: start;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        
+        .ballot-row {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 20px !important;
+            min-height: 44px;
+            align-items: stretch !important;
+            margin-bottom: 0 !important;
+        }
+        
+        .ballot-row-original {
+            background: #2b2b2b;
+            color: #f8f8f2;
+            padding: 8px 15px;
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            min-height: 44px;
+        }
+        
+        .ballot-row-structured {
+            background: white;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 44px;
+        }
+        
+        .ballot-row-structured.spacer {
+            background: #f8f8f8;
+            border: 1px dashed #999;
+            opacity: 0.7;
+        }
+        
+        .ballot-row-structured.modified {
+            border-color: #ffc107;
+            background: #fff3cd;
+        }
+
+        .ballot-review-body > .ballot-column {
+            display: block !important; /* Ensure it participates in grid */
+            min-width: 0 !important; /* Allow columns to shrink below content width */
+            width: auto !important;
+            max-width: 100% !important;
+            overflow: hidden !important;
+        }
+        
+        /* Even more specific to override everything */
+        .ballot-review-card .ballot-review-body {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
         }
 
         .ballot-original-full {
@@ -738,17 +784,24 @@ import PageLayout from "@layouts/page.astro";
             line-height: 1.6;
             max-height: 500px;
             overflow-y: auto;
+            overflow-x: auto;
+            min-width: 0; /* Allow to shrink */
         }
 
         .voter-line {
             color: #66d9ef;
             font-weight: bold;
-            margin-bottom: 10px;
+            min-height: 28px;
+            display: flex;
+            align-items: center;
         }
 
         .ranking-line {
             color: #f8f8f2;
-            padding: 3px 0;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
         }
 
         .ballot-structured {
@@ -756,12 +809,12 @@ import PageLayout from "@layouts/page.astro";
             padding: 15px;
             border-radius: 6px;
             border: 2px solid #1d70b8;
+            min-width: 0 !important; /* Allow to shrink */
+            box-sizing: border-box;
         }
 
         .structured-header {
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #ddd;
+            display: none; /* Hidden since voter is now in header */
         }
 
         .structured-rankings {
@@ -778,11 +831,31 @@ import PageLayout from "@layouts/page.astro";
             background: white;
             border-radius: 4px;
             border: 1px solid #ddd;
+            min-height: 44px;
         }
 
         .rank-row.modified {
             border-color: #ffc107;
             background: #fff3cd;
+        }
+
+        .rank-row.spacer {
+            background: #f8f8f8;
+            border: 1px dashed #999;
+            padding: 8px;
+            margin-bottom: 8px;
+            min-height: 44px;
+            opacity: 0.7;
+        }
+
+        .rank-row.spacer .rank-number {
+            color: #999;
+        }
+
+        .rank-row.spacer .spacer-label {
+            color: #999;
+            font-style: italic;
+            font-size: 0.85em;
         }
 
         .rank-number {
@@ -922,6 +995,7 @@ import PageLayout from "@layouts/page.astro";
             hasCorrelationWarning: boolean;
             ballotOverrides: Map<string, {rank: number, candidate: string}[]>;
             originalBallotText: Map<string, string>;
+            reviewedNames: Set<string>; // Track which names have been reviewed by operator
         } = {
             candidates: [],
             ballots: [],
@@ -934,7 +1008,8 @@ import PageLayout from "@layouts/page.astro";
             correlationInfluences: new Map(), // Track which names were influenced by each correlation
             hasCorrelationWarning: false, // Flag to indicate if a correlation changed
             ballotOverrides: new Map(), // Store manual edits made during ballot review
-            originalBallotText: new Map() // Store original raw text per voter
+            originalBallotText: new Map(), // Store original raw text per voter
+            reviewedNames: new Set() // Track which names have been reviewed
         };
         
         class Ballot {
@@ -1165,6 +1240,7 @@ import PageLayout from "@layouts/page.astro";
                 learnedCorrelations: Object.fromEntries(parsedData.learnedCorrelations),
                 ballotOverrides: Object.fromEntries(parsedData.ballotOverrides),
                 originalBallotText: Object.fromEntries(parsedData.originalBallotText),
+                reviewedNames: Array.from(parsedData.reviewedNames),
                 // Save current position
                 currentState: {
                     section: currentSection,
@@ -1267,6 +1343,11 @@ import PageLayout from "@layouts/page.astro";
                         );
                     }
                     
+                    // Restore reviewed names
+                    if (importData.reviewedNames && Array.isArray(importData.reviewedNames)) {
+                        parsedData.reviewedNames = new Set(importData.reviewedNames);
+                    }
+                    
                     // Restore current state and navigate to appropriate section
                     if (importData.currentState) {
                         // Restore indices
@@ -1330,7 +1411,8 @@ import PageLayout from "@layouts/page.astro";
                 hasCorrelationWarning: false,
                 nameCounts: new Map(),
                 ballotOverrides: new Map(),
-                originalBallotText: new Map()
+                originalBallotText: new Map(),
+                reviewedNames: new Set()
             };
             
             // Hide name matching, ballot review, and results
@@ -1968,11 +2050,11 @@ import PageLayout from "@layouts/page.astro";
             helpDiv.innerHTML = `
                 <strong>Keyboard shortcuts:</strong>
                 <span style="display: block; margin-top: 5px;">
-                    <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">←</kbd><kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">→</kbd> or <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">A</kbd><kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">D</kbd> Navigate • 
+                    <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">←</kbd><kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">→</kbd> or <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">Enter</kbd><kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">Shift+Enter</kbd> Navigate • 
                     <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">1</kbd>-<kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">9</kbd> Quick select • 
-                    <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">0</kbd> Skip • 
-                    <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">W</kbd> Dropdown • 
-                    <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">Enter</kbd> Confirm dropdown, Next Name
+                    <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">N</kbd> Not candidate • 
+                    <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">M</kbd> Not ballot entry • 
+                    <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">W</kbd> Dropdown
                 </span>
             `;
             nameMatchList.appendChild(helpDiv);
@@ -1990,6 +2072,10 @@ import PageLayout from "@layouts/page.astro";
             const optionsDiv = document.createElement('div');
             optionsDiv.className = 'match-options';
             
+            // Check if this name has been reviewed before
+            const hasBeenReviewed = parsedData.reviewedNames.has(foundName);
+            const existingMatch = parsedData.nameMatches.get(foundName);
+            
             let autoSelected = false;
             
             // Add match options
@@ -2004,8 +2090,19 @@ import PageLayout from "@layouts/page.astro";
                     btn.dataset.candidate = match.candidate;
                     btn.tabIndex = 0; // Make keyboard accessible
                     
-                    // Auto-select the best match (first match) if there are any matches
-                    if (i === 0 && !autoSelected) {
+                    // Auto-select logic:
+                    // If already reviewed, preserve the existing selection
+                    // If not reviewed, auto-select the best match (first match)
+                    if (hasBeenReviewed && existingMatch === match.candidate) {
+                        // Restore previous selection
+                        btn.classList.add('selected');
+                        btn.style.backgroundColor = '#1d70b8';
+                        btn.style.color = 'white';
+                        btn.style.borderColor = '#1d70b8';
+                        btn.style.fontWeight = 'bold';
+                        autoSelected = true;
+                    } else if (!hasBeenReviewed && i === 0 && !autoSelected) {
+                        // First time seeing this name, auto-select best match
                         btn.classList.add('selected');
                         btn.style.backgroundColor = '#1d70b8';
                         btn.style.color = 'white';
@@ -2094,8 +2191,15 @@ import PageLayout from "@layouts/page.astro";
                 invalidBtn.dataset.foundName = foundName;
                 invalidBtn.tabIndex = 0; // Make keyboard accessible
                 
-                // Auto-select invalid if no confident matches
-                if (!autoSelected) {
+                // Auto-select invalid if no confident matches AND not yet reviewed
+                // If already reviewed, restore the selection
+                if (hasBeenReviewed && existingMatch === null) {
+                    invalidBtn.classList.add('invalid');
+                    invalidBtn.style.backgroundColor = '#d4351c';
+                    invalidBtn.style.color = 'white';
+                    invalidBtn.style.borderColor = '#d4351c';
+                    invalidBtn.style.fontWeight = 'bold';
+                } else if (!autoSelected && !hasBeenReviewed) {
                     invalidBtn.classList.add('invalid');
                     invalidBtn.style.backgroundColor = '#d4351c';
                     invalidBtn.style.color = 'white';
@@ -2145,6 +2249,15 @@ import PageLayout from "@layouts/page.astro";
                 notBallotBtn.textContent = 'Not a ballot entry (remove)';
                 notBallotBtn.dataset.foundName = foundName;
                 notBallotBtn.tabIndex = 0;
+                
+                // If already reviewed and was marked as not a ballot, restore that selection
+                if (hasBeenReviewed && existingMatch === '__NOT_A_BALLOT__') {
+                    notBallotBtn.classList.add('not-ballot');
+                    notBallotBtn.style.backgroundColor = '#505a5f';
+                    notBallotBtn.style.color = 'white';
+                    notBallotBtn.style.borderColor = '#505a5f';
+                    notBallotBtn.style.fontWeight = 'bold';
+                }
                 
                 const selectNotBallotButton = function() {
                     console.log('Not a ballot button selected');
@@ -2307,6 +2420,10 @@ import PageLayout from "@layouts/page.astro";
                 
                 const navigatePrevious = function() {
                     if (parsedData.currentNameIndex > 0) {
+                        // Mark current name as reviewed before navigating
+                        const currentName = parsedData.uniqueNames[parsedData.currentNameIndex];
+                        parsedData.reviewedNames.add(currentName);
+                        
                         parsedData.currentNameIndex--;
                         renderCurrentName();
                     }
@@ -2326,6 +2443,10 @@ import PageLayout from "@layouts/page.astro";
                 nextBtn.textContent = parsedData.currentNameIndex === parsedData.uniqueNames.length - 1 ? 'Review Ballots →' : 'Next →';
                 
                 const navigateNext = function() {
+                    // Mark current name as reviewed before navigating
+                    const currentName = parsedData.uniqueNames[parsedData.currentNameIndex];
+                    parsedData.reviewedNames.add(currentName);
+                    
                     parsedData.currentNameIndex++;
                     renderCurrentName();
                 };
@@ -2492,13 +2613,17 @@ import PageLayout from "@layouts/page.astro";
                     <span class="ballot-summary-stat">Modified: <strong>${modifiedBallots}</strong></span>
                     <span class="ballot-summary-stat">Viewing: <strong>${currentBallotIndex + 1} of ${totalBallots}</strong></span>
                 </div>
+
                 <div class="govuk-inset-text" style="margin-top: 10px; font-size: 0.85em;">
                     <strong>Keyboard shortcuts:</strong>
                     <span style="display: block; margin-top: 5px;">
-                        <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">←</kbd><kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">→</kbd> Navigate between ballots
+                        <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">←</kbd><kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">→</kbd> or <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">Enter</kbd><kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">Shift+Enter</kbd> Navigate between ballots
                     </span>
                 </div>
             `;
+            
+            // Attach event listeners to the buttons
+
             
             content.innerHTML = '';
             
@@ -2526,193 +2651,230 @@ import PageLayout from "@layouts/page.astro";
             `;
             card.appendChild(header);
             
-            // Body with two columns: Original | Structured
+            // Body with row-by-row layout for perfect alignment
             const body = document.createElement('div');
             body.className = 'ballot-review-body';
             
-            // Left column: Original ballot text
-            const originalCol = document.createElement('div');
-            originalCol.className = 'ballot-column ballot-original';
-            originalCol.innerHTML = '<div class="ballot-column-header">Original Ballot</div>';
-            
-            const originalTextDiv = document.createElement('div');
-            originalTextDiv.className = 'ballot-original-full';
-            
-            // Get original text or reconstruct from ballot data
-            const originalText = parsedData.originalBallotText.get(ballot.voter);
-            if (originalText) {
-                // Parse and syntax highlight the original text
-                const originalLines = originalText.split('\n');
-                for (let i = 0; i < originalLines.length; i++) {
-                    const line = originalLines[i];
-                    const lineDiv = document.createElement('div');
-                    
-                    if (i === 0 || /—\s*(\d{2}\/\d{2}\/\d{4}|Yesterday at|Today at)/i.test(line)) {
-                        // Voter/timestamp line
-                        lineDiv.className = 'voter-line';
-                    } else if (line.trim()) {
-                        // Ranking line
-                        lineDiv.className = 'ranking-line';
-                    }
-                    
-                    lineDiv.textContent = line || ' '; // Use space for empty lines
-                    originalTextDiv.appendChild(lineDiv);
-                }
-            } else {
-                // Fallback: show reconstructed ballot
-                const voterLine = document.createElement('div');
-                voterLine.className = 'voter-line';
-                voterLine.textContent = ballot.voter;
-                originalTextDiv.appendChild(voterLine);
-                
-                for (let ranking of ballot.rankings) {
-                    const rankingLine = document.createElement('div');
-                    rankingLine.className = 'ranking-line';
-                    rankingLine.textContent = ranking;
-                    originalTextDiv.appendChild(rankingLine);
-                }
-            }
-            
-            originalCol.appendChild(originalTextDiv);
-            
-            // Right column: Structured editable ballot
-            const structuredCol = document.createElement('div');
-            structuredCol.className = 'ballot-column ballot-structured';
-            structuredCol.innerHTML = `
-                <div class="ballot-column-header">Structured Ballot (Editable)</div>
-                <div class="structured-header">
-                    <strong>Voter:</strong> ${escapeHtml(ballot.voter)}
+            // Add column headers as first row
+            const headerRow = document.createElement('div');
+            headerRow.className = 'ballot-row';
+            headerRow.innerHTML = `
+                <div style="background: #2b2b2b; color: #f8f8f2; padding: 10px 15px; font-weight: bold;">
+                    Original Ballot
+                </div>
+                <div style="background: #1d70b8; color: white; padding: 10px 15px; font-weight: bold;">
+                    Structured Ballot (Editable) - Voter: ${escapeHtml(ballot.voter)}
                 </div>
             `;
+            body.appendChild(headerRow);
             
-            const rankingsDiv = document.createElement('div');
-            rankingsDiv.className = 'structured-rankings';
+            // Get original text lines
+            const originalText = parsedData.originalBallotText.get(ballot.voter);
+            let originalLines: string[] = [];
+            if (originalText) {
+                originalLines = originalText.split('\n');
+            } else {
+                originalLines = [ballot.voter, ...ballot.rankings];
+            }
             
             const structuredBallot = getStructuredBallot(ballot.voter);
             
-            for (let i = 0; i < structuredBallot.length; i++) {
-                const ranking = structuredBallot[i];
+            // Build a map from original name to the ranking in structuredBallot
+            const origNameToRanking = new Map<string, {rank: number, candidate: string}>();
+            for (let ranking of structuredBallot) {
+                for (let origName of ballot.rankings) {
+                    const match = parsedData.nameMatches.get(origName);
+                    if (match === ranking.candidate && !origNameToRanking.has(origName)) {
+                        origNameToRanking.set(origName, ranking);
+                        break;
+                    }
+                }
+            }
+            
+            // Iterate through original lines and create paired rows
+            let rankCounter = 0;
+            for (let i = 0; i < originalLines.length; i++) {
+                const line = originalLines[i];
+                const trimmedLine = line.trim();
+                
+                if (!trimmedLine) continue;
+                
+                const isVoterLine = (i === 0);
+                const isTimestampLine = /—\s*(\d{2}\/\d{2}\/\d{4}|Yesterday at|Today at)/i.test(line);
+                
+                if (isVoterLine) continue; // Skip - voter in header
+                
+                // Create row container
                 const row = document.createElement('div');
-                row.className = 'rank-row';
-                if (hasOverride) {
-                    row.classList.add('modified');
+                row.className = 'ballot-row';
+                
+                // Left side: Original line
+                const originalDiv = document.createElement('div');
+                originalDiv.className = 'ballot-row-original';
+                if (isTimestampLine) {
+                    originalDiv.style.color = '#66d9ef';
+                    originalDiv.style.fontWeight = 'bold';
+                }
+                originalDiv.textContent = trimmedLine;
+                
+                // Right side: Structured element
+                const structuredDiv = document.createElement('div');
+                structuredDiv.className = 'ballot-row-structured';
+                
+                if (isTimestampLine) {
+                    // Timestamp spacer
+                    structuredDiv.classList.add('spacer');
+                    structuredDiv.innerHTML = `
+                        <span class="rank-number"></span>
+                        <span class="spacer-label" style="font-style: italic; color: #66d9ef;">${escapeHtml(trimmedLine)}</span>
+                    `;
+                } else {
+                    // Find matching original name
+                    let matchedOrigName: string | null = null;
+                    for (let origName of ballot.rankings) {
+                        if (trimmedLine === origName || line.includes(origName)) {
+                            matchedOrigName = origName;
+                            break;
+                        }
+                    }
+                    
+                    if (!matchedOrigName && ballot.rankings[rankCounter]) {
+                        matchedOrigName = ballot.rankings[rankCounter];
+                    }
+                    
+                    if (matchedOrigName && origNameToRanking.has(matchedOrigName)) {
+                        // Valid ranking - create editable row
+                        const ranking = origNameToRanking.get(matchedOrigName)!;
+                        const rankIndex = structuredBallot.findIndex(r => r.rank === ranking.rank);
+                        
+                        if (hasOverride) structuredDiv.classList.add('modified');
+                        
+                        const rankNum = document.createElement('span');
+                        rankNum.className = 'rank-number';
+                        rankNum.textContent = `${ranking.rank}.`;
+                        rankNum.style.fontWeight = 'bold';
+                        rankNum.style.color = '#1d70b8';
+                        rankNum.style.width = '30px';
+                        rankNum.style.flexShrink = '0';
+                        
+                        const moveUpBtn = document.createElement('button');
+                        moveUpBtn.type = 'button';
+                        moveUpBtn.className = 'rank-move-btn';
+                        moveUpBtn.innerHTML = '↑';
+                        moveUpBtn.disabled = rankIndex === 0;
+                        moveUpBtn.addEventListener('click', () => {
+                            moveRanking(ballot.voter, rankIndex, rankIndex - 1);
+                        });
+                        
+                        const moveDownBtn = document.createElement('button');
+                        moveDownBtn.type = 'button';
+                        moveDownBtn.className = 'rank-move-btn';
+                        moveDownBtn.innerHTML = '↓';
+                        moveDownBtn.disabled = rankIndex === structuredBallot.length - 1;
+                        moveDownBtn.addEventListener('click', () => {
+                            moveRanking(ballot.voter, rankIndex, rankIndex + 1);
+                        });
+                        
+                        const dropdown = document.createElement('select');
+                        dropdown.className = 'rank-dropdown';
+                        dropdown.style.flex = '1';
+                        for (let candidate of parsedData.candidates) {
+                            const option = document.createElement('option');
+                            option.value = candidate;
+                            option.textContent = candidate;
+                            if (ranking.candidate === candidate) option.selected = true;
+                            dropdown.appendChild(option);
+                        }
+                        dropdown.addEventListener('change', () => {
+                            changeRankingCandidate(ballot.voter, rankIndex, dropdown.value);
+                        });
+                        
+                        const removeBtn = document.createElement('button');
+                        removeBtn.type = 'button';
+                        removeBtn.className = 'rank-remove';
+                        removeBtn.innerHTML = '×';
+                        removeBtn.addEventListener('click', () => {
+                            removeRanking(ballot.voter, rankIndex);
+                        });
+                        
+                        structuredDiv.appendChild(rankNum);
+                        structuredDiv.appendChild(moveUpBtn);
+                        structuredDiv.appendChild(moveDownBtn);
+                        structuredDiv.appendChild(dropdown);
+                        structuredDiv.appendChild(removeBtn);
+                    } else if (matchedOrigName) {
+                        // Invalid/skipped ranking - spacer
+                        structuredDiv.classList.add('spacer');
+                        const match = parsedData.nameMatches.get(matchedOrigName);
+                        
+                        const rankNum = document.createElement('span');
+                        rankNum.className = 'rank-number';
+                        rankNum.textContent = '—';
+                        rankNum.style.color = '#999';
+                        
+                        const label = document.createElement('span');
+                        label.className = 'spacer-label';
+                        label.style.color = '#999';
+                        label.style.fontStyle = 'italic';
+                        label.style.fontSize = '0.85em';
+                        
+                        if (match === '__NOT_A_BALLOT__') {
+                            label.textContent = `Removed: ${matchedOrigName}`;
+                        } else if (match === null) {
+                            label.textContent = `Invalid: ${matchedOrigName}`;
+                        } else {
+                            label.textContent = `Duplicate: ${matchedOrigName}`;
+                        }
+                        
+                        structuredDiv.appendChild(rankNum);
+                        structuredDiv.appendChild(label);
+                    }
+                    
+                    rankCounter++;
                 }
                 
-                // Rank number
-                const rankNum = document.createElement('span');
-                rankNum.className = 'rank-number';
-                rankNum.textContent = `${ranking.rank}.`;
-                
-                // Move up button
-                const moveUpBtn = document.createElement('button');
-                moveUpBtn.type = 'button';
-                moveUpBtn.className = 'rank-move-btn';
-                moveUpBtn.innerHTML = '↑';
-                moveUpBtn.title = 'Move up';
-                moveUpBtn.disabled = i === 0;
-                moveUpBtn.addEventListener('click', () => {
-                    moveRanking(ballot.voter, i, i - 1);
-                });
-                
-                // Move down button
-                const moveDownBtn = document.createElement('button');
-                moveDownBtn.type = 'button';
-                moveDownBtn.className = 'rank-move-btn';
-                moveDownBtn.innerHTML = '↓';
-                moveDownBtn.title = 'Move down';
-                moveDownBtn.disabled = i === structuredBallot.length - 1;
-                moveDownBtn.addEventListener('click', () => {
-                    moveRanking(ballot.voter, i, i + 1);
-                });
-                
-                // Candidate dropdown
-                const dropdown = document.createElement('select');
-                dropdown.className = 'rank-dropdown';
-                
-                for (let candidate of parsedData.candidates) {
-                    const option = document.createElement('option');
-                    option.value = candidate;
-                    option.textContent = candidate;
-                    if (ranking.candidate === candidate) option.selected = true;
-                    dropdown.appendChild(option);
-                }
-                
-                dropdown.addEventListener('change', () => {
-                    changeRankingCandidate(ballot.voter, i, dropdown.value);
-                });
-                
-                // Remove button
-                const removeBtn = document.createElement('button');
-                removeBtn.type = 'button';
-                removeBtn.className = 'rank-remove';
-                removeBtn.innerHTML = '×';
-                removeBtn.title = 'Remove ranking';
-                removeBtn.addEventListener('click', () => {
-                    removeRanking(ballot.voter, i);
-                });
-                
-                row.appendChild(rankNum);
-                row.appendChild(moveUpBtn);
-                row.appendChild(moveDownBtn);
-                row.appendChild(dropdown);
-                row.appendChild(removeBtn);
-                rankingsDiv.appendChild(row);
+                row.appendChild(originalDiv);
+                row.appendChild(structuredDiv);
+                body.appendChild(row);
             }
             
-            // Add ranking button
-            const addContainer = document.createElement('div');
-            addContainer.className = 'add-ranking-container';
             
-            const addDropdown = document.createElement('select');
-            addDropdown.className = 'add-ranking-dropdown';
+            // Add "Add Ranking" and "Reset" buttons at the bottom
+            const actionsRow = document.createElement('div');
+            actionsRow.className = 'ballot-row';
+            actionsRow.innerHTML = `
+                <div class="ballot-row-original" style="background: #1d1d1d;"></div>
+                <div class="ballot-row-structured" style="background: #f8f8f8; justify-content: space-between;">
+                    <select class="add-ranking-dropdown" style="flex: 1; margin-right: 10px;">
+                        <option value="">-- Select candidate to add --</option>
+                        ${parsedData.candidates.filter(c => !structuredBallot.find(r => r.candidate === c)).map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('')}
+                    </select>
+                    <button type="button" class="add-ranking" style="margin-right: 10px;">+ Add Ranking</button>
+                    ${hasOverride ? '<button type="button" class="reset-ballot-btn">↻ Reset to Auto-Mapped</button>' : ''}
+                </div>
+            `;
+            body.appendChild(actionsRow);
             
-            const defaultOpt = document.createElement('option');
-            defaultOpt.value = '';
-            defaultOpt.textContent = '-- Select candidate to add --';
-            addDropdown.appendChild(defaultOpt);
+            // Attach event listeners to the action buttons
+            const addDropdown = actionsRow.querySelector('.add-ranking-dropdown') as HTMLSelectElement;
+            const addBtn = actionsRow.querySelector('.add-ranking') as HTMLButtonElement;
+            const resetBtn = actionsRow.querySelector('.reset-ballot-btn') as HTMLButtonElement;
             
-            // Only show candidates not already in ballot
-            const usedCandidates = new Set(structuredBallot.map(r => r.candidate));
-            for (let candidate of parsedData.candidates) {
-                if (!usedCandidates.has(candidate)) {
-                    const option = document.createElement('option');
-                    option.value = candidate;
-                    option.textContent = candidate;
-                    addDropdown.appendChild(option);
-                }
+            if (addBtn && addDropdown) {
+                addBtn.addEventListener('click', () => {
+                    if (addDropdown.value) {
+                        addRanking(ballot.voter, addDropdown.value);
+                    }
+                });
             }
             
-            const addBtn = document.createElement('button');
-            addBtn.type = 'button';
-            addBtn.className = 'add-ranking';
-            addBtn.textContent = '+ Add Ranking';
-            addBtn.addEventListener('click', () => {
-                if (addDropdown.value) {
-                    addRanking(ballot.voter, addDropdown.value);
-                }
-            });
-            
-            addContainer.appendChild(addDropdown);
-            addContainer.appendChild(addBtn);
-            rankingsDiv.appendChild(addContainer);
-            
-            // Reset button (if modified)
-            if (hasOverride) {
-                const resetBtn = document.createElement('button');
-                resetBtn.type = 'button';
-                resetBtn.className = 'reset-ballot-btn';
-                resetBtn.textContent = '↻ Reset to Auto-Mapped';
+            if (resetBtn) {
                 resetBtn.addEventListener('click', () => {
                     parsedData.ballotOverrides.delete(ballot.voter);
                     renderBallotReview();
                 });
-                rankingsDiv.appendChild(resetBtn);
             }
             
-            structuredCol.appendChild(rankingsDiv);
-            
-            body.appendChild(originalCol);
-            body.appendChild(structuredCol);
             card.appendChild(body);
             content.appendChild(card);
             
@@ -2763,13 +2925,13 @@ import PageLayout from "@layouts/page.astro";
             // Handle ballot review keyboard navigation
             const ballotReview = document.getElementById('ballot-review');
             if (ballotReview && ballotReview.style.display === 'block') {
-                if (e.key === 'ArrowLeft') {
+                if (e.key === 'ArrowLeft' || (e.key === 'Enter' && e.shiftKey)) {
                     e.preventDefault();
                     if (currentBallotIndex > 0) {
                         currentBallotIndex--;
                         renderBallotReview();
                     }
-                } else if (e.key === 'ArrowRight') {
+                } else if (e.key === 'ArrowRight' || e.key === 'Enter') {
                     e.preventDefault();
                     if (currentBallotIndex < parsedData.ballots.length - 1) {
                         currentBallotIndex++;
@@ -2799,14 +2961,41 @@ import PageLayout from "@layouts/page.astro";
                 return;
             }
             
-            // Arrow keys and A/D keys for navigation
-            if ((e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') && parsedData.currentNameIndex > 0) {
+            // Arrow keys for navigation
+            if (e.key === 'ArrowLeft' && parsedData.currentNameIndex > 0) {
                 e.preventDefault();
+                // Mark current name as reviewed before navigating
+                const currentName = parsedData.uniqueNames[parsedData.currentNameIndex];
+                parsedData.reviewedNames.add(currentName);
+                
                 parsedData.currentNameIndex--;
                 renderCurrentName();
-            } else if ((e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D' || e.key === 'Enter') && parsedData.currentNameIndex < parsedData.uniqueNames.length) {
+            } else if (e.key === 'ArrowRight' && parsedData.currentNameIndex < parsedData.uniqueNames.length) {
                 e.preventDefault();
+                // Mark current name as reviewed before navigating
+                const currentName = parsedData.uniqueNames[parsedData.currentNameIndex];
+                parsedData.reviewedNames.add(currentName);
+                
                 parsedData.currentNameIndex++;
+                renderCurrentName();
+            }
+            
+            // Enter and Shift+Enter for navigation
+            if (e.key === 'Enter' && !e.shiftKey && parsedData.currentNameIndex < parsedData.uniqueNames.length) {
+                e.preventDefault();
+                // Mark current name as reviewed before navigating
+                const currentName = parsedData.uniqueNames[parsedData.currentNameIndex];
+                parsedData.reviewedNames.add(currentName);
+                
+                parsedData.currentNameIndex++;
+                renderCurrentName();
+            } else if (e.key === 'Enter' && e.shiftKey && parsedData.currentNameIndex > 0) {
+                e.preventDefault();
+                // Mark current name as reviewed before navigating
+                const currentName = parsedData.uniqueNames[parsedData.currentNameIndex];
+                parsedData.reviewedNames.add(currentName);
+                
+                parsedData.currentNameIndex--;
                 renderCurrentName();
             }
             
@@ -2815,18 +3004,35 @@ import PageLayout from "@layouts/page.astro";
             if (numMatch) {
                 const index = parseInt(e.key) - 1;
                 const matchButtons = document.querySelectorAll<HTMLButtonElement>('.match-option');
-                if (matchButtons[index] && !matchButtons[index].classList.contains('invalid')) {
+                if (matchButtons[index] && !matchButtons[index].classList.contains('invalid') && !matchButtons[index].classList.contains('not-ballot')) {
                     e.preventDefault();
                     matchButtons[index].click();
                 }
             }
             
-            // 0 key for "Not a candidate" button
-            if (e.key === '0') {
-                const invalidBtn = document.querySelector<HTMLButtonElement>('button.invalid-option');
+            // 'N' key for "Not a candidate" button
+            if (e.key === 'n' || e.key === 'N') {
+                const matchOptions = document.querySelectorAll<HTMLButtonElement>('.match-option');
+                // Find the "Not a candidate" button (should be the second-to-last button)
+                const invalidBtn = Array.from(matchOptions).find(btn => 
+                    btn.textContent?.includes('Not a candidate')
+                );
                 if (invalidBtn) {
                     e.preventDefault();
                     invalidBtn.click();
+                }
+            }
+            
+            // 'M' key for "Not a ballot entry" button
+            if (e.key === 'm' || e.key === 'M') {
+                const matchOptions = document.querySelectorAll<HTMLButtonElement>('.match-option');
+                // Find the "Not a ballot entry" button (should be the last button)
+                const notBallotBtn = Array.from(matchOptions).find(btn => 
+                    btn.textContent?.includes('Not a ballot entry')
+                );
+                if (notBallotBtn) {
+                    e.preventDefault();
+                    notBallotBtn.click();
                 }
             }
         });

@@ -39,6 +39,7 @@ if (fs.existsSync(envPath)) {
 
 const OFFICIALS_FILE = path.join(process.cwd(), "src/data/officials.yml");
 const COUNCILLORS_FILE = path.join(process.cwd(), "src/data/councillors.yml");
+const ROLE_CONFIG_FILE = path.join(process.cwd(), "src/data/role-config.yml");
 const DEFAULT_ICON = "https://cdn.discordapp.com/embed/avatars/0.png";
 
 const DISCORD_API_BASE = "https://discord.com/api/v10";
@@ -51,6 +52,19 @@ interface DiscordUser {
     banner?: string | null;
 }
 
+interface RoleDefinition {
+    id: string;
+    display_name: string;
+    multi_seat: boolean;
+    num_seats?: number;
+    order: number;
+}
+
+interface RoleConfig {
+    republic_roles: RoleDefinition[];
+    city_roles: RoleDefinition[];
+}
+
 // Load bot token from environment
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 
@@ -59,6 +73,34 @@ if (!BOT_TOKEN) {
     console.error("Please create a .env file with your Discord bot token:");
     console.error("DISCORD_BOT_TOKEN=your_token_here");
     process.exit(1);
+}
+
+/**
+ * Load role configuration from role-config.yml
+ */
+function loadRoleConfig(): RoleConfig {
+    try {
+        const content = fs.readFileSync(ROLE_CONFIG_FILE, "utf-8");
+        const parsed = matter(`---\n${content}\n---`);
+        const config = parsed.data as RoleConfig;
+        return config;
+    } catch (error) {
+        console.error("Error loading role config, using defaults:", error);
+        return {
+            republic_roles: [
+                { id: "president", display_name: "President", multi_seat: false, order: 1 },
+                { id: "secretary_of_defense", display_name: "Secretary of Defense", multi_seat: false, order: 2 },
+                { id: "secretary_of_interior", display_name: "Secretary of the Interior", multi_seat: false, order: 3 },
+                { id: "secretary_of_treasury", display_name: "Secretary of Treasury", multi_seat: false, order: 4 },
+                { id: "speaker", display_name: "Speaker of the Senate", multi_seat: false, order: 5 },
+                { id: "senator", display_name: "Senator", multi_seat: true, num_seats: 5, order: 6 },
+            ],
+            city_roles: [
+                { id: "mayor", display_name: "Mayor", multi_seat: false, order: 1 },
+                { id: "councillor", display_name: "Councillor", multi_seat: true, num_seats: 5, order: 2 },
+            ]
+        };
+    }
 }
 
 /**
@@ -202,6 +244,7 @@ function parseYamlFile(filePath: string): any {
 async function updateOfficials() {
     console.log("📋 Updating government officials...");
     
+    const roleConfig = loadRoleConfig();
     const structure = parseYamlFile(OFFICIALS_FILE);
     let updateCount = 0;
     
@@ -243,7 +286,7 @@ async function updateOfficials() {
     }
     
     // Write back to file
-    await writeYamlFile(OFFICIALS_FILE, structure, "senators");
+    await writeYamlFile(OFFICIALS_FILE, structure, "senators", roleConfig.republic_roles);
     console.log(`✅ Government officials updated (${updateCount} avatars fetched)\n`);
 }
 
@@ -253,6 +296,7 @@ async function updateOfficials() {
 async function updateCouncillors() {
     console.log("📋 Updating city officials...");
     
+    const roleConfig = loadRoleConfig();
     const structure = parseYamlFile(COUNCILLORS_FILE);
     let updateCount = 0;
     
@@ -294,14 +338,14 @@ async function updateCouncillors() {
     }
     
     // Write back to file
-    await writeYamlFile(COUNCILLORS_FILE, structure, "councillors");
+    await writeYamlFile(COUNCILLORS_FILE, structure, "councillors", roleConfig.city_roles);
     console.log(`✅ City officials updated (${updateCount} avatars fetched)\n`);
 }
 
 /**
  * Write structure back to YAML file
  */
-async function writeYamlFile(filePath: string, structure: any, multiSeatName: string) {
+async function writeYamlFile(filePath: string, structure: any, multiSeatName: string, roleDefinitions: RoleDefinition[]) {
     const isOfficials = multiSeatName === "senators";
     const seatLabel = isOfficials ? "Senate Seats" : "Councillor Seats";
     const numSeats = structure.multiSeat.length;
@@ -320,12 +364,18 @@ ${termKey}: "${structure.entries[termKey]}"\n\n`;
         delete structure.entries[termKey];
     }
     
+    // Create a map of role IDs to display names from role config
+    const roleDisplayNames = new Map<string, string>();
+    for (const role of roleDefinitions.filter(r => !r.multi_seat)) {
+        roleDisplayNames.set(role.id, role.display_name);
+    }
+    
     // Add single-seat roles
     for (const [role, data] of Object.entries(structure.entries)) {
         if (typeof data === "object" && data !== null) {
             const entry = data as any;
-            // Get display name from comment or capitalize role
-            const displayName = role.split("_").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+            // Get display name from role config
+            const displayName = roleDisplayNames.get(role) || role.split("_").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
             content += `# ${displayName}\n${role}:\n`;
             content += `  name: "${entry.name || ""}"\n`;
             content += `  icon: "${entry.icon || DEFAULT_ICON}"\n`;

@@ -8,7 +8,7 @@ term: ""
 senate_size: ""
 officials:
   - name: "prettyparfait "
-    role: speaker-of-the-senate
+    role: speaker
     action: elected
   - name: "SneedChungus "
     role: secretary-of-interior
