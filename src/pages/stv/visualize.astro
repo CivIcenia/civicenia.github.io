@@ -1,0 +1,1101 @@
+---
+/**
+ * STV Election Results Visualization Page
+ * 
+ * This page displays animated bar charts for STV election results.
+ * It can import election data from JSON files exported by the STV calculator.
+ * 
+ * @route /stv/visualize
+ */
+import PageLayout from "@layouts/page.astro";
+import AnimatedBarChart from "@components/AnimatedBarChart.astro";
+import SankeyDiagram from "@components/SankeyDiagram.astro";
+---
+
+<PageLayout chin={false} title="STV Results Visualization" description="Animated visualization of Single Transferable Vote election results round by round.">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">STV Results Visualization</h1>
+        <p class="govuk-body-l">View animated round-by-round results of STV elections.</p>
+    </div>
+
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper govuk-body" id="main-content">
+            
+            <!-- Import Section -->
+            <div class="import-section govuk-form-group">
+                <h2 class="govuk-heading-m">Load Election Data</h2>
+                <p class="govuk-body">Import an RCVis-format JSON file exported from the <a href="/stv">STV Calculator</a>.</p>
+                
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="election-file">
+                        Select election results file (.json)
+                    </label>
+                    <input 
+                        type="file" 
+                        id="election-file" 
+                        accept=".json"
+                        class="govuk-file-upload"
+                    />
+                </div>
+                
+                <div class="govuk-button-group">
+                    <button type="button" id="load-file-btn" class="icenia-btn">
+                        Load Election Data
+                    </button>
+                    <button type="button" id="load-demo-btn" class="icenia-btn icenia-btn-secondary">
+                        Load Demo Data
+                    </button>
+                </div>
+                
+                <!-- Error/Status Messages -->
+                <div id="status-message" class="status-message" style="display: none;"></div>
+            </div>
+            
+            <!-- Election Info -->
+            <div id="election-info" class="election-info" style="display: none;">
+                <h2 class="govuk-heading-m">Election Details</h2>
+                <dl class="govuk-summary-list govuk-summary-list--no-border">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Contest</dt>
+                        <dd class="govuk-summary-list__value" id="info-contest">-</dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Date</dt>
+                        <dd class="govuk-summary-list__value" id="info-date">-</dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Quota</dt>
+                        <dd class="govuk-summary-list__value" id="info-quota">-</dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Rounds</dt>
+                        <dd class="govuk-summary-list__value" id="info-rounds">-</dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Candidates</dt>
+                        <dd class="govuk-summary-list__value" id="info-candidates">-</dd>
+                    </div>
+                </dl>
+            </div>
+            
+            <!-- Chart Container (populated dynamically) -->
+            <div id="chart-wrapper" style="display: none;">
+                <h2 class="govuk-heading-m">Round-by-Round Results</h2>
+                <div id="dynamic-chart-container"></div>
+                
+                <!-- Sankey Diagram -->
+                <div id="sankey-wrapper" style="display: none;">
+                    <h2 class="govuk-heading-m">Vote Transfer Flow</h2>
+                    <p class="govuk-body">This diagram shows how votes moved between candidates across rounds.</p>
+                    <div id="dynamic-sankey-container"></div>
+                </div>
+                
+                <!-- Results Summary -->
+                <div id="results-summary" class="results-summary" style="display: none;">
+                    <h3 class="govuk-heading-s">Election Outcomes</h3>
+                    <div id="outcomes-list"></div>
+                </div>
+            </div>
+            
+            <!-- Instructions when no data loaded -->
+            <div id="instructions" class="instructions-panel">
+                <h3 class="govuk-heading-s">How to Use</h3>
+                <ol class="govuk-list govuk-list--number">
+                    <li>Go to the <a href="/stv">STV Calculator</a> and run an election.</li>
+                    <li>Click "Export for RCVis" to download the results JSON file.</li>
+                    <li>Return here and load that file to see the animated visualization.</li>
+                </ol>
+                
+                <h3 class="govuk-heading-s">Expected File Format</h3>
+                <p class="govuk-body">The visualization expects RCVis-compatible JSON with this structure:</p>
+                <pre class="code-block"><code>{`{
+  "config": {
+    "contest": "Election Name",
+    "date": "2025-01-09",
+    "threshold": "5.000"
+  },
+  "results": [
+    {
+      "round": 1,
+      "tally": {
+        "Alice": "10.000",
+        "Bob": "8.000",
+        "Carol": "6.000"
+      },
+      "tallyResults": [...]
+    }
+  ]
+}`}</code></pre>
+            </div>
+
+        </main>
+    </div>
+
+</PageLayout>
+
+<script>
+    import * as echarts from 'echarts';
+    
+    // DOM Elements
+    const fileInput = document.getElementById('election-file') as HTMLInputElement;
+    const loadFileBtn = document.getElementById('load-file-btn') as HTMLButtonElement;
+    const loadDemoBtn = document.getElementById('load-demo-btn') as HTMLButtonElement;
+    const statusMessage = document.getElementById('status-message') as HTMLDivElement;
+    const electionInfo = document.getElementById('election-info') as HTMLDivElement;
+    const chartWrapper = document.getElementById('chart-wrapper') as HTMLDivElement;
+    const instructions = document.getElementById('instructions') as HTMLDivElement;
+    const dynamicChartContainer = document.getElementById('dynamic-chart-container') as HTMLDivElement;
+    const dynamicSankeyContainer = document.getElementById('dynamic-sankey-container') as HTMLDivElement;
+    const sankeyWrapper = document.getElementById('sankey-wrapper') as HTMLDivElement;
+    const resultsSummary = document.getElementById('results-summary') as HTMLDivElement;
+    const outcomesList = document.getElementById('outcomes-list') as HTMLDivElement;
+    
+    // Chart instances
+    let chartInstance: echarts.ECharts | null = null;
+    let sankeyInstance: echarts.ECharts | null = null;
+    
+    // Demo data for testing
+    const demoData = {
+        config: {
+            contest: "Demo Senate Election",
+            date: new Date().toISOString().split('T')[0],
+            jurisdiction: "Icenia",
+            office: "Senate",
+            threshold: "6.000"
+        },
+        results: [
+            { round: 1, tally: { Alice: "10.500", Bob: "8.200", Carol: "6.100", Dave: "5.200" }, tallyResults: [] },
+            { round: 2, tally: { Alice: "11.200", Bob: "8.800", Carol: "6.500", Dave: "3.500" }, tallyResults: [{ eliminated: "Dave" }] },
+            { round: 3, tally: { Alice: "12.000", Bob: "9.500", Carol: "5.000" }, tallyResults: [{ eliminated: "Carol" }] },
+            { round: 4, tally: { Alice: "8.500", Bob: "11.000" }, tallyResults: [{ elected: "Alice" }] },
+            { round: 5, tally: { Bob: "12.500" }, tallyResults: [{ elected: "Bob" }] }
+        ]
+    };
+    
+    /**
+     * Show a status message to the user
+     */
+    function showStatus(message: string, type: 'success' | 'error' | 'info' = 'info') {
+        statusMessage.textContent = message;
+        statusMessage.className = `status-message status-${type}`;
+        statusMessage.style.display = 'block';
+        
+        // Auto-hide success messages
+        if (type === 'success') {
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 3000);
+        }
+    }
+    
+    /**
+     * Parse and validate election data from JSON
+     */
+    function parseElectionData(jsonData: any): { 
+        roundResults: Array<{ round: number; tally: { [key: string]: number } }>;
+        config: any;
+        outcomes: Array<{ type: 'elected' | 'eliminated'; candidate: string; round: number }>;
+    } | null {
+        try {
+            // Validate structure
+            if (!jsonData.results || !Array.isArray(jsonData.results)) {
+                throw new Error('Invalid format: missing "results" array');
+            }
+            
+            const outcomes: Array<{ type: 'elected' | 'eliminated'; candidate: string; round: number }> = [];
+            
+            // Convert results to the expected format
+            const roundResults = jsonData.results.map((round: any, index: number) => {
+                if (!round.tally || typeof round.tally !== 'object') {
+                    throw new Error(`Invalid format: round ${index + 1} missing "tally" object`);
+                }
+                
+                // Convert string votes to numbers
+                const tally: { [key: string]: number } = {};
+                for (const [candidate, votes] of Object.entries(round.tally)) {
+                    tally[candidate] = typeof votes === 'string' ? parseFloat(votes) : votes as number;
+                }
+                
+                // Extract outcomes
+                if (round.tallyResults && Array.isArray(round.tallyResults)) {
+                    for (const result of round.tallyResults) {
+                        if (result.elected) {
+                            outcomes.push({ type: 'elected', candidate: result.elected, round: round.round });
+                        }
+                        if (result.eliminated) {
+                            outcomes.push({ type: 'eliminated', candidate: result.eliminated, round: round.round });
+                        }
+                    }
+                }
+                
+                return {
+                    round: round.round || index + 1,
+                    tally
+                };
+            });
+            
+            return {
+                roundResults,
+                config: jsonData.config || {},
+                outcomes
+            };
+        } catch (e) {
+            console.error('Parse error:', e);
+            showStatus(`Error parsing data: ${(e as Error).message}`, 'error');
+            return null;
+        }
+    }
+    
+    /**
+     * Extract all unique candidates from round results
+     */
+    function extractCandidates(roundResults: Array<{ round: number; tally: { [key: string]: number } }>): string[] {
+        const candidateSet = new Set<string>();
+        roundResults.forEach(round => {
+            Object.keys(round.tally).forEach(candidate => candidateSet.add(candidate));
+        });
+        return Array.from(candidateSet);
+    }
+    
+    /**
+     * Create and initialize the ECharts chart
+     */
+    function createChart(
+        roundResults: Array<{ round: number; tally: { [key: string]: number } }>,
+        candidates: string[],
+        quota?: number,
+        outcomes?: Array<{ type: 'elected' | 'eliminated'; candidate: string; round: number }>
+    ) {
+        // Clean up existing chart
+        if (chartInstance) {
+            chartInstance.dispose();
+        }
+        
+        // Create container HTML
+        dynamicChartContainer.innerHTML = `
+            <div id="echart-container" style="height: 500px; width: 100%;"></div>
+            <div class="chart-controls">
+                <div class="playback-controls">
+                    <button type="button" class="control-btn" id="prev-btn" title="Previous Round">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+                        </svg>
+                    </button>
+                    <button type="button" class="control-btn play-btn" id="play-btn" title="Play/Pause">
+                        <svg class="play-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                        <svg class="pause-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                        </svg>
+                    </button>
+                    <button type="button" class="control-btn" id="next-btn" title="Next Round">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="slider-container">
+                    <label for="round-slider" class="slider-label">Round: <span id="round-display">1</span> of ${roundResults.length}</label>
+                    <input type="range" id="round-slider" class="round-slider" min="1" max="${roundResults.length}" value="1" />
+                </div>
+                <div class="speed-control">
+                    <label for="speed-select">Speed:</label>
+                    <select id="speed-select" class="speed-select">
+                        <option value="2000">Slow</option>
+                        <option value="1000" selected>Normal</option>
+                        <option value="500">Fast</option>
+                    </select>
+                </div>
+                <button type="button" class="control-btn download-btn" id="download-btn" title="Download as PNG">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                    </svg>
+                </button>
+            </div>
+        `;
+        
+        // Initialize ECharts
+        const container = document.getElementById('echart-container')!;
+        chartInstance = echarts.init(container);
+        
+        // Color palette
+        const colors = [
+            '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
+            '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#48b8d0'
+        ];
+        
+        // State
+        let currentRound = 0;
+        let isPlaying = false;
+        let playInterval: number | null = null;
+        let animationSpeed = 1000;
+        
+        // Get controls
+        const slider = document.getElementById('round-slider') as HTMLInputElement;
+        const roundDisplay = document.getElementById('round-display')!;
+        const playBtn = document.getElementById('play-btn')!;
+        const prevBtn = document.getElementById('prev-btn')!;
+        const nextBtn = document.getElementById('next-btn')!;
+        const speedSelect = document.getElementById('speed-select') as HTMLSelectElement;
+        const downloadBtn = document.getElementById('download-btn')!;
+        
+        // Track winners who are frozen at quota
+        const frozenWinners = new Set<string>();
+        const maxVoteValue = Math.max(...roundResults.flatMap(r => Object.values(r.tally)));
+        
+        /**
+         * Generate chart options for a specific round
+         */
+        function getChartOption(roundIndex: number): echarts.EChartsOption {
+            const roundData = roundResults[roundIndex];
+            if (!roundData) return {};
+            
+            const values = candidates.map(c => {
+                // If this candidate was frozen in a previous round, show quota value
+                if (frozenWinners.has(c)) {
+                    return quota ?? roundData.tally[c] ?? 0;
+                }
+                return roundData.tally[c] ?? 0;
+            });
+            const barColors = candidates.map((_, i) => colors[i % colors.length]);
+            
+            // Calculate max value for consistent y-axis scaling
+            const yAxisMax = Math.max(maxVoteValue * 1.1, (quota ?? 0) * 1.2);
+            
+            const option: echarts.EChartsOption = {
+                title: {
+                    text: 'Election Results by Round',
+                    subtext: `Round ${roundData.round} of ${roundResults.length}`,
+                    left: 'center',
+                    textStyle: { fontSize: 18, fontWeight: 'bold' },
+                    subtextStyle: { fontSize: 14 }
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: { type: 'shadow' },
+                    formatter: (params: any) => {
+                        const p = Array.isArray(params) ? params[0] : params;
+                        const candidate = p.name;
+                        const isFrozen = frozenWinners.has(candidate);
+                        const status = isFrozen ? ' (Elected - Frozen at Quota)' : '';
+                        return `<strong>${candidate}</strong>${status}<br/>Round ${roundData.round}: ${p.value.toFixed(4)} votes`;
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '15%',
+                    top: '15%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: candidates,
+                    axisLabel: {
+                        rotate: candidates.length > 6 ? 45 : 0,
+                        interval: 0,
+                        fontSize: 12
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: 'Votes',
+                    nameLocation: 'middle',
+                    nameGap: 50,
+                    max: yAxisMax,
+                    axisLabel: { formatter: (v: number) => v.toFixed(1) }
+                },
+                series: [
+                    {
+                        name: 'Votes',
+                        type: 'bar',
+                        data: values.map((value, index) => {
+                            const candidate = candidates[index];
+                            const isFrozen = frozenWinners.has(candidate);
+                            return {
+                                value,
+                                itemStyle: {
+                                    color: isFrozen ? '#10b981' : barColors[index],
+                                    opacity: value === 0 ? 0.3 : (isFrozen ? 0.85 : 1),
+                                    borderColor: isFrozen ? '#059669' : 'transparent',
+                                    borderWidth: isFrozen ? 2 : 0
+                                }
+                            };
+                        }),
+                        animationDuration: 800,
+                        animationDurationUpdate: 800,
+                        animationEasing: 'cubicInOut',
+                        animationEasingUpdate: 'cubicInOut',
+                        label: {
+                            show: true,
+                            position: 'top',
+                            formatter: (params: any) => {
+                                if (params.value === 0) return '';
+                                const candidate = candidates[params.dataIndex];
+                                const isFrozen = frozenWinners.has(candidate);
+                                return isFrozen ? `${params.value.toFixed(2)} ✓` : params.value.toFixed(2);
+                            },
+                            fontSize: 11,
+                            fontWeight: 'bold'
+                        }
+                    }
+                ]
+            };
+            
+            // Add quota line if specified
+            if (quota && quota > 0) {
+                (option.series as any[]).push({
+                    name: 'Quota',
+                    type: 'line',
+                    markLine: {
+                        silent: true,
+                        symbol: 'none',
+                        lineStyle: { color: '#ff4444', type: 'dashed', width: 2 },
+                        data: [{ yAxis: quota, label: { formatter: `Quota: ${quota.toFixed(2)}`, position: 'end' } }]
+                    }
+                });
+            }
+            
+            return option;
+        }
+        
+        /**
+         * Show a specific round and update frozen winners
+         */
+        function showRound(roundIndex: number) {
+            if (roundIndex < 0 || roundIndex >= roundResults.length) return;
+            
+            // Update frozen winners based on outcomes data
+            frozenWinners.clear();
+            if (outcomes) {
+                outcomes.forEach(outcome => {
+                    if (outcome.type === 'elected' && outcome.round <= roundResults[roundIndex].round) {
+                        frozenWinners.add(outcome.candidate);
+                    }
+                });
+            }
+            
+            currentRound = roundIndex;
+            chartInstance!.setOption(getChartOption(roundIndex), { notMerge: false });
+            slider.value = String(roundIndex + 1);
+            roundDisplay.textContent = String(roundIndex + 1);
+        }
+        
+        /**
+         * Toggle play/pause
+         */
+        function togglePlay() {
+            if (isPlaying) {
+                stopPlay();
+            } else {
+                startPlay();
+            }
+        }
+        
+        function startPlay() {
+            isPlaying = true;
+            updatePlayButton();
+            playInterval = window.setInterval(() => {
+                if (currentRound < roundResults.length - 1) {
+                    showRound(currentRound + 1);
+                } else {
+                    showRound(0);
+                }
+            }, animationSpeed);
+        }
+        
+        function stopPlay() {
+            isPlaying = false;
+            updatePlayButton();
+            if (playInterval) {
+                clearInterval(playInterval);
+                playInterval = null;
+            }
+        }
+        
+        function updatePlayButton() {
+            const playIcon = playBtn.querySelector('.play-icon') as HTMLElement;
+            const pauseIcon = playBtn.querySelector('.pause-icon') as HTMLElement;
+            playIcon.style.display = isPlaying ? 'none' : 'block';
+            pauseIcon.style.display = isPlaying ? 'block' : 'none';
+        }
+        
+        // Event listeners
+        slider.addEventListener('input', () => { stopPlay(); showRound(parseInt(slider.value, 10) - 1); });
+        playBtn.addEventListener('click', togglePlay);
+        prevBtn.addEventListener('click', () => { stopPlay(); if (currentRound > 0) showRound(currentRound - 1); });
+        nextBtn.addEventListener('click', () => { stopPlay(); if (currentRound < roundResults.length - 1) showRound(currentRound + 1); });
+        speedSelect.addEventListener('change', () => {
+            animationSpeed = parseInt(speedSelect.value, 10);
+            if (isPlaying) { stopPlay(); startPlay(); }
+        });
+        downloadBtn.addEventListener('click', () => {
+            const dataUrl = chartInstance!.getDataURL({ type: 'png', pixelRatio: 2, backgroundColor: '#ffffff' });
+            const link = document.createElement('a');
+            link.download = `election-round-${currentRound + 1}.png`;
+            link.href = dataUrl;
+            link.click();
+        });
+        
+        // Handle resize
+        const resizeObserver = new ResizeObserver(() => chartInstance?.resize());
+        resizeObserver.observe(container);
+        
+        // Initial render
+        showRound(0);
+    }
+    
+    /**
+     * Create Sankey diagram showing vote transfers
+     */
+    function createSankeyDiagram(
+        roundResults: Array<{ round: number; tally: { [key: string]: number } }>,
+        candidates: string[]
+    ) {
+        // Clean up existing chart
+        if (sankeyInstance) {
+            sankeyInstance.dispose();
+        }
+        
+        // Create container HTML
+        dynamicSankeyContainer.innerHTML = `<div id="sankey-chart" style="height: 600px; width: 100%;"></div>`;
+        
+        // Initialize ECharts
+        const container = document.getElementById('sankey-chart')!;
+        sankeyInstance = echarts.init(container);
+        
+        // Build Sankey data
+        const sankeyData = buildSankeyData(roundResults, candidates);
+        
+        const option: echarts.EChartsOption = {
+            tooltip: {
+                trigger: 'item',
+                triggerOn: 'mousemove',
+                formatter: function(params: any) {
+                    if (params.dataType === 'edge') {
+                        return `${params.data.source} → ${params.data.target}<br/>Votes: ${params.value.toFixed(2)}`;
+                    } else if (params.dataType === 'node') {
+                        return `${params.name}<br/>Total: ${params.value.toFixed(2)} votes`;
+                    }
+                    return '';
+                }
+            },
+            series: [
+                {
+                    type: 'sankey',
+                    emphasis: {
+                        focus: 'adjacency'
+                    },
+                    nodeAlign: 'left',
+                    nodeGap: 12,
+                    nodeWidth: 25,
+                    layoutIterations: 0,
+                    data: sankeyData.nodes,
+                    links: sankeyData.links,
+                    lineStyle: {
+                        color: 'gradient',
+                        curveness: 0.5,
+                        opacity: 0.3
+                    },
+                    label: {
+                        fontSize: 11,
+                        formatter: function(params: any) {
+                            const name = params.name;
+                            // Extract just the candidate name (remove round prefix)
+                            const match = name.match(/^R\d+: (.+)$/);
+                            return match ? match[1] : name;
+                        }
+                    }
+                } as any
+            ]
+        };
+        
+        sankeyInstance.setOption(option);
+        
+        // Handle resize
+        const resizeObserver = new ResizeObserver(() => sankeyInstance?.resize());
+        resizeObserver.observe(container);
+        
+        // Show the Sankey wrapper
+        sankeyWrapper.style.display = 'block';
+    }
+    
+    /**
+     * Build Sankey nodes and links from round results
+     */
+    function buildSankeyData(
+        roundResults: Array<{ round: number; tally: { [key: string]: number } }>,
+        candidates: string[]
+    ): { nodes: any[]; links: any[] } {
+        const nodes: any[] = [];
+        const links: any[] = [];
+        
+        // Color palette matching the bar chart
+        const colors = [
+            '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
+            '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#48b8d0'
+        ];
+        
+        const candidateColors: { [key: string]: string } = {};
+        candidates.forEach((c, i) => {
+            candidateColors[c] = colors[i % colors.length];
+        });
+        
+        // Create nodes for each candidate in each round
+        roundResults.forEach((round, roundIndex) => {
+            Object.entries(round.tally).forEach(([candidate, votes]) => {
+                if (votes > 0.01) { // Only show candidates with meaningful votes
+                    const nodeName = `R${round.round}: ${candidate}`;
+                    nodes.push({
+                        name: nodeName,
+                        value: votes,
+                        itemStyle: {
+                            color: candidateColors[candidate] || '#999'
+                        },
+                        depth: roundIndex
+                    });
+                }
+            });
+        });
+        
+        // Create links between rounds (estimate vote transfers)
+        for (let i = 0; i < roundResults.length - 1; i++) {
+            const currentRound = roundResults[i];
+            const nextRound = roundResults[i + 1];
+            
+            // For each candidate in current round
+            Object.entries(currentRound.tally).forEach(([candidate, currentVotes]) => {
+                if (currentVotes < 0.01) return;
+                
+                const nextVotes = nextRound.tally[candidate] || 0;
+                const sourceName = `R${currentRound.round}: ${candidate}`;
+                
+                if (nextVotes > 0.01) {
+                    // Candidate still active - transfer continuing votes
+                    const targetName = `R${nextRound.round}: ${candidate}`;
+                    const transferValue = Math.min(currentVotes, nextVotes);
+                    
+                    if (transferValue > 0.01) {
+                        links.push({
+                            source: sourceName,
+                            target: targetName,
+                            value: transferValue
+                        });
+                    }
+                    
+                    // If candidate lost votes (surplus), distribute to others
+                    if (currentVotes > nextVotes + 0.01) {
+                        const surplus = currentVotes - nextVotes;
+                        distributeToOthers(links, sourceName, nextRound, surplus, candidate);
+                    }
+                } else {
+                    // Candidate eliminated - redistribute all votes
+                    distributeToOthers(links, sourceName, nextRound, currentVotes, candidate);
+                }
+            });
+        }
+        
+        return { nodes, links };
+    }
+    
+    /**
+     * Distribute votes to other candidates proportionally
+     */
+    function distributeToOthers(
+        links: any[],
+        sourceName: string,
+        nextRound: { round: number; tally: { [key: string]: number } },
+        totalVotes: number,
+        excludeCandidate: string
+    ) {
+        const otherCandidates = Object.entries(nextRound.tally).filter(
+            ([c, v]) => c !== excludeCandidate && v > 0.01
+        );
+        
+        if (otherCandidates.length === 0) return;
+        
+        const totalOtherVotes = otherCandidates.reduce((sum, [_, v]) => sum + (v as number), 0);
+        
+        // Distribute proportionally
+        otherCandidates.forEach(([candidate, votes]) => {
+            const proportion = (votes as number) / totalOtherVotes;
+            const transferAmount = totalVotes * proportion;
+            
+            if (transferAmount > 0.01) {
+                links.push({
+                    source: sourceName,
+                    target: `R${nextRound.round}: ${candidate}`,
+                    value: transferAmount
+                });
+            }
+        });
+    }
+    
+    /**
+     * Display election information
+     */
+    function displayElectionInfo(config: any, roundResults: any[], candidates: string[]) {
+        const infoContest = document.getElementById('info-contest')!;
+        const infoDate = document.getElementById('info-date')!;
+        const infoQuota = document.getElementById('info-quota')!;
+        const infoRounds = document.getElementById('info-rounds')!;
+        const infoCandidates = document.getElementById('info-candidates')!;
+        
+        infoContest.textContent = config.contest || 'Unknown';
+        infoDate.textContent = config.date || 'Unknown';
+        infoQuota.textContent = config.threshold ? parseFloat(config.threshold).toFixed(3) : 'Not specified';
+        infoRounds.textContent = String(roundResults.length);
+        infoCandidates.textContent = candidates.join(', ');
+        
+        electionInfo.style.display = 'block';
+    }
+    
+    /**
+     * Display election outcomes
+     */
+    function displayOutcomes(outcomes: Array<{ type: 'elected' | 'eliminated'; candidate: string; round: number }>) {
+        if (outcomes.length === 0) {
+            resultsSummary.style.display = 'none';
+            return;
+        }
+        
+        const html = outcomes.map(outcome => {
+            const icon = outcome.type === 'elected' ? '✓' : '✗';
+            const cssClass = outcome.type === 'elected' ? 'outcome-elected' : 'outcome-eliminated';
+            const label = outcome.type === 'elected' ? 'Elected' : 'Eliminated';
+            return `<div class="outcome-item ${cssClass}">
+                <span class="outcome-icon">${icon}</span>
+                <span class="outcome-candidate">${outcome.candidate}</span>
+                <span class="outcome-label">${label} in Round ${outcome.round}</span>
+            </div>`;
+        }).join('');
+        
+        outcomesList.innerHTML = html;
+        resultsSummary.style.display = 'block';
+    }
+    
+    /**
+     * Load and display election data
+     */
+    function loadElectionData(data: any) {
+        const parsed = parseElectionData(data);
+        if (!parsed) return;
+        
+        const { roundResults, config, outcomes } = parsed;
+        const candidates = extractCandidates(roundResults);
+        const quota = config.threshold ? parseFloat(config.threshold) : undefined;
+        
+        // Update UI
+        displayElectionInfo(config, roundResults, candidates);
+        createChart(roundResults, candidates, quota, outcomes);
+        createSankeyDiagram(roundResults, candidates);
+        displayOutcomes(outcomes);
+        
+        // Show chart, hide instructions
+        chartWrapper.style.display = 'block';
+        instructions.style.display = 'none';
+        statusMessage.style.display = 'none';
+        
+        showStatus('Election data loaded successfully!', 'success');
+    }
+    
+    // Event handlers
+    loadFileBtn.addEventListener('click', () => {
+        const file = fileInput.files?.[0];
+        if (!file) {
+            showStatus('Please select a file first.', 'error');
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const data = JSON.parse(e.target?.result as string);
+                loadElectionData(data);
+            } catch (err) {
+                showStatus('Invalid JSON file. Please check the file format.', 'error');
+            }
+        };
+        reader.onerror = () => {
+            showStatus('Error reading file.', 'error');
+        };
+        reader.readAsText(file);
+    });
+    
+    loadDemoBtn.addEventListener('click', () => {
+        loadElectionData(demoData);
+    });
+    
+    // Allow clicking file input directly
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files?.length) {
+            loadFileBtn.click();
+        }
+    });
+</script>
+
+<style>
+    .import-section {
+        padding: 1.5rem;
+        background: #f3f4f6;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+    
+    .status-message {
+        margin-top: 1rem;
+        padding: 0.75rem 1rem;
+        border-radius: 4px;
+        font-weight: 500;
+    }
+    
+    .status-success {
+        background: #d1fae5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+    
+    .status-error {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+    
+    .status-info {
+        background: #dbeafe;
+        color: #1e40af;
+        border: 1px solid #bfdbfe;
+    }
+    
+    .election-info {
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+    
+    .instructions-panel {
+        padding: 1.5rem;
+        background: #fffbeb;
+        border: 1px solid #fcd34d;
+        border-radius: 8px;
+    }
+    
+    .code-block {
+        background: #1f2937;
+        color: #e5e7eb;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        font-size: 0.875rem;
+    }
+    
+    .code-block code {
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    }
+    
+    .results-summary {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+    
+    #sankey-wrapper {
+        margin-top: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    #dynamic-sankey-container {
+        margin-top: 1rem;
+    }
+    
+    #sankey-chart {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: #fff;
+    }
+    
+    .outcome-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .outcome-item:last-child {
+        border-bottom: none;
+    }
+    
+    .outcome-icon {
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+    
+    .outcome-elected .outcome-icon {
+        color: #059669;
+    }
+    
+    .outcome-eliminated .outcome-icon {
+        color: #dc2626;
+    }
+    
+    .outcome-candidate {
+        font-weight: 600;
+    }
+    
+    .outcome-label {
+        color: #6b7280;
+        font-size: 0.875rem;
+    }
+    
+    /* Chart Controls (matching AnimatedBarChart.astro) */
+    .chart-controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+    }
+
+    .playback-controls {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .control-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background: #fff;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .control-btn:hover {
+        background: #e9e9e9;
+        border-color: #999;
+    }
+
+    .control-btn:focus {
+        outline: 2px solid #005a9c;
+        outline-offset: 2px;
+    }
+
+    .play-btn {
+        width: 50px;
+        background: #005a9c;
+        color: white;
+        border-color: #004a7c;
+    }
+
+    .play-btn:hover {
+        background: #004a7c;
+    }
+
+    .slider-container {
+        flex: 1;
+        min-width: 150px;
+        max-width: 300px;
+    }
+
+    .slider-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .round-slider {
+        width: 100%;
+        height: 8px;
+        -webkit-appearance: none;
+        appearance: none;
+        background: #ddd;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .round-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        background: #005a9c;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .round-slider::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        background: #005a9c;
+        border-radius: 50%;
+        cursor: pointer;
+        border: none;
+    }
+
+    .speed-control {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .speed-select {
+        padding: 0.375rem 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background: #fff;
+        cursor: pointer;
+    }
+
+    .download-btn {
+        margin-left: auto;
+    }
+
+    #echart-container {
+        border: 1px solid #ddd;
+        border-radius: 8px 8px 0 0;
+        background: #fff;
+    }
+
+    @media (max-width: 640px) {
+        .chart-controls {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .playback-controls {
+            justify-content: center;
+        }
+
+        .slider-container {
+            max-width: none;
+        }
+
+        .speed-control {
+            justify-content: center;
+        }
+
+        .download-btn {
+            margin-left: 0;
+            width: 100%;
+        }
+    }
+</style>

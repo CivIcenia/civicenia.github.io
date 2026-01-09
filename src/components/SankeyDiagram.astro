@@ -1,0 +1,274 @@
+---
+/**
+ * SankeyDiagram Component
+ * 
+ * Displays a Sankey diagram visualization of vote transfers between rounds
+ * in a Single Transferable Vote (STV) election.
+ * 
+ * @component
+ * @example
+ * ```astro
+ * <SankeyDiagram 
+ *   roundResults={[ 
+ *     { round: 1, tally: { Alice: 10, Bob: 8 } },
+ *     { round: 2, tally: { Alice: 12, Bob: 7 } }
+ *   ]}
+ *   candidates={['Alice', 'Bob']}
+ *   quota={8}
+ * />
+ * ```
+ */
+
+export interface Props {
+    /** Array of round results, each with a round number and vote tallies */
+    roundResults: Array<{
+        round: number;
+        tally: { [candidate: string]: number };
+    }>;
+    /** Array of candidate names for consistent ordering */
+    candidates?: string[];
+    /** Optional quota/threshold value */
+    quota?: number;
+}
+
+const { roundResults, candidates, quota } = Astro.props;
+
+// Generate unique ID for this instance
+const instanceId = `sankey-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<div class="sankey-container">
+    <div id={instanceId} class="sankey-chart"></div>
+</div>
+
+<script define:vars={{ instanceId, roundResults, candidates, quota }}>
+    import * as echarts from 'echarts';
+    
+    (function() {
+        // Wait for DOM to be ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initSankey);
+        } else {
+            initSankey();
+        }
+        
+        function initSankey() {
+            const container = document.getElementById(instanceId);
+            if (!container) {
+                console.error('Sankey container not found:', instanceId);
+                return;
+            }
+            
+            const chart = echarts.init(container);
+            
+            // Build Sankey data structure
+            const sankeyData = buildSankeyData(roundResults, candidates, quota);
+            
+            const option = {
+                title: {
+                    text: 'Vote Flow Between Rounds',
+                    left: 'center',
+                    textStyle: { fontSize: 16, fontWeight: 'bold' }
+                },
+                tooltip: {
+                    trigger: 'item',
+                    triggerOn: 'mousemove',
+                    formatter: function(params) {
+                        if (params.dataType === 'edge') {
+                            return `${params.data.source} → ${params.data.target}<br/>Votes: ${params.value.toFixed(2)}`;
+                        } else if (params.dataType === 'node') {
+                            return `${params.name}<br/>Total: ${params.value.toFixed(2)} votes`;
+                        }
+                        return '';
+                    }
+                },
+                series: [
+                    {
+                        type: 'sankey',
+                        layout: 'none',
+                        emphasis: {
+                            focus: 'adjacency'
+                        },
+                        nodeAlign: 'left',
+                        nodeGap: 10,
+                        nodeWidth: 20,
+                        layoutIterations: 0,
+                        data: sankeyData.nodes,
+                        links: sankeyData.links,
+                        lineStyle: {
+                            color: 'gradient',
+                            curveness: 0.5,
+                            opacity: 0.3
+                        },
+                        label: {
+                            fontSize: 10,
+                            formatter: function(params) {
+                                const name = params.name;
+                                // Extract just the candidate name (remove round prefix if present)
+                                const match = name.match(/^R\d+: (.+)$/);
+                                return match ? match[1] : name;
+                            }
+                        }
+                    }
+                ]
+            };
+            
+            chart.setOption(option);
+            
+            // Handle resize
+            const resizeObserver = new ResizeObserver(() => chart.resize());
+            resizeObserver.observe(container);
+        }
+        
+        /**
+         * Build Sankey nodes and links from round results
+         */
+        function buildSankeyData(roundResults, candidateList, quota) {
+            const nodes = [];
+            const links = [];
+            const allCandidates = candidateList || extractAllCandidates(roundResults);
+            
+            // Color palette for candidates
+            const colors = [
+                '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
+                '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#48b8d0'
+            ];
+            
+            const candidateColors = {};
+            allCandidates.forEach((c, i) => {
+                candidateColors[c] = colors[i % colors.length];
+            });
+            
+            // Create nodes for each candidate in each round
+            roundResults.forEach((round, roundIndex) => {
+                Object.entries(round.tally).forEach(([candidate, votes]) => {
+                    if (votes > 0.001) { // Only show candidates with meaningful votes
+                        const nodeName = `R${round.round}: ${candidate}`;
+                        nodes.push({
+                            name: nodeName,
+                            value: votes,
+                            itemStyle: {
+                                color: candidateColors[candidate] || '#999'
+                            },
+                            depth: roundIndex,
+                            label: {
+                                position: roundIndex === 0 ? 'right' : (roundIndex === roundResults.length - 1 ? 'left' : 'right')
+                            }
+                        });
+                    }
+                });
+            });
+            
+            // Create links between rounds (estimate vote transfers)
+            for (let i = 0; i < roundResults.length - 1; i++) {
+                const currentRound = roundResults[i];
+                const nextRound = roundResults[i + 1];
+                
+                // For each candidate in current round
+                Object.entries(currentRound.tally).forEach(([candidate, currentVotes]) => {
+                    if (currentVotes < 0.001) return;
+                    
+                    const nextVotes = nextRound.tally[candidate] || 0;
+                    const sourceName = `R${currentRound.round}: ${candidate}`;
+                    
+                    if (nextVotes > 0.001) {
+                        // Candidate still active - transfer continuing votes
+                        const targetName = `R${nextRound.round}: ${candidate}`;
+                        const transferValue = Math.min(currentVotes, nextVotes);
+                        
+                        if (transferValue > 0.001) {
+                            links.push({
+                                source: sourceName,
+                                target: targetName,
+                                value: transferValue
+                            });
+                        }
+                        
+                        // If candidate gained votes, show as incoming from "redistribution"
+                        if (nextVotes > currentVotes + 0.001) {
+                            // This is handled by other candidates' surplus
+                        }
+                        
+                        // If candidate lost votes (surplus), distribute to others
+                        if (currentVotes > nextVotes + 0.001) {
+                            const surplus = currentVotes - nextVotes;
+                            distributeToOthers(links, sourceName, nextRound, surplus, candidate);
+                        }
+                    } else {
+                        // Candidate eliminated or elected - redistribute all votes
+                        distributeToOthers(links, sourceName, nextRound, currentVotes, candidate);
+                    }
+                });
+            }
+            
+            return { nodes, links };
+        }
+        
+        /**
+         * Distribute votes to other candidates proportionally
+         */
+        function distributeToOthers(links, sourceName, nextRound, totalVotes, excludeCandidate) {
+            const otherCandidates = Object.entries(nextRound.tally).filter(
+                ([c, v]) => c !== excludeCandidate && v > 0.001
+            );
+            
+            if (otherCandidates.length === 0) return;
+            
+            const totalOtherVotes = otherCandidates.reduce((sum, [_, v]) => sum + v, 0);
+            
+            // Distribute proportionally
+            otherCandidates.forEach(([candidate, votes]) => {
+                const proportion = votes / totalOtherVotes;
+                const transferAmount = totalVotes * proportion;
+                
+                if (transferAmount > 0.001) {
+                    links.push({
+                        source: sourceName,
+                        target: `R${nextRound.round}: ${candidate}`,
+                        value: transferAmount
+                    });
+                }
+            });
+        }
+        
+        /**
+         * Extract all unique candidates from round results
+         */
+        function extractAllCandidates(roundResults) {
+            const candidateSet = new Set();
+            roundResults.forEach(round => {
+                Object.keys(round.tally).forEach(c => candidateSet.add(c));
+            });
+            return Array.from(candidateSet);
+        }
+    })();
+</script>
+
+<style>
+    .sankey-container {
+        width: 100%;
+        margin: 2rem 0;
+        padding: 1rem;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+    
+    .sankey-chart {
+        width: 100%;
+        height: 600px;
+        min-height: 400px;
+    }
+    
+    @media (max-width: 768px) {
+        .sankey-chart {
+            height: 500px;
+        }
+    }
+    
+    @media (max-width: 640px) {
+        .sankey-chart {
+            height: 400px;
+        }
+    }
+</style>

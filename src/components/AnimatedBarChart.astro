@@ -1,0 +1,678 @@
+---
+/**
+ * AnimatedBarChart.astro
+ * 
+ * A reusable component that displays an animated, interactive bar chart
+ * visualizing round-by-round vote tallies for ranked-choice (STV) elections.
+ * 
+ * Uses ECharts (Apache 2.0 license) for rendering and animations.
+ * 
+ * @example
+ * ```astro
+ * <AnimatedBarChart 
+ *   roundResults={[
+ *     { round: 1, tally: { Alice: 10, Bob: 8, Carol: 6 } },
+ *     { round: 2, tally: { Alice: 12, Bob: 7, Carol: 5 } }
+ *   ]}
+ *   candidates={['Alice', 'Bob', 'Carol']}
+ *   quota={8}
+ * />
+ * ```
+ */
+
+export interface RoundResult {
+  /** The round number (1-indexed) */
+  round: number;
+  /** Vote tallies keyed by candidate name */
+  tally: { [candidate: string]: number };
+}
+
+export interface Props {
+  /** Array of round results with vote tallies for each candidate */
+  roundResults: RoundResult[];
+  /** Optional array of candidate names for consistent ordering */
+  candidates?: string[];
+  /** Optional quota/threshold line value */
+  quota?: number;
+  /** Optional custom color palette (hex values) */
+  colors?: string[];
+  /** Chart title */
+  title?: string;
+  /** Chart height in pixels */
+  height?: number;
+  /** Enable dark mode */
+  darkMode?: boolean;
+}
+
+const {
+  roundResults,
+  candidates,
+  quota,
+  colors,
+  title = 'Election Results by Round',
+  height = 500,
+  darkMode = false
+} = Astro.props;
+
+// Generate a unique ID for this chart instance
+const chartId = `stv-chart-${Math.random().toString(36).substring(2, 9)}`;
+
+// Serialize props for client-side JavaScript
+const chartData = JSON.stringify({
+  roundResults,
+  candidates,
+  quota,
+  colors,
+  title,
+  darkMode
+});
+---
+
+<div class="animated-bar-chart-container">
+  <!-- Chart container -->
+  <div id={chartId} class="chart-container" style={`height: ${height}px; width: 100%;`}></div>
+  
+  <!-- Playback controls -->
+  <div class="chart-controls">
+    <div class="playback-controls">
+      <button type="button" class="control-btn" id={`${chartId}-prev`} title="Previous Round" aria-label="Previous Round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+        </svg>
+      </button>
+      <button type="button" class="control-btn play-btn" id={`${chartId}-play`} title="Play/Pause" aria-label="Play or Pause Animation">
+        <svg class="play-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+        <svg class="pause-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+        </svg>
+      </button>
+      <button type="button" class="control-btn" id={`${chartId}-next`} title="Next Round" aria-label="Next Round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="slider-container">
+      <label for={`${chartId}-slider`} class="slider-label">Round: <span id={`${chartId}-round-display`}>1</span></label>
+      <input 
+        type="range" 
+        id={`${chartId}-slider`} 
+        class="round-slider"
+        min="1" 
+        max={roundResults.length} 
+        value="1"
+        aria-label="Select Round"
+      />
+    </div>
+    
+    <div class="speed-control">
+      <label for={`${chartId}-speed`}>Speed:</label>
+      <select id={`${chartId}-speed`} class="speed-select">
+        <option value="2000">Slow</option>
+        <option value="1000" selected>Normal</option>
+        <option value="500">Fast</option>
+      </select>
+    </div>
+    
+    <button type="button" class="control-btn download-btn" id={`${chartId}-download`} title="Download as PNG" aria-label="Download Chart as PNG">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<!-- Pass data to client script -->
+<script is:inline define:vars={{ chartId, chartData }}>
+  // Store data for initialization
+  window.__chartData = window.__chartData || {};
+  window.__chartData[chartId] = JSON.parse(chartData);
+</script>
+
+<!-- Client-side chart initialization -->
+<script>
+  import * as echarts from 'echarts';
+
+  /**
+   * Initialize all animated bar charts on the page
+   */
+  function initializeCharts() {
+    const chartContainers = document.querySelectorAll('.chart-container');
+    
+    chartContainers.forEach((container) => {
+      const chartId = container.id;
+      const data = (window as any).__chartData?.[chartId];
+      
+      if (!data || (container as any).__chartInitialized) return;
+      
+      initializeChart(chartId, data);
+      (container as any).__chartInitialized = true;
+    });
+  }
+
+  /**
+   * Initialize a single chart instance
+   */
+  function initializeChart(
+    chartId: string,
+    data: {
+      roundResults: Array<{ round: number; tally: { [key: string]: number } }>;
+      candidates?: string[];
+      quota?: number;
+      colors?: string[];
+      title: string;
+      darkMode: boolean;
+    }
+  ) {
+    const container = document.getElementById(chartId);
+    if (!container) return;
+
+    const { roundResults, candidates: propCandidates, quota, colors, title, darkMode } = data;
+
+    // Extract unique candidates from all rounds if not provided
+    const candidates = propCandidates || extractCandidates(roundResults);
+    
+    // Default ECharts-compatible color palette (high contrast, accessible)
+    const defaultColors = [
+      '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
+      '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#48b8d0'
+    ];
+    const colorPalette = colors || defaultColors;
+
+    // Initialize ECharts instance
+    const chart = echarts.init(container, darkMode ? 'dark' : undefined);
+    
+    // Track current state
+    let currentRound = 0;
+    let isPlaying = false;
+    let playInterval: number | null = null;
+    let animationSpeed = 1000;
+
+    // Get DOM elements
+    const slider = document.getElementById(`${chartId}-slider`) as HTMLInputElement;
+    const roundDisplay = document.getElementById(`${chartId}-round-display`);
+    const playBtn = document.getElementById(`${chartId}-play`);
+    const prevBtn = document.getElementById(`${chartId}-prev`);
+    const nextBtn = document.getElementById(`${chartId}-next`);
+    const speedSelect = document.getElementById(`${chartId}-speed`) as HTMLSelectElement;
+    const downloadBtn = document.getElementById(`${chartId}-download`);
+
+    /**
+     * Generate chart option for a specific round
+     */
+    function getChartOption(roundIndex: number): echarts.EChartsOption {
+      const roundData = roundResults[roundIndex];
+      if (!roundData) return {};
+
+      // Get vote values for each candidate (0 if eliminated/not present)
+      const values = candidates.map(c => roundData.tally[c] ?? 0);
+      
+      // Assign colors to each candidate consistently
+      const barColors = candidates.map((_, i) => colorPalette[i % colorPalette.length]);
+
+      const option: echarts.EChartsOption = {
+        title: {
+          text: title,
+          subtext: `Round ${roundData.round} of ${roundResults.length}`,
+          left: 'center',
+          textStyle: {
+            fontSize: 18,
+            fontWeight: 'bold'
+          },
+          subtextStyle: {
+            fontSize: 14
+          }
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          },
+          formatter: (params: any) => {
+            const p = Array.isArray(params) ? params[0] : params;
+            const candidateName = p.name;
+            const votes = p.value;
+            const roundNum = roundData.round;
+            return `<strong>${candidateName}</strong><br/>` +
+                   `Round ${roundNum}: ${typeof votes === 'number' ? votes.toFixed(4) : votes} votes`;
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '15%',
+          top: '15%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          data: candidates,
+          axisLabel: {
+            rotate: candidates.length > 6 ? 45 : 0,
+            interval: 0,
+            fontSize: 12
+          }
+        },
+        yAxis: {
+          type: 'value',
+          name: 'Votes',
+          nameLocation: 'middle',
+          nameGap: 50,
+          axisLabel: {
+            formatter: (value: number) => value.toFixed(1)
+          }
+        },
+        series: [
+          {
+            name: 'Votes',
+            type: 'bar',
+            data: values.map((value, index) => ({
+              value,
+              itemStyle: {
+                color: barColors[index],
+                // Dim eliminated candidates (0 votes)
+                opacity: value === 0 ? 0.3 : 1
+              }
+            })),
+            // Smooth animation for transitions
+            animationDuration: 800,
+            animationDurationUpdate: 800,
+            animationEasing: 'cubicInOut',
+            animationEasingUpdate: 'cubicInOut',
+            label: {
+              show: true,
+              position: 'top',
+              formatter: (params: any) => {
+                const val = params.value;
+                if (val === 0) return '';
+                return typeof val === 'number' ? val.toFixed(2) : val;
+              },
+              fontSize: 11
+            }
+          }
+        ]
+      };
+
+      // Add quota line if specified
+      if (quota !== undefined && quota > 0) {
+        option.series = [
+          ...(option.series as any[]),
+          {
+            name: 'Quota',
+            type: 'line',
+            markLine: {
+              silent: true,
+              symbol: 'none',
+              lineStyle: {
+                color: '#ff4444',
+                type: 'dashed',
+                width: 2
+              },
+              data: [
+                {
+                  yAxis: quota,
+                  label: {
+                    formatter: `Quota: ${quota.toFixed(2)}`,
+                    position: 'end'
+                  }
+                }
+              ]
+            }
+          }
+        ];
+      }
+
+      return option;
+    }
+
+    /**
+     * Update chart to show specific round
+     */
+    function showRound(roundIndex: number) {
+      if (roundIndex < 0 || roundIndex >= roundResults.length) return;
+      
+      currentRound = roundIndex;
+      const option = getChartOption(roundIndex);
+      chart.setOption(option, { notMerge: false });
+      
+      // Update UI
+      if (slider) slider.value = String(roundIndex + 1);
+      if (roundDisplay) roundDisplay.textContent = String(roundIndex + 1);
+    }
+
+    /**
+     * Toggle play/pause animation
+     */
+    function togglePlay() {
+      if (isPlaying) {
+        stopPlay();
+      } else {
+        startPlay();
+      }
+    }
+
+    function startPlay() {
+      isPlaying = true;
+      updatePlayButton();
+      
+      playInterval = window.setInterval(() => {
+        if (currentRound < roundResults.length - 1) {
+          showRound(currentRound + 1);
+        } else {
+          // Loop back to start
+          showRound(0);
+        }
+      }, animationSpeed);
+    }
+
+    function stopPlay() {
+      isPlaying = false;
+      updatePlayButton();
+      
+      if (playInterval !== null) {
+        clearInterval(playInterval);
+        playInterval = null;
+      }
+    }
+
+    function updatePlayButton() {
+      if (!playBtn) return;
+      const playIcon = playBtn.querySelector('.play-icon') as HTMLElement;
+      const pauseIcon = playBtn.querySelector('.pause-icon') as HTMLElement;
+      
+      if (isPlaying) {
+        playIcon.style.display = 'none';
+        pauseIcon.style.display = 'block';
+      } else {
+        playIcon.style.display = 'block';
+        pauseIcon.style.display = 'none';
+      }
+    }
+
+    // Event listeners
+    if (slider) {
+      slider.addEventListener('input', () => {
+        stopPlay();
+        showRound(parseInt(slider.value, 10) - 1);
+      });
+    }
+
+    if (playBtn) {
+      playBtn.addEventListener('click', togglePlay);
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        stopPlay();
+        if (currentRound > 0) {
+          showRound(currentRound - 1);
+        }
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        stopPlay();
+        if (currentRound < roundResults.length - 1) {
+          showRound(currentRound + 1);
+        }
+      });
+    }
+
+    if (speedSelect) {
+      speedSelect.addEventListener('change', () => {
+        animationSpeed = parseInt(speedSelect.value, 10);
+        if (isPlaying) {
+          stopPlay();
+          startPlay();
+        }
+      });
+    }
+
+    if (downloadBtn) {
+      downloadBtn.addEventListener('click', () => {
+        const dataUrl = chart.getDataURL({
+          type: 'png',
+          pixelRatio: 2,
+          backgroundColor: darkMode ? '#1a1a1a' : '#ffffff'
+        });
+        
+        const link = document.createElement('a');
+        link.download = `election-round-${currentRound + 1}.png`;
+        link.href = dataUrl;
+        link.click();
+      });
+    }
+
+    // Handle window resize
+    const resizeObserver = new ResizeObserver(() => {
+      chart.resize();
+    });
+    resizeObserver.observe(container);
+
+    // Initial render
+    showRound(0);
+
+    // Cleanup on page navigation (for SPAs)
+    document.addEventListener('astro:before-swap', () => {
+      stopPlay();
+      resizeObserver.disconnect();
+      chart.dispose();
+    }, { once: true });
+  }
+
+  /**
+   * Extract unique candidate names from all rounds
+   */
+  function extractCandidates(
+    roundResults: Array<{ round: number; tally: { [key: string]: number } }>
+  ): string[] {
+    const candidateSet = new Set<string>();
+    
+    roundResults.forEach(round => {
+      Object.keys(round.tally).forEach(candidate => {
+        candidateSet.add(candidate);
+      });
+    });
+    
+    return Array.from(candidateSet);
+  }
+
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeCharts);
+  } else {
+    initializeCharts();
+  }
+
+  // Re-initialize on Astro page navigation
+  document.addEventListener('astro:page-load', initializeCharts);
+</script>
+
+<style>
+  .animated-bar-chart-container {
+    width: 100%;
+    margin: 1rem 0;
+  }
+
+  .chart-container {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+  }
+
+  .chart-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+  }
+
+  .playback-controls {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .control-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .control-btn:hover {
+    background: #e9e9e9;
+    border-color: #999;
+  }
+
+  .control-btn:focus {
+    outline: 2px solid #005a9c;
+    outline-offset: 2px;
+  }
+
+  .play-btn {
+    width: 50px;
+    background: #005a9c;
+    color: white;
+    border-color: #004a7c;
+  }
+
+  .play-btn:hover {
+    background: #004a7c;
+  }
+
+  .slider-container {
+    flex: 1;
+    min-width: 150px;
+    max-width: 300px;
+  }
+
+  .slider-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .round-slider {
+    width: 100%;
+    height: 8px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .round-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #005a9c;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .round-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #005a9c;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+
+  .speed-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .speed-select {
+    padding: 0.375rem 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+  }
+
+  .download-btn {
+    margin-left: auto;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .chart-controls {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .playback-controls {
+      justify-content: center;
+    }
+
+    .slider-container {
+      max-width: none;
+    }
+
+    .speed-control {
+      justify-content: center;
+    }
+
+    .download-btn {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    .chart-container {
+      background: #1a1a1a;
+      border-color: #333;
+    }
+
+    .chart-controls {
+      background: #2a2a2a;
+      border-color: #333;
+    }
+
+    .control-btn {
+      background: #333;
+      border-color: #444;
+      color: #fff;
+    }
+
+    .control-btn:hover {
+      background: #444;
+    }
+
+    .round-slider {
+      background: #444;
+    }
+
+    .speed-select {
+      background: #333;
+      border-color: #444;
+      color: #fff;
+    }
+  }
+</style>
