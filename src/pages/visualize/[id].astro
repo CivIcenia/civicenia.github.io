@@ -1,0 +1,496 @@
+---
+import PageLayout from "@layouts/page.astro";
+
+export async function getStaticPaths() {
+  const paths = [
+    { params: { id: "demo" } },
+  ];
+  return paths;
+}
+
+const { id } = Astro.params;
+---
+
+<PageLayout title={`Election Visualization: ${id}`} description="Animated STV election results">
+  <div class="visualization-container">
+    <h1>STV Election Results: {id}</h1>
+    
+    <div id="file-upload-section" style={id === 'demo' ? 'display:block' : 'display:none'}>
+      <p>Upload a Universal Tabulator JSON (with "results") to visualize:</p>
+      <input type="file" id="file-input" accept=".json" />
+    </div>
+
+    <div class="controls">
+      <button id="btn-play" class="control-btn" disabled>Play</button>
+      <button id="btn-pause" class="control-btn" style="display:none;" disabled>Pause</button>
+      <button id="btn-prev" class="control-btn" disabled>Previous Round</button>
+      <button id="btn-next" class="control-btn" disabled>Next Round</button>
+      <span id="round-display">Waiting for data...</span>
+    </div>
+
+    <div id="chart-container"></div>
+    
+    <div id="tooltip" class="tooltip" style="opacity: 0;"></div>
+  </div>
+</PageLayout>
+
+<style>
+  .visualization-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: sans-serif;
+  }
+  
+  #file-upload-section {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    border: 1px dashed #ccc;
+    border-radius: 8px;
+    background: #fafafa;
+  }
+
+  .controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+  }
+  
+  .control-btn {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  
+  .control-btn:hover {
+      filter: brightness(0.9);
+  }
+  .control-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+
+  #chart-container {
+    width: 100%;
+    height: 600px;
+    position: relative;
+    background: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .tooltip {
+    position: absolute;
+    text-align: center;
+    padding: 8px;
+    font: 12px sans-serif;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  #round-display {
+    font-weight: bold;
+    margin-left: auto;
+    font-size: 1.2rem;
+  }
+</style>
+
+<script>
+  import * as d3 from "d3";
+
+  // --- Type Definitions ---
+  interface Candidate {
+    id: string;
+    name: string;
+    votes: number; // Current vote count
+    color?: string;
+    status: 'active' | 'elected' | 'eliminated';
+  }
+
+  interface Round {
+    round: number;
+    candidates: Candidate[];
+    quota?: number;
+    elected: string[];
+    eliminated: string[];
+    log?: string[];
+  }
+
+  // --- State ---
+  let currentRoundIndex = 0;
+  let rounds: Round[] = [];
+  let isPlaying = false;
+  let timer: any = null;
+  const transitionDuration = 750;
+
+  // --- Elements ---
+  const container = document.getElementById('chart-container');
+  const btnPlay = document.getElementById('btn-play') as HTMLButtonElement;
+  const btnPause = document.getElementById('btn-pause') as HTMLButtonElement;
+  const btnPrev = document.getElementById('btn-prev') as HTMLButtonElement;
+  const btnNext = document.getElementById('btn-next') as HTMLButtonElement;
+  const roundDisplay = document.getElementById('round-display');
+  const tooltip = document.getElementById('tooltip');
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+
+  // --- D3 Setup ---
+  const margin = { top: 30, right: 30, bottom: 30, left: 150 };
+  let width = container?.clientWidth || 800;
+  let height = container?.clientHeight || 600;
+  
+  const svg = d3.select("#chart-container")
+    .append("svg")
+    .attr("width", "100%")
+    .attr("height", "100%")
+    .attr("viewBox", `0 0 ${width} ${height}`);
+
+  const x = d3.scaleLinear().range([margin.left, width - margin.right]);
+  const y = d3.scaleBand().rangeRound([margin.top, height - margin.bottom]).padding(0.1);
+  const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+
+  const xAxis = svg.append("g")
+    .attr("transform", `translate(0,${margin.top})`);
+  
+  const yAxis = svg.append("g")
+    .attr("transform", `translate(${margin.left},0)`);
+
+  // --- Data Transformation ---
+  function transformUniversalTabulatorData(data: any): Round[] {
+    console.log("Transforming data:", data);
+    
+    // Check if data matches expected schema
+    if (!data.results || !Array.isArray(data.results)) {
+        console.error("Invalid data format: 'results' array missing. Got keys:", Object.keys(data));
+        alert("Invalid JSON format. Expected 'results' array. Please check the console for details.");
+        return [];
+    }
+    
+    const roundsData: Round[] = [];
+    
+    // Normalize candidates list
+    const candidateNames = new Map<string, string>();
+    const allCandidateIds = new Set<string>();
+
+    if (Array.isArray(data.candidates)) {
+        data.candidates.forEach((c: any) => {
+             if (typeof c === 'string') {
+                 candidateNames.set(c, c);
+                 allCandidateIds.add(c);
+             }
+             else if (typeof c === 'object') {
+                 candidateNames.set(c.id, c.name);
+                 allCandidateIds.add(c.id);
+             }
+        });
+    }
+
+    // Ensure color consistency by pre-assigning domain
+    colorScale.domain(Array.from(allCandidateIds));
+
+    data.results.forEach((r: any, index: number) => {
+        const roundCandidates: Candidate[] = [];
+        const tally = r.tally || {};
+        
+        // Convert tally object to array
+        for (const [candId, votes] of Object.entries(tally)) {
+            let status: Candidate['status'] = 'active';
+            
+            // Allow for string checks as well if IDs are names
+            if (r.elected && (r.elected.includes(candId) || r.elected.includes(candidateNames.get(candId)))) status = 'elected';
+            if (r.eliminated && (r.eliminated.includes(candId) || r.eliminated.includes(candidateNames.get(candId)))) status = 'eliminated';
+            
+            roundCandidates.push({
+                id: candId,
+                name: candidateNames.get(candId) || candId,
+                votes: Number(votes),
+                status,
+                color: colorScale(candId)
+            });
+        }
+        
+        // Sort by votes desc
+        roundCandidates.sort((a, b) => b.votes - a.votes);
+
+        roundsData.push({
+            round: r.round || (index + 1),
+            candidates: roundCandidates,
+            quota: r.quota,
+            elected: r.elected || [],
+            eliminated: r.eliminated || [],
+        });
+    });
+
+    return roundsData;
+  }
+
+  // --- Visualization Logic ---
+  function updateChart(roundIndex: number, transition = true) {
+    const roundData = rounds[roundIndex];
+    if (!roundData) return;
+
+    // Update controls
+    roundDisplay!.textContent = `Round ${roundData.round}`;
+    
+    // Check limits for buttons
+    btnPrev.disabled = roundIndex <= 0;
+    btnNext.disabled = roundIndex >= rounds.length - 1;
+    if (roundIndex >= rounds.length - 1 && isPlaying) {
+        pause();
+    }
+
+    // Update Scales
+    // Max votes could be quota or total votes. Let's use max votes in this round + 20%
+    const maxVotes = Number(d3.max(roundData.candidates, d => d.votes)) * 1.2;
+    x.domain([0, maxVotes || 1]);
+    y.domain(roundData.candidates.map(d => d.id));
+
+    const t = svg.transition().duration(transition ? transitionDuration : 0).ease(d3.easeCubicOut);
+
+    // X Axis
+    xAxis.transition(t as any)
+        .call(d3.axisTop(x).ticks(5));
+
+    // Bars
+    // Bind data key: ID
+    const bars = svg.selectAll<SVGRectElement, Candidate>(".bar")
+      .data(roundData.candidates, (d) => d.id);
+
+    // EXIT
+    bars.exit()
+      .transition(t as any)
+      .attr("width", 0)
+      .attr("y", height) // Drop down? or just fade
+      .style("opacity", 0)
+      .remove();
+
+    // ENTER
+    const barsEnter = bars.enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", x(0))
+      .attr("y", d => y(d.id) || 0)
+      .attr("height", y.bandwidth())
+      .attr("width", 0)
+      .attr("fill", d => d.color || "#ccc")
+      .attr("opacity", 0.6); // Start partially transparent
+
+    barsEnter.on("mouseover", function(event, d) {
+         d3.select(this).attr("opacity", 0.9);
+         tooltip!.style.opacity = "1";
+         tooltip!.innerHTML = `<strong>${d.name}</strong><br>Votes: ${d.votes.toFixed(2)}<br>Status: ${d.status.toUpperCase()}`;
+         tooltip!.style.left = (event.pageX + 10) + "px";
+         tooltip!.style.top = (event.pageY - 28) + "px";
+      })
+      .on("mouseout", function() {
+         d3.select(this).attr("opacity", d => d.status === 'eliminated' ? 0.3 : 1);
+         tooltip!.style.opacity = "0";
+      });
+
+    // UPDATE
+    const barsMerge = bars.merge(barsEnter);
+    
+    barsMerge.transition(t as any)
+      .attr("y", d => y(d.id) || 0)
+      .attr("width", d => Math.max(0, x(d.votes) - x(0)))
+      .attr("height", y.bandwidth())
+      .attr("fill", d => d.color || "#ccc")
+      .attr("opacity", d => d.status === 'eliminated' ? 0.3 : 1)
+      .attr("stroke", d => d.status === 'elected' ? "#FFD700" : "none") // Gold stroke for elected
+      .attr("stroke-width", d => d.status === 'elected' ? 4 : 0);
+
+    // LABELS (Names)
+    const textLabels = svg.selectAll<SVGTextElement, Candidate>(".label")
+        .data(roundData.candidates, (d) => d.id);
+    
+    textLabels.exit()
+        .transition(t as any)
+        .style("opacity", 0)
+        .remove();
+
+    const textEnter = textLabels.enter().append("text")
+        .attr("class", "label")
+        .attr("x", margin.left - 10)
+        .attr("y", d => (y(d.id) || 0) + y.bandwidth() / 2)
+        .attr("dy", "0.35em")
+        .attr("text-anchor", "end")
+        .style("font-size", "12px")
+        .style("font-family", "sans-serif")
+        .style("opacity", 0)
+        .text(d => d.name);
+
+    textLabels.merge(textEnter)
+        .transition(t as any)
+        .style("opacity", 1)
+        .attr("y", d => (y(d.id) || 0) + y.bandwidth() / 2)
+        .text(d => {
+            let suffix = "";
+            if (d.status === 'elected') suffix = " ✓";
+            if (d.status === 'eliminated') suffix = " ✗";
+            return d.name + suffix;
+        })
+        .style("font-weight", d => d.status === 'elected' ? "bold" : "normal");
+
+    // VOTE COUNTS
+    const countLabels = svg.selectAll<SVGTextElement, Candidate>(".count")
+        .data(roundData.candidates, (d) => d.id);
+    
+    countLabels.exit().remove();
+
+    const countEnter = countLabels.enter().append("text")
+        .attr("class", "count")
+        .attr("x", d => x(d.votes) + 5)
+        .attr("y", d => (y(d.id) || 0) + y.bandwidth() / 2)
+        .attr("dy", "0.35em")
+        .style("font-size", "11px")
+        .style("font-family", "monospace")
+        .text(d => d.votes.toFixed(2));
+
+    countLabels.merge(countEnter)
+        .transition(t as any)
+        .attr("x", d => x(d.votes) + 5)
+        .attr("y", d => (y(d.id) || 0) + y.bandwidth() / 2)
+        .tween("text", function(d) {
+            const node = this;
+            const currentVal = parseFloat(node.textContent || "0");
+            const i = d3.interpolateNumber(currentVal || 0, d.votes);
+            return function(t) {
+                node.textContent = i(t).toFixed(2);
+            };
+        });
+  }
+
+  // --- Animation Loop ---
+  function play() {
+    if (currentRoundIndex < rounds.length - 1) {
+        currentRoundIndex++;
+        updateChart(currentRoundIndex);
+        timer = setTimeout(play, transitionDuration + 600); 
+    } else {
+        pause();
+    }
+  }
+
+  function pause() {
+    isPlaying = false;
+    clearTimeout(timer);
+    btnPlay.style.display = "inline-block";
+    btnPause.style.display = "none";
+  }
+
+  function startPlay() {
+     if (currentRoundIndex >= rounds.length - 1) {
+         currentRoundIndex = 0;
+         updateChart(0, false);
+     }
+     isPlaying = true;
+     btnPlay.style.display = "none";
+     btnPause.style.display = "inline-block";
+     play();
+  }
+  
+  function enableControls() {
+      btnPlay.disabled = false;
+      btnPause.disabled = false;
+      btnPrev.disabled = false;
+      btnNext.disabled = false;
+  }
+
+  // --- Initialization ---
+  async function init() {
+    const pathParts = window.location.pathname.split('/');
+    let id = pathParts.pop() || pathParts.pop(); 
+    if (id === 'visualize') id = 'demo';
+
+    let rawData;
+    
+    if (id === 'demo' || !id) {
+        // Setup Helper for Demo
+        if (fileInput) {
+            fileInput.addEventListener('change', (e: any) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (re) => {
+                        try {
+                            const json = JSON.parse(re.target!.result as string);
+                            rounds = transformUniversalTabulatorData(json);
+                            currentRoundIndex = 0;
+                            updateChart(0, false);
+                            enableControls();
+                        } catch(err) {
+                            alert("Failed to parse JSON");
+                            console.error(err);
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            });
+        }
+        
+        console.log("Using demo data");
+        rawData = {
+            candidates: ["Alice", "Bob", "Charlie", "Dave"],
+            results: [
+                { round: 1, tally: { "Alice": 100, "Bob": 80, "Charlie": 60, "Dave": 20 }, elected: [], eliminated: [] },
+                { round: 2, tally: { "Alice": 105, "Bob": 85, "Charlie": 70, "Dave": 0 }, elected: [], eliminated: ["Dave"] },
+                { round: 3, tally: { "Alice": 110, "Bob": 140, "Charlie": 10, "Dave": 0 }, elected: ["Bob"], eliminated: ["Charlie"] },
+                { round: 4, tally: { "Alice": 115, "Bob": 140, "Charlie": 5, "Dave": 0 }, elected: ["Bob"], eliminated: [] } // Alice still running, Bob elected
+            ]
+        };
+        
+        // Load demo data immediately
+        rounds = transformUniversalTabulatorData(rawData);
+        updateChart(0, false);
+        enableControls();
+        
+    } else {
+        // Fetch from archive
+        try {
+            // Assume the user puts results inside the archive folder
+            // e.g. /archive/ID/results.json
+            const response = await fetch(`/archive/${id}/results.json`); 
+            if (!response.ok) throw new Error("File not found");
+            rawData = await response.json();
+            console.log("Loaded data for", id);
+            
+            rounds = transformUniversalTabulatorData(rawData);
+            if (rounds.length > 0) {
+                updateChart(0, false);
+                enableControls();
+            }
+        } catch (e) {
+            console.error("Failed to load data", e);
+            document.getElementById('chart-container')!.innerHTML = 
+                `<div style="text-align:center; padding: 2rem;">
+                 <p style="color: red;">Failed to load election data for ID: ${id}.</p>
+                 <p>Expected file: <code>public/archive/${id}/results.json</code></p>
+                 </div>`;
+        }
+    }
+
+    // Handle resize
+    window.addEventListener('resize', () => {
+         width = container!.clientWidth;
+         height = container!.clientHeight;
+         svg.attr("viewBox", `0 0 ${width} ${height}`);
+         x.range([margin.left, width - margin.right]);
+         updateChart(currentRoundIndex, false);
+    });
+  }
+
+  // Start
+  init();
+
+</script>

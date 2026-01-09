@@ -255,12 +255,26 @@ import PageLayout from "@layouts/page.astro";
                 
                 <div id="results" style="display: none;">
                     <h2 class="govuk-heading-m">Results</h2>
+                    
+                    <div class="govuk-form-group" style="max-width: 300px; margin-bottom: 20px;">
+                        <label class="govuk-label" for="results-seats">
+                            Number of winners
+                        </label>
+                        <input class="govuk-input" id="results-seats" name="results-seats" type="number" min="1" value="5" style="width: 100px;">
+                        <button class="icenia-btn" id="recalculate-results" type="button" style="margin-left: 10px;">
+                            Recalculate
+                        </button>
+                    </div>
+                    
                     <div id="log" class="stv-log"></div>
                     <div id="winners" class="stv-winners"></div>
                     
                     <div class="icenia-button-group govuk-!-margin-top-6">
                         <button class="icenia-btn" id="export-results" type="button">
                             Export Election
+                        </button>
+                        <button class="icenia-btn" id="export-rcvis" type="button">
+                            Export for RCVis
                         </button>
                         <button class="icenia-btn icenia-btn-secondary" id="return-to-start" type="button">
                             Return to Start (Remember to Export!)
@@ -1061,7 +1075,7 @@ import PageLayout from "@layouts/page.astro";
             uniqueNames: string[];
             currentNameIndex: number;
             nameCounts: Map<string, number>;
-            learnedCorrelations: Map<string, string>;
+            learnedCorrelations: Map<string, string | null>;
             correlationInfluences: Map<string, Set<string>>;
             hasCorrelationWarning: boolean;
             ballotOverrides: Map<string, {rank: number, candidate: string}[]>;
@@ -1228,7 +1242,21 @@ import PageLayout from "@layouts/page.astro";
             const winners: string[] = [];
             let totalVote = ballots.length;
             
+            // Track round-by-round results for export
+            const roundResults: any[] = [];
+            let roundNumber = 1;
+            
             while (winners.length < k) {
+                // Calculate tally for this round
+                const roundTally: Record<string, number> = {};
+                for (let i = 0; i < candidateReferences.length; i++) {
+                    const candidateIndex = i + 1;
+                    const { count } = votesInFavor(ballots, candidateIndex);
+                    if (count > 0) {
+                        roundTally[candidateReferences[i]] = count;
+                    }
+                }
+                
                 const topCandidate = extremeCandidate(ballots, 1);
                 
                 // BUGFIX: Handle error state
@@ -1239,11 +1267,23 @@ import PageLayout from "@layouts/page.astro";
                 
                 const { count: topCandidateVotes, counted: votesForTopCandidate } = votesInFavor(ballots, topCandidate);
                 
+                const roundData: any = {
+                    round: roundNumber,
+                    tally: roundTally,
+                    tallyResults: []
+                };
+                
                 if (topCandidateVotes >= totalVote / (k + 1)) {
                     const candidateName = candidateReferences[topCandidate - 1];
                     winners.push(candidateName);
                     
                     logCallback(`✓ WIN: ${candidateName} (${topCandidateVotes.toFixed(3)} votes)\n`, 'win');
+                    
+                    // Calculate transfers (simplified - doesn't track exact transfers)
+                    roundData.tallyResults.push({
+                        elected: candidateName,
+                        transfers: {}
+                    });
                     
                     eliminateCandidate(ballots, topCandidate);
                     
@@ -1265,8 +1305,17 @@ import PageLayout from "@layouts/page.astro";
                     
                     logCallback(`✗ ELIM: ${candidateName} (${bottomVotes.toFixed(3)} votes)\n`, 'elim');
                     
+                    // Calculate transfers (simplified - doesn't track exact transfers)
+                    roundData.tallyResults.push({
+                        eliminated: candidateName,
+                        transfers: {}
+                    });
+                    
                     eliminateCandidate(ballots, bottomCandidate);
                 }
+                
+                roundResults.push(roundData);
+                roundNumber++;
                 
                 // Handle exhausted ballots
                 for (let b of ballots) {
@@ -1276,6 +1325,9 @@ import PageLayout from "@layouts/page.astro";
                     }
                 }
             }
+            
+            // Store round results globally for export
+            (parsedData as any).roundResults = roundResults;
             
             return winners;
         }
@@ -1329,6 +1381,46 @@ import PageLayout from "@layouts/page.astro";
             const a = document.createElement('a');
             a.href = url;
             a.download = `stv-election-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Export for RCVis (Universal Tabulator format)
+        function exportForRCVis() {
+            const roundResults = (parsedData as any).roundResults;
+            if (!roundResults || roundResults.length === 0) {
+                alert('No results to export. Please calculate results first.');
+                return;
+            }
+            
+            const today = new Date();
+            const dateStr = today.toISOString().split('T')[0];
+            
+            const rcvisData = {
+                config: {
+                    contest: "Icenian Election",
+                    date: dateStr,
+                    jurisdiction: "Icenia",
+                    office: "Senate/Council",
+                    threshold: (parsedData.ballots.length / (parsedData.seats + 1)).toString()
+                },
+                results: roundResults.map((round: any) => ({
+                    round: round.round,
+                    tally: Object.fromEntries(
+                        Object.entries(round.tally).map(([candidate, votes]) => [
+                            candidate,
+                            (votes as number).toFixed(3)
+                        ])
+                    ),
+                    tallyResults: round.tallyResults
+                }))
+            };
+            
+            const blob = new Blob([JSON.stringify(rcvisData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `rcvis-election-${dateStr}.json`;
             a.click();
             URL.revokeObjectURL(url);
         }
@@ -1477,6 +1569,9 @@ import PageLayout from "@layouts/page.astro";
                             calculateResults();
                         }
                     }
+                    
+                    // Update correlation table UI with imported data
+                    updateCorrelationTable();
                     
                     alert('Election imported successfully!');
                 } catch (err) {
@@ -1886,6 +1981,11 @@ import PageLayout from "@layouts/page.astro";
                 }
             }
             
+            // If we learned this name is "not a candidate" (null) or "not a ballot" with high confidence, set it directly
+            if ((learnedCandidate === null || learnedCandidate === '__NOT_A_BALLOT__') && highestLearnedScore > 0.5) {
+                parsedData.nameMatches.set(foundName, learnedCandidate as null | '__NOT_A_BALLOT__');
+            }
+            
             for (let candidate of officialCandidates) {
                 let score = fuzzyMatch(foundName, candidate);
                 
@@ -1914,6 +2014,9 @@ import PageLayout from "@layouts/page.astro";
                 const discordMode = document.getElementById('discord-mode');
                 const nameMatching = document.getElementById('name-matching');
                 const results = document.getElementById('results');
+                
+                // Update the inputMode variable
+                inputMode = this.value as 'simple' | 'discord';
                 
                 // Save mode preference to localStorage
                 localStorage.setItem('input-mode', this.value);
@@ -2090,13 +2193,20 @@ import PageLayout from "@layouts/page.astro";
             }
             
             // Store parsed data
+            // When re-parsing (e.g., after "Return to Start"), we keep learned correlations
+            // and manual edits, but clear parse-specific state that needs to be rebuilt
             parsedData.candidates = officialCandidates;
             parsedData.ballots = ballots;
             parsedData.seats = seats;
-            parsedData.nameMatches = new Map();
-            parsedData.currentNameIndex = 0;
+            parsedData.nameMatches = new Map(); // Clear - will be rebuilt using learned correlations
+            parsedData.currentNameIndex = 0; // Reset to start of review
             parsedData.originalBallotText = originalBallotText;
-            parsedData.ballotOverrides = new Map();
+            // NOTE: ballotOverrides is RETAINED - these are user's manual ballot edits
+            parsedData.reviewedNames = new Set(); // Clear - names to review will be different
+            // NOTE: learnedCorrelations is RETAINED - these are patterns that remain valid across sessions
+            parsedData.correlationInfluences = new Map(); // Clear - will be rebuilt during review
+            parsedData.hasCorrelationWarning = false; // Reset warning flag
+            // NOTE: duplicateSelections is RETAINED - user's choice of which duplicate ballot to keep
             
             // Count occurrences of each name
             const nameCounts = new Map();
@@ -2118,6 +2228,9 @@ import PageLayout from "@layouts/page.astro";
             
             // Build initial view
             renderCurrentName();
+            
+            // Update correlation table to show any existing learned correlations
+            updateCorrelationTable();
             
             // Show matching interface
             const discordModeEl = document.getElementById('discord-mode');
@@ -2197,6 +2310,7 @@ import PageLayout from "@layouts/page.astro";
             
             // Check if this name has been reviewed before
             const hasBeenReviewed = parsedData.reviewedNames.has(foundName);
+            // Check existingMatch AFTER findBestMatches, as it may have set it from learned correlations
             const existingMatch = parsedData.nameMatches.get(foundName);
             
             let autoSelected = false;
@@ -2216,6 +2330,7 @@ import PageLayout from "@layouts/page.astro";
                     // Auto-select logic:
                     // If already reviewed, preserve the existing selection
                     // If not reviewed, auto-select the best match (first match)
+                    // BUT: Don't auto-select if findBestMatches already set a special value (null or __NOT_A_BALLOT__)
                     if (hasBeenReviewed && existingMatch === match.candidate) {
                         // Restore previous selection
                         btn.classList.add('selected');
@@ -2224,8 +2339,11 @@ import PageLayout from "@layouts/page.astro";
                         btn.style.borderColor = '#1d70b8';
                         btn.style.fontWeight = 'bold';
                         autoSelected = true;
-                    } else if (!hasBeenReviewed && i === 0 && !autoSelected) {
+                    } else if (!hasBeenReviewed && i === 0 && !autoSelected && existingMatch !== null && existingMatch !== '__NOT_A_BALLOT__') {
                         // First time seeing this name, auto-select best match
+                        // Note: Only saves to nameMatches, not learnedCorrelations
+                        // learnedCorrelations is only for explicit user confirmations
+                        // Skip if learned correlation already set this to null or __NOT_A_BALLOT__
                         btn.classList.add('selected');
                         btn.style.backgroundColor = '#1d70b8';
                         btn.style.color = 'white';
@@ -2234,9 +2352,9 @@ import PageLayout from "@layouts/page.astro";
                         parsedData.nameMatches.set(foundName, match.candidate);
                         autoSelected = true;
                     }
-                        
-                        // Handle both click and keyboard
-                        const selectThisButton = function() {
+                    
+                    // Handle both click and keyboard
+                    const selectThisButton = function() {
                             console.log('Button selected:', btn.textContent);
                             
                             // Deselect others for this found name
@@ -2306,6 +2424,22 @@ import PageLayout from "@layouts/page.astro";
                     }
                 }
                 
+                // Fallback: If name was reviewed before but the previous match no longer exists,
+                // auto-select the best current match to prevent blank selection
+                // BUT: Don't trigger if user explicitly selected "not a candidate" (null) or "not a ballot" (__NOT_A_BALLOT__)
+                if (hasBeenReviewed && !autoSelected && matches.length > 0 && existingMatch !== null && existingMatch !== '__NOT_A_BALLOT__') {
+                    const firstBtn = optionsDiv.querySelector('.match-option') as HTMLButtonElement;
+                    if (firstBtn && firstBtn.dataset.candidate) {
+                        firstBtn.classList.add('selected');
+                        firstBtn.style.backgroundColor = '#1d70b8';
+                        firstBtn.style.color = 'white';
+                        firstBtn.style.borderColor = '#1d70b8';
+                        firstBtn.style.fontWeight = 'bold';
+                        parsedData.nameMatches.set(foundName, firstBtn.dataset.candidate);
+                        autoSelected = true;
+                    }
+                }
+                
                 // Add "Invalid/Not a candidate" option
                 const invalidBtn = document.createElement('button');
                 invalidBtn.type = 'button';
@@ -2314,15 +2448,15 @@ import PageLayout from "@layouts/page.astro";
                 invalidBtn.dataset.foundName = foundName;
                 invalidBtn.tabIndex = 0; // Make keyboard accessible
                 
-                // Auto-select invalid if no confident matches AND not yet reviewed
-                // If already reviewed, restore the selection
-                if (hasBeenReviewed && existingMatch === null) {
+                // Auto-select invalid if existingMatch is null (either from review or learned correlation)
+                if (existingMatch === null) {
                     invalidBtn.classList.add('invalid');
                     invalidBtn.style.backgroundColor = '#d4351c';
                     invalidBtn.style.color = 'white';
                     invalidBtn.style.borderColor = '#d4351c';
                     invalidBtn.style.fontWeight = 'bold';
-                } else if (!autoSelected && !hasBeenReviewed) {
+                } else if (!autoSelected && !hasBeenReviewed && existingMatch === undefined) {
+                    // Only auto-select "not a candidate" if no match was found AND nothing was set by learned correlations
                     invalidBtn.classList.add('invalid');
                     invalidBtn.style.backgroundColor = '#d4351c';
                     invalidBtn.style.color = 'white';
@@ -2349,6 +2483,12 @@ import PageLayout from "@layouts/page.astro";
                     invalidBtn.style.fontWeight = 'bold';
                     
                     parsedData.nameMatches.set(foundName, null);
+                    
+                    // Store learned correlation as null (not a candidate)
+                    const baseName = foundName.toLowerCase().replace(/^[\d\.\s]+/, '').replace(/[\d\s]+$/, '');
+                    parsedData.learnedCorrelations.set(baseName, null);
+                    console.log(`Learned correlation: ${baseName} -> not a candidate`);
+                    updateCorrelationTable();
                 };
                 
                 invalidBtn.addEventListener('click', function(e) {
@@ -2373,8 +2513,8 @@ import PageLayout from "@layouts/page.astro";
                 notBallotBtn.dataset.foundName = foundName;
                 notBallotBtn.tabIndex = 0;
                 
-                // If already reviewed and was marked as not a ballot, restore that selection
-                if (hasBeenReviewed && existingMatch === '__NOT_A_BALLOT__') {
+                // If marked as not a ballot (either from review OR from learned correlation), restore that selection
+                if (existingMatch === '__NOT_A_BALLOT__') {
                     notBallotBtn.classList.add('not-ballot');
                     notBallotBtn.style.backgroundColor = '#505a5f';
                     notBallotBtn.style.color = 'white';
@@ -2400,6 +2540,12 @@ import PageLayout from "@layouts/page.astro";
                     notBallotBtn.style.fontWeight = 'bold';
                     
                     parsedData.nameMatches.set(foundName, '__NOT_A_BALLOT__');
+                    
+                    // Store learned correlation as __NOT_A_BALLOT__
+                    const baseName = foundName.toLowerCase().replace(/^[\d\.\s]+/, '').replace(/[\d\s]+$/, '');
+                    parsedData.learnedCorrelations.set(baseName, '__NOT_A_BALLOT__');
+                    console.log(`Learned correlation: ${baseName} -> not a ballot entry`);
+                    updateCorrelationTable();
                 };
                 
                 notBallotBtn.addEventListener('click', function(e) {
@@ -2466,8 +2612,14 @@ import PageLayout from "@layouts/page.astro";
                             b.style.fontWeight = '';
                         });
                         
+                        const baseName = foundName.toLowerCase().replace(/^[\d\.\s]+/, '').replace(/[\d\s]+$/, '');
+                        
                         if (dropdown.value === '__INVALID__') {
                             parsedData.nameMatches.set(foundName, null);
+                            // Store learned correlation as null (not a candidate)
+                            parsedData.learnedCorrelations.set(baseName, null);
+                            console.log(`Learned correlation: ${baseName} -> not a candidate`);
+                            updateCorrelationTable();
                             // Visually indicate the invalid button
                             invalidBtn.classList.add('invalid');
                             invalidBtn.style.backgroundColor = '#d4351c';
@@ -2476,6 +2628,10 @@ import PageLayout from "@layouts/page.astro";
                             invalidBtn.style.fontWeight = 'bold';
                         } else if (dropdown.value === '__NOT_A_BALLOT__') {
                             parsedData.nameMatches.set(foundName, '__NOT_A_BALLOT__');
+                            // Store learned correlation as __NOT_A_BALLOT__
+                            parsedData.learnedCorrelations.set(baseName, '__NOT_A_BALLOT__');
+                            console.log(`Learned correlation: ${baseName} -> not a ballot entry`);
+                            updateCorrelationTable();
                             // Visually indicate the not ballot button
                             notBallotBtn.classList.add('not-ballot');
                             notBallotBtn.style.backgroundColor = '#505a5f';
@@ -2486,7 +2642,6 @@ import PageLayout from "@layouts/page.astro";
                             parsedData.nameMatches.set(foundName, dropdown.value);
                             
                             // Store learned correlation for future matching
-                            const baseName = foundName.toLowerCase().replace(/^[\d\.\s]+/, '').replace(/[\d\s]+$/, '');
                             parsedData.learnedCorrelations.set(baseName, dropdown.value);
                             console.log(`Learned correlation: ${baseName} -> ${dropdown.value}`);
                             
@@ -2611,12 +2766,22 @@ import PageLayout from "@layouts/page.astro";
             const sortedCorrelations = Array.from(parsedData.learnedCorrelations.entries())
                 .sort((a, b) => a[0].localeCompare(b[0]));
             
-            tableBody.innerHTML = sortedCorrelations.map(([pattern, candidate]) => `
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">${escapeHtml(pattern)}</td>
-                    <td class="govuk-table__cell">${escapeHtml(candidate)}</td>
-                </tr>
-            `).join('');
+            tableBody.innerHTML = sortedCorrelations.map(([pattern, candidate]) => {
+                let displayValue: string;
+                if (candidate === null) {
+                    displayValue = '<em style="color: #d4351c;">(Not a candidate)</em>';
+                } else if (candidate === '__NOT_A_BALLOT__') {
+                    displayValue = '<em style="color: #505a5f;">(Not a ballot entry)</em>';
+                } else {
+                    displayValue = escapeHtml(candidate);
+                }
+                return `
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">${escapeHtml(pattern)}</td>
+                        <td class="govuk-table__cell">${displayValue}</td>
+                    </tr>
+                `;
+            }).join('');
         }
         
         // Escape HTML to prevent XSS
@@ -3711,12 +3876,6 @@ import PageLayout from "@layouts/page.astro";
         
         // Shared function to calculate and display results
         function calculateResults() {
-            // End session by clearing learned correlations
-            parsedData.learnedCorrelations.clear();
-            parsedData.correlationInfluences.clear();
-            updateCorrelationTable();
-            console.log('Session ended - correlations cleared');
-            
             // Convert ballots using the name matches (or overrides if they exist)
             const candidates = parsedData.candidates;
             const ballots: Ballot[] = [];
@@ -3775,10 +3934,12 @@ import PageLayout from "@layouts/page.astro";
             const resultsEl = document.getElementById('results');
             const nameMatchingEl = document.getElementById('name-matching');
             const ballotReviewEl = document.getElementById('ballot-review');
+            const resultsSeatsEl = document.getElementById('results-seats') as HTMLInputElement;
             
             if (logEl) logEl.innerHTML = logText;
             if (winnersEl) winnersEl.innerHTML = 
                 `<strong>The winners are:</strong> ${winners.join(', ')}`;
+            if (resultsSeatsEl) resultsSeatsEl.value = parsedData.seats.toString();
             if (resultsEl) resultsEl.style.display = 'block';
             if (nameMatchingEl) nameMatchingEl.style.display = 'none';
             if (ballotReviewEl) ballotReviewEl.style.display = 'none';
@@ -3810,15 +3971,33 @@ import PageLayout from "@layouts/page.astro";
         // Export results button
         document.getElementById('export-results')?.addEventListener('click', exportElection);
         
+        // Export for RCVis button
+        document.getElementById('export-rcvis')?.addEventListener('click', exportForRCVis);
+        
         // Return to start button
         document.getElementById('return-to-start')?.addEventListener('click', function() {
             const resultsEl = document.getElementById('results');
             const importSection = document.getElementById('import-section');
             const simpleMode = document.getElementById('simple-mode');
             const discordMode = document.getElementById('discord-mode');
+            const nameMatching = document.getElementById('name-matching');
+            const ballotReview = document.getElementById('ballot-review');
+            const duplicateVoters = document.getElementById('duplicate-voters');
             
+            // Hide all sections first
             if (resultsEl) resultsEl.style.display = 'none';
+            if (nameMatching) nameMatching.style.display = 'none';
+            if (ballotReview) ballotReview.style.display = 'none';
+            if (duplicateVoters) duplicateVoters.style.display = 'none';
+            
+            // Show import section
             if (importSection) importSection.style.display = 'block';
+            
+            // Update radio button to match current mode
+            const radioToCheck = document.querySelector(`input[name="input-mode"][value="${inputMode}"]`) as HTMLInputElement;
+            if (radioToCheck) {
+                radioToCheck.checked = true;
+            }
             
             // Show the appropriate input mode
             if (inputMode === 'simple') {
@@ -3828,6 +4007,29 @@ import PageLayout from "@layouts/page.astro";
                 if (simpleMode) simpleMode.style.display = 'none';
                 if (discordMode) discordMode.style.display = 'block';
             }
+        // Note: All data (candidates, ballots, name matches, overrides, learned correlations) are retained
+            // User can now modify inputs and rerun with all mappings intact
+        });
+        
+        // Recalculate button on results screen
+        document.getElementById('recalculate-results')?.addEventListener('click', function() {
+            const resultsSeatsEl = document.getElementById('results-seats') as HTMLInputElement;
+            if (!resultsSeatsEl) return;
+            
+            const newSeats = parseInt(resultsSeatsEl.value);
+            if (isNaN(newSeats) || newSeats < 1) {
+                alert('Please enter a valid number of winners (at least 1)');
+                return;
+            }
+            
+            // Update seats in parsedData
+            parsedData.seats = newSeats;
+            
+            // Recalculate with new number of winners
+            calculateResults();
+            
+            // Note: All data (candidates, ballots, name matches, overrides, learned correlations) are retained
+            // User can now modify inputs and rerun with all mappings intact
         });
         
         // ===== SIMPLE MODE UI LOGIC =====
