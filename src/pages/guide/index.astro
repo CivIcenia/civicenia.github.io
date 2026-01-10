@@ -21,7 +21,7 @@ const citizenshipTiers = [
             "Access to public farms upon request and vetting",
             "Participate in community events"
         ],
-        icon: "👋"
+        icon: "🏠"
     },
     {
         tier: "Citizen",
@@ -32,25 +32,52 @@ const citizenshipTiers = [
         ],
         benefits: [
             "Eligible to vote in elections",
+            "Eligible to run in elections",
             "Eligible to serve in the armed forces",
             "Access to the national farms",
             "Eligible to own a small bunker (must be approved by the Secretary of the Interior prior to construction)"
         ],
-        icon: "🏛️"
+        icon: "📜"
     },
     {
         tier: "Patrician",
         requirements: [
             "Must hold the Citizen title",
-            "Must have completed a medium public works project",
+            "Must have completed a medium public works project or have played actively in Icenia for one month",
             "Must primarily play within the nation of Icenia (may be enforced by consensus of the President, Secretary of Defense, and Speaker of the Senate)"
         ],
         benefits: [
-            "Eligible to run in elections",
             "Eligible to own a medium-sized bunker (must be approved by the Secretary of the Interior prior to construction)"
         ],
+        icon: "🏛️"
+    },
+    {
+        tier: "Equestrian",
+        requirements: [
+            "Must hold the Patrician title",
+            "Must have completed a large public works project or have lived actively in Icenia for six months",
+            "Must have served as Senator or Secretary for at least one term"
+        ],
+        benefits: [
+            "Eligible to own a large bunker or skybunker (must be approved by the Secretary of the Interior prior to construction)"
+        ],
         icon: "⭐"
-    }
+    },
+    {
+        tier: "Consul",
+        requirements: [
+            "Must hold the Equestrian title",
+            "Must have completed a second large public works project or have played actively in Icenia for one year",
+            "Must have be approved by an Enhanced Senate Motion, the President and the Secretary of Defense",
+            "Must have served as Senator or Secretary for at least three terms",
+            "Must renounce all foreign citizenships and attachments"
+        ],
+        benefits: [
+            "Eligible to own a private vault within Icenia (must be approved by the President, Secretary of Defense and Secretary of the Interior)",
+            "Eligible to serve as Tribune"
+        ],
+        icon: "⚜️"
+    },
 ];
 ---
 
