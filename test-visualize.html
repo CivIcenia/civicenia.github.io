@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Visualization</title>
+</head>
+<body>
+    <h1>Testing STV Visualization</h1>
+    <p>Open the visualization page and use the demo or load the JSON file manually.</p>
+    <p><a href="http://localhost:4000/stv/visualize">Go to Visualization Page</a></p>
+    
+    <h2>Steps to Test:</h2>
+    <ol>
+        <li>Click the link above to open the visualization page</li>
+        <li>Click "Load Demo Data" or upload the rcvis-election-2026-01-09.json file</li>
+        <li>Click the "Next" button or use the Play button to advance rounds</li>
+        <li>Watch for the vote transfer animation when a candidate wins!</li>
+    </ol>
+    
+    <h2>Expected Behavior:</h2>
+    <ul>
+        <li>When advancing to a round where someone was elected, you should see a brief pause</li>
+        <li>Then golden/yellow bars should "fly" from the winner's bar (at quota level) to the tops of other candidates' bars</li>
+        <li>After the animation, the winner's bar should freeze at the quota level and turn green</li>
+        <li>The next round should then display normally</li>
+    </ul>
+</body>
+</html>

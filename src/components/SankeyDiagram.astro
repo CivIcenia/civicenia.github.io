@@ -139,6 +139,9 @@ const instanceId = `sankey-${Math.random().toString(36).substr(2, 9)}`;
                 candidateColors[c] = colors[i % colors.length];
             });
             
+            // Add "Exhausted" as a special pseudo-candidate with distinct color
+            candidateColors['Exhausted'] = '#999999';
+            
             // Create nodes for each candidate in each round
             roundResults.forEach((round, roundIndex) => {
                 Object.entries(round.tally).forEach(([candidate, votes]) => {
@@ -157,12 +160,32 @@ const instanceId = `sankey-${Math.random().toString(36).substr(2, 9)}`;
                         });
                     }
                 });
+                
+                // Add exhausted votes node if there are any
+                if (round.exhausted !== undefined && round.exhausted > 0.001) {
+                    nodes.push({
+                        name: `R${round.round}: Exhausted`,
+                        value: round.exhausted,
+                        itemStyle: {
+                            color: candidateColors['Exhausted']
+                        },
+                        depth: roundIndex,
+                        label: {
+                            position: roundIndex === 0 ? 'right' : (roundIndex === roundResults.length - 1 ? 'left' : 'right')
+                        }
+                    });
+                }
             });
             
             // Create links between rounds (estimate vote transfers)
             for (let i = 0; i < roundResults.length - 1; i++) {
                 const currentRound = roundResults[i];
                 const nextRound = roundResults[i + 1];
+                
+                // Track exhausted vote increases
+                const currentExhausted = currentRound.exhausted || 0;
+                const nextExhausted = nextRound.exhausted || 0;
+                const newlyExhausted = nextExhausted - currentExhausted;
                 
                 // For each candidate in current round
                 Object.entries(currentRound.tally).forEach(([candidate, currentVotes]) => {
@@ -184,21 +207,25 @@ const instanceId = `sankey-${Math.random().toString(36).substr(2, 9)}`;
                             });
                         }
                         
-                        // If candidate gained votes, show as incoming from "redistribution"
-                        if (nextVotes > currentVotes + 0.001) {
-                            // This is handled by other candidates' surplus
-                        }
-                        
-                        // If candidate lost votes (surplus), distribute to others
+                        // If candidate lost votes (surplus), distribute to others and exhausted
                         if (currentVotes > nextVotes + 0.001) {
                             const surplus = currentVotes - nextVotes;
-                            distributeToOthers(links, sourceName, nextRound, surplus, candidate);
+                            distributeToOthers(links, sourceName, nextRound, surplus, candidate, newlyExhausted);
                         }
                     } else {
                         // Candidate eliminated or elected - redistribute all votes
-                        distributeToOthers(links, sourceName, nextRound, currentVotes, candidate);
+                        distributeToOthers(links, sourceName, nextRound, currentVotes, candidate, newlyExhausted);
                     }
                 });
+                
+                // Link exhausted votes from previous round to next round
+                if (currentExhausted > 0.001 && nextExhausted > 0.001) {
+                    links.push({
+                        source: `R${currentRound.round}: Exhausted`,
+                        target: `R${nextRound.round}: Exhausted`,
+                        value: Math.min(currentExhausted, nextExhausted)
+                    });
+                }
             }
             
             return { nodes, links };
@@ -207,19 +234,33 @@ const instanceId = `sankey-${Math.random().toString(36).substr(2, 9)}`;
         /**
          * Distribute votes to other candidates proportionally
          */
-        function distributeToOthers(links, sourceName, nextRound, totalVotes, excludeCandidate) {
+        function distributeToOthers(links, sourceName, nextRound, totalVotes, excludeCandidate, newlyExhausted) {
             const otherCandidates = Object.entries(nextRound.tally).filter(
                 ([c, v]) => c !== excludeCandidate && v > 0.001
             );
             
-            if (otherCandidates.length === 0) return;
+            // Calculate how much goes to exhausted vs other candidates
+            const nextExhausted = nextRound.exhausted || 0;
+            const exhaustedPortion = newlyExhausted > 0.001 ? Math.min(newlyExhausted, totalVotes) : 0;
+            const remainingToDistribute = totalVotes - exhaustedPortion;
+            
+            // Link to exhausted if applicable
+            if (exhaustedPortion > 0.001) {
+                links.push({
+                    source: sourceName,
+                    target: `R${nextRound.round}: Exhausted`,
+                    value: exhaustedPortion
+                });
+            }
+            
+            if (otherCandidates.length === 0 || remainingToDistribute < 0.001) return;
             
             const totalOtherVotes = otherCandidates.reduce((sum, [_, v]) => sum + v, 0);
             
             // Distribute proportionally
             otherCandidates.forEach(([candidate, votes]) => {
                 const proportion = votes / totalOtherVotes;
-                const transferAmount = totalVotes * proportion;
+                const transferAmount = remainingToDistribute * proportion;
                 
                 if (transferAmount > 0.001) {
                     links.push({

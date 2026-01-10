@@ -25,6 +25,12 @@ export interface RoundResult {
   round: number;
   /** Vote tallies keyed by candidate name */
   tally: { [candidate: string]: number };
+  /** Optional dynamic quota for this specific round (IcenianSTV style) */
+  quota?: number;
+  /** Optional cumulative exhausted votes at this round */
+  exhausted?: number;
+  /** Whether this is the final summary round */
+  isFinalRound?: boolean;
 }
 
 export interface Props {
@@ -159,7 +165,7 @@ const chartData = JSON.stringify({
   function initializeChart(
     chartId: string,
     data: {
-      roundResults: Array<{ round: number; tally: { [key: string]: number } }>;
+      roundResults: Array<{ round: number; tally: { [key: string]: number }; quota?: number; exhausted?: number; isFinalRound?: boolean }>;
       candidates?: string[];
       quota?: number;
       colors?: string[];
@@ -206,6 +212,9 @@ const chartData = JSON.stringify({
     function getChartOption(roundIndex: number): echarts.EChartsOption {
       const roundData = roundResults[roundIndex];
       if (!roundData) return {};
+
+      // Get the quota for this specific round (dynamic quota support)
+      const currentQuota = roundData.quota !== undefined ? roundData.quota : quota;
 
       // Get vote values for each candidate (0 if eliminated/not present)
       const values = candidates.map(c => roundData.tally[c] ?? 0);
@@ -297,7 +306,7 @@ const chartData = JSON.stringify({
       };
 
       // Add quota line if specified
-      if (quota !== undefined && quota > 0) {
+      if (currentQuota !== undefined && currentQuota > 0) {
         option.series = [
           ...(option.series as any[]),
           {
@@ -313,9 +322,9 @@ const chartData = JSON.stringify({
               },
               data: [
                 {
-                  yAxis: quota,
+                  yAxis: currentQuota,
                   label: {
-                    formatter: `Quota: ${quota.toFixed(2)}`,
+                    formatter: `Quota: ${currentQuota.toFixed(2)}`,
                     position: 'end'
                   }
                 }
@@ -468,14 +477,17 @@ const chartData = JSON.stringify({
    * Extract unique candidate names from all rounds
    */
   function extractCandidates(
-    roundResults: Array<{ round: number; tally: { [key: string]: number } }>
+    roundResults: Array<{ round: number; tally: { [key: string]: number }; isFinalRound?: boolean }>
   ): string[] {
     const candidateSet = new Set<string>();
     
     roundResults.forEach(round => {
-      Object.keys(round.tally).forEach(candidate => {
-        candidateSet.add(candidate);
-      });
+      // Skip final round for candidate extraction as it only shows winners
+      if (!round.isFinalRound) {
+        Object.keys(round.tally).forEach(candidate => {
+          candidateSet.add(candidate);
+        });
+      }
     });
     
     return Array.from(candidateSet);

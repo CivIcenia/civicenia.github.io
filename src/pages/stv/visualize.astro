@@ -130,6 +130,165 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
 }`}</code></pre>
             </div>
 
+            <!-- =================================================================== -->
+            <!-- FACTION ANALYSIS SECTION -->
+            <!-- =================================================================== -->
+            <div class="faction-analysis-section">
+                <h2 class="govuk-heading-l" style="margin-top: 3rem; border-top: 2px solid #ccc; padding-top: 2rem;">
+                    🗳️ Faction & Similarity Analysis
+                </h2>
+                <p class="govuk-body-l">
+                    Analyze political factions and candidate similarities based on raw ballot data. 
+                    This reveals which candidates share voter bases and how votes would flow between them.
+                </p>
+                
+                <!-- Faction Import Section -->
+                <div class="import-section govuk-form-group">
+                    <h3 class="govuk-heading-m">Load Raw Election Data</h3>
+                    <p class="govuk-body">Import the raw STV election JSON file (with ballots) from the <a href="/stv">STV Calculator</a>.</p>
+                    
+                    <div class="govuk-form-group">
+                        <label class="govuk-label" for="faction-file">
+                            Select raw election file (.json with ballots)
+                        </label>
+                        <input 
+                            type="file" 
+                            id="faction-file" 
+                            accept=".json"
+                            class="govuk-file-upload"
+                        />
+                    </div>
+                    
+                    <div class="govuk-button-group">
+                        <button type="button" id="load-faction-btn" class="icenia-btn">
+                            Analyze Factions
+                        </button>
+                        <button type="button" id="load-faction-demo-btn" class="icenia-btn icenia-btn-secondary">
+                            Load Demo Data
+                        </button>
+                    </div>
+                    
+                    <!-- Error/Status Messages -->
+                    <div id="faction-status-message" class="status-message" style="display: none;"></div>
+                </div>
+                
+                <!-- Faction Analysis Results (hidden until data loaded) -->
+                <div id="faction-results" style="display: none;">
+                    
+                    <!-- Election Summary -->
+                    <div class="faction-summary">
+                        <h3 class="govuk-heading-s">Data Summary</h3>
+                        <dl class="govuk-summary-list govuk-summary-list--no-border">
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">Total Ballots</dt>
+                                <dd class="govuk-summary-list__value" id="faction-total-ballots">-</dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">Candidates Analyzed</dt>
+                                <dd class="govuk-summary-list__value" id="faction-candidates">-</dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">Avg Rankings per Ballot</dt>
+                                <dd class="govuk-summary-list__value" id="faction-avg-rankings">-</dd>
+                            </div>
+                        </dl>
+                    </div>
+                    
+                    <!-- Tab Navigation -->
+                    <div class="faction-tabs">
+                        <button type="button" class="faction-tab active" data-tab="network">
+                            🕸️ Faction Network
+                        </button>
+                        <button type="button" class="faction-tab" data-tab="heatmap">
+                            🔥 Similarity Heatmap
+                        </button>
+                        <button type="button" class="faction-tab" data-tab="mds">
+                            🗺️ Political Map
+                        </button>
+                    </div>
+                    
+                    <!-- Network Graph Tab -->
+                    <div id="tab-network" class="faction-tab-content active">
+                        <h3 class="govuk-heading-s">Vote Transfer Network</h3>
+                        <p class="govuk-body">
+                            This force-directed graph shows how votes would flow between candidates.
+                            <strong>Thicker lines</strong> = stronger transfer relationships.
+                            Candidates who share voters cluster together. <strong>Drag nodes</strong> to reposition, <strong>scroll</strong> to zoom, <strong>click+drag background</strong> to pan.
+                        </p>
+                        <div id="network-chart" style="height: 600px; width: 100%; border: 1px solid #ddd; border-radius: 8px; background: #fff;"></div>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="legend-dot" style="background: #5470c6;"></span> Node size = 1st preference votes</span>
+                            <span class="legend-item"><span class="legend-line"></span> Edge width = transfer probability</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Heatmap Tab -->
+                    <div id="tab-heatmap" class="faction-tab-content" style="display: none;">
+                        <h3 class="govuk-heading-s">Candidate Correlation Heatmap</h3>
+                        <p class="govuk-body">
+                            Shows how similar candidates' voter bases are using rank correlation.
+                            <strong style="color: #10b981;">Green</strong> = voters rank both similarly (allies).
+                            <strong style="color: #ef4444;">Red</strong> = opposing voter bases (rivals).
+                        </p>
+                        <div id="heatmap-chart" style="height: 600px; width: 100%; border: 1px solid #ddd; border-radius: 8px; background: #fff;"></div>
+                    </div>
+                    
+                    <!-- MDS Map Tab -->
+                    <div id="tab-mds" class="faction-tab-content" style="display: none;">
+                        <h3 class="govuk-heading-s">Political Distance Map</h3>
+                        <p class="govuk-body">
+                            A 2D projection where <strong>distance = dissimilarity</strong>.
+                            Candidates close together share voters. Candidates far apart have distinct bases.
+                            The axes have no predefined meaning (like "left/right") — they emerge from the data itself.
+                        </p>
+                        <div id="mds-chart" style="height: 600px; width: 100%; border: 1px solid #ddd; border-radius: 8px; background: #fff;"></div>
+                    </div>
+                    
+                    <!-- Raw Data Table -->
+                    <details class="faction-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">View Transfer Probability Matrix</span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <p class="govuk-body">
+                                This table shows the probability that a vote for candidate A will transfer to candidate B 
+                                (i.e., B is ranked immediately after A). Read rows as "If you voted for [row], there's X% chance your next choice is [column]."
+                            </p>
+                            <div id="transfer-matrix-container" style="overflow-x: auto;"></div>
+                        </div>
+                    </details>
+                    
+                </div>
+                
+                <!-- Instructions for Faction Analysis -->
+                <div id="faction-instructions" class="instructions-panel" style="margin-top: 1rem;">
+                    <h3 class="govuk-heading-s">About This Analysis</h3>
+                    <p class="govuk-body">
+                        This tool analyzes raw ballot data to reveal political factions and candidate relationships.
+                        Unlike the RCVis visualization above (which shows round-by-round results), this analysis 
+                        examines the underlying voter preferences directly.
+                    </p>
+                    
+                    <h4 class="govuk-heading-xs">What You'll Learn:</h4>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li><strong>Vote Transfer Network:</strong> Who are natural coalition partners?</li>
+                        <li><strong>Similarity Heatmap:</strong> Which candidates have overlapping or opposing voter bases?</li>
+                        <li><strong>Political Map:</strong> Where do candidates sit in "political space"?</li>
+                    </ul>
+                    
+                    <h4 class="govuk-heading-xs">Required File Format:</h4>
+                    <p class="govuk-body">This requires the raw STV election JSON with ballot data:</p>
+                    <pre class="code-block"><code>{`{
+  "candidates": ["Alice", "Bob", "Carol"],
+  "ballots": [
+    { "voter": "voter1", "rankings": ["Alice", "Carol", "Bob"] },
+    { "voter": "voter2", "rankings": ["Bob", "Alice"] }
+  ],
+  "nameMatches": { ... }  // Optional: for name normalization
+}`}</code></pre>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -155,6 +314,124 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
     // Chart instances
     let chartInstance: echarts.ECharts | null = null;
     let sankeyInstance: echarts.ECharts | null = null;
+    
+    /**
+     * ============================================================================
+     * UNIFIED SPEED CONTROL SYSTEM
+     * ============================================================================
+     * 
+     * All timings are defined as BASE values at 1x speed, then scaled by the
+     * speed multiplier. This ensures everything stays in sync at any speed.
+     * 
+     * The key insight: to speed up a video 2x, you divide all durations by 2.
+     * So speedMultiplier = 2 means duration = baseDuration / 2.
+     */
+    class SpeedController {
+        // Base timings at 1x speed (milliseconds)
+        static readonly BASE = {
+            // Chart bar animation duration
+            CHART_ANIMATION: 600,
+            // Chart update transition duration  
+            CHART_UPDATE: 400,
+            // Time to display current round before transfer animation starts
+            PRE_ANIMATION_DISPLAY: 600,
+            // Gold bar fade-in pause at origin
+            GOLD_BAR_SPAWN_PAUSE: 400,
+            // Gold bar flight duration
+            GOLD_BAR_FLIGHT: 800,
+            // Gold bar fade-out pause at destination
+            GOLD_BAR_LANDING_PAUSE: 400,
+            // Delay after chart updates before gold bars disappear
+            GOLD_BAR_CLEANUP_DELAY: 300,
+            // Pause between rounds during autoplay
+            BETWEEN_ROUNDS_PAUSE: 600,
+        };
+        
+        private _speedMultiplier: number = 1.0;
+        
+        get speedMultiplier(): number {
+            return this._speedMultiplier;
+        }
+        
+        set speedMultiplier(value: number) {
+            // Clamp between 0.5x and 10x
+            this._speedMultiplier = Math.max(0.5, Math.min(10, value));
+        }
+        
+        /**
+         * Convert slider value (0-100) to speed multiplier.
+         * Exponential curve for better feel: slow speeds have more precision.
+         * 0 = 0.5x, 50 = 1x, 100 = 10x
+         */
+        static sliderToSpeed(sliderValue: number): number {
+            // Exponential mapping: 0.5 * 20^(slider/100)
+            // At 0: 0.5 * 20^0 = 0.5
+            // At 50: 0.5 * 20^0.5 ≈ 2.2
+            // At 100: 0.5 * 20^1 = 10
+            // Using a simpler exponential for smoother feel
+            const t = sliderValue / 100;
+            return 0.5 * Math.pow(20, t);
+        }
+        
+        /**
+         * Convert speed multiplier back to slider value
+         */
+        static speedToSlider(speed: number): number {
+            // Inverse of sliderToSpeed
+            return 100 * Math.log(speed / 0.5) / Math.log(20);
+        }
+        
+        /** Get scaled timing - this is the core method */
+        getScaled(baseTiming: number): number {
+            return baseTiming / this._speedMultiplier;
+        }
+        
+        // Convenience getters for common timings
+        get chartAnimation(): number {
+            return this.getScaled(SpeedController.BASE.CHART_ANIMATION);
+        }
+        
+        get chartUpdate(): number {
+            return this.getScaled(SpeedController.BASE.CHART_UPDATE);
+        }
+        
+        get preAnimationDisplay(): number {
+            return this.getScaled(SpeedController.BASE.PRE_ANIMATION_DISPLAY);
+        }
+        
+        get goldBarSpawnPause(): number {
+            return this.getScaled(SpeedController.BASE.GOLD_BAR_SPAWN_PAUSE);
+        }
+        
+        get goldBarFlight(): number {
+            return this.getScaled(SpeedController.BASE.GOLD_BAR_FLIGHT);
+        }
+        
+        get goldBarLandingPause(): number {
+            return this.getScaled(SpeedController.BASE.GOLD_BAR_LANDING_PAUSE);
+        }
+        
+        get goldBarCleanupDelay(): number {
+            return this.getScaled(SpeedController.BASE.GOLD_BAR_CLEANUP_DELAY);
+        }
+        
+        get betweenRoundsPause(): number {
+            return this.getScaled(SpeedController.BASE.BETWEEN_ROUNDS_PAUSE);
+        }
+        
+        /** Total duration of gold bar animation sequence */
+        get goldBarTotalDuration(): number {
+            return this.goldBarSpawnPause + this.goldBarFlight + this.goldBarLandingPause;
+        }
+        
+        /** When to trigger chart update (during gold bar landing) */
+        get chartUpdateTriggerTime(): number {
+            return this.goldBarSpawnPause + this.goldBarFlight + (this.goldBarLandingPause * 0.3);
+        }
+    }
+    
+    // Global speed controller instance
+    const speedController = new SpeedController();
     
     // Demo data for testing
     const demoData = {
@@ -192,9 +469,10 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
     
     /**
      * Parse and validate election data from JSON
+     * Supports dynamic quota per round for IcenianSTV
      */
     function parseElectionData(jsonData: any): { 
-        roundResults: Array<{ round: number; tally: { [key: string]: number } }>;
+        roundResults: Array<{ round: number; tally: { [key: string]: number }; quota?: number; exhausted?: number; isFinalRound?: boolean }>;
         config: any;
         outcomes: Array<{ type: 'elected' | 'eliminated'; candidate: string; round: number }>;
     } | null {
@@ -232,7 +510,10 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
                 
                 return {
                     round: round.round || index + 1,
-                    tally
+                    tally,
+                    quota: round.quota !== undefined ? (typeof round.quota === 'string' ? parseFloat(round.quota) : round.quota) : undefined,
+                    exhausted: round.exhausted !== undefined ? (typeof round.exhausted === 'string' ? parseFloat(round.exhausted) : round.exhausted) : undefined,
+                    isFinalRound: round.isFinalRound || false
                 };
             });
             
@@ -249,23 +530,27 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
     }
     
     /**
-     * Extract all unique candidates from round results
+     * Extract all unique candidates from round results (excludes final round winners-only)
      */
-    function extractCandidates(roundResults: Array<{ round: number; tally: { [key: string]: number } }>): string[] {
+    function extractCandidates(roundResults: Array<{ round: number; tally: { [key: string]: number }; isFinalRound?: boolean }>): string[] {
         const candidateSet = new Set<string>();
         roundResults.forEach(round => {
-            Object.keys(round.tally).forEach(candidate => candidateSet.add(candidate));
+            // Skip final round for candidate extraction as it only shows winners
+            if (!round.isFinalRound) {
+                Object.keys(round.tally).forEach(candidate => candidateSet.add(candidate));
+            }
         });
         return Array.from(candidateSet);
     }
     
     /**
      * Create and initialize the ECharts chart
+     * Supports dynamic quota per round (IcenianSTV style)
      */
     function createChart(
-        roundResults: Array<{ round: number; tally: { [key: string]: number } }>,
+        roundResults: Array<{ round: number; tally: { [key: string]: number }; quota?: number; exhausted?: number; isFinalRound?: boolean }>,
         candidates: string[],
-        quota?: number,
+        fallbackQuota?: number,
         outcomes?: Array<{ type: 'elected' | 'eliminated'; candidate: string; round: number }>
     ) {
         // Clean up existing chart
@@ -302,12 +587,13 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
                     <input type="range" id="round-slider" class="round-slider" min="1" max="${roundResults.length}" value="1" />
                 </div>
                 <div class="speed-control">
-                    <label for="speed-select">Speed:</label>
-                    <select id="speed-select" class="speed-select">
-                        <option value="2000">Slow</option>
-                        <option value="1000" selected>Normal</option>
-                        <option value="500">Fast</option>
-                    </select>
+                    <label for="speed-slider">Speed: <span id="speed-display">1.0x</span></label>
+                    <input type="range" id="speed-slider" class="speed-slider" min="0" max="100" value="23" step="1" />
+                    <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: #666; margin-top: 2px;">
+                        <span>0.5x</span>
+                        <span>~2x</span>
+                        <span>10x</span>
+                    </div>
                 </div>
                 <button type="button" class="control-btn download-btn" id="download-btn" title="Download as PNG">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -331,7 +617,7 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
         let currentRound = 0;
         let isPlaying = false;
         let playInterval: number | null = null;
-        let animationSpeed = 1000;
+        // Speed is now managed by the global speedController
         
         // Get controls
         const slider = document.getElementById('round-slider') as HTMLInputElement;
@@ -339,36 +625,214 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
         const playBtn = document.getElementById('play-btn')!;
         const prevBtn = document.getElementById('prev-btn')!;
         const nextBtn = document.getElementById('next-btn')!;
-        const speedSelect = document.getElementById('speed-select') as HTMLSelectElement;
+        const speedSlider = document.getElementById('speed-slider') as HTMLInputElement;
+        const speedDisplay = document.getElementById('speed-display')!;
         const downloadBtn = document.getElementById('download-btn')!;
         
-        // Track winners who are frozen at quota
-        const frozenWinners = new Set<string>();
         const maxVoteValue = Math.max(...roundResults.flatMap(r => Object.values(r.tally)));
+        
+        // Track candidate states across rounds
+        const winnerStates = new Map<string, { round: number; votes: number; surplus: number }>(); // candidate -> when they won
+        const eliminatedStates = new Map<string, { round: number; votes: number }>(); // candidate -> when eliminated
+        
+        /**
+         * Calculate vote transfers when a candidate is elected or eliminated
+         * Returns array of { from, to, amount, fromIndex, toIndex }
+         * 'to' can be 'EXHAUSTED' for votes that ran out of preferences
+         */
+        function calculateVoteTransfers(
+            currentRoundIndex: number
+        ): Array<{ from: string; to: string; amount: number; fromIndex: number; toIndex: number }> | null {
+            if (currentRoundIndex >= roundResults.length - 1) return null;
+            if (!outcomes) return null;
+            
+            const currentRound = roundResults[currentRoundIndex];
+            const nextRound = roundResults[currentRoundIndex + 1];
+            
+            // Get the dynamic quota for this round
+            const currentQuota = currentRound.quota ?? fallbackQuota ?? 0;
+            if (currentQuota <= 0) return null;
+            
+            // Special handling for transition to final round (only winners + exhausted)
+            if (nextRound.isFinalRound) {
+                // In final round transition, only the last winner's surplus goes to exhausted
+                const lastElected = outcomes.filter(o => o.type === 'elected' && o.round === currentRound.round);
+                if (lastElected.length > 0) {
+                    const winner = lastElected[0].candidate;
+                    const currentVotes = currentRound.tally[winner] || 0;
+                    const surplus = currentVotes - currentQuota;
+                    
+                    if (surplus > 0.001) {
+                        // Only transfer surplus to exhausted
+                        return [{
+                            from: winner,
+                            to: 'EXHAUSTED',
+                            amount: surplus,
+                            fromIndex: candidates.indexOf(winner),
+                            toIndex: -1
+                        }];
+                    }
+                }
+                return null; // No other transfers in final round transition
+            }
+            
+            // Check if anyone was elected or eliminated in current round
+            const electedInThisRound = outcomes.filter(o => 
+                o.type === 'elected' && o.round === currentRound.round
+            );
+            const eliminatedInThisRound = outcomes.filter(o => 
+                o.type === 'eliminated' && o.round === currentRound.round
+            );
+            
+            if (electedInThisRound.length === 0 && eliminatedInThisRound.length === 0) return null;
+            
+            const transfers: Array<{ from: string; to: string; amount: number; fromIndex: number; toIndex: number }> = [];
+            
+            // Handle elected candidates (surplus transfers)
+            for (const elected of electedInThisRound) {
+                const winner = elected.candidate;
+                const currentVotes = currentRound.tally[winner] || 0;
+                const surplus = currentVotes - currentQuota;
+                
+                if (surplus <= 0.001) continue; // No meaningful surplus
+                
+                // Calculate where votes went in next round
+                const winnerIndexInCandidates = candidates.indexOf(winner);
+                
+                // For each remaining candidate, calculate their gain
+                for (const candidate of candidates) {
+                    if (candidate === winner) continue;
+                    
+                    const currentCandidateVotes = currentRound.tally[candidate] || 0;
+                    const nextCandidateVotes = nextRound.tally[candidate] || 0;
+                    const gain = nextCandidateVotes - currentCandidateVotes;
+                    
+                    if (gain > 0.001) { // Received votes
+                        transfers.push({
+                            from: winner,
+                            to: candidate,
+                            amount: gain,
+                            fromIndex: winnerIndexInCandidates,
+                            toIndex: candidates.indexOf(candidate)
+                        });
+                    }
+                }
+            }
+            
+            // Handle eliminated candidates (all votes transfer)
+            for (const eliminated of eliminatedInThisRound) {
+                const loser = eliminated.candidate;
+                const currentVotes = currentRound.tally[loser] || 0;
+                
+                if (currentVotes <= 0.001) continue; // No votes to transfer
+                
+                const loserIndexInCandidates = candidates.indexOf(loser);
+                
+                let totalTransferred = 0;
+                
+                // For each remaining candidate, calculate their gain
+                for (const candidate of candidates) {
+                    if (candidate === loser) continue;
+                    
+                    const currentCandidateVotes = currentRound.tally[candidate] || 0;
+                    const nextCandidateVotes = nextRound.tally[candidate] || 0;
+                    const gain = nextCandidateVotes - currentCandidateVotes;
+                    
+                    if (gain > 0.001) { // Received votes
+                        transfers.push({
+                            from: loser,
+                            to: candidate,
+                            amount: gain,
+                            fromIndex: loserIndexInCandidates,
+                            toIndex: candidates.indexOf(candidate)
+                        });
+                        totalTransferred += gain;
+                    }
+                }
+                
+                // Calculate exhausted votes (votes that didn't transfer to anyone)
+                const exhausted = currentVotes - totalTransferred;
+                if (exhausted > 0.001) {
+                    transfers.push({
+                        from: loser,
+                        to: 'EXHAUSTED',
+                        amount: exhausted,
+                        fromIndex: loserIndexInCandidates,
+                        toIndex: -1 // Special index for exhausted bin
+                    });
+                }
+            }
+            
+            return transfers.length > 0 ? transfers : null;
+        }
         
         /**
          * Generate chart options for a specific round
+         * Uses dynamic quota per round if available
          */
         function getChartOption(roundIndex: number): echarts.EChartsOption {
             const roundData = roundResults[roundIndex];
             if (!roundData) return {};
             
-            const values = candidates.map(c => {
-                // If this candidate was frozen in a previous round, show quota value
-                if (frozenWinners.has(c)) {
-                    return quota ?? roundData.tally[c] ?? 0;
+            // Get dynamic quota for this round, fallback to config threshold
+            const currentQuota = roundData.quota ?? fallbackQuota ?? 0;
+            
+            // Prepare data for stacked bars (base, transferred gray, surplus)
+            const baseParts: number[] = [];
+            const transferredParts: number[] = []; // Gray section for winners' surplus or eliminated votes
+            const surplusParts: number[] = []; // Additional surplus if any
+            
+            candidates.forEach(c => {
+                const totalVotes = roundData.tally[c] ?? 0;
+                const isWinner = winnerStates.has(c);
+                const isEliminated = eliminatedStates.has(c);
+                
+                if (isEliminated) {
+                    // Eliminated: show last known votes in gray (preserve gray bar)
+                    const eliminatedInfo = eliminatedStates.get(c)!;
+                    baseParts.push(0);
+                    transferredParts.push(eliminatedInfo.votes);
+                    surplusParts.push(0);
+                } else if (roundData.isFinalRound && !isWinner && !roundData.tally[c]) {
+                    // In final round, show candidates not in tally (eliminated) with gray bars
+                    const lastRoundIndex = roundResults.length - 2; // Second to last round
+                    const lastRegularRound = roundResults[lastRoundIndex];
+                    const lastVotes = lastRegularRound?.tally[c] || 0;
+                    baseParts.push(0);
+                    transferredParts.push(lastVotes);
+                    surplusParts.push(0);
+                } else if (isWinner) {
+                    // Winner: green up to their winning quota (dynamic), gray for surplus
+                    const winnerInfo = winnerStates.get(c)!;
+                    // Find the quota at the round they won
+                    const winRound = roundResults.find(r => r.round === winnerInfo.round);
+                    const winningQuota = winRound?.quota ?? fallbackQuota ?? 0;
+                    baseParts.push(winningQuota);
+                    transferredParts.push(Math.max(0, winnerInfo.votes - winningQuota));
+                    surplusParts.push(0);
+                } else if (totalVotes > currentQuota && currentQuota > 0) {
+                    // Has surplus but not yet marked as winner
+                    baseParts.push(currentQuota);
+                    transferredParts.push(0);
+                    surplusParts.push(totalVotes - currentQuota);
+                } else {
+                    // Regular candidate
+                    baseParts.push(totalVotes);
+                    transferredParts.push(0);
+                    surplusParts.push(0);
                 }
-                return roundData.tally[c] ?? 0;
             });
+            
             const barColors = candidates.map((_, i) => colors[i % colors.length]);
             
-            // Calculate max value for consistent y-axis scaling
-            const yAxisMax = Math.max(maxVoteValue * 1.1, (quota ?? 0) * 1.2);
+            // Calculate max value for consistent y-axis scaling (use max quota across all rounds)
+            const maxQuota = Math.max(...roundResults.map(r => r.quota ?? 0), fallbackQuota ?? 0);
+            const yAxisMax = Math.max(maxVoteValue * 1.1, maxQuota * 1.2);
             
             const option: echarts.EChartsOption = {
                 title: {
                     text: 'Election Results by Round',
-                    subtext: `Round ${roundData.round} of ${roundResults.length}`,
+                    subtext: `Round ${roundData.round} of ${roundResults.length}${currentQuota > 0 ? ` • Quota: ${currentQuota.toFixed(2)}` : ''}`,
                     left: 'center',
                     textStyle: { fontSize: 18, fontWeight: 'bold' },
                     subtextStyle: { fontSize: 14 }
@@ -377,16 +841,25 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
                     trigger: 'axis',
                     axisPointer: { type: 'shadow' },
                     formatter: (params: any) => {
-                        const p = Array.isArray(params) ? params[0] : params;
-                        const candidate = p.name;
-                        const isFrozen = frozenWinners.has(candidate);
-                        const status = isFrozen ? ' (Elected - Frozen at Quota)' : '';
-                        return `<strong>${candidate}</strong>${status}<br/>Round ${roundData.round}: ${p.value.toFixed(4)} votes`;
+                        if (!Array.isArray(params)) return '';
+                        const candidate = params[0].name;
+                        const totalVotes = roundData.tally[candidate] ?? 0;
+                        const surplus = Math.max(0, totalVotes - currentQuota);
+                        
+                        let result = `<strong>${candidate}</strong><br/>`;
+                        result += `Total Votes: ${totalVotes.toFixed(3)}<br/>`;
+                        if (currentQuota > 0) {
+                            result += `Round Quota: ${currentQuota.toFixed(3)}<br/>`;
+                        }
+                        if (surplus > 0.001 && currentQuota > 0) {
+                            result += `<span style="color: #6b7280;">Surplus: ${surplus.toFixed(3)}</span>`;
+                        }
+                        return result;
                     }
                 },
                 grid: {
                     left: '3%',
-                    right: '4%',
+                    right: '140px', // Make room for exhausted bin
                     bottom: '15%',
                     top: '15%',
                     containLabel: true
@@ -410,43 +883,108 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
                 },
                 series: [
                     {
-                        name: 'Votes',
+                        name: 'Base Votes',
                         type: 'bar',
-                        data: values.map((value, index) => {
+                        stack: 'total',
+                        data: baseParts.map((value, index) => {
                             const candidate = candidates[index];
-                            const isFrozen = frozenWinners.has(candidate);
+                            const isWinner = winnerStates.has(candidate);
+                            const isEliminated = eliminatedStates.has(candidate);
                             return {
                                 value,
                                 itemStyle: {
-                                    color: isFrozen ? '#10b981' : barColors[index],
-                                    opacity: value === 0 ? 0.3 : (isFrozen ? 0.85 : 1),
-                                    borderColor: isFrozen ? '#059669' : 'transparent',
-                                    borderWidth: isFrozen ? 2 : 0
+                                    color: isWinner ? '#10b981' : (isEliminated ? 'transparent' : barColors[index]),
+                                    opacity: value === 0 ? 0 : (isWinner ? 0.85 : 1)
                                 }
                             };
                         }),
-                        animationDuration: 800,
-                        animationDurationUpdate: 800,
+                        animationDuration: speedController.chartAnimation,
+                        animationDurationUpdate: speedController.chartUpdate,
                         animationEasing: 'cubicInOut',
                         animationEasingUpdate: 'cubicInOut',
+                        barWidth: '60%',
+                        label: { show: false }
+                    },
+                    {
+                        name: 'Transferred/Surplus',
+                        type: 'bar',
+                        stack: 'total',
+                        data: transferredParts.map((value, index) => {
+                            const candidate = candidates[index];
+                            return {
+                                value,
+                                itemStyle: {
+                                    color: value > 0 ? '#9ca3af' : 'transparent',
+                                    opacity: 0.6
+                                }
+                            };
+                        }),
+                        animationDuration: speedController.chartAnimation,
+                        animationDurationUpdate: speedController.chartUpdate,
+                        animationEasing: 'cubicInOut',
+                        animationEasingUpdate: 'cubicInOut',
+                        barWidth: '60%',
+                        label: { show: false }
+                    },
+                    {
+                        name: 'Excess',
+                        type: 'bar',
+                        stack: 'total',
+                        data: surplusParts.map((value, index) => {
+                            return {
+                                value,
+                                itemStyle: {
+                                    color: value > 0 ? barColors[index] : 'transparent',
+                                    opacity: 0.9
+                                }
+                            };
+                        }),
+                        animationDuration: speedController.chartAnimation,
+                        animationDurationUpdate: speedController.chartUpdate,
+                        animationEasing: 'cubicInOut',
+                        animationEasingUpdate: 'cubicInOut',
+                        barWidth: '60%',
                         label: {
                             show: true,
                             position: 'top',
                             formatter: (params: any) => {
-                                if (params.value === 0) return '';
                                 const candidate = candidates[params.dataIndex];
-                                const isFrozen = frozenWinners.has(candidate);
-                                return isFrozen ? `${params.value.toFixed(2)} ✓` : params.value.toFixed(2);
+                                const totalVotes = roundData.tally[candidate] ?? 0;
+                                const isWinner = winnerStates.has(candidate);
+                                const isEliminated = eliminatedStates.has(candidate);
+                                if (totalVotes === 0) return '';
+                                
+                                let label = totalVotes.toFixed(2);
+                                
+                                // Check if won or eliminated THIS round
+                                const wonThisRound = outcomes?.some(o => 
+                                    o.type === 'elected' && 
+                                    o.candidate === candidate && 
+                                    o.round === roundData.round
+                                );
+                                const eliminatedThisRound = outcomes?.some(o => 
+                                    o.type === 'eliminated' && 
+                                    o.candidate === candidate && 
+                                    o.round === roundData.round
+                                );
+                                
+                                if (wonThisRound) label += ' ✓ ELECTED';
+                                else if (eliminatedThisRound) label += ' ✗ ELIMINATED';
+                                else if (isWinner) label += ' 🔒';
+                                else if (isEliminated) label += ' 💀';
+                                
+                                return label;
                             },
-                            fontSize: 11,
-                            fontWeight: 'bold'
+                            fontSize: 10,
+                            fontWeight: 'bold',
+                            color: '#000'
                         }
                     }
                 ]
             };
             
-            // Add quota line if specified
-            if (quota && quota > 0) {
+            // Add quota line if specified (dynamic quota per round)
+            if (currentQuota > 0) {
                 (option.series as any[]).push({
                     name: 'Quota',
                     type: 'line',
@@ -454,26 +992,443 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
                         silent: true,
                         symbol: 'none',
                         lineStyle: { color: '#ff4444', type: 'dashed', width: 2 },
-                        data: [{ yAxis: quota, label: { formatter: `Quota: ${quota.toFixed(2)}`, position: 'end' } }]
+                        data: [{ yAxis: currentQuota, label: { formatter: `Quota: ${currentQuota.toFixed(2)}`, position: 'end' } }]
                     }
                 });
             }
+            
+            // Get current round's exhausted votes
+            const currentExhausted = roundData.exhausted ?? 0;
+            
+            // Add exhausted votes bin graphic in top-right
+            (option as any).graphic = [
+                {
+                    type: 'group',
+                    right: 20,
+                    top: 60,
+                    children: [
+                        // Bin container
+                        {
+                            type: 'rect',
+                            shape: { x: 0, y: 0, width: 80, height: 70, r: 4 },
+                            style: {
+                                fill: '#f3f4f6',
+                                stroke: '#9ca3af',
+                                lineWidth: 2
+                            }
+                        },
+                        // Bin icon/label
+                        {
+                            type: 'text',
+                            style: {
+                                text: '🗑️',
+                                x: 40,
+                                y: 18,
+                                textAlign: 'center',
+                                fontSize: 18
+                            }
+                        },
+                        // "Exhausted" label
+                        {
+                            type: 'text',
+                            style: {
+                                text: 'Exhausted',
+                                x: 40,
+                                y: 40,
+                                textAlign: 'center',
+                                fontSize: 10,
+                                fill: '#6b7280',
+                                fontWeight: 'bold'
+                            }
+                        },
+                        // Exhausted count
+                        {
+                            type: 'text',
+                            style: {
+                                text: currentExhausted > 0 ? currentExhausted.toFixed(2) : '0.00',
+                                x: 40,
+                                y: 58,
+                                textAlign: 'center',
+                                fontSize: 11,
+                                fill: '#374151',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    ]
+                }
+            ];
             
             return option;
         }
         
         /**
-         * Show a specific round and update frozen winners
+         * Animate vote transfers using ECharts graphics with multi-stage flow
+         * Shows bars "flying" from source to recipients
+         * 
+         * TIMING ARCHITECTURE (all values scaled by speedController):
+         * 1. Gold bars spawn and fade in at origin (goldBarSpawnPause)
+         * 2. Gold bars fly to destination (goldBarFlight)
+         * 3. Gold bars pause at destination, chart updates midway (goldBarLandingPause)
+         * 4. Gold bars fade out and are cleaned up
          */
-        function showRound(roundIndex: number) {
-            if (roundIndex < 0 || roundIndex >= roundResults.length) return;
+        function animateVoteTransfers(
+            transfers: Array<{ from: string; to: string; amount: number; fromIndex: number; toIndex: number }>,
+            fromRoundIndex: number,
+            callback: () => void
+        ) {
+            if (!chartInstance) return callback();
             
-            // Update frozen winners based on outcomes data
-            frozenWinners.clear();
+            const fromRound = roundResults[fromRoundIndex];
+            
+            // Calculate actual bar width from chart
+            const containerWidth = (chartInstance.getDom() as HTMLElement).offsetWidth;
+            const availableWidth = containerWidth - 140; // Account for exhausted bin area
+            const calculatedBarWidth = Math.max(20, Math.min(80, availableWidth / candidates.length * 0.6));
+            
+            // Get timing values from speed controller (all properly scaled)
+            const spawnPause = speedController.goldBarSpawnPause;
+            const flightDuration = speedController.goldBarFlight;
+            const landingPause = speedController.goldBarLandingPause;
+            const totalDuration = speedController.goldBarTotalDuration;
+            
+            // Calculate keyframe percentages
+            const spawnEndPercent = spawnPause / totalDuration;
+            const flightEndPercent = (spawnPause + flightDuration) / totalDuration;
+            const fadeStartPercent = (spawnPause + flightDuration + landingPause * 0.7) / totalDuration;
+            
+            // Group transfers by source candidate to calculate stacking
+            const transfersBySource = new Map<number, Array<typeof transfers[0]>>();
+            transfers.forEach(transfer => {
+                if (!transfersBySource.has(transfer.fromIndex)) {
+                    transfersBySource.set(transfer.fromIndex, []);
+                }
+                transfersBySource.get(transfer.fromIndex)!.push(transfer);
+            });
+            
+            // Sort each group by destination index (leftmost = bottom, rightmost = top)
+            transfersBySource.forEach(group => {
+                group.sort((a, b) => a.toIndex - b.toIndex);
+            });
+            
+            // Create graphics for each transfer
+            const graphics: any[] = [];
+            
+            transfers.forEach((transfer, idx) => {
+                // Get the actual data values from the chart series
+                const chartOption: any = chartInstance!.getOption();
+                const baseSeriesData = chartOption.series[0].data;
+                const transferredSeriesData = chartOption.series[1].data;
+                
+                // Extract the numeric value from the data object
+                const baseDataItem = baseSeriesData[transfer.fromIndex];
+                const grayDataItem = transferredSeriesData[transfer.fromIndex];
+                const baseValue = (typeof baseDataItem === 'object' && baseDataItem !== null) ? baseDataItem.value : (baseDataItem || 0);
+                const grayValue = (typeof grayDataItem === 'object' && grayDataItem !== null) ? grayDataItem.value : (grayDataItem || 0);
+                
+                // Get all transfers from this source to calculate stacking
+                const sourceTransfers = transfersBySource.get(transfer.fromIndex)!;
+                const transferIndexInStack = sourceTransfers.findIndex(t => t === transfer);
+                
+                // Calculate this bar's position in the stack
+                const grayBottomY = baseValue;
+                let cumulativeHeightBelow = 0;
+                for (let i = 0; i < transferIndexInStack; i++) {
+                    cumulativeHeightBelow += sourceTransfers[i].amount;
+                }
+                
+                const thisBarBottomY = grayBottomY + cumulativeHeightBelow;
+                const thisBarTopY = thisBarBottomY + transfer.amount;
+                
+                // Convert to pixel coordinates
+                const fromPointBottom = chartInstance!.convertToPixel({ seriesIndex: 0 }, [transfer.fromIndex, thisBarBottomY]);
+                const fromPointTop = chartInstance!.convertToPixel({ seriesIndex: 0 }, [transfer.fromIndex, thisBarTopY]);
+                
+                if (!fromPointBottom || !fromPointTop) return;
+                
+                // Calculate source bar position
+                const barX = fromPointTop[0] - calculatedBarWidth / 2;
+                const barHeight = Math.abs(fromPointTop[1] - fromPointBottom[1]);
+                const barY = Math.min(fromPointBottom[1], fromPointTop[1]);
+                
+                // Calculate destination position
+                let destX: number, destY: number;
+                
+                if (transfer.to === 'EXHAUSTED') {
+                    // Destination: exhausted bin in top-right
+                    const chartDom = chartInstance!.getDom() as HTMLElement;
+                    const binX = chartDom.offsetWidth - 100;
+                    const binY = 60;
+                    const binWidth = 80;
+                    const binHeight = 60;
+                    destX = binX + binWidth / 2 - calculatedBarWidth / 2;
+                    destY = binY + binHeight / 2 - barHeight / 2;
+                } else {
+                    // Destination: on top of receiving candidate's bar
+                    const destCurrentVotes = fromRound.tally[transfer.to] || 0;
+                    const toPoint = chartInstance!.convertToPixel({ seriesIndex: 0 }, [transfer.toIndex, destCurrentVotes]);
+                    if (!toPoint) return;
+                    destX = toPoint[0] - calculatedBarWidth / 2;
+                    destY = toPoint[1] - barHeight;
+                }
+                
+                // Create flying gold bar with keyframe animation
+                const flyingBar = {
+                    id: `transfer-${idx}`,
+                    type: 'rect',
+                    shape: {
+                        x: barX,
+                        y: barY,
+                        width: calculatedBarWidth,
+                        height: barHeight,
+                        r: 2
+                    },
+                    style: {
+                        fill: '#fbbf24',
+                        opacity: 0,
+                        shadowBlur: 20,
+                        shadowColor: '#f59e0b',
+                        shadowOffsetX: 0,
+                        shadowOffsetY: 4
+                    },
+                    keyframeAnimation: [{
+                        duration: totalDuration,
+                        easing: 'linear',
+                        loop: false,
+                        keyframes: [
+                            // Start: invisible at origin
+                            {
+                                percent: 0,
+                                shape: { x: barX, y: barY },
+                                style: { opacity: 0 }
+                            },
+                            // Fade in at origin (first half of spawn pause)
+                            {
+                                percent: spawnEndPercent * 0.5,
+                                shape: { x: barX, y: barY },
+                                style: { opacity: 0.95, shadowBlur: 25 }
+                            },
+                            // Hold at origin (end of spawn pause)
+                            {
+                                percent: spawnEndPercent,
+                                shape: { x: barX, y: barY },
+                                style: { opacity: 0.95, shadowBlur: 25 }
+                            },
+                            // Arrive at destination (end of flight)
+                            {
+                                percent: flightEndPercent,
+                                shape: { x: destX, y: destY },
+                                style: { opacity: 0.95, shadowBlur: 20 }
+                            },
+                            // Start fading at destination
+                            {
+                                percent: fadeStartPercent,
+                                shape: { x: destX, y: destY },
+                                style: { opacity: 0.95, shadowBlur: 25 }
+                            },
+                            // Fully faded out
+                            {
+                                percent: 1,
+                                shape: { x: destX, y: destY },
+                                style: { opacity: 0 }
+                            }
+                        ]
+                    }]
+                };
+                
+                graphics.push(flyingBar);
+            });
+            
+            // Get exhausted count for current display
+            const currentExhausted = fromRound.exhausted ?? 0;
+            
+            // Exhausted bin graphic (preserved throughout)
+            const exhaustedBinGraphic = {
+                type: 'group',
+                right: 20,
+                top: 60,
+                children: [
+                    {
+                        type: 'rect',
+                        shape: { x: 0, y: 0, width: 80, height: 70, r: 4 },
+                        style: {
+                            fill: '#f3f4f6',
+                            stroke: '#9ca3af',
+                            lineWidth: 2
+                        }
+                    },
+                    {
+                        type: 'text',
+                        style: {
+                            text: '🗑️',
+                            x: 40,
+                            y: 18,
+                            textAlign: 'center',
+                            fontSize: 18
+                        }
+                    },
+                    {
+                        type: 'text',
+                        style: {
+                            text: 'Exhausted',
+                            x: 40,
+                            y: 40,
+                            textAlign: 'center',
+                            fontSize: 10,
+                            fill: '#6b7280',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    {
+                        type: 'text',
+                        style: {
+                            text: currentExhausted > 0 ? currentExhausted.toFixed(2) : '0.00',
+                            x: 40,
+                            y: 58,
+                            textAlign: 'center',
+                            fontSize: 11,
+                            fill: '#374151',
+                            fontWeight: 'bold'
+                        }
+                    }
+                ]
+            };
+            
+            // Add graphics to chart
+            chartInstance.setOption({
+                graphic: [exhaustedBinGraphic, ...graphics]
+            }, { replaceMerge: ['graphic'] });
+            
+            // Schedule chart update during landing pause (bars are at destination but still visible)
+            const chartUpdateTime = speedController.chartUpdateTriggerTime;
+            setTimeout(() => {
+                // Update chart to next round - bars will animate to new heights
+                callback();
+                
+                // Remove gold bars after they've faded out
+                setTimeout(() => {
+                    chartInstance!.setOption({
+                        graphic: [exhaustedBinGraphic]
+                    }, { replaceMerge: ['graphic'] });
+                }, speedController.goldBarCleanupDelay);
+            }, chartUpdateTime);
+        }
+        
+        /**
+         * Show a specific round and update frozen winners
+         * With animated vote transfers when applicable
+         * 
+         * TIMING FLOW (all scaled by speedController):
+         * 1. Display current round briefly (preAnimationDisplay)
+         * 2. Mark winners/eliminated, update chart to show gray sections
+         * 3. Start gold bar animation (goldBarTotalDuration)
+         *    - During landing pause, chart updates to new round
+         * 4. Gold bars fade, cleanup, signal completion
+         * 
+         * @param roundIndex - The round to show
+         * @param skipAnimation - Whether to skip animation
+         * @param onComplete - Callback when round display is fully complete
+         */
+        function showRound(roundIndex: number, skipAnimation: boolean = false, onComplete?: () => void) {
+            if (roundIndex < 0 || roundIndex >= roundResults.length) {
+                if (onComplete) onComplete();
+                return;
+            }
+            
+            // Check if we're moving forward by one round and should show transfer animation
+            // Use dynamic quota - check if any quota exists for current round
+            const currentRoundQuota = roundResults[currentRound]?.quota ?? fallbackQuota ?? 0;
+            const shouldAnimate = !skipAnimation && 
+                                  roundIndex === currentRound + 1 && 
+                                  currentRoundQuota > 0 && 
+                                  outcomes;
+            
+            if (shouldAnimate) {
+                // Check for vote transfers
+                const transfers = calculateVoteTransfers(currentRound);
+                
+                if (transfers && transfers.length > 0) {
+                    // Phase 1: Show current round in original colors with labels
+                    chartInstance!.setOption(getChartOption(currentRound), { notMerge: false });
+                    
+                    // Phase 2: After brief display, start animation sequence
+                    setTimeout(() => {
+                        // Mark winners and eliminated from this round
+                        const currentRoundData = roundResults[currentRound];
+                        const roundQuota = currentRoundData.quota ?? fallbackQuota ?? 0;
+                        outcomes!.forEach(outcome => {
+                            if (outcome.type === 'elected' && outcome.round === currentRoundData.round) {
+                                const votes = currentRoundData.tally[outcome.candidate] || 0;
+                                winnerStates.set(outcome.candidate, {
+                                    round: currentRoundData.round,
+                                    votes: votes,
+                                    surplus: Math.max(0, votes - roundQuota)
+                                });
+                            }
+                            if (outcome.type === 'eliminated' && outcome.round === currentRoundData.round) {
+                                eliminatedStates.set(outcome.candidate, {
+                                    round: currentRoundData.round,
+                                    votes: currentRoundData.tally[outcome.candidate] || 0
+                                });
+                            }
+                        });
+                        
+                        // Update chart to show gray sections (this happens instantly before gold bars spawn)
+                        chartInstance!.setOption(getChartOption(currentRound), { notMerge: false });
+                        
+                        // Start gold bar animation - callback will update chart to next round
+                        animateVoteTransfers(transfers, currentRound, () => {
+                            updateRoundDisplay(roundIndex);
+                            
+                            // Signal completion after cleanup delay
+                            setTimeout(() => {
+                                if (onComplete) onComplete();
+                            }, speedController.goldBarCleanupDelay);
+                        });
+                    }, speedController.preAnimationDisplay);
+                    
+                    return; // Exit early, callback will handle completion
+                }
+            }
+            
+            // No animation needed, just show the round
+            updateRoundDisplay(roundIndex);
+            if (onComplete) onComplete();
+        }
+        
+        /**
+         * Helper to display round
+         */
+        function updateRoundDisplay(roundIndex: number) {
+            // Update winner and eliminated states up to this round
+            winnerStates.clear();
+            eliminatedStates.clear();
+            
             if (outcomes) {
                 outcomes.forEach(outcome => {
-                    if (outcome.type === 'elected' && outcome.round <= roundResults[roundIndex].round) {
-                        frozenWinners.add(outcome.candidate);
+                    const outcomeRound = outcome.round;
+                    if (outcomeRound <= roundResults[roundIndex].round) {
+                        if (outcome.type === 'elected') {
+                            // Find the round where they were elected to get their votes and quota
+                            const electedRoundIndex = roundResults.findIndex(r => r.round === outcomeRound);
+                            if (electedRoundIndex >= 0) {
+                                const electedRoundData = roundResults[electedRoundIndex];
+                                const votes = electedRoundData.tally[outcome.candidate] || 0;
+                                const roundQuota = electedRoundData.quota ?? fallbackQuota ?? 0;
+                                winnerStates.set(outcome.candidate, {
+                                    round: outcomeRound,
+                                    votes: votes,
+                                    surplus: Math.max(0, votes - roundQuota)
+                                });
+                            }
+                        } else if (outcome.type === 'eliminated') {
+                            const eliminatedRoundIndex = roundResults.findIndex(r => r.round === outcomeRound);
+                            if (eliminatedRoundIndex >= 0) {
+                                eliminatedStates.set(outcome.candidate, {
+                                    round: outcomeRound,
+                                    votes: roundResults[eliminatedRoundIndex].tally[outcome.candidate] || 0
+                                });
+                            }
+                        }
                     }
                 });
             }
@@ -498,20 +1453,33 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
         function startPlay() {
             isPlaying = true;
             updatePlayButton();
-            playInterval = window.setInterval(() => {
-                if (currentRound < roundResults.length - 1) {
-                    showRound(currentRound + 1);
-                } else {
-                    showRound(0);
-                }
-            }, animationSpeed);
+            
+            // Function to advance to next round - only called after previous round completes
+            function advanceRound() {
+                if (!isPlaying) return; // Stop if user paused
+                
+                const nextRound = currentRound < roundResults.length - 1 ? currentRound + 1 : 0;
+                
+                // Show the round and wait for completion before scheduling next
+                showRound(nextRound, false, () => {
+                    // This callback fires when the round display is fully complete
+                    // Only schedule next round if still playing
+                    if (isPlaying) {
+                        // Pause between rounds (scaled by speed)
+                        playInterval = window.setTimeout(advanceRound, speedController.betweenRoundsPause);
+                    }
+                });
+            }
+            
+            // Start the first advance
+            advanceRound();
         }
         
         function stopPlay() {
             isPlaying = false;
             updatePlayButton();
             if (playInterval) {
-                clearInterval(playInterval);
+                clearTimeout(playInterval);
                 playInterval = null;
             }
         }
@@ -524,13 +1492,24 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
         }
         
         // Event listeners
-        slider.addEventListener('input', () => { stopPlay(); showRound(parseInt(slider.value, 10) - 1); });
+        slider.addEventListener('input', () => { stopPlay(); showRound(parseInt(slider.value, 10) - 1, true); }); // Skip animation on manual slider
         playBtn.addEventListener('click', togglePlay);
-        prevBtn.addEventListener('click', () => { stopPlay(); if (currentRound > 0) showRound(currentRound - 1); });
-        nextBtn.addEventListener('click', () => { stopPlay(); if (currentRound < roundResults.length - 1) showRound(currentRound + 1); });
-        speedSelect.addEventListener('change', () => {
-            animationSpeed = parseInt(speedSelect.value, 10);
-            if (isPlaying) { stopPlay(); startPlay(); }
+        prevBtn.addEventListener('click', () => { stopPlay(); if (currentRound > 0) showRound(currentRound - 1, true); }); // Skip animation going backward
+        nextBtn.addEventListener('click', () => { stopPlay(); if (currentRound < roundResults.length - 1) showRound(currentRound + 1); }); // Show animation going forward
+        speedSlider.addEventListener('input', () => {
+            const sliderValue = parseInt(speedSlider.value, 10);
+            
+            // Convert slider value to speed multiplier using the SpeedController
+            const newSpeed = SpeedController.sliderToSpeed(sliderValue);
+            speedController.speedMultiplier = newSpeed;
+            
+            speedDisplay.textContent = `${newSpeed.toFixed(1)}x`;
+            
+            // If playing, restart to apply new speed
+            if (isPlaying) { 
+                stopPlay(); 
+                startPlay(); 
+            }
         });
         downloadBtn.addEventListener('click', () => {
             const dataUrl = chartInstance!.getDataURL({ type: 'png', pixelRatio: 2, backgroundColor: '#ffffff' });
@@ -544,24 +1523,38 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
         const resizeObserver = new ResizeObserver(() => chartInstance?.resize());
         resizeObserver.observe(container);
         
-        // Initial render
-        showRound(0);
+        // Initialize speed controller from slider default value
+        const initialSliderValue = parseInt(speedSlider.value, 10);
+        const initialSpeed = SpeedController.sliderToSpeed(initialSliderValue);
+        speedController.speedMultiplier = initialSpeed;
+        speedDisplay.textContent = `${initialSpeed.toFixed(1)}x`;
+        
+        // Initial render (skip animation on first load)
+        showRound(0, true);
     }
     
     /**
      * Create Sankey diagram showing vote transfers
+     * Supports dynamic quota per round and accumulating exhausted votes
      */
     function createSankeyDiagram(
-        roundResults: Array<{ round: number; tally: { [key: string]: number } }>,
-        candidates: string[]
+        roundResults: Array<{ round: number; tally: { [key: string]: number }; quota?: number; exhausted?: number; isFinalRound?: boolean }>,
+        candidates: string[],
+        fallbackQuota?: number,
+        outcomes?: Array<{ type: 'elected' | 'eliminated'; candidate: string; round: number }>
     ) {
         // Clean up existing chart
         if (sankeyInstance) {
             sankeyInstance.dispose();
         }
         
+        // Store data for buildSankeyData to access
+        (window as any).sankeyRoundResults = roundResults;
+        (window as any).sankeyFallbackQuota = fallbackQuota;
+        (window as any).electionOutcomes = outcomes;
+        
         // Create container HTML
-        dynamicSankeyContainer.innerHTML = `<div id="sankey-chart" style="height: 600px; width: 100%;"></div>`;
+        dynamicSankeyContainer.innerHTML = `<div id="sankey-chart" style="height: 700px; width: 100%;"></div>`;
         
         // Initialize ECharts
         const container = document.getElementById('sankey-chart')!;
@@ -606,7 +1599,19 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
                             const name = params.name;
                             // Extract just the candidate name (remove round prefix)
                             const match = name.match(/^R\d+: (.+)$/);
-                            return match ? match[1] : name;
+                            if (match) {
+                                // Mark winners with a check mark
+                                const candidateName = match[1];
+                                if (candidateName === 'Exhausted') return '🗑️ Exhausted';
+                                return candidateName;
+                            }
+                            // Handle final round special names
+                            if (name.startsWith('Final: ')) {
+                                const finalName = name.substring(7);
+                                if (finalName === 'Exhausted') return '🗑️ Exhausted';
+                                return `✓ ${finalName}`;
+                            }
+                            return name;
                         }
                     }
                 } as any
@@ -625,15 +1630,19 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
     
     /**
      * Build Sankey nodes and links from round results
+     * Features:
+     * - Dynamic quota per round for winners
+     * - Exhausted votes shown as accumulating bar with proper links
+     * - Final stage showing only winners and total exhausted
      */
     function buildSankeyData(
-        roundResults: Array<{ round: number; tally: { [key: string]: number } }>,
+        roundResults: Array<{ round: number; tally: { [key: string]: number }; quota?: number; exhausted?: number; isFinalRound?: boolean }>,
         candidates: string[]
     ): { nodes: any[]; links: any[] } {
         const nodes: any[] = [];
         const links: any[] = [];
         
-        // Color palette matching the bar chart
+        // Color palette
         const colors = [
             '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
             '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#48b8d0'
@@ -644,100 +1653,293 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
             candidateColors[c] = colors[i % colors.length];
         });
         
-        // Create nodes for each candidate in each round
-        roundResults.forEach((round, roundIndex) => {
+        // Get stored data
+        const fallbackQuota = (window as any).sankeyFallbackQuota || 0;
+        const outcomes = (window as any).electionOutcomes as Array<{ type: 'elected' | 'eliminated'; candidate: string; round: number }> || [];
+        
+        // Map outcomes to rounds
+        const electedInRound: { [key: string]: { round: number; quota: number } } = {};
+        const eliminatedInRound: { [key: string]: number } = {};
+        
+        outcomes.forEach(outcome => {
+            if (outcome.type === 'elected') {
+                // Find the quota at the round they were elected (dynamic quota)
+                const electedRoundData = roundResults.find(r => r.round === outcome.round);
+                const winningQuota = electedRoundData?.quota ?? fallbackQuota;
+                electedInRound[outcome.candidate] = { round: outcome.round, quota: winningQuota };
+            } else {
+                eliminatedInRound[outcome.candidate] = outcome.round;
+            }
+        });
+        
+        // Filter to non-final rounds for main processing
+        const regularRounds = roundResults.filter(r => !r.isFinalRound);
+        const finalRound = roundResults.find(r => r.isFinalRound);
+        
+        // Track cumulative exhausted votes for accumulating bar
+        let cumulativeExhausted = 0;
+        const exhaustedPerRound: Map<number, number> = new Map();
+        
+        // Build augmented rounds with winners at their winning quota
+        const augmentedRounds: Array<{ round: number; tally: { [key: string]: number }; depth: number }> = [];
+        
+        regularRounds.forEach((round, roundIndex) => {
+            const tally: { [key: string]: number } = { ...round.tally };
+            
+            // Add back elected candidates from previous rounds at their winning quota
+            Object.entries(electedInRound).forEach(([candidate, info]) => {
+                if (info.round < round.round) {
+                    tally[candidate] = info.quota;
+                }
+            });
+            
+            augmentedRounds.push({ round: round.round, tally, depth: roundIndex });
+            
+            // Track exhausted votes for this round
+            if (round.exhausted !== undefined) {
+                exhaustedPerRound.set(round.round, round.exhausted);
+                cumulativeExhausted = round.exhausted;
+            }
+        });
+        
+        // Create nodes for each round
+        augmentedRounds.forEach((round, idx) => {
+            // Add candidate nodes
             Object.entries(round.tally).forEach(([candidate, votes]) => {
-                if (votes > 0.01) { // Only show candidates with meaningful votes
-                    const nodeName = `R${round.round}: ${candidate}`;
+                if (votes > 0.001) {
+                    const isWinner = electedInRound[candidate] !== undefined && electedInRound[candidate].round <= round.round;
                     nodes.push({
-                        name: nodeName,
+                        name: `R${round.round}: ${candidate}`,
                         value: votes,
-                        itemStyle: {
-                            color: candidateColors[candidate] || '#999'
+                        itemStyle: { 
+                            color: isWinner ? '#10b981' : (candidateColors[candidate] || '#999'),
+                            opacity: isWinner ? 0.85 : 1
                         },
-                        depth: roundIndex
+                        depth: round.depth
                     });
                 }
             });
+            
+            // Add exhausted node for this round if there are exhausted votes
+            const exhaustedAtThisRound = exhaustedPerRound.get(round.round) ?? 0;
+            if (exhaustedAtThisRound > 0.001) {
+                nodes.push({
+                    name: `R${round.round}: Exhausted`,
+                    value: exhaustedAtThisRound,
+                    itemStyle: { color: '#9ca3af' },
+                    depth: round.depth
+                });
+            }
         });
         
-        // Create links between rounds (estimate vote transfers)
-        for (let i = 0; i < roundResults.length - 1; i++) {
-            const currentRound = roundResults[i];
-            const nextRound = roundResults[i + 1];
+        // Create links between rounds
+        for (let i = 0; i < regularRounds.length - 1; i++) {
+            const currentRound = regularRounds[i];
+            const nextRound = regularRounds[i + 1];
+            const augCurrent = augmentedRounds[i];
+            const augNext = augmentedRounds[i + 1];
             
-            // For each candidate in current round
-            Object.entries(currentRound.tally).forEach(([candidate, currentVotes]) => {
-                if (currentVotes < 0.01) return;
+            // Get current round quota
+            const currentQuota = currentRound.quota ?? fallbackQuota;
+            
+            // Calculate vote changes for each candidate
+            const changes: { [candidate: string]: { before: number; after: number; change: number } } = {};
+            const allCandidates = new Set([...Object.keys(currentRound.tally), ...Object.keys(nextRound.tally)]);
+            
+            allCandidates.forEach(candidate => {
+                const before = currentRound.tally[candidate] || 0;
+                const after = nextRound.tally[candidate] || 0;
+                changes[candidate] = { before, after, change: after - before };
+            });
+            
+            // Calculate new exhausted votes this round (difference in cumulative)
+            const prevExhausted = exhaustedPerRound.get(currentRound.round) ?? 0;
+            const nextExhausted = exhaustedPerRound.get(nextRound.round) ?? 0;
+            const newExhaustedThisRound = Math.max(0, nextExhausted - prevExhausted);
+            
+            // Process each candidate
+            Object.entries(augCurrent.tally).forEach(([candidate, currentVotes]) => {
+                if (currentVotes < 0.001) return;
                 
-                const nextVotes = nextRound.tally[candidate] || 0;
                 const sourceName = `R${currentRound.round}: ${candidate}`;
+                const nextVotes = augNext.tally[candidate] || 0;
+                const wasElectedThisRound = electedInRound[candidate]?.round === currentRound.round;
+                const wasEliminatedThisRound = eliminatedInRound[candidate] === currentRound.round;
                 
-                if (nextVotes > 0.01) {
-                    // Candidate still active - transfer continuing votes
-                    const targetName = `R${nextRound.round}: ${candidate}`;
-                    const transferValue = Math.min(currentVotes, nextVotes);
+                if (wasElectedThisRound) {
+                    // Elected: keep their winning quota, redistribute surplus
+                    const winningQuota = electedInRound[candidate].quota;
+                    const kept = Math.min(currentVotes, winningQuota);
+                    const surplus = currentVotes - kept;
                     
-                    if (transferValue > 0.01) {
+                    // Link to self in next round (quota portion)
+                    if (kept > 0.001) {
                         links.push({
                             source: sourceName,
-                            target: targetName,
-                            value: transferValue
+                            target: `R${nextRound.round}: ${candidate}`,
+                            value: kept
                         });
                     }
                     
-                    // If candidate lost votes (surplus), distribute to others
-                    if (currentVotes > nextVotes + 0.01) {
-                        const surplus = currentVotes - nextVotes;
-                        distributeToOthers(links, sourceName, nextRound, surplus, candidate);
+                    // Redistribute surplus
+                    if (surplus > 0.001) {
+                        redistributeSankeyVotes(links, sourceName, changes, nextRound.round, surplus, candidate, newExhaustedThisRound);
                     }
-                } else {
-                    // Candidate eliminated - redistribute all votes
-                    distributeToOthers(links, sourceName, nextRound, currentVotes, candidate);
+                } else if (wasEliminatedThisRound) {
+                    // Eliminated: redistribute all votes
+                    redistributeSankeyVotes(links, sourceName, changes, nextRound.round, currentVotes, candidate, newExhaustedThisRound);
+                } else if (nextVotes > 0.001) {
+                    // Continues: transfer to self
+                    const transfer = Math.min(currentVotes, nextVotes);
+                    if (transfer > 0.001) {
+                        links.push({
+                            source: sourceName,
+                            target: `R${nextRound.round}: ${candidate}`,
+                            value: transfer
+                        });
+                    }
                 }
             });
+            
+            // Link previous exhausted to current exhausted (accumulating)
+            if (prevExhausted > 0.001 && nextExhausted > 0.001) {
+                links.push({
+                    source: `R${currentRound.round}: Exhausted`,
+                    target: `R${nextRound.round}: Exhausted`,
+                    value: prevExhausted
+                });
+            }
+        }
+        
+        // Add FINAL stage with only winners and exhausted
+        if (finalRound || regularRounds.length > 0) {
+            const lastRegularRound = regularRounds[regularRounds.length - 1];
+            const finalDepth = augmentedRounds.length;
+            const finalExhausted = finalRound?.exhausted ?? cumulativeExhausted;
+            
+            // Get all winners with their winning quotas
+            const winners = Object.entries(electedInRound);
+            
+            // Add final winner nodes
+            winners.forEach(([candidate, info]) => {
+                nodes.push({
+                    name: `Final: ${candidate}`,
+                    value: info.quota,
+                    itemStyle: { color: '#10b981', opacity: 0.9 },
+                    depth: finalDepth
+                });
+                
+                // Link from last round to final
+                const lastRoundVotes = augmentedRounds[augmentedRounds.length - 1]?.tally[candidate] ?? info.quota;
+                if (lastRoundVotes > 0.001) {
+                    links.push({
+                        source: `R${lastRegularRound.round}: ${candidate}`,
+                        target: `Final: ${candidate}`,
+                        value: info.quota
+                    });
+                }
+            });
+            
+            // Add final exhausted node
+            if (finalExhausted > 0.001) {
+                nodes.push({
+                    name: `Final: Exhausted`,
+                    value: finalExhausted,
+                    itemStyle: { color: '#9ca3af' },
+                    depth: finalDepth
+                });
+                
+                // Link from last round exhausted to final exhausted
+                const lastRoundExhausted = exhaustedPerRound.get(lastRegularRound.round) ?? 0;
+                if (lastRoundExhausted > 0.001) {
+                    links.push({
+                        source: `R${lastRegularRound.round}: Exhausted`,
+                        target: `Final: Exhausted`,
+                        value: lastRoundExhausted
+                    });
+                }
+            }
         }
         
         return { nodes, links };
     }
     
     /**
-     * Distribute votes to other candidates proportionally
+     * Redistribute votes in Sankey diagram based on actual candidate gains
+     * Handles exhausted votes properly with links to the exhausted bar
      */
-    function distributeToOthers(
+    function redistributeSankeyVotes(
         links: any[],
         sourceName: string,
-        nextRound: { round: number; tally: { [key: string]: number } },
-        totalVotes: number,
-        excludeCandidate: string
+        changes: { [candidate: string]: { before: number; after: number; change: number } },
+        nextRound: number,
+        votesToRedistribute: number,
+        excludeCandidate: string,
+        newExhaustedThisRound: number
     ) {
-        const otherCandidates = Object.entries(nextRound.tally).filter(
-            ([c, v]) => c !== excludeCandidate && v > 0.01
-        );
+        if (votesToRedistribute < 0.001) return;
         
-        if (otherCandidates.length === 0) return;
+        // Find candidates who gained votes (excluding source)
+        const gainers: { [candidate: string]: number } = {};
+        let totalGains = 0;
         
-        const totalOtherVotes = otherCandidates.reduce((sum, [_, v]) => sum + (v as number), 0);
-        
-        // Distribute proportionally
-        otherCandidates.forEach(([candidate, votes]) => {
-            const proportion = (votes as number) / totalOtherVotes;
-            const transferAmount = totalVotes * proportion;
-            
-            if (transferAmount > 0.01) {
-                links.push({
-                    source: sourceName,
-                    target: `R${nextRound.round}: ${candidate}`,
-                    value: transferAmount
-                });
+        Object.entries(changes).forEach(([candidate, data]) => {
+            if (candidate !== excludeCandidate && data.change > 0.001) {
+                gainers[candidate] = data.change;
+                totalGains += data.change;
             }
         });
+        
+        // Calculate exhausted portion from this redistribution
+        // This is proportional to the new exhausted vs total redistribution happening
+        const totalTransferring = totalGains + newExhaustedThisRound;
+        const exhaustedProportion = totalTransferring > 0 ? newExhaustedThisRound / totalTransferring : 0;
+        const exhaustedFromThis = votesToRedistribute * exhaustedProportion;
+        const toDistribute = votesToRedistribute - exhaustedFromThis;
+        
+        // If no gainers, all goes to exhausted
+        if (totalGains < 0.001) {
+            if (votesToRedistribute > 0.001) {
+                links.push({
+                    source: sourceName,
+                    target: `R${nextRound}: Exhausted`,
+                    value: votesToRedistribute
+                });
+            }
+            return;
+        }
+        
+        // Distribute proportionally to gainers
+        let distributed = 0;
+        Object.entries(gainers).forEach(([candidate, gain]) => {
+            const proportion = gain / totalGains;
+            const transfer = toDistribute * proportion;
+            
+            if (transfer > 0.001) {
+                links.push({
+                    source: sourceName,
+                    target: `R${nextRound}: ${candidate}`,
+                    value: transfer
+                });
+                distributed += transfer;
+            }
+        });
+        
+        // Remainder goes to exhausted
+        const remainder = votesToRedistribute - distributed;
+        if (remainder > 0.001) {
+            links.push({
+                source: sourceName,
+                target: `R${nextRound}: Exhausted`,
+                value: remainder
+            });
+        }
     }
     
     /**
      * Display election information
      */
-    function displayElectionInfo(config: any, roundResults: any[], candidates: string[]) {
+    function displayElectionInfo(config: any, roundResults: Array<{ round: number; tally: { [key: string]: number }; quota?: number }>, candidates: string[]) {
         const infoContest = document.getElementById('info-contest')!;
         const infoDate = document.getElementById('info-date')!;
         const infoQuota = document.getElementById('info-quota')!;
@@ -746,7 +1948,23 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
         
         infoContest.textContent = config.contest || 'Unknown';
         infoDate.textContent = config.date || 'Unknown';
-        infoQuota.textContent = config.threshold ? parseFloat(config.threshold).toFixed(3) : 'Not specified';
+        
+        // Show quota info - prefer dynamic quota range if available
+        const quotas = roundResults.map(r => r.quota).filter(q => q !== undefined && q > 0) as number[];
+        if (quotas.length > 0) {
+            const minQuota = Math.min(...quotas);
+            const maxQuota = Math.max(...quotas);
+            if (Math.abs(maxQuota - minQuota) > 0.01) {
+                infoQuota.textContent = `${minQuota.toFixed(3)} - ${maxQuota.toFixed(3)} (dynamic)`;
+            } else {
+                infoQuota.textContent = maxQuota.toFixed(3);
+            }
+        } else if (config.threshold) {
+            infoQuota.textContent = parseFloat(config.threshold).toFixed(3);
+        } else {
+            infoQuota.textContent = 'Not specified';
+        }
+        
         infoRounds.textContent = String(roundResults.length);
         infoCandidates.textContent = candidates.join(', ');
         
@@ -786,12 +2004,18 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
         
         const { roundResults, config, outcomes } = parsed;
         const candidates = extractCandidates(roundResults);
-        const quota = config.threshold ? parseFloat(config.threshold) : undefined;
+        
+        // Use the threshold from the config as fallback (initial quota)
+        // But prefer per-round quotas for IcenianSTV dynamic quota support
+        let quota: number | undefined;
+        if (config.threshold) {
+            quota = parseFloat(config.threshold);
+        }
         
         // Update UI
         displayElectionInfo(config, roundResults, candidates);
         createChart(roundResults, candidates, quota, outcomes);
-        createSankeyDiagram(roundResults, candidates);
+        createSankeyDiagram(roundResults, candidates, quota, outcomes);
         displayOutcomes(outcomes);
         
         // Show chart, hide instructions
@@ -802,13 +2026,21 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
         showStatus('Election data loaded successfully!', 'success');
     }
     
-    // Event handlers
-    loadFileBtn.addEventListener('click', () => {
-        const file = fileInput.files?.[0];
-        if (!file) {
-            showStatus('Please select a file first.', 'error');
-            return;
-        }
+    // Wait for DOM to be fully loaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeHandlers);
+    } else {
+        initializeHandlers();
+    }
+    
+    function initializeHandlers() {
+        // Event handlers
+        loadFileBtn.addEventListener('click', () => {
+            const file = fileInput.files?.[0];
+            if (!file) {
+                showStatus('Please select a file first.', 'error');
+                return;
+            }
         
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -825,16 +2057,867 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
         reader.readAsText(file);
     });
     
-    loadDemoBtn.addEventListener('click', () => {
-        loadElectionData(demoData);
-    });
+        loadDemoBtn.addEventListener('click', () => {
+            loadElectionData(demoData);
+        });
+        
+        // Allow clicking file input directly
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files?.length) {
+                loadFileBtn.click();
+            }
+        });
+        
+        // Initialize faction analysis handlers
+        initializeFactionAnalysis();
+    }
     
-    // Allow clicking file input directly
-    fileInput.addEventListener('change', () => {
-        if (fileInput.files?.length) {
-            loadFileBtn.click();
+    // =============================================================================
+    // FACTION ANALYSIS MODULE
+    // =============================================================================
+    
+    // Chart instances for faction analysis
+    let networkChartInstance: echarts.ECharts | null = null;
+    let heatmapChartInstance: echarts.ECharts | null = null;
+    let mdsChartInstance: echarts.ECharts | null = null;
+    
+    /**
+     * Normalize a name using the nameMatches mapping
+     */
+    function normalizeName(name: string, nameMatches: { [key: string]: string | null }): string | null {
+        // Check direct match first
+        if (nameMatches[name] !== undefined) {
+            const match = nameMatches[name];
+            if (match === null || match === '__NOT_A_BALLOT__') return null;
+            return match;
         }
-    });
+        // Return original if no mapping exists
+        return name;
+    }
+    
+    /**
+     * Process raw ballot data into normalized form
+     */
+    function processRawBallots(data: any): {
+        candidates: string[];
+        processedBallots: Array<{ voter: string; rankings: string[] }>;
+        firstPreferenceCounts: Map<string, number>;
+    } | null {
+        try {
+            // Get candidates list
+            let candidates: string[] = data.candidates || [];
+            const nameMatches: { [key: string]: string | null } = data.nameMatches || {};
+            const ballots: Array<{ voter: string; rankings: string[] }> = data.ballots || [];
+            
+            if (ballots.length === 0) {
+                throw new Error('No ballots found in data');
+            }
+            
+            // Process each ballot
+            const processedBallots: Array<{ voter: string; rankings: string[] }> = [];
+            const firstPreferenceCounts = new Map<string, number>();
+            const allCandidates = new Set<string>();
+            
+            for (const ballot of ballots) {
+                const normalizedRankings: string[] = [];
+                const seenCandidates = new Set<string>();
+                
+                for (const name of ballot.rankings) {
+                    const normalized = normalizeName(name, nameMatches);
+                    if (normalized === null) continue; // Skip invalid/non-ballot entries
+                    
+                    // Deduplicate within ballot
+                    if (seenCandidates.has(normalized)) continue;
+                    seenCandidates.add(normalized);
+                    
+                    normalizedRankings.push(normalized);
+                    allCandidates.add(normalized);
+                }
+                
+                if (normalizedRankings.length > 0) {
+                    processedBallots.push({
+                        voter: ballot.voter,
+                        rankings: normalizedRankings
+                    });
+                    
+                    // Count first preferences
+                    const firstPref = normalizedRankings[0];
+                    firstPreferenceCounts.set(firstPref, (firstPreferenceCounts.get(firstPref) || 0) + 1);
+                }
+            }
+            
+            // Use discovered candidates if none provided
+            if (candidates.length === 0) {
+                candidates = Array.from(allCandidates);
+            } else {
+                // Filter to only candidates that appear in ballots
+                candidates = candidates.filter(c => allCandidates.has(c));
+            }
+            
+            // Sort candidates by first preference count (descending)
+            candidates.sort((a, b) => 
+                (firstPreferenceCounts.get(b) || 0) - (firstPreferenceCounts.get(a) || 0)
+            );
+            
+            return { candidates, processedBallots, firstPreferenceCounts };
+        } catch (e) {
+            console.error('Error processing ballots:', e);
+            return null;
+        }
+    }
+    
+    /**
+     * Calculate the adjacency/transfer matrix
+     * adjacencyMatrix[A][B] = count of times B appears immediately after A
+     */
+    function calculateAdjacencyMatrix(
+        candidates: string[],
+        ballots: Array<{ voter: string; rankings: string[] }>
+    ): number[][] {
+        const n = candidates.length;
+        const matrix: number[][] = Array(n).fill(null).map(() => Array(n).fill(0));
+        const candidateIndex = new Map(candidates.map((c, i) => [c, i]));
+        
+        for (const ballot of ballots) {
+            for (let i = 0; i < ballot.rankings.length - 1; i++) {
+                const fromCandidate = ballot.rankings[i];
+                const toCandidate = ballot.rankings[i + 1];
+                
+                const fromIdx = candidateIndex.get(fromCandidate);
+                const toIdx = candidateIndex.get(toCandidate);
+                
+                if (fromIdx !== undefined && toIdx !== undefined) {
+                    matrix[fromIdx][toIdx]++;
+                }
+            }
+        }
+        
+        return matrix;
+    }
+    
+    /**
+     * Calculate transfer probability matrix (row-normalized adjacency)
+     */
+    function calculateTransferProbabilities(adjacencyMatrix: number[][]): number[][] {
+        return adjacencyMatrix.map(row => {
+            const sum = row.reduce((a, b) => a + b, 0);
+            if (sum === 0) return row.map(() => 0);
+            return row.map(v => v / sum);
+        });
+    }
+    
+    /**
+     * Calculate Spearman rank correlation between two candidates
+     * Based on how voters rank them relative to each other
+     */
+    function calculateRankCorrelation(
+        candidates: string[],
+        ballots: Array<{ voter: string; rankings: string[] }>
+    ): number[][] {
+        const n = candidates.length;
+        const matrix: number[][] = Array(n).fill(null).map(() => Array(n).fill(0));
+        const candidateIndex = new Map(candidates.map((c, i) => [c, i]));
+        
+        // For each pair of candidates, calculate correlation
+        for (let i = 0; i < n; i++) {
+            matrix[i][i] = 1; // Self-correlation is 1
+            
+            for (let j = i + 1; j < n; j++) {
+                const candidateA = candidates[i];
+                const candidateB = candidates[j];
+                
+                // Collect rank pairs from ballots that rank both candidates
+                const rankPairsA: number[] = [];
+                const rankPairsB: number[] = [];
+                
+                for (const ballot of ballots) {
+                    const rankA = ballot.rankings.indexOf(candidateA);
+                    const rankB = ballot.rankings.indexOf(candidateB);
+                    
+                    // Only consider ballots that rank both candidates
+                    if (rankA !== -1 && rankB !== -1) {
+                        rankPairsA.push(rankA + 1); // 1-indexed
+                        rankPairsB.push(rankB + 1);
+                    }
+                }
+                
+                // Calculate Spearman correlation
+                if (rankPairsA.length >= 2) {
+                    const correlation = spearmanCorrelation(rankPairsA, rankPairsB);
+                    matrix[i][j] = correlation;
+                    matrix[j][i] = correlation; // Symmetric
+                }
+            }
+        }
+        
+        return matrix;
+    }
+    
+    /**
+     * Calculate Spearman rank correlation coefficient
+     */
+    function spearmanCorrelation(x: number[], y: number[]): number {
+        const n = x.length;
+        if (n < 2) return 0;
+        
+        // Get ranks
+        const rankX = getRanks(x);
+        const rankY = getRanks(y);
+        
+        // Calculate correlation
+        const meanX = rankX.reduce((a, b) => a + b, 0) / n;
+        const meanY = rankY.reduce((a, b) => a + b, 0) / n;
+        
+        let numerator = 0;
+        let denomX = 0;
+        let denomY = 0;
+        
+        for (let i = 0; i < n; i++) {
+            const dx = rankX[i] - meanX;
+            const dy = rankY[i] - meanY;
+            numerator += dx * dy;
+            denomX += dx * dx;
+            denomY += dy * dy;
+        }
+        
+        const denom = Math.sqrt(denomX * denomY);
+        if (denom === 0) return 0;
+        
+        return numerator / denom;
+    }
+    
+    /**
+     * Convert values to ranks (handling ties with average rank)
+     */
+    function getRanks(values: number[]): number[] {
+        const indexed = values.map((v, i) => ({ value: v, index: i }));
+        indexed.sort((a, b) => a.value - b.value);
+        
+        const ranks = new Array(values.length);
+        let i = 0;
+        while (i < indexed.length) {
+            let j = i;
+            // Find ties
+            while (j < indexed.length && indexed[j].value === indexed[i].value) {
+                j++;
+            }
+            // Assign average rank to ties
+            const avgRank = (i + j + 1) / 2;
+            for (let k = i; k < j; k++) {
+                ranks[indexed[k].index] = avgRank;
+            }
+            i = j;
+        }
+        
+        return ranks;
+    }
+    
+    /**
+     * Perform Multi-Dimensional Scaling (MDS) to project dissimilarity matrix to 2D
+     * Uses classical (Torgerson) MDS algorithm
+     */
+    function performMDS(correlationMatrix: number[][]): Array<{ x: number; y: number }> {
+        const n = correlationMatrix.length;
+        
+        // Convert correlation to dissimilarity (1 - correlation, clamped to [0, 2])
+        const dissimilarity: number[][] = correlationMatrix.map(row =>
+            row.map(v => Math.max(0, Math.min(2, 1 - v)))
+        );
+        
+        // Square the dissimilarities
+        const D2: number[][] = dissimilarity.map(row => row.map(v => v * v));
+        
+        // Double centering
+        const rowMeans = D2.map(row => row.reduce((a, b) => a + b, 0) / n);
+        const colMeans = Array(n).fill(0);
+        let grandMean = 0;
+        
+        for (let j = 0; j < n; j++) {
+            for (let i = 0; i < n; i++) {
+                colMeans[j] += D2[i][j];
+            }
+            colMeans[j] /= n;
+            grandMean += colMeans[j];
+        }
+        grandMean /= n;
+        
+        // Calculate B matrix (double-centered)
+        const B: number[][] = Array(n).fill(null).map(() => Array(n).fill(0));
+        for (let i = 0; i < n; i++) {
+            for (let j = 0; j < n; j++) {
+                B[i][j] = -0.5 * (D2[i][j] - rowMeans[i] - colMeans[j] + grandMean);
+            }
+        }
+        
+        // Power iteration to find top 2 eigenvectors
+        const coords = powerIterationMDS(B, 2);
+        
+        return coords;
+    }
+    
+    /**
+     * Simple power iteration to extract top k eigenvectors
+     */
+    function powerIterationMDS(B: number[][], k: number): Array<{ x: number; y: number }> {
+        const n = B.length;
+        const iterations = 100;
+        const eigenvectors: number[][] = [];
+        
+        // Copy B for deflation
+        const A = B.map(row => [...row]);
+        
+        for (let dim = 0; dim < k; dim++) {
+            // Random initial vector
+            let v = Array(n).fill(0).map(() => Math.random() - 0.5);
+            let eigenvalue = 0;
+            
+            for (let iter = 0; iter < iterations; iter++) {
+                // Multiply A * v
+                const Av = Array(n).fill(0);
+                for (let i = 0; i < n; i++) {
+                    for (let j = 0; j < n; j++) {
+                        Av[i] += A[i][j] * v[j];
+                    }
+                }
+                
+                // Calculate magnitude
+                const mag = Math.sqrt(Av.reduce((sum, x) => sum + x * x, 0));
+                if (mag < 1e-10) break;
+                
+                eigenvalue = mag;
+                v = Av.map(x => x / mag);
+            }
+            
+            // Scale by sqrt of eigenvalue
+            const sqrtEig = Math.sqrt(Math.max(0, eigenvalue));
+            eigenvectors.push(v.map(x => x * sqrtEig));
+            
+            // Deflate: A = A - eigenvalue * v * v^T
+            for (let i = 0; i < n; i++) {
+                for (let j = 0; j < n; j++) {
+                    A[i][j] -= eigenvalue * v[i] * v[j];
+                }
+            }
+        }
+        
+        // Combine into 2D coordinates
+        const coords: Array<{ x: number; y: number }> = [];
+        for (let i = 0; i < n; i++) {
+            coords.push({
+                x: eigenvectors[0]?.[i] || 0,
+                y: eigenvectors[1]?.[i] || 0
+            });
+        }
+        
+        return coords;
+    }
+    
+    /**
+     * Create the network graph visualization
+     */
+    function createNetworkGraph(
+        candidates: string[],
+        adjacencyMatrix: number[][],
+        firstPreferenceCounts: Map<string, number>
+    ) {
+        if (networkChartInstance) {
+            networkChartInstance.dispose();
+        }
+        
+        const container = document.getElementById('network-chart')!;
+        networkChartInstance = echarts.init(container);
+        
+        const colors = [
+            '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
+            '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#48b8d0'
+        ];
+        
+        // Prepare nodes
+        const maxFirstPref = Math.max(...Array.from(firstPreferenceCounts.values()));
+        const nodes = candidates.map((candidate, i) => {
+            const firstPref = firstPreferenceCounts.get(candidate) || 0;
+            const size = 20 + (firstPref / maxFirstPref) * 40;
+            return {
+                id: candidate,
+                name: candidate,
+                symbolSize: size,
+                value: firstPref,
+                itemStyle: { color: colors[i % colors.length] },
+                label: { show: true, fontSize: 10 }
+            };
+        });
+        
+        // Prepare edges (filter to significant transfers)
+        const edges: Array<{ source: string; target: string; value: number; lineStyle: any }> = [];
+        const threshold = 2; // Minimum count threshold
+        
+        for (let i = 0; i < candidates.length; i++) {
+            for (let j = 0; j < candidates.length; j++) {
+                if (i !== j && adjacencyMatrix[i][j] >= threshold) {
+                    const count = adjacencyMatrix[i][j];
+                    edges.push({
+                        source: candidates[i],
+                        target: candidates[j],
+                        value: count,
+                        lineStyle: {
+                            width: Math.log2(count + 1) * 2,
+                            opacity: 0.6,
+                            curveness: 0.2
+                        }
+                    });
+                }
+            }
+        }
+        
+        const option: echarts.EChartsOption = {
+            title: {
+                text: 'Vote Transfer Network',
+                subtext: 'Arrows show direction of vote flow • Drag nodes, scroll to zoom',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: (params: any) => {
+                    if (params.dataType === 'edge') {
+                        return `${params.data.source} → ${params.data.target}<br/>Transfers: ${params.data.value}`;
+                    }
+                    return `<strong>${params.name}</strong><br/>1st Preferences: ${params.value}`;
+                }
+            },
+            legend: { show: false },
+            series: [{
+                type: 'graph',
+                layout: 'force',
+                data: nodes,
+                links: edges,
+                roam: true,
+                draggable: true,
+                force: {
+                    repulsion: 800,  // Increased from 400 to push unconnected nodes apart
+                    gravity: 0.05,   // Reduced from 0.1 to weaken center pull
+                    edgeLength: [120, 250],  // Adjusted for better spacing
+                    friction: 0.4,   // Reduced from 0.6 for more fluid movement
+                    layoutAnimation: true
+                },
+                edgeSymbol: ['none', 'arrow'],
+                edgeSymbolSize: 8,
+                emphasis: {
+                    focus: 'adjacency',
+                    lineStyle: { width: 4 }
+                },
+                lineStyle: { color: 'source' },
+                // Add zoom controls
+                scaleLimit: {
+                    min: 0.5,
+                    max: 3
+                }
+            }]
+        };
+        
+        networkChartInstance.setOption(option);
+        
+        // Fix initial viewport fitting - resize after a short delay to ensure proper rendering
+        setTimeout(() => {
+            networkChartInstance?.resize();
+        }, 100);
+        
+        // Handle resize
+        window.addEventListener('resize', () => {
+            networkChartInstance?.resize();
+        });
+    }
+    
+    /**
+     * Create the correlation heatmap visualization
+     */
+    function createHeatmap(candidates: string[], correlationMatrix: number[][]) {
+        if (heatmapChartInstance) {
+            heatmapChartInstance.dispose();
+        }
+        
+        const container = document.getElementById('heatmap-chart')!;
+        heatmapChartInstance = echarts.init(container);
+        
+        // Prepare data for heatmap
+        const data: Array<[number, number, number]> = [];
+        for (let i = 0; i < candidates.length; i++) {
+            for (let j = 0; j < candidates.length; j++) {
+                data.push([j, i, correlationMatrix[i][j]]);
+            }
+        }
+        
+        // Shorten candidate names for display
+        const shortNames = candidates.map(c => 
+            c.length > 15 ? c.substring(0, 12) + '...' : c
+        );
+        
+        const option: echarts.EChartsOption = {
+            title: {
+                text: 'Candidate Rank Correlation',
+                subtext: 'Based on voter ranking patterns',
+                left: 'center'
+            },
+            tooltip: {
+                position: 'top',
+                formatter: (params: any) => {
+                    const [x, y, value] = params.data;
+                    return `${candidates[y]} ↔ ${candidates[x]}<br/>Correlation: ${value.toFixed(3)}`;
+                }
+            },
+            grid: {
+                left: '15%',
+                right: '15%',
+                bottom: '20%',
+                top: '15%'
+            },
+            xAxis: {
+                type: 'category',
+                data: shortNames,
+                splitArea: { show: true },
+                axisLabel: { rotate: 45, interval: 0, fontSize: 10 }
+            },
+            yAxis: {
+                type: 'category',
+                data: shortNames,
+                splitArea: { show: true },
+                axisLabel: { fontSize: 10 }
+            },
+            visualMap: {
+                min: -1,
+                max: 1,
+                calculable: true,
+                orient: 'horizontal',
+                left: 'center',
+                bottom: '0%',
+                inRange: {
+                    color: ['#ef4444', '#fef3c7', '#10b981']
+                },
+                text: ['Allies (+1)', 'Rivals (-1)']
+            },
+            series: [{
+                name: 'Correlation',
+                type: 'heatmap',
+                data: data,
+                label: {
+                    show: candidates.length <= 8,
+                    formatter: (params: any) => params.data[2].toFixed(2)
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }]
+        };
+        
+        heatmapChartInstance.setOption(option);
+        
+        window.addEventListener('resize', () => {
+            heatmapChartInstance?.resize();
+        });
+    }
+    
+    /**
+     * Create the MDS scatter plot visualization
+     */
+    function createMDSPlot(
+        candidates: string[],
+        mdsCoords: Array<{ x: number; y: number }>,
+        firstPreferenceCounts: Map<string, number>
+    ) {
+        if (mdsChartInstance) {
+            mdsChartInstance.dispose();
+        }
+        
+        const container = document.getElementById('mds-chart')!;
+        mdsChartInstance = echarts.init(container);
+        
+        const colors = [
+            '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
+            '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#48b8d0'
+        ];
+        
+        const maxFirstPref = Math.max(...Array.from(firstPreferenceCounts.values()));
+        
+        // Prepare scatter data
+        const scatterData = candidates.map((candidate, i) => {
+            const firstPref = firstPreferenceCounts.get(candidate) || 0;
+            const size = 20 + (firstPref / maxFirstPref) * 30;
+            return {
+                name: candidate,
+                value: [mdsCoords[i].x, mdsCoords[i].y],
+                symbolSize: size,
+                itemStyle: { color: colors[i % colors.length] },
+                label: {
+                    show: true,
+                    formatter: '{b}',
+                    position: 'right' as const,
+                    fontSize: 11
+                }
+            };
+        });
+        
+        // Calculate axis ranges with padding
+        const xVals = mdsCoords.map(c => c.x);
+        const yVals = mdsCoords.map(c => c.y);
+        const xMin = Math.min(...xVals);
+        const xMax = Math.max(...xVals);
+        const yMin = Math.min(...yVals);
+        const yMax = Math.max(...yVals);
+        const xPad = (xMax - xMin) * 0.2 || 1;
+        const yPad = (yMax - yMin) * 0.2 || 1;
+        
+        const option: echarts.EChartsOption = {
+            title: {
+                text: 'Political Distance Map (MDS)',
+                subtext: 'Closer = more similar • Axes are data-derived (no predefined meaning)',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: (params: any) => {
+                    const firstPref = firstPreferenceCounts.get(params.name) || 0;
+                    return `<strong>${params.name}</strong><br/>1st Preferences: ${firstPref}`;
+                }
+            },
+            grid: {
+                left: '10%',
+                right: '20%',
+                bottom: '10%',
+                top: '15%'
+            },
+            xAxis: {
+                type: 'value',
+                min: xMin - xPad,
+                max: xMax + xPad,
+                axisLabel: { show: false },
+                splitLine: { lineStyle: { type: 'dashed', opacity: 0.3 } }
+            },
+            yAxis: {
+                type: 'value',
+                min: yMin - yPad,
+                max: yMax + yPad,
+                axisLabel: { show: false },
+                splitLine: { lineStyle: { type: 'dashed', opacity: 0.3 } }
+            },
+            series: [{
+                type: 'scatter',
+                data: scatterData,
+                emphasis: {
+                    scale: 1.5
+                }
+            }]
+        };
+        
+        mdsChartInstance.setOption(option);
+        
+        window.addEventListener('resize', () => {
+            mdsChartInstance?.resize();
+        });
+    }
+    
+    /**
+     * Create transfer probability table
+     */
+    function createTransferTable(candidates: string[], probMatrix: number[][]) {
+        const container = document.getElementById('transfer-matrix-container')!;
+        
+        // Shorten names for table headers
+        const shortNames = candidates.map(c => 
+            c.length > 12 ? c.substring(0, 10) + '..' : c
+        );
+        
+        let html = '<table class="transfer-table">';
+        html += '<thead><tr><th>From \\ To</th>';
+        shortNames.forEach(name => {
+            html += `<th title="${name}">${name}</th>`;
+        });
+        html += '</tr></thead><tbody>';
+        
+        probMatrix.forEach((row, i) => {
+            html += `<tr><th title="${candidates[i]}">${shortNames[i]}</th>`;
+            row.forEach((prob, j) => {
+                const pct = (prob * 100).toFixed(1);
+                const bg = prob > 0.2 ? `rgba(16, 185, 129, ${prob})` : 
+                          prob > 0.1 ? `rgba(250, 200, 88, ${prob * 2})` : '';
+                html += `<td style="background: ${bg};" title="${candidates[i]} → ${candidates[j]}: ${pct}%">${pct}%</td>`;
+            });
+            html += '</tr>';
+        });
+        
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+    
+    /**
+     * Demo data for faction analysis (uses a subset of real patterns)
+     */
+    const factionDemoData = {
+        candidates: ["Alice", "Bob", "Carol", "Dave", "Eve"],
+        ballots: [
+            { voter: "v1", rankings: ["Alice", "Carol", "Eve"] },
+            { voter: "v2", rankings: ["Alice", "Carol", "Bob"] },
+            { voter: "v3", rankings: ["Alice", "Eve", "Carol"] },
+            { voter: "v4", rankings: ["Bob", "Dave", "Eve"] },
+            { voter: "v5", rankings: ["Bob", "Dave", "Carol"] },
+            { voter: "v6", rankings: ["Bob", "Alice", "Dave"] },
+            { voter: "v7", rankings: ["Carol", "Alice", "Eve"] },
+            { voter: "v8", rankings: ["Carol", "Eve", "Alice"] },
+            { voter: "v9", rankings: ["Dave", "Bob", "Eve"] },
+            { voter: "v10", rankings: ["Dave", "Bob", "Carol"] },
+            { voter: "v11", rankings: ["Eve", "Carol", "Alice"] },
+            { voter: "v12", rankings: ["Eve", "Alice", "Carol"] },
+            { voter: "v13", rankings: ["Alice", "Carol", "Bob", "Dave"] },
+            { voter: "v14", rankings: ["Bob", "Dave", "Alice"] },
+            { voter: "v15", rankings: ["Carol", "Alice", "Eve", "Bob"] },
+        ],
+        nameMatches: {}
+    };
+    
+    /**
+     * Initialize faction analysis event handlers
+     */
+    function initializeFactionAnalysis() {
+        // Get DOM elements
+        const factionFileInput = document.getElementById('faction-file') as HTMLInputElement;
+        const loadFactionBtn = document.getElementById('load-faction-btn') as HTMLButtonElement;
+        const loadFactionDemoBtn = document.getElementById('load-faction-demo-btn') as HTMLButtonElement;
+        const factionStatusMessage = document.getElementById('faction-status-message') as HTMLDivElement;
+        const factionResults = document.getElementById('faction-results') as HTMLDivElement;
+        const factionInstructions = document.getElementById('faction-instructions') as HTMLDivElement;
+        
+        /**
+         * Show status message for faction analysis
+         */
+        function showFactionStatus(message: string, type: 'success' | 'error' | 'info' = 'info') {
+            factionStatusMessage.textContent = message;
+            factionStatusMessage.className = `status-message status-${type}`;
+            factionStatusMessage.style.display = 'block';
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    factionStatusMessage.style.display = 'none';
+                }, 3000);
+            }
+        }
+        
+        /**
+         * Main function to load and analyze faction data
+         */
+        function loadFactionData(data: any) {
+            const processed = processRawBallots(data);
+            if (!processed) {
+                showFactionStatus('Error processing ballot data. Please check the file format.', 'error');
+                return;
+            }
+            
+            const { candidates, processedBallots, firstPreferenceCounts } = processed;
+            
+            if (candidates.length === 0) {
+                showFactionStatus('No valid candidates found in data.', 'error');
+                return;
+            }
+            
+            // Update summary stats
+            document.getElementById('faction-total-ballots')!.textContent = String(processedBallots.length);
+            document.getElementById('faction-candidates')!.textContent = String(candidates.length);
+            const avgRankings = processedBallots.reduce((sum, b) => sum + b.rankings.length, 0) / processedBallots.length;
+            document.getElementById('faction-avg-rankings')!.textContent = avgRankings.toFixed(1);
+            
+            // Calculate metrics
+            showFactionStatus('Calculating transfer matrix...', 'info');
+            const adjacencyMatrix = calculateAdjacencyMatrix(candidates, processedBallots);
+            const transferProb = calculateTransferProbabilities(adjacencyMatrix);
+            
+            showFactionStatus('Calculating rank correlations...', 'info');
+            const correlationMatrix = calculateRankCorrelation(candidates, processedBallots);
+            
+            showFactionStatus('Performing MDS projection...', 'info');
+            const mdsCoords = performMDS(correlationMatrix);
+            
+            // Create visualizations
+            showFactionStatus('Rendering visualizations...', 'info');
+            createNetworkGraph(candidates, adjacencyMatrix, firstPreferenceCounts);
+            createHeatmap(candidates, correlationMatrix);
+            createMDSPlot(candidates, mdsCoords, firstPreferenceCounts);
+            createTransferTable(candidates, transferProb);
+            
+            // Show results, hide instructions
+            factionResults.style.display = 'block';
+            factionInstructions.style.display = 'none';
+            
+            showFactionStatus('Analysis complete!', 'success');
+        }
+        
+        // Tab switching
+        const tabs = document.querySelectorAll('.faction-tab');
+        const tabContents = document.querySelectorAll('.faction-tab-content');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = (tab as HTMLElement).dataset.tab;
+                
+                // Update tab buttons
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Update tab content
+                tabContents.forEach(content => {
+                    const contentEl = content as HTMLElement;
+                    if (contentEl.id === `tab-${targetTab}`) {
+                        contentEl.style.display = 'block';
+                        contentEl.classList.add('active');
+                        
+                        // Resize chart when tab becomes visible
+                        setTimeout(() => {
+                            if (targetTab === 'network') networkChartInstance?.resize();
+                            if (targetTab === 'heatmap') heatmapChartInstance?.resize();
+                            if (targetTab === 'mds') mdsChartInstance?.resize();
+                        }, 50);
+                    } else {
+                        contentEl.style.display = 'none';
+                        contentEl.classList.remove('active');
+                    }
+                });
+            });
+        });
+        
+        // File loading
+        loadFactionBtn?.addEventListener('click', () => {
+            const file = factionFileInput.files?.[0];
+            if (!file) {
+                showFactionStatus('Please select a file first.', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target?.result as string);
+                    loadFactionData(data);
+                } catch (err) {
+                    showFactionStatus('Invalid JSON file. Please check the file format.', 'error');
+                }
+            };
+            reader.onerror = () => {
+                showFactionStatus('Error reading file.', 'error');
+            };
+            reader.readAsText(file);
+        });
+        
+        // Demo data
+        loadFactionDemoBtn?.addEventListener('click', () => {
+            loadFactionData(factionDemoData);
+        });
+        
+        // Auto-load on file selection
+        factionFileInput?.addEventListener('change', () => {
+            if (factionFileInput.files?.length) {
+                loadFactionBtn?.click();
+            }
+        });
+    }
 </script>
 
 <style>
@@ -966,6 +3049,10 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
         border: 1px solid #ddd;
         border-top: none;
         border-radius: 0 0 8px 8px;
+        /* Ensure controls receive pointer events and sit above the chart */
+        position: relative;
+        z-index: 5;
+        pointer-events: auto;
     }
 
     .playback-controls {
@@ -985,6 +3072,12 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
         background: #fff;
         cursor: pointer;
         transition: all 0.2s ease;
+    }
+
+    /* Ensure the chart container sits beneath controls so inputs are clickable */
+    #echart-container {
+        position: relative;
+        z-index: 1;
     }
 
     .control-btn:hover {
@@ -1052,9 +3145,41 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
 
     .speed-control {
         display: flex;
-        align-items: center;
-        gap: 0.5rem;
+        flex-direction: column;
+        gap: 0.25rem;
         font-size: 0.875rem;
+        min-width: 250px;
+    }
+
+    .speed-slider {
+        width: 100%;
+        height: 8px;
+        -webkit-appearance: none;
+        appearance: none;
+        background: #ddd;
+        border-radius: 4px;
+        cursor: pointer;
+        /* Allow touch/pointer interactions to drag the thumb reliably */
+        touch-action: pan-y;
+    }
+
+    .speed-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        background: #005a9c;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .speed-slider::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        background: #005a9c;
+        border-radius: 50%;
+        cursor: pointer;
+        border: none;
     }
 
     .speed-select {
@@ -1096,6 +3221,183 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
         .download-btn {
             margin-left: 0;
             width: 100%;
+        }
+    }
+    
+    /* =================================================================== */
+    /* FACTION ANALYSIS STYLES */
+    /* =================================================================== */
+    
+    .faction-analysis-section {
+        margin-top: 2rem;
+    }
+    
+    .faction-summary {
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+    
+    /* Tab Navigation */
+    .faction-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #e5e7eb;
+        padding-bottom: 0.5rem;
+    }
+    
+    .faction-tab {
+        padding: 0.75rem 1.25rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px 8px 0 0;
+        background: #f9fafb;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+    }
+    
+    .faction-tab:hover {
+        background: #e5e7eb;
+    }
+    
+    .faction-tab.active {
+        background: #005a9c;
+        color: white;
+        border-color: #005a9c;
+    }
+    
+    .faction-tab-content {
+        display: none;
+        padding: 1rem 0;
+    }
+    
+    .faction-tab-content.active {
+        display: block;
+    }
+    
+    /* Chart Legend */
+    .chart-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        padding: 0.75rem 1rem;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+        font-size: 0.85rem;
+        color: #4b5563;
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .legend-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+    
+    .legend-line {
+        width: 24px;
+        height: 3px;
+        background: linear-gradient(90deg, #5470c6, #91cc75);
+        border-radius: 2px;
+    }
+    
+    /* Transfer Matrix Table */
+    .transfer-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.75rem;
+        margin-top: 1rem;
+    }
+    
+    .transfer-table th,
+    .transfer-table td {
+        padding: 0.4rem 0.5rem;
+        border: 1px solid #e5e7eb;
+        text-align: center;
+        white-space: nowrap;
+    }
+    
+    .transfer-table th {
+        background: #f3f4f6;
+        font-weight: 600;
+        position: sticky;
+        top: 0;
+    }
+    
+    .transfer-table thead th:first-child,
+    .transfer-table tbody th {
+        background: #f3f4f6;
+        font-weight: 600;
+        text-align: left;
+        position: sticky;
+        left: 0;
+    }
+    
+    .transfer-table td {
+        background: #fff;
+    }
+    
+    .transfer-table tr:hover td {
+        background: #fef3c7;
+    }
+    
+    /* Details/Summary for raw data */
+    .faction-details {
+        margin-top: 1.5rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        background: #fff;
+    }
+    
+    .faction-details summary {
+        padding: 1rem;
+        cursor: pointer;
+        font-weight: 500;
+        background: #f9fafb;
+        border-radius: 8px;
+    }
+    
+    .faction-details[open] summary {
+        border-bottom: 1px solid #e5e7eb;
+        border-radius: 8px 8px 0 0;
+    }
+    
+    .faction-details .govuk-details__text {
+        padding: 1rem;
+    }
+    
+    /* Mobile responsiveness for faction section */
+    @media (max-width: 768px) {
+        .faction-tabs {
+            flex-direction: column;
+        }
+        
+        .faction-tab {
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .chart-legend {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        #network-chart,
+        #heatmap-chart,
+        #mds-chart {
+            height: 400px !important;
         }
     }
 </style>

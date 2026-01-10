@@ -1175,23 +1175,32 @@ import PageLayout from "@layouts/page.astro";
         }
         
         function votesInFavor(ballots, candidateNumber) {
-            let count = 0;
+            let primaryVotes = 0;
+            let tieBreakerValue = 0;
             let counted: Ballot[] = [];
             
             for (let b of ballots) {
+                // Primary Vote (Rank 1) - Strict voting power
                 if (b.getRankedChoice(1) === candidateNumber) {
-                    count += b.votingPower * 1;
+                    primaryVotes += b.votingPower * 1;
                     counted.push(b);
                 }
+                
+                // Tie Breakers (Do not affect voting power sums for surplus)
                 if (b.getRankedChoice(2) === candidateNumber) {
-                    count += b.votingPower * 1/1000;
+                    tieBreakerValue += b.votingPower * 0.001; // 1/1000
                 }
                 if (b.getRankedChoice(3) === candidateNumber) {
-                    count += b.votingPower * 1/1000000;
+                    tieBreakerValue += b.votingPower * 0.000001; // 1/1,000,000
                 }
             }
             
-            return { count, counted };
+            return { 
+                primaryVotes, 
+                tieBreakerValue, 
+                totalScore: primaryVotes + tieBreakerValue, // Used for sorting only
+                counted 
+            };
         }
         
         function extremeCandidate(ballots, mode) {
@@ -1201,27 +1210,38 @@ import PageLayout from "@layouts/page.astro";
             
             const candidates = new Array(ballots[0].rankingList.length).fill(0);
             
+            // Calculate scores for all candidates
             for (let i = 0; i < candidates.length; i++) {
-                candidates[i] = votesInFavor(ballots, i + 1).count;
+                // We use totalScore (primary + tiebreaker) for ranking comparison
+                candidates[i] = votesInFavor(ballots, i + 1).totalScore;
             }
             
-            // Find first non-zero candidate - BUGFIX: properly handle case when all are zero
+            // Find first candidate with non-zero votes
             let toReturn = -1;
             for (let i = 0; i < candidates.length; i++) {
+                // Check if candidate exists/has non-zero score
                 if (candidates[i] !== 0) {
                     toReturn = i + 1;
                     break;
                 }
             }
             
-            // If all candidates have 0 votes, return -1 (error state)
+            // If all candidates have 0 votes (and mode is looking for max), return -1
             if (toReturn === -1) {
-                console.error("All candidates have 0 votes");
-                return -1;
+                // Only error if we are looking for a winner (mode 1). 
+                // If looking for loser (mode -1) and everyone is 0, just pick the first one.
+                if (mode === 1) {
+                    console.error("All candidates have 0 votes");
+                    return -1;
+                } else {
+                    return 1; // Default to first candidate if everyone is at 0
+                }
             }
             
             // Find extreme (min or max based on mode)
             for (let i = 0; i < candidates.length; i++) {
+                // If scores are equal, we don't change 'toReturn' (stable sort effect),
+                // effectively breaking further ties by Candidate ID order if strict tie.
                 if (mode * candidates[i] > mode * candidates[toReturn - 1] && candidates[i] !== 0) {
                     toReturn = i + 1;
                 }
@@ -1245,41 +1265,60 @@ import PageLayout from "@layouts/page.astro";
             // Track round-by-round results for export
             const roundResults: any[] = [];
             let roundNumber = 1;
+            let cumulativeExhausted = 0; // Track total exhausted votes across all rounds
             
             while (winners.length < k) {
-                // Calculate tally for this round
+                logCallback(`--- Round ${roundNumber} ---\n`);
+                
+                // Calculate tally for this round (Visual only)
                 const roundTally: Record<string, number> = {};
                 for (let i = 0; i < candidateReferences.length; i++) {
                     const candidateIndex = i + 1;
-                    const { count } = votesInFavor(ballots, candidateIndex);
-                    if (count > 0) {
-                        roundTally[candidateReferences[i]] = count;
+                    // Use primaryVotes for display tally to be clean
+                    const { primaryVotes } = votesInFavor(ballots, candidateIndex);
+                    if (primaryVotes > 0) {
+                        roundTally[candidateReferences[i]] = primaryVotes;
                     }
                 }
                 
+                // Log current tally
+                const tallyEntries = Object.entries(roundTally).sort((a, b) => b[1] - a[1]);
+                for (const [candidate, votes] of tallyEntries) {
+                    logCallback(`  ${candidate}: ${(votes as number).toFixed(3)} votes\n`);
+                }
+                logCallback(`\n`);
+                
                 const topCandidate = extremeCandidate(ballots, 1);
                 
-                // BUGFIX: Handle error state
                 if (topCandidate === -1) {
                     logCallback(`\nERROR: Cannot determine top candidate. Stopping election.\n`, 'error');
                     break;
                 }
                 
-                const { count: topCandidateVotes, counted: votesForTopCandidate } = votesInFavor(ballots, topCandidate);
+                // Get detailed vote breakdown
+                const { primaryVotes: topCandidatePrimaryVotes, totalScore: topCandidateTotalScore, counted: votesForTopCandidate } = votesInFavor(ballots, topCandidate);
+                
+                // IcenianSTV uses float division for quota (not ceiled)
+                // Note: Constitution specifies "rounded up to the nearest integer" 
+                // but IcenianSTV implements it as a float comparison
+                const quota = totalVote / (k + 1);
                 
                 const roundData: any = {
                     round: roundNumber,
                     tally: roundTally,
+                    quota: quota, // Dynamic quota for this round
+                    exhausted: cumulativeExhausted, // Cumulative exhausted votes
                     tallyResults: []
                 };
                 
-                if (topCandidateVotes >= totalVote / (k + 1)) {
+                // IcenianSTV faithfulness: Use totalScore (with tie-breakers) for quota check
+                // to match the original implementation's behavior
+                if (topCandidateTotalScore >= quota) {
                     const candidateName = candidateReferences[topCandidate - 1];
                     winners.push(candidateName);
                     
-                    logCallback(`✓ WIN: ${candidateName} (${topCandidateVotes.toFixed(3)} votes)\n`, 'win');
+                    logCallback(`✓ WIN: ${candidateName} (${topCandidateTotalScore.toFixed(3)} votes, Quota: ${quota.toFixed(3)})\n`, 'win');
                     
-                    // Calculate transfers (simplified - doesn't track exact transfers)
                     roundData.tallyResults.push({
                         elected: candidateName,
                         transfers: {}
@@ -1287,25 +1326,48 @@ import PageLayout from "@layouts/page.astro";
                     
                     eliminateCandidate(ballots, topCandidate);
                     
-                    // Transfer surplus
+                    // CORRECTED: Surplus Calculation using primaryVotes only
+                    // IcenianSTV formula: (votes received - quota)/(votes received)
+                    // Using primaryVotes (not totalScore) ensures tie-breaker fractions 
+                    // do not create ghost voting power in surplus distribution.
+                    // Note: IcenianSTV uses topCandidateVotes (with tie-breakers) in denominator
+                    // but we use primaryVotes to prevent ghost voting power amplification.
+                    const surplusFraction = (topCandidatePrimaryVotes - quota) / topCandidatePrimaryVotes;
+                    
                     for (let b of votesForTopCandidate) {
-                        b.votingPower *= (topCandidateVotes - totalVote / (k + 1)) / topCandidateVotes;
+                        b.votingPower *= surplusFraction;
                     }
                 } else {
                     const bottomCandidate = extremeCandidate(ballots, -1);
                     
-                    // BUGFIX: Handle error state
                     if (bottomCandidate === -1) {
                         logCallback(`\nERROR: Cannot determine bottom candidate. Stopping election.\n`, 'error');
                         break;
                     }
                     
                     const candidateName = candidateReferences[bottomCandidate - 1];
-                    const { count: bottomVotes } = votesInFavor(ballots, bottomCandidate);
+                    const { primaryVotes: bottomVotes, counted: ballotsForBottom } = votesInFavor(ballots, bottomCandidate);
                     
-                    logCallback(`✗ ELIM: ${candidateName} (${bottomVotes.toFixed(3)} votes)\n`, 'elim');
+                    logCallback(`✗ ELIM: ${candidateName} (${bottomVotes.toFixed(3)} votes from ${ballotsForBottom.length} ballots)\n`, 'elim');
                     
-                    // Calculate transfers (simplified - doesn't track exact transfers)
+                    // Log vote transfer details
+                    if (ballotsForBottom.length > 0) {
+                        const transferDetails: string[] = [];
+                        for (let b of ballotsForBottom) {
+                            const nextChoice = b.getRankedChoice(2);
+                            if (nextChoice > 0) {
+                                transferDetails.push(`  ${b.name} (power: ${b.votingPower.toFixed(3)}) → ${candidateReferences[nextChoice - 1]}`);
+                            } else {
+                                transferDetails.push(`  ${b.name} (power: ${b.votingPower.toFixed(3)}) → [exhausted]`);
+                            }
+                        }
+                        if (transferDetails.length > 0 && transferDetails.length <= 20) {
+                            logCallback(transferDetails.join('\n') + '\n');
+                        } else if (transferDetails.length > 20) {
+                            logCallback(`  [${transferDetails.length} ballots transferring...]\n`);
+                        }
+                    }
+                    
                     roundData.tallyResults.push({
                         eliminated: candidateName,
                         transfers: {}
@@ -1318,17 +1380,47 @@ import PageLayout from "@layouts/page.astro";
                 roundNumber++;
                 
                 // Handle exhausted ballots
+                // Total Vote is dynamic based on non-exhausted power
+                let exhaustedCount = 0;
+                let exhaustedPower = 0;
                 for (let b of ballots) {
-                    if (b.isExhausted()) {
+                    if (b.isExhausted() && b.votingPower > 0) {
+                        exhaustedCount++;
+                        exhaustedPower += b.votingPower;
                         totalVote -= b.votingPower;
                         b.votingPower = 0;
                     }
                 }
+                cumulativeExhausted += exhaustedPower; // Add to cumulative total
+                if (exhaustedCount > 0) {
+                    logCallback(`  ${exhaustedCount} ballot(s) exhausted (total power: ${exhaustedPower.toFixed(3)})\n`);
+                }
+                logCallback(`  Total remaining voting power: ${totalVote.toFixed(3)}\n\n`);
             }
             
-            // Store round results globally for export
-            (parsedData as any).roundResults = roundResults;
+            // Add final round showing only winners and exhausted
+            const finalRoundTally: Record<string, number> = {};
+            for (const winner of winners) {
+                // Winners are frozen at the quota from when they won
+                const winRound = roundResults.find(r => 
+                    r.tallyResults.some((tr: any) => tr.elected === winner)
+                );
+                if (winRound) {
+                    finalRoundTally[winner] = winRound.quota;
+                }
+            }
             
+            const finalQuota = totalVote / (k + 1);
+            roundResults.push({
+                round: roundNumber,
+                tally: finalRoundTally,
+                quota: finalQuota,
+                exhausted: cumulativeExhausted,
+                tallyResults: [],
+                isFinalRound: true // Mark this as the final summary round
+            });
+            
+            (parsedData as any).roundResults = roundResults;
             return winners;
         }
         
@@ -1402,7 +1494,7 @@ import PageLayout from "@layouts/page.astro";
                     date: dateStr,
                     jurisdiction: "Icenia",
                     office: "Senate/Council",
-                    threshold: (parsedData.ballots.length / (parsedData.seats + 1)).toString()
+                    threshold: (parsedData.ballots.length / (parsedData.seats + 1)).toFixed(3)
                 },
                 results: roundResults.map((round: any) => ({
                     round: round.round,
@@ -1412,6 +1504,9 @@ import PageLayout from "@layouts/page.astro";
                             (votes as number).toFixed(3)
                         ])
                     ),
+                    quota: round.quota ? parseFloat(round.quota.toFixed(3)) : undefined, // Dynamic quota per round
+                    exhausted: round.exhausted ? parseFloat(round.exhausted.toFixed(3)) : 0, // Exhausted votes
+                    isFinalRound: round.isFinalRound || false, // Final round flag
                     tallyResults: round.tallyResults
                 }))
             };

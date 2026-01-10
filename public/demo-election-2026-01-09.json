@@ -4,7 +4,7 @@
     "date": "2026-01-09",
     "jurisdiction": "Icenia",
     "office": "Senate/Council",
-    "threshold": "7.5"
+    "threshold": "7.500"
   },
   "results": [
     {
@@ -22,6 +22,9 @@
         "HsmNewfriend": "1.014",
         "Josh \"alleged terrorist\" Hillman": "2.000"
       },
+      "quota": 7.504,
+      "exhausted": 0,
+      "isFinalRound": false,
       "tallyResults": [
         {
           "elected": "toasttastesprettygood",
@@ -43,6 +46,9 @@
         "HsmNewfriend": "6.242",
         "Josh \"alleged terrorist\" Hillman": "2.000"
       },
+      "quota": 6.117,
+      "exhausted": 0.296,
+      "isFinalRound": false,
       "tallyResults": [
         {
           "elected": "Dr Bacon Hair",
@@ -63,6 +69,9 @@
         "HsmNewfriend": "6.693",
         "Josh \"alleged terrorist\" Hillman": "2.000"
       },
+      "quota": 5.729,
+      "exhausted": 0.601,
+      "isFinalRound": false,
       "tallyResults": [
         {
           "eliminated": "DinoCompactor",
@@ -82,6 +91,9 @@
         "HsmNewfriend": "6.693",
         "Josh \"alleged terrorist\" Hillman": "2.000"
       },
+      "quota": 5.558,
+      "exhausted": 0.791,
+      "isFinalRound": false,
       "tallyResults": [
         {
           "elected": "Ratat0ing",
@@ -100,6 +112,9 @@
         "HsmNewfriend": "6.757",
         "Josh \"alleged terrorist\" Hillman": "2.002"
       },
+      "quota": 5.505,
+      "exhausted": 1.00,
+      "isFinalRound": false,
       "tallyResults": [
         {
           "eliminated": "councilor _peemcgee",
@@ -117,6 +132,9 @@
         "HsmNewfriend": "6.757",
         "Josh \"alleged terrorist\" Hillman": "3.001"
       },
+      "quota": 5.504,
+      "exhausted": 1.00,
+      "isFinalRound": false,
       "tallyResults": [
         {
           "eliminated": "CEO Zolo",
@@ -133,6 +151,9 @@
         "HsmNewfriend": "7.938",
         "Josh \"alleged terrorist\" Hillman": "3.015"
       },
+      "quota": 5.506,
+      "exhausted": 1.001,
+      "isFinalRound": false,
       "tallyResults": [
         {
           "elected": "HsmNewfriend",
@@ -148,6 +169,9 @@
         "Complexii": "5.280",
         "Josh \"alleged terrorist\" Hillman": "3.057"
       },
+      "quota": 3.648,
+      "exhausted": 1.001,
+      "isFinalRound": false,
       "tallyResults": [
         {
           "eliminated": "IsraelGPT",
@@ -162,6 +186,9 @@
         "Complexii": "5.280",
         "Josh \"alleged terrorist\" Hillman": "4.093"
       },
+      "quota": 3.638,
+      "exhausted": 1.078,
+      "isFinalRound": false,
       "tallyResults": [
         {
           "eliminated": "Josh \"alleged terrorist\" Hillman",
@@ -175,12 +202,29 @@
         "CreepilyCreep": "8.212",
         "Complexii": "5.319"
       },
+      "quota": 3.388,
+      "exhausted": 2.828,
+      "isFinalRound": false,
       "tallyResults": [
         {
           "elected": "CreepilyCreep",
           "transfers": {}
         }
       ]
+    },
+    {
+      "round": 11,
+      "tally": {
+        "toasttastesprettygood": "7.504",
+        "Dr Bacon Hair": "6.117",
+        "Ratat0ing": "5.558",
+        "HsmNewfriend": "5.506",
+        "CreepilyCreep": "3.388"
+      },
+      "quota": 0,
+      "exhausted": 2.828,
+      "isFinalRound": true,
+      "tallyResults": []
     }
   ]
 }
