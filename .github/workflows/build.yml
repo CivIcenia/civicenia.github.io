@@ -97,6 +97,8 @@ jobs:
       # Build the site using Bun
       - name: Build site
         run: bun run build
+        env: 
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
 
       # Deploy the built site to GitHub Pages on gh-pages branch
       - name: Deploy to GitHub Pages
