@@ -83,7 +83,27 @@ jobs:
           git config --global user.email "actions@github.com"
           git add src/data/officials.yml src/data/councillors.yml
           git commit -m "[AUTOMATED] Update officials data [skip ci]"
-          git push origin master
+          
+          # Pull latest changes and rebase our commit on top to handle concurrent pushes
+          git pull --rebase origin master
+          
+          # Push changes with retry logic
+          max_attempts=3
+          attempt=1
+          while [ $attempt -le $max_attempts ]; do
+            if git push origin master; then
+              echo "Successfully pushed changes"
+              break
+            else
+              if [ $attempt -eq $max_attempts ]; then
+                echo "Failed to push after $max_attempts attempts"
+                exit 1
+              fi
+              echo "Push failed, attempt $attempt of $max_attempts. Retrying..."
+              git pull --rebase origin master
+              attempt=$((attempt + 1))
+            fi
+          done
       
       # ============================================
       # Build & Deploy Phase - Uses updated data
