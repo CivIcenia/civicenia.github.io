@@ -6,7 +6,8 @@
         "dev": "bunx astro dev",
         "start": "bunx astro dev",
         "sync-officials": "bun run sync-officials.ts",
-        "build": "bun run sync-officials.ts && bunx astro check && astro build",
+        "update-avatars": "bun run update-avatars.ts",
+        "build": "bun run sync-officials.ts && bun run update-avatars.ts && bunx astro check && astro build",
         "preview": "bunx astro preview",
         "astro": "bunx astro"
     },

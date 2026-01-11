@@ -1,5 +1,24 @@
 incorporations:
   - change_slugs:
+      - 2025-04-27-passing-the-statue-of-territory-amendment-of-april-2025
+      - 2025-04-13-passing-the-incorporation-of-sneedland-as-icenian-territory
+    law_slug: statute-of-territory
+    incorporated_at: 2026-01-12 00:18:00 +08:00
+    incorporated_by: CreepilyCreep
+  - change_slugs:
+      - 2025-06-16-passing-the-plrog-shi-interim-ownership-accord
+      - 2025-06-16-passing-the-montefiore-shiroyama-accord
+      - 2026-01-05-passing-the-cortesia-del-mar-statehood-amendment-of-may-2025
+      - 2025-04-27-passing-the-statue-of-territory-amendment-of-april-2025
+    law_slug: alenarith-protectorate
+    incorporated_at: 2026-01-12 00:17:00 +08:00
+    incorporated_by: CreepilyCreep
+  - change_slugs:
+      - 2026-01-07-passing-the-coat-of-arms-amendment-of-january-2026
+    law_slug: coat-of-arms
+    incorporated_at: 2026-01-11 22:02:00 +08:00
+    incorporated_by: CreepilyCreep
+  - change_slugs:
       - 2026-01-04-passing-the-newfriend-recruitment-adjustment-of-august-2025
     law_slug: recruitment-incentivization-initiative
     incorporated_at: 2026-01-07 14:48:00 +08:00

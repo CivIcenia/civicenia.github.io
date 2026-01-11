@@ -325,12 +325,16 @@ const lawsBySlug = new Map(laws.map(l => [l.slug, l]));
             </div>
 
             {pendingItems.map((item) => {
+                const isDocx = item.law.masterdoc && (item.law.masterdoc.endsWith('.docx') || item.law.masterdoc.startsWith('/documents/'));
+                const linkUrl = isDocx 
+                    ? `${BASE}laws/viewer?file=${encodeURIComponent(item.law.masterdoc)}` 
+                    : item.law.masterdoc;
                 return (
                 <div class="pending-item">
                     <div class="pending-item-header">
                         <div>
                             <div class="pending-item-law">
-                                <a href={item.law.masterdoc} target="_blank" class="govuk-link">
+                                <a href={linkUrl} target="_blank" class="govuk-link">
                                     {item.law.name}
                                 </a>
                                 <span class="slug-code" style="margin-left: 8px;">{item.law.slug}</span>

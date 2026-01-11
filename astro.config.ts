@@ -9,6 +9,7 @@ export default defineConfig({
     // rooted at the repository path.
     site: "https://civicenia.github.io",
     base: "/",  // have this as "/" if hosting as a user/organization site
+    trailingSlash: "ignore",
 
     build: {
         assets: 'astro', // Changes output from '_astro' to 'astro'

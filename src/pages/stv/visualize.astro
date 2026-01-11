@@ -26,11 +26,27 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
             <!-- Import Section -->
             <div class="import-section govuk-form-group">
                 <h2 class="govuk-heading-m">Load Election Data</h2>
-                <p class="govuk-body">Import an RCVis-format JSON file exported from the <a href="/stv">STV Calculator</a>.</p>
+                <p class="govuk-body">Select a previous Icenian senate election or import a custom RCVis-format JSON file from the <a href="/stv">STV Calculator</a>.</p>
                 
                 <div class="govuk-form-group">
-                    <label class="govuk-label" for="election-file">
-                        Select election results file (.json)
+                    <label class="govuk-label govuk-label--s" for="election-selector">
+                        Previous Senate Elections
+                    </label>
+                    <select 
+                        id="election-selector" 
+                        class="govuk-select"
+                        style="width: 100%; max-width: 400px;"
+                    >
+                        <option value="">-- Select an election --</option>
+                    </select>
+                    <button type="button" id="load-election-btn" class="icenia-btn" style="margin-top: 0.5rem;">
+                        Load Selected Election
+                    </button>
+                </div>
+                
+                <div class="govuk-form-group" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #ddd;">
+                    <label class="govuk-label govuk-label--s" for="election-file">
+                        Or upload custom election file (.json)
                     </label>
                     <input 
                         type="file" 
@@ -38,14 +54,8 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
                         accept=".json"
                         class="govuk-file-upload"
                     />
-                </div>
-                
-                <div class="govuk-button-group">
-                    <button type="button" id="load-file-btn" class="icenia-btn">
-                        Load Election Data
-                    </button>
-                    <button type="button" id="load-demo-btn" class="icenia-btn icenia-btn-secondary">
-                        Load Demo Data
+                    <button type="button" id="load-file-btn" class="icenia-btn" style="margin-top: 0.5rem;">
+                        Load Custom File
                     </button>
                 </div>
                 
@@ -103,9 +113,10 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
             <div id="instructions" class="instructions-panel">
                 <h3 class="govuk-heading-s">How to Use</h3>
                 <ol class="govuk-list govuk-list--number">
-                    <li>Go to the <a href="/stv">STV Calculator</a> and run an election.</li>
+                    <li>Select a previous Icenian senate election from the dropdown menu above, or</li>
+                    <li>Go to the <a href="/stv">STV Calculator</a> to run your own election.</li>
                     <li>Click "Export for RCVis" to download the results JSON file.</li>
-                    <li>Return here and load that file to see the animated visualization.</li>
+                    <li>Return here and upload that file to see the animated visualization.</li>
                 </ol>
                 
                 <h3 class="govuk-heading-s">Expected File Format</h3>
@@ -148,24 +159,33 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
                     <p class="govuk-body">Import the raw STV election JSON file (with ballots) from the <a href="/stv">STV Calculator</a>.</p>
                     
                     <div class="govuk-form-group">
-                        <label class="govuk-label" for="faction-file">
-                            Select raw election file (.json with ballots)
-                        </label>
-                        <input 
-                            type="file" 
-                            id="faction-file" 
-                            accept=".json"
-                            class="govuk-file-upload"
-                        />
-                    </div>
-                    
-                    <div class="govuk-button-group">
-                        <button type="button" id="load-faction-btn" class="icenia-btn">
-                            Analyze Factions
-                        </button>
-                        <button type="button" id="load-faction-demo-btn" class="icenia-btn icenia-btn-secondary">
-                            Load Demo Data
-                        </button>
+                    <label class="govuk-label govuk-label--s" for="faction-election-selector">
+                        Previous Senate Elections
+                    </label>
+                    <select 
+                        id="faction-election-selector" 
+                        class="govuk-select"
+                        style="width: 100%; max-width: 400px;"
+                    >
+                        <option value="">-- Select an election --</option>
+                    </select>
+                    <button type="button" id="load-faction-election-btn" class="icenia-btn" style="margin-top: 0.5rem;">
+                        Load Selected Election
+                    </button>
+                </div>
+                
+                <div class="govuk-form-group" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #ddd;">
+                    <label class="govuk-label govuk-label--s" for="faction-file">
+                        Or upload custom election file (.json with ballots)
+                    </label>
+                    <input 
+                        type="file" 
+                        id="faction-file" 
+                        accept=".json"
+                        class="govuk-file-upload"
+                    />
+                    <button type="button" id="load-faction-btn" class="icenia-btn" style="margin-top: 0.5rem;">
+                        Analyze Custom File
                     </div>
                     
                     <!-- Error/Status Messages -->
@@ -196,34 +216,19 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
                     
                     <!-- Tab Navigation -->
                     <div class="faction-tabs">
-                        <button type="button" class="faction-tab active" data-tab="network">
-                            🕸️ Faction Network
-                        </button>
-                        <button type="button" class="faction-tab" data-tab="heatmap">
+                        <button type="button" class="faction-tab active" data-tab="heatmap">
                             🔥 Similarity Heatmap
+                        </button>
+                        <button type="button" class="faction-tab" data-tab="coalition">
+                            🤝 Coalition Strength
                         </button>
                         <button type="button" class="faction-tab" data-tab="mds">
                             🗺️ Political Map
                         </button>
                     </div>
                     
-                    <!-- Network Graph Tab -->
-                    <div id="tab-network" class="faction-tab-content active">
-                        <h3 class="govuk-heading-s">Vote Transfer Network</h3>
-                        <p class="govuk-body">
-                            This force-directed graph shows how votes would flow between candidates.
-                            <strong>Thicker lines</strong> = stronger transfer relationships.
-                            Candidates who share voters cluster together. <strong>Drag nodes</strong> to reposition, <strong>scroll</strong> to zoom, <strong>click+drag background</strong> to pan.
-                        </p>
-                        <div id="network-chart" style="height: 600px; width: 100%; border: 1px solid #ddd; border-radius: 8px; background: #fff;"></div>
-                        <div class="chart-legend">
-                            <span class="legend-item"><span class="legend-dot" style="background: #5470c6;"></span> Node size = 1st preference votes</span>
-                            <span class="legend-item"><span class="legend-line"></span> Edge width = transfer probability</span>
-                        </div>
-                    </div>
-                    
                     <!-- Heatmap Tab -->
-                    <div id="tab-heatmap" class="faction-tab-content" style="display: none;">
+                    <div id="tab-heatmap" class="faction-tab-content active">
                         <h3 class="govuk-heading-s">Candidate Correlation Heatmap</h3>
                         <p class="govuk-body">
                             Shows how similar candidates' voter bases are using rank correlation.
@@ -231,6 +236,20 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
                             <strong style="color: #ef4444;">Red</strong> = opposing voter bases (rivals).
                         </p>
                         <div id="heatmap-chart" style="height: 600px; width: 100%; border: 1px solid #ddd; border-radius: 8px; background: #fff;"></div>
+                    </div>
+
+                    <!-- Coalition Strength Tab -->
+                    <div id="tab-coalition" class="faction-tab-content">
+                        <h3 class="govuk-heading-s">Coalition Strength Analysis</h3>
+                        <p class="govuk-body">
+                            Shows how often candidate pairs appear together on ballots and their average ranking proximity.
+                            <strong>Higher bars</strong> = stronger coalition potential.
+                            Pairs with high co-occurrence and close rankings indicate natural allies.
+                        </p>
+                        <div id="coalition-chart" style="height: 600px; width: 100%; border: 1px solid #ddd; border-radius: 8px; background: #fff;"></div>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="legend-dot" style="background: #5470c6;"></span> Bar height = Coalition score (co-occurrence × ranking proximity)</span>
+                        </div>
                     </div>
                     
                     <!-- MDS Map Tab -->
@@ -297,10 +316,22 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
 <script>
     import * as echarts from 'echarts';
     
+    // Types
+    interface SenateElection {
+        id: string;
+        name: string;
+        date: string;
+        term: number;
+        rcvisUrl: string;
+        fullUrl: string;
+        type: 'local';
+    }
+    
     // DOM Elements
+    const electionSelector = document.getElementById('election-selector') as HTMLSelectElement;
+    const loadElectionBtn = document.getElementById('load-election-btn') as HTMLButtonElement;
     const fileInput = document.getElementById('election-file') as HTMLInputElement;
     const loadFileBtn = document.getElementById('load-file-btn') as HTMLButtonElement;
-    const loadDemoBtn = document.getElementById('load-demo-btn') as HTMLButtonElement;
     const statusMessage = document.getElementById('status-message') as HTMLDivElement;
     const electionInfo = document.getElementById('election-info') as HTMLDivElement;
     const chartWrapper = document.getElementById('chart-wrapper') as HTMLDivElement;
@@ -314,6 +345,9 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
     // Chart instances
     let chartInstance: echarts.ECharts | null = null;
     let sankeyInstance: echarts.ECharts | null = null;
+    
+    // Senate elections data - load at runtime
+    let senateElections: SenateElection[] = [];
     
     /**
      * ============================================================================
@@ -432,24 +466,6 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
     
     // Global speed controller instance
     const speedController = new SpeedController();
-    
-    // Demo data for testing
-    const demoData = {
-        config: {
-            contest: "Demo Senate Election",
-            date: new Date().toISOString().split('T')[0],
-            jurisdiction: "Icenia",
-            office: "Senate",
-            threshold: "6.000"
-        },
-        results: [
-            { round: 1, tally: { Alice: "10.500", Bob: "8.200", Carol: "6.100", Dave: "5.200" }, tallyResults: [] },
-            { round: 2, tally: { Alice: "11.200", Bob: "8.800", Carol: "6.500", Dave: "3.500" }, tallyResults: [{ eliminated: "Dave" }] },
-            { round: 3, tally: { Alice: "12.000", Bob: "9.500", Carol: "5.000" }, tallyResults: [{ eliminated: "Carol" }] },
-            { round: 4, tally: { Alice: "8.500", Bob: "11.000" }, tallyResults: [{ elected: "Alice" }] },
-            { round: 5, tally: { Bob: "12.500" }, tallyResults: [{ elected: "Bob" }] }
-        ]
-    };
     
     /**
      * Show a status message to the user
@@ -2034,7 +2050,18 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
     }
     
     function initializeHandlers() {
-        // Event handlers
+        // Load senate elections data
+        fetch('/src/data/senate-elections.json')
+            .then(res => res.json())
+            .then((data: SenateElection[]) => {
+                senateElections = data;
+                populateElectionDropdown();
+            })
+            .catch(err => {
+                console.error('Failed to load elections list:', err);
+            });
+        
+        // Load custom file
         loadFileBtn.addEventListener('click', () => {
             const file = fileInput.files?.[0];
             if (!file) {
@@ -2056,10 +2083,6 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
         };
         reader.readAsText(file);
     });
-    
-        loadDemoBtn.addEventListener('click', () => {
-            loadElectionData(demoData);
-        });
         
         // Allow clicking file input directly
         fileInput.addEventListener('change', () => {
@@ -2072,12 +2095,70 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
         initializeFactionAnalysis();
     }
     
+    /**
+     * Populate the election dropdown menu
+     */
+    function populateElectionDropdown() {
+        // Clear existing options except the first one
+        electionSelector.innerHTML = '<option value="">-- Select an election --</option>';
+        
+        // Populate election dropdown
+        senateElections.forEach(election => {
+            const option = document.createElement('option');
+            option.value = election.id;
+            option.textContent = `${election.name} (Term ${election.term})`;
+            electionSelector.appendChild(option);
+        });
+        
+        // Also populate faction analysis dropdown
+        const factionElectionSelector = document.getElementById('faction-election-selector') as HTMLSelectElement;
+        if (factionElectionSelector) {
+            factionElectionSelector.innerHTML = '<option value="">-- Select an election --</option>';
+            senateElections.forEach(election => {
+                const option = document.createElement('option');
+                option.value = election.id;
+                option.textContent = `${election.name} (Term ${election.term})`;
+                factionElectionSelector.appendChild(option);
+            });
+        }
+        
+        // Load selected election
+        loadElectionBtn.addEventListener('click', async () => {
+            const selectedId = electionSelector.value;
+            if (!selectedId) {
+                showStatus('Please select an election first.', 'error');
+                return;
+            }
+            
+            const election = senateElections.find(e => e.id === selectedId);
+            if (!election) {
+                showStatus('Election not found.', 'error');
+                return;
+            }
+            
+            try {
+                showStatus('Loading election data...', 'info');
+                const response = await fetch(election.rcvisUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to load election data: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                loadElectionData(data);
+            } catch (err) {
+                console.error('Error loading election:', err);
+                showStatus('Failed to load election data. The data file may not be available yet.', 'error');
+            }
+        });
+    }
+    
     // =============================================================================
     // FACTION ANALYSIS MODULE
     // =============================================================================
     
     // Chart instances for faction analysis
-    let networkChartInstance: echarts.ECharts | null = null;
+    let coalitionChartInstance: echarts.ECharts | null = null;
     let heatmapChartInstance: echarts.ECharts | null = null;
     let mdsChartInstance: echarts.ECharts | null = null;
     
@@ -2413,117 +2494,117 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
     }
     
     /**
-     * Create the network graph visualization
+     * Create the coalition strength bar chart visualization
      */
-    function createNetworkGraph(
+    function createCoalitionChart(
         candidates: string[],
         adjacencyMatrix: number[][],
-        firstPreferenceCounts: Map<string, number>
+        correlationMatrix: number[][]
     ) {
-        if (networkChartInstance) {
-            networkChartInstance.dispose();
+        if (coalitionChartInstance) {
+            coalitionChartInstance.dispose();
         }
         
-        const container = document.getElementById('network-chart')!;
-        networkChartInstance = echarts.init(container);
+        const container = document.getElementById('coalition-chart')!;
+        coalitionChartInstance = echarts.init(container);
         
-        const colors = [
-            '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
-            '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#48b8d0'
-        ];
+        // Calculate coalition scores for each pair
+        interface CoalitionPair {
+            pair: string;
+            score: number;
+            coOccurrence: number;
+            correlation: number;
+        }
         
-        // Prepare nodes
-        const maxFirstPref = Math.max(...Array.from(firstPreferenceCounts.values()));
-        const nodes = candidates.map((candidate, i) => {
-            const firstPref = firstPreferenceCounts.get(candidate) || 0;
-            const size = 20 + (firstPref / maxFirstPref) * 40;
-            return {
-                id: candidate,
-                name: candidate,
-                symbolSize: size,
-                value: firstPref,
-                itemStyle: { color: colors[i % colors.length] },
-                label: { show: true, fontSize: 10 }
-            };
-        });
-        
-        // Prepare edges (filter to significant transfers)
-        const edges: Array<{ source: string; target: string; value: number; lineStyle: any }> = [];
-        const threshold = 2; // Minimum count threshold
+        const pairs: CoalitionPair[] = [];
         
         for (let i = 0; i < candidates.length; i++) {
-            for (let j = 0; j < candidates.length; j++) {
-                if (i !== j && adjacencyMatrix[i][j] >= threshold) {
-                    const count = adjacencyMatrix[i][j];
-                    edges.push({
-                        source: candidates[i],
-                        target: candidates[j],
-                        value: count,
-                        lineStyle: {
-                            width: Math.log2(count + 1) * 2,
-                            opacity: 0.6,
-                            curveness: 0.2
-                        }
+            for (let j = i + 1; j < candidates.length; j++) {
+                const coOccurrence = adjacencyMatrix[i][j] + adjacencyMatrix[j][i];
+                const correlation = correlationMatrix[i][j];
+                
+                // Coalition score: co-occurrence weighted by positive correlation
+                // Only include if they have some positive correlation (potential allies)
+                if (correlation > 0 && coOccurrence > 0) {
+                    const score = coOccurrence * correlation;
+                    pairs.push({
+                        pair: `${candidates[i]} + ${candidates[j]}`,
+                        score: score,
+                        coOccurrence: coOccurrence,
+                        correlation: correlation
                     });
                 }
             }
         }
         
+        // Sort by score descending and take top 20
+        pairs.sort((a, b) => b.score - a.score);
+        const topPairs = pairs.slice(0, 20);
+        
         const option: echarts.EChartsOption = {
             title: {
-                text: 'Vote Transfer Network',
-                subtext: 'Arrows show direction of vote flow • Drag nodes, scroll to zoom',
+                text: 'Top Coalition Pairs',
+                subtext: 'Candidates who frequently appear together on ballots with high correlation',
                 left: 'center'
             },
             tooltip: {
-                trigger: 'item',
+                trigger: 'axis',
+                axisPointer: { type: 'shadow' },
                 formatter: (params: any) => {
-                    if (params.dataType === 'edge') {
-                        return `${params.data.source} → ${params.data.target}<br/>Transfers: ${params.data.value}`;
-                    }
-                    return `<strong>${params.name}</strong><br/>1st Preferences: ${params.value}`;
+                    const data = params[0];
+                    const pair = topPairs[data.dataIndex];
+                    return `<strong>${pair.pair}</strong><br/>` +
+                           `Coalition Score: ${pair.score.toFixed(1)}<br/>` +
+                           `Co-occurrence: ${pair.coOccurrence} ballots<br/>` +
+                           `Correlation: ${pair.correlation.toFixed(3)}`;
                 }
             },
-            legend: { show: false },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'value',
+                name: 'Coalition Score',
+                nameLocation: 'middle',
+                nameGap: 30
+            },
+            yAxis: {
+                type: 'category',
+                data: topPairs.map(p => {
+                    // Shorten names for display
+                    const [c1, c2] = p.pair.split(' + ');
+                    const short1 = c1.length > 12 ? c1.substring(0, 10) + '...' : c1;
+                    const short2 = c2.length > 12 ? c2.substring(0, 10) + '...' : c2;
+                    return `${short1} + ${short2}`;
+                }),
+                inverse: true,
+                axisLabel: { fontSize: 10 }
+            },
             series: [{
-                type: 'graph',
-                layout: 'force',
-                data: nodes,
-                links: edges,
-                roam: true,
-                draggable: true,
-                force: {
-                    repulsion: 800,  // Increased from 400 to push unconnected nodes apart
-                    gravity: 0.05,   // Reduced from 0.1 to weaken center pull
-                    edgeLength: [120, 250],  // Adjusted for better spacing
-                    friction: 0.4,   // Reduced from 0.6 for more fluid movement
-                    layoutAnimation: true
+                name: 'Coalition Score',
+                type: 'bar',
+                data: topPairs.map(p => p.score),
+                itemStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                        { offset: 0, color: '#5470c6' },
+                        { offset: 1, color: '#91cc75' }
+                    ])
                 },
-                edgeSymbol: ['none', 'arrow'],
-                edgeSymbolSize: 8,
-                emphasis: {
-                    focus: 'adjacency',
-                    lineStyle: { width: 4 }
-                },
-                lineStyle: { color: 'source' },
-                // Add zoom controls
-                scaleLimit: {
-                    min: 0.5,
-                    max: 3
+                label: {
+                    show: true,
+                    position: 'right',
+                    formatter: (params: any) => params.value.toFixed(0)
                 }
             }]
         };
         
-        networkChartInstance.setOption(option);
+        coalitionChartInstance.setOption(option);
         
-        // Fix initial viewport fitting - resize after a short delay to ensure proper rendering
-        setTimeout(() => {
-            networkChartInstance?.resize();
-        }, 100);
-        
-        // Handle resize
         window.addEventListener('resize', () => {
-            networkChartInstance?.resize();
+            coalitionChartInstance?.resize();
         });
     }
     
@@ -2612,6 +2693,11 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
         };
         
         heatmapChartInstance.setOption(option);
+        
+        // Force resize after a short delay to ensure proper dimensions
+        setTimeout(() => {
+            heatmapChartInstance?.resize();
+        }, 100);
         
         window.addEventListener('resize', () => {
             heatmapChartInstance?.resize();
@@ -2780,12 +2866,43 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
      */
     function initializeFactionAnalysis() {
         // Get DOM elements
+        const factionElectionSelector = document.getElementById('faction-election-selector') as HTMLSelectElement;
+        const loadFactionElectionBtn = document.getElementById('load-faction-election-btn') as HTMLButtonElement;
         const factionFileInput = document.getElementById('faction-file') as HTMLInputElement;
         const loadFactionBtn = document.getElementById('load-faction-btn') as HTMLButtonElement;
-        const loadFactionDemoBtn = document.getElementById('load-faction-demo-btn') as HTMLButtonElement;
         const factionStatusMessage = document.getElementById('faction-status-message') as HTMLDivElement;
         const factionResults = document.getElementById('faction-results') as HTMLDivElement;
         const factionInstructions = document.getElementById('faction-instructions') as HTMLDivElement;
+        
+        // Load selected election for faction analysis
+        loadFactionElectionBtn.addEventListener('click', async () => {
+            const selectedId = factionElectionSelector.value;
+            if (!selectedId) {
+                showFactionStatus('Please select an election first.', 'error');
+                return;
+            }
+            
+            const election = senateElections.find(e => e.id === selectedId);
+            if (!election) {
+                showFactionStatus('Election not found.', 'error');
+                return;
+            }
+            
+            try {
+                showFactionStatus('Loading election data...', 'info');
+                const response = await fetch(election.fullUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to load election data: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                loadFactionData(data);
+            } catch (err) {
+                console.error('Error loading election:', err);
+                showFactionStatus('Failed to load election data. The data file may not be available yet.', 'error');
+            }
+        });
         
         /**
          * Show status message for faction analysis
@@ -2838,7 +2955,7 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
             
             // Create visualizations
             showFactionStatus('Rendering visualizations...', 'info');
-            createNetworkGraph(candidates, adjacencyMatrix, firstPreferenceCounts);
+            createCoalitionChart(candidates, adjacencyMatrix, correlationMatrix);
             createHeatmap(candidates, correlationMatrix);
             createMDSPlot(candidates, mdsCoords, firstPreferenceCounts);
             createTransferTable(candidates, transferProb);
@@ -2846,6 +2963,13 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
             // Show results, hide instructions
             factionResults.style.display = 'block';
             factionInstructions.style.display = 'none';
+            
+            // Force resize of all charts after container is visible
+            setTimeout(() => {
+                heatmapChartInstance?.resize();
+                coalitionChartInstance?.resize();
+                mdsChartInstance?.resize();
+            }, 150);
             
             showFactionStatus('Analysis complete!', 'success');
         }
@@ -2871,7 +2995,7 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
                         
                         // Resize chart when tab becomes visible
                         setTimeout(() => {
-                            if (targetTab === 'network') networkChartInstance?.resize();
+                            if (targetTab === 'coalition') coalitionChartInstance?.resize();
                             if (targetTab === 'heatmap') heatmapChartInstance?.resize();
                             if (targetTab === 'mds') mdsChartInstance?.resize();
                         }, 50);
@@ -2904,11 +3028,6 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
                 showFactionStatus('Error reading file.', 'error');
             };
             reader.readAsText(file);
-        });
-        
-        // Demo data
-        loadFactionDemoBtn?.addEventListener('click', () => {
-            loadFactionData(factionDemoData);
         });
         
         // Auto-load on file selection

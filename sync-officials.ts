@@ -151,6 +151,15 @@ function syncGovernmentOfficials() {
     // Get current senators early for reference when processing changes
     const currentSenators = extractSenators(currentContent);
     
+    // Extract existing discord_ids and icons for all roles from current file
+    const existingRoleData: Record<string, { icon: string; discord_id?: string }> = {};
+    for (const role of republicRoles.filter(r => !r.multi_seat)) {
+        existingRoleData[role.id] = {
+            icon: extractValue(currentContent, role.id, 'icon') || DEFAULT_ICON,
+            discord_id: extractValue(currentContent, role.id, 'discord_id')
+        };
+    }
+    
     // Track the latest official for each role/seat
     const latestOfficials: Record<string, { name: string; icon: string; discord_id?: string; seat?: number }> = {};
     const latestSenators: Map<number, { name: string; icon: string; discord_id?: string }> = new Map();
@@ -211,11 +220,9 @@ function syncGovernmentOfficials() {
                     console.warn(`  - Senator "${official.name}" has no seat number, skipping update`);
                 }
             } else {
-                // Get existing data to preserve icon if not provided
-                const existing = latestOfficials[yamlRole] || {
-                    icon: extractValue(currentContent, yamlRole, 'icon'),
-                    discord_id: extractValue(currentContent, yamlRole, 'discord_id')
-                };
+                // Get existing data from file, then check if we've already processed this role
+                const fileData = existingRoleData[yamlRole] || { icon: DEFAULT_ICON };
+                const existing = latestOfficials[yamlRole] || fileData;
                 latestOfficials[yamlRole] = {
                     name: official.name,
                     icon: official.icon || existing.icon || DEFAULT_ICON,
@@ -239,8 +246,8 @@ senate_term: "${latestSenateTerm || extractCurrentTerm(currentContent)}"
     for (const role of republicRoles.filter(r => !r.multi_seat)) {
         const official = latestOfficials[role.id] || { 
             name: extractValue(currentContent, role.id, 'name'), 
-            icon: extractValue(currentContent, role.id, 'icon') || DEFAULT_ICON,
-            discord_id: extractValue(currentContent, role.id, 'discord_id')
+            icon: existingRoleData[role.id]?.icon || DEFAULT_ICON,
+            discord_id: existingRoleData[role.id]?.discord_id
         };
         newContent += `# ${role.display_name}
 ${role.id}:
@@ -299,6 +306,15 @@ function syncCityOfficials() {
     // Get current councillors early for reference when processing changes
     const currentCouncillors = extractCouncillors(currentContent);
     
+    // Extract existing discord_ids and icons for all roles from current file
+    const existingRoleData: Record<string, { icon: string; discord_id?: string }> = {};
+    for (const role of cityRoles.filter(r => !r.multi_seat)) {
+        existingRoleData[role.id] = {
+            icon: extractValue(currentContent, role.id, 'icon') || DEFAULT_ICON,
+            discord_id: extractValue(currentContent, role.id, 'discord_id')
+        };
+    }
+    
     // Track the latest official for each role/seat
     const latestOfficials: Record<string, { name: string; icon: string; discord_id?: string }> = {};
     const latestCouncillors: Map<number, { name: string; icon: string; discord_id?: string }> = new Map();
@@ -347,11 +363,9 @@ function syncCityOfficials() {
                     discord_id: official.discord_id || existing?.discord_id
                 });
             } else {
-                // Get existing data to preserve icon if not provided
-                const existing = latestOfficials[yamlRole] || {
-                    icon: extractValue(currentContent, yamlRole, 'icon'),
-                    discord_id: extractValue(currentContent, yamlRole, 'discord_id')
-                };
+                // Get existing data from file, then check if we've already processed this role
+                const fileData = existingRoleData[yamlRole] || { icon: DEFAULT_ICON };
+                const existing = latestOfficials[yamlRole] || fileData;
                 latestOfficials[yamlRole] = {
                     name: official.name,
                     icon: official.icon || existing.icon || DEFAULT_ICON,
@@ -374,8 +388,8 @@ council_term: "${latestCouncilTerm || extractSimpleValue(currentContent, 'counci
     for (const role of cityRoles.filter(r => !r.multi_seat)) {
         const official = latestOfficials[role.id] || { 
             name: extractValue(currentContent, role.id, 'name'), 
-            icon: extractValue(currentContent, role.id, 'icon') || DEFAULT_ICON,
-            discord_id: extractValue(currentContent, role.id, 'discord_id')
+            icon: existingRoleData[role.id]?.icon || DEFAULT_ICON,
+            discord_id: existingRoleData[role.id]?.discord_id
         };
         newContent += `# ${role.display_name}
 ${role.id}:

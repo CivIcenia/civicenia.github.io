@@ -4,7 +4,7 @@ layout: "@layouts/news/official-change.astro"
 changetype: senate-election
 headline: January 2026 Senate Election
 date: 2026-01-07 12:23:00 +08:00
-term: 41
+term: 43
 senate_size: 5
 officials:
   - name: CreepilyCreep
@@ -32,6 +32,10 @@ officials:
     action: elected
     discord_id: "1080275805277540423"
     seat: 4
+  - role: speaker
+    name: CreepilyCreep
+    action: elected
+    discord_id: "452620205064060939"
 icon: /assets/images/election_stock.png
 ---
 The counting of ballots can be found here: https://www.online-python.com/cFT4IN3ni7

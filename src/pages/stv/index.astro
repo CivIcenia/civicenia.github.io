@@ -255,6 +255,14 @@ import PageLayout from "@layouts/page.astro";
                 
                 <div id="results" style="display: none;">
                     <h2 class="govuk-heading-m">Results</h2>
+
+                    <div class="govuk-form-group" style="max-width: 480px; margin-bottom: 20px;">
+                        <label class="govuk-label" for="election-name">
+                            Election name (for exports)
+                        </label>
+                        <div class="govuk-hint">Used in exported file names and RCVis metadata.</div>
+                        <input class="govuk-input" id="election-name" name="election-name" type="text" placeholder="e.g. 2026-01 Senate Election">
+                    </div>
                     
                     <div class="govuk-form-group" style="max-width: 300px; margin-bottom: 20px;">
                         <label class="govuk-label" for="results-seats">
@@ -1071,6 +1079,7 @@ import PageLayout from "@layouts/page.astro";
             candidates: string[];
             ballots: Array<{voter: string, rankings: string[]}>;
             seats: number;
+            electionName: string;
             nameMatches: Map<string, string | null>;
             uniqueNames: string[];
             currentNameIndex: number;
@@ -1086,6 +1095,7 @@ import PageLayout from "@layouts/page.astro";
             candidates: [],
             ballots: [],
             seats: 5,
+            electionName: '',
             nameMatches: new Map(),
             uniqueNames: [], // Ordered list of unique names to review
             currentNameIndex: 0, // Current position in uniqueNames array
@@ -1425,9 +1435,33 @@ import PageLayout from "@layouts/page.astro";
         }
         
         // ===== EXPORT/IMPORT FUNCTIONS =====
+
+        function getElectionName(): string {
+            const input = document.getElementById('election-name') as HTMLInputElement;
+            const name = (input?.value || parsedData.electionName || '').trim();
+            parsedData.electionName = name;
+            return name;
+        }
+
+        function slugifyElectionName(name: string): string {
+            return name
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/gi, '-')
+                .replace(/-{2,}/g, '-')
+                .replace(/^-+|-+$/g, '');
+        }
+
+        function buildExportFilename(prefix: string, extension = 'json'): string {
+            const name = getElectionName();
+            const dateStr = new Date().toISOString().split('T')[0];
+            const slug = slugifyElectionName(name);
+            const base = slug ? `${prefix}-${slug}` : `${prefix}-${dateStr}`;
+            return `${base}.${extension}`;
+        }
         
         // Export entire election state to JSON file
         function exportElection() {
+            const electionName = getElectionName();
             // Determine current section
             let currentSection = 'import';
             if (document.getElementById('name-matching')?.style.display !== 'none') {
@@ -1442,6 +1476,7 @@ import PageLayout from "@layouts/page.astro";
                 version: '2.1',
                 timestamp: new Date().toISOString(),
                 inputMode: inputMode,
+                electionName,
                 candidates: parsedData.candidates,
                 ballots: parsedData.ballots ? parsedData.ballots.map((b: any) => ({
                     voter: b.voter,
@@ -1472,7 +1507,7 @@ import PageLayout from "@layouts/page.astro";
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `stv-election-${new Date().toISOString().split('T')[0]}.json`;
+            a.download = buildExportFilename('stv-election');
             a.click();
             URL.revokeObjectURL(url);
         }
@@ -1487,13 +1522,15 @@ import PageLayout from "@layouts/page.astro";
             
             const today = new Date();
             const dateStr = today.toISOString().split('T')[0];
+            const electionName = getElectionName();
+            const contestName = electionName || 'Icenian Election';
             
             const rcvisData = {
                 config: {
-                    contest: "Icenian Election",
+                    contest: contestName,
                     date: dateStr,
                     jurisdiction: "Icenia",
-                    office: "Senate/Council",
+                    office: contestName,
                     threshold: (parsedData.ballots.length / (parsedData.seats + 1)).toFixed(3)
                 },
                 results: roundResults.map((round: any) => ({
@@ -1515,7 +1552,7 @@ import PageLayout from "@layouts/page.astro";
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `rcvis-election-${dateStr}.json`;
+            a.download = buildExportFilename('rcvis-election');
             a.click();
             URL.revokeObjectURL(url);
         }
@@ -1561,6 +1598,15 @@ import PageLayout from "@layouts/page.astro";
                     // Restore learned correlations
                     if (importData.learnedCorrelations) {
                         parsedData.learnedCorrelations = new Map(Object.entries(importData.learnedCorrelations));
+                    }
+
+                    if (importData.electionName) {
+                        parsedData.electionName = importData.electionName;
+                        const electionNameInput = document.getElementById('election-name') as HTMLInputElement;
+                        if (electionNameInput) {
+                            electionNameInput.value = parsedData.electionName;
+                        }
+                        localStorage.setItem('election-name', parsedData.electionName);
                     }
                     
                     // Restore candidates
@@ -1687,6 +1733,7 @@ import PageLayout from "@layouts/page.astro";
                 candidates: [],
                 ballots: [],
                 seats: 0,
+                electionName: '',
                 nameMatches: new Map(),
                 uniqueNames: [],
                 currentNameIndex: 0,
@@ -1699,6 +1746,12 @@ import PageLayout from "@layouts/page.astro";
                 reviewedNames: new Set(),
                 duplicateSelections: new Map()
             };
+
+            localStorage.removeItem('election-name');
+            const electionNameInput = document.getElementById('election-name') as HTMLInputElement;
+            if (electionNameInput) {
+                electionNameInput.value = '';
+            }
             
             // Hide name matching, ballot review, and results
             const nameMatching = document.getElementById('name-matching');
@@ -2154,6 +2207,19 @@ import PageLayout from "@layouts/page.astro";
             if (savedBallots) {
                 const ballotsEl = document.getElementById('discord-ballots') as HTMLTextAreaElement;
                 if (ballotsEl) ballotsEl.value = savedBallots;
+            }
+
+            const electionNameInput = document.getElementById('election-name') as HTMLInputElement;
+            const savedElectionName = localStorage.getItem('election-name');
+            if (electionNameInput) {
+                if (savedElectionName) {
+                    electionNameInput.value = savedElectionName;
+                    parsedData.electionName = savedElectionName;
+                }
+                electionNameInput.addEventListener('input', () => {
+                    parsedData.electionName = electionNameInput.value.trim();
+                    localStorage.setItem('election-name', parsedData.electionName);
+                });
             }
             
             // Setup Import Election button

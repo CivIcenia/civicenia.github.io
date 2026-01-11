@@ -373,3 +373,14 @@ entries:
     kind: treaty
     masterdoc: /archive/Second-Treaty-of-Santiago.pdf
     fullname: Treaty of Santiago II
+  - hidden: false
+    name: Montefiore-Shiroyama Accord
+    slug: montefiore-shiroyama
+    kind: treaty
+    masterdoc: /archive/Montefiore-Shiroyama-Accord.pdf
+  - hidden: false
+    name: Plrog Shi Interim Ownership Accord
+    slug: plrog-shi-interim-ownership
+    fullname: ""
+    masterdoc: /archive/Plrog-Shi-Interim-Ownership-Accord.pdf
+    kind: treaty
