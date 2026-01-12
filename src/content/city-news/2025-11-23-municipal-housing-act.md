@@ -3,9 +3,9 @@ layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
 institution: council
 term_number: 02
-act_number: 04
+act_number: 4
 headline: Municipal Housing Act
-date: 2025-11-23 12:00:00 +0000
+date: 2025-11-23 01:14:20 +00:00
 excerpt: Passed by the November 2025 City Council.
 document:
   type: markdown
@@ -19,9 +19,5 @@ document:
     This bill should deal with stuff like that
 changes: []
 icon: /assets/images/law_stock.jpeg
----
-
-Municipal Housing Act
-
 ---
 [Passed by the November 2025 City Council](https://discord.com/channels/558071874161082368/1441839229519921175)

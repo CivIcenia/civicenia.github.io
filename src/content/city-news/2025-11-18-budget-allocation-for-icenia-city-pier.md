@@ -3,9 +3,9 @@ layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
 institution: council
 term_number: 02
-act_number: 01
-headline: Res. 02-01 — Budget Allocation for Icenia City Pier
-date: 2025-11-18 12:00:00 +0000
+act_number: 1
+headline: Budget Allocation for Icenia City Pier
+date: 2025-11-18 00:25:22 +00:00
 excerpt: Passed by the November 2025 City Council.
 document:
   type: markdown
@@ -22,9 +22,5 @@ document:
       - Such documentation shall be submitted and archived in the municipal record (this thread) for transparency and auditability.
 changes: []
 icon: /assets/images/law_stock.jpeg
----
-
-Res. 02-01 — Budget Allocation for Icenia City Pier
-
 ---
 [Passed by the November 2025 City Council](https://discord.com/channels/558071874161082368/1440014967607787644)

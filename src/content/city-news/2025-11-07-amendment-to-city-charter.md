@@ -3,9 +3,9 @@ layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
 institution: council
 term_number: 01
-act_number: 09
-headline: Res. 01-09 Amendment to City Charter
-date: 2025-11-07 12:00:00 +0000
+act_number: 9
+headline: Amendment to City Charter
+date: 2025-11-07 02:10:11 +00:00
 excerpt: Passed by the November 2025 City Council.
 document:
   type: markdown
@@ -27,9 +27,5 @@ document:
     Also this would turn 01-05 into a decision, removing the ambiguity
 changes: []
 icon: /assets/images/law_stock.jpeg
----
-
-Res. 01-09 Amendment to City Charter
-
 ---
 [Passed by the November 2025 City Council](https://discord.com/channels/558071874161082368/1436055077961076746)

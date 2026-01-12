@@ -124,6 +124,12 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 })}
                 
                 {act.document.value !== "" ? <slot><br/></slot> : ``}
+
+                <div class="govuk-inset-text" style="margin-top: 20px;">
+                    <p class="govuk-body-s">
+                        <a href={BASE + "laws/"} class="govuk-link">&larr; Back to Republic Laws</a>
+                    </p>
+                </div>
             </div>
         </div>
     </div>

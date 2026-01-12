@@ -3,9 +3,9 @@ layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
 institution: council
 term_number: 01
-act_number: 01
+act_number: 1
 headline: RESOLUTION OF INTERPRETATION OF THE ICENIA CITY COUNCIL ACT
-date: 2025-10-27 12:00:00 +0000
+date: 2025-10-27 12:12:26 +00:00
 excerpt: Passed by the October 2025 City Council.
 document:
   type: markdown
@@ -21,9 +21,5 @@ document:
     **BE IT FURTHER RESOLVED,** that the SOI retains authority outside the city limits and may act within them only as delegated or approved by the Council. For projects extending beyond the city limits, such as a railway which begins within city limits and ends outside city limits, approval must be granted by both the SOI and the Council.
 changes: []
 icon: /assets/images/law_stock.jpeg
----
-
-RESOLUTION OF INTERPRETATION OF THE ICENIA CITY COUNCIL ACT
-
 ---
 [Passed by the October 2025 City Council](https://discord.com/channels/558071874161082368/1432220374678114375)

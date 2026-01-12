@@ -3,9 +3,9 @@ layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
 institution: council
 term_number: 01
-act_number: 07
+act_number: 7
 headline: Icenia Capital Territory Legislative Package
-date: 2025-11-04 12:00:00 +0000
+date: 2025-11-04 07:43:03 +00:00
 excerpt: Passed by the November 2025 City Council.
 document:
   type: markdown
@@ -16,9 +16,5 @@ document:
     Requires simple majority
 changes: []
 icon: /assets/images/law_stock.jpeg
----
-
-Icenia Capital Territory Legislative Package
-
 ---
 [Passed by the November 2025 City Council](https://discord.com/channels/558071874161082368/1435051683393835101)

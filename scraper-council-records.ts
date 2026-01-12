@@ -19,7 +19,7 @@ const CITY_NEWS_DIR = path.join(__dirname, 'src', 'content', 'city-news');
 interface LegislationData {
     fullTitle: string;
     term: string;
-    legislation: string;
+    legislation: number;
     link: string;
     content: string;
     threadId: string;
@@ -57,26 +57,57 @@ function getExistingThreadIds(): Set<string> {
     return existingIds;
 }
 
-// Generate a slug from the title
-function generateSlug(title: string): string {
-    // Remove the XX-XX prefix pattern
-    const cleanTitle = title.replace(/^\d+-\d+\s*/, '').trim();
-    
-    return cleanTitle
+// Generate a slug from the CLEAN headline (not the raw title)
+function generateSlug(text: string): string {
+    return text
+        .trim()
         .toLowerCase()
+        // Remove non-alphanumeric chars (except spaces and dashes)
         .replace(/[^a-z0-9\s-]/g, '')
+        // Replace spaces with dashes
         .replace(/\s+/g, '-')
+        // Remove duplicate dashes
         .replace(/-+/g, '-')
+        // Limit length
         .substring(0, 50);
+}
+
+// Helper to format date as YYYY-MM-DD HH:MM:SS +00:00
+function formatFullDate(date: Date): string {
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+    
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds} +00:00`;
 }
 
 // Create markdown file for a legislation
 function createMarkdownFile(data: LegislationData): void {
     const date = data.createdAt;
+    
+    // File name date (YYYY-MM-DD)
     const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    
+    // Full timestamp for frontmatter
+    const fullTimestamp = formatFullDate(date);
     const monthYear = `${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`;
     
-    const slug = generateSlug(data.fullTitle);
+    // 1. Generate the headline first (Strip "Ord.", "02-08", etc)
+    // Regex explanation:
+    // ^[^\d]*      -> Start with anything that isn't a digit (e.g. "Ord. ", "Res ")
+    // \d{2}-\d{2}  -> The specific number pattern (e.g. "02-08")
+    // [:\s—-]*\s*  -> Any separators (colon, dash, em-dash) and whitespace following it
+    const headline = data.fullTitle.replace(/^[^\d]*\d{2}-\d{2}[:\s—-]*\s*/i, '').trim() || data.fullTitle;
+
+    // 2. Generate slug ONLY from the clean headline
+    // Example: "Subway Surfers Act" -> "subway-surfers-act"
+    const slug = generateSlug(headline);
+    
     const filename = `${dateStr}-${slug}.md`;
     const filePath = path.join(CITY_NEWS_DIR, filename);
     
@@ -86,14 +117,6 @@ function createMarkdownFile(data: LegislationData): void {
         return;
     }
     
-    // Escape the content for YAML
-    const escapedContent = data.content
-        .replace(/\\/g, '\\\\')
-        .replace(/"/g, '\\"');
-    
-    // Generate a headline from the title (remove XX-XX prefix)
-    const headline = data.fullTitle.replace(/^\d+-\d+\s*/, '').trim() || data.fullTitle;
-    
     const markdown = `---
 layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
@@ -101,7 +124,7 @@ institution: council
 term_number: ${data.term}
 act_number: ${data.legislation}
 headline: ${headline}
-date: ${dateStr} 12:00:00 +0000
+date: ${fullTimestamp}
 excerpt: Passed by the ${monthYear} City Council.
 document:
   type: markdown
@@ -109,10 +132,6 @@ document:
 ${data.content.split('\n').map(line => '    ' + line).join('\n')}
 changes: []
 icon: /assets/images/law_stock.jpeg
----
-
-${headline}
-
 ---
 [Passed by the ${monthYear} City Council](${data.link})
 `;
@@ -150,8 +169,7 @@ async function scrapeForum() {
 
     const forumChannel = channel as ForumChannel;
     console.log(`Scanning Forum: ${forumChannel.name}`);
-
-    // Get existing thread IDs to avoid duplicates
+    
     const existingThreadIds = getExistingThreadIds();
     console.log(`Found ${existingThreadIds.size} existing scraped threads`);
 
@@ -165,10 +183,10 @@ async function scrapeForum() {
     archivedThreads.threads.forEach((t) => allThreads.set(t.id, t));
 
     const results: LegislationData[] = [];
+    // Regex to find things like "02-08" in the title
     const pattern = /(\d+)-(\d+)/;
 
     for (const [id, thread] of allThreads) {
-        // Skip if already scraped
         if (existingThreadIds.has(id)) {
             console.log(`-> Skipping (already scraped): ${thread.name}`);
             continue;
@@ -179,12 +197,20 @@ async function scrapeForum() {
 
         if (match) {
             const termNumber = match[1];
-            const legislationNumber = match[2];
+            // ParseInt ensures "08" becomes 8 (number)
+            const legislationNumber = parseInt(match[2], 10);
 
             let content = "";
+            let messageDate = thread.createdAt || new Date();
+
             try {
                 const starterMsg = await thread.fetchStarterMessage();
-                content = starterMsg ? starterMsg.content : "[No text content found]";
+                if (starterMsg) {
+                    content = starterMsg.content;
+                    messageDate = starterMsg.createdAt;
+                } else {
+                    content = "[No text content found]";
+                }
             } catch (e) {
                 content = "[Unable to fetch message - might be deleted or bot lacks permission]";
             }
@@ -196,7 +222,7 @@ async function scrapeForum() {
                 link: `https://discord.com/channels/${thread.guildId}/${thread.id}`,
                 content: content,
                 threadId: id,
-                createdAt: thread.createdAt || new Date(),
+                createdAt: messageDate,
             });
             
             console.log(`-> Processed: ${title}`);
@@ -205,12 +231,10 @@ async function scrapeForum() {
 
     console.log(`\n\n--- EXTRACTION COMPLETE: Found ${results.length} new matches ---`);
     
-    // Ensure output directory exists
     if (!fs.existsSync(CITY_NEWS_DIR)) {
         fs.mkdirSync(CITY_NEWS_DIR, { recursive: true });
     }
 
-    // Create markdown files
     console.log('\nCreating markdown files...');
     for (const res of results) {
         createMarkdownFile(res);

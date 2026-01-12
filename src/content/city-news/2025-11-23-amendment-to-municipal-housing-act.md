@@ -3,9 +3,9 @@ layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
 institution: council
 term_number: 02
-act_number: 05
+act_number: 5
 headline: Amendment to Municipal Housing Act
-date: 2025-11-23 12:00:00 +0000
+date: 2025-11-23 16:37:03 +00:00
 excerpt: Passed by the November 2025 City Council.
 document:
   type: markdown
@@ -19,9 +19,5 @@ document:
       a. Building Owners are not required to utilize the IceniaCityApartments namelayer group, provided that elevators and stairwells remain fully accessible to tenants through other means.
 changes: []
 icon: /assets/images/law_stock.jpeg
----
-
-Amendment to Municipal Housing Act
-
 ---
 [Passed by the November 2025 City Council](https://discord.com/channels/558071874161082368/1442071440584347730)

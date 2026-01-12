@@ -3,9 +3,9 @@ layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
 institution: council
 term_number: 03
-act_number: 02
+act_number: 2
 headline: Metro Funding Act
-date: 2025-12-17 12:00:00 +0000
+date: 2025-12-17 05:06:48 +00:00
 excerpt: Passed by the December 2025 City Council.
 document:
   type: markdown
@@ -31,9 +31,5 @@ document:
     4. Nothing in this Act shall be construed to limit the City Council's authority to appropriate funds to the CTA or to authorize major expansions through separate legislation.
 changes: []
 icon: /assets/images/law_stock.jpeg
----
-
-Metro Funding Act
-
 ---
 [Passed by the December 2025 City Council](https://discord.com/channels/558071874161082368/1450595042065645682)
