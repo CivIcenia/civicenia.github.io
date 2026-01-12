@@ -35,8 +35,7 @@ const title = "Document Viewer";
         
         <div id="actions" style="margin-top: 15px; display: none; text-align: right;">
           <a id="download-link" href="#" class="govuk-button" target="_blank">Download Document</a>
-          <button id="pdf-print-btn" class="govuk-button" type="button" style="margin-left: 10px;">Print/Download as PDF</button>
-          <span id="pdf-instructions" style="display:none; margin-left:10px; color:#555;">Use the viewer's print button to save as PDF.</span>
+          <a id="pdf-download-link" class="govuk-button" style="margin-left: 10px;" target="_blank" rel="noopener">Download as PDF</a>
         </div>
       </div>
     </div>
@@ -56,8 +55,7 @@ const title = "Document Viewer";
     const errorMsg = document.getElementById('error-message');
     const actions = document.getElementById('actions');
     const downloadLink = document.getElementById('download-link') as HTMLAnchorElement;
-     const pdfPrintBtn = document.getElementById('pdf-print-btn') as HTMLButtonElement;
-     const pdfInstructions = document.getElementById('pdf-instructions') as HTMLSpanElement;
+    const pdfDownloadLink = document.getElementById('pdf-download-link') as HTMLAnchorElement;
     const viewerControls = document.getElementById('viewer-controls');
     const toggleButtons = document.querySelectorAll('.viewer-toggle');
     
@@ -89,22 +87,15 @@ const title = "Document Viewer";
     }
 
     const isDocx = file.endsWith('.docx');
-    // PDF Print Button logic
-    if (pdfPrintBtn && isDocx) {
-      pdfPrintBtn.style.display = 'inline-block';
-      pdfPrintBtn.onclick = () => {
-        // Switch to external viewer (Google by default)
-        currentViewer = 'google';
-        loadExternalViewer(currentViewer);
-        // Show instructions
-        if (pdfInstructions) pdfInstructions.style.display = 'inline';
-        // Optionally scroll to iframe
-        setTimeout(() => {
-          iframe.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 500);
-      };
-    } else if (pdfPrintBtn) {
-      pdfPrintBtn.style.display = 'none';
+    // PDF Download Link logic (Google Docs export)
+    if (pdfDownloadLink && isDocx) {
+      pdfDownloadLink.style.display = 'inline-block';
+      // Google Docs Viewer PDF export endpoint
+      // Must be public URL for Google to fetch
+      const pdfUrl = `https://docs.google.com/gview?url=${encodeURIComponent(fullUrl)}&embedded=true&export=download&format=pdf`;
+      pdfDownloadLink.href = pdfUrl;
+    } else if (pdfDownloadLink) {
+      pdfDownloadLink.style.display = 'none';
     }
     
     // Function to load viewer with specified provider
