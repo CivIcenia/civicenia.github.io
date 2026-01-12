@@ -35,8 +35,6 @@ const title = "Document Viewer";
         
         <div id="actions" style="margin-top: 15px; display: none; text-align: right;">
           <a id="download-link" href="#" class="govuk-button" target="_blank">Download Document</a>
-          <a id="pdf-download-link-google" class="govuk-button" style="margin-left: 10px;" target="_blank" rel="noopener">Download as PDF (Google)</a>
-          <a id="pdf-download-link-office" class="govuk-button" style="margin-left: 10px; background:#217346; border-color:#217346;" target="_blank" rel="noopener">Export as PDF (Office)</a>
         </div>
       </div>
     </div>
@@ -48,7 +46,15 @@ const title = "Document Viewer";
   async function initViewer() {
     const params = new URLSearchParams(window.location.search);
     const file = params.get('file');
-    let currentViewer = params.get('viewer') || 'google'; // 'google' or 'office' - default to google
+    // Use Office as default for desktop, Google for mobile
+    let currentViewer = params.get('viewer');
+    if (!currentViewer) {
+      if (window.innerWidth < 740) {
+        currentViewer = 'google';
+      } else {
+        currentViewer = 'office';
+      }
+    }
     
     const iframe = document.getElementById('doc-iframe') as HTMLIFrameElement;
     const docxContainer = document.getElementById('docx-container') as HTMLDivElement;
@@ -56,8 +62,6 @@ const title = "Document Viewer";
     const errorMsg = document.getElementById('error-message');
     const actions = document.getElementById('actions');
     const downloadLink = document.getElementById('download-link') as HTMLAnchorElement;
-    const pdfDownloadLinkGoogle = document.getElementById('pdf-download-link-google') as HTMLAnchorElement;
-    const pdfDownloadLinkOffice = document.getElementById('pdf-download-link-office') as HTMLAnchorElement;
     const viewerControls = document.getElementById('viewer-controls');
     const toggleButtons = document.querySelectorAll('.viewer-toggle');
     
@@ -88,29 +92,6 @@ const title = "Document Viewer";
       actions.style.display = 'block';
     }
 
-    const isDocx = file.endsWith('.docx');
-    // PDF Download Link logic (Google Docs alternative export)
-    if (pdfDownloadLinkGoogle && isDocx) {
-      pdfDownloadLinkGoogle.style.display = 'inline-block';
-      // Google Docs Viewer alternative export endpoint
-      // Must be public URL for Google to fetch
-      const pdfUrlGoogle = `https://docs.google.com/gview?url=${encodeURIComponent(fullUrl)}&a=gt&chrome=false&dov=1`;
-      pdfDownloadLinkGoogle.href = pdfUrlGoogle;
-    } else if (pdfDownloadLinkGoogle) {
-      pdfDownloadLinkGoogle.style.display = 'none';
-    }
-
-    // Office Online Viewer (manual export)
-    if (pdfDownloadLinkOffice && isDocx) {
-      pdfDownloadLinkOffice.style.display = 'inline-block';
-      // Office Online Viewer embed URL
-      // User must use File > Export > Download as PDF in the viewer
-      const officeUrl = `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(fullUrl)}`;
-      pdfDownloadLinkOffice.href = officeUrl;
-      pdfDownloadLinkOffice.title = 'Open in Office Online Viewer, then use File > Export > Download as PDF.';
-    } else if (pdfDownloadLinkOffice) {
-      pdfDownloadLinkOffice.style.display = 'none';
-    }
     
     // Function to load viewer with specified provider
     function loadExternalViewer(viewer: string) {
@@ -170,6 +151,8 @@ const title = "Document Viewer";
       });
     }
     
+    // Detect if the file is a .docx document
+    const isDocx = file.toLowerCase().endsWith('.docx');
     // Use client-side renderer for localhost OR when explicitly requested
     if (isLocalhost && isDocx) {
       try {
