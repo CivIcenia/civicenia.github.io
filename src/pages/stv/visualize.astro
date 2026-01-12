@@ -2051,7 +2051,7 @@ import SankeyDiagram from "@components/SankeyDiagram.astro";
     
     function initializeHandlers() {
         // Load senate elections data
-        fetch('/src/data/senate-elections.json')
+        fetch('/stv-data/senate-elections.json')
             .then(res => res.json())
             .then((data: SenateElection[]) => {
                 senateElections = data;

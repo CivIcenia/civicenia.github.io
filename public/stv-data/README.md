@@ -77,7 +77,7 @@ Used by the faction & similarity analysis tool. Includes raw ballot data:
    - Click "Export for RCVis" → Save as `YYYY-MM-month-senate-rcvis.json`
    - Click "Export Election" → Save as `YYYY-MM-month-senate-full.json`
 3. **Place both files** in this directory
-4. **Update the registry** at `/src/data/senate-elections.json`:
+4. **Update the registry** at `/public/stv-data/senate-elections.json`:
 
 ```json
 {

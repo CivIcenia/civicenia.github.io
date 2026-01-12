@@ -6,7 +6,7 @@ Successfully implemented a dropdown menu in the STV visualizer to allow users to
 
 ## Files Created
 
-1. **`src/data/senate-elections.json`** - Registry of available elections with metadata
+1. **`public/stv-data/senate-elections.json`** - Registry of available elections with metadata
 2. **`public/stv-data/README.md`** - Instructions for managing election data files  
 3. **`public/stv-data/2026-01-january-senate.json`** - Sample election data file
 4. **`docs/STV_ELECTIONS_FEATURE.md`** - Complete feature documentation
@@ -24,7 +24,7 @@ Successfully implemented a dropdown menu in the STV visualizer to allow users to
 
 ## How It Works
 
-1. On page load, the elections list is fetched from `/src/data/senate-elections.json`
+1. On page load, the elections list is fetched from `/public/stv-data/senate-elections.json`
 2. The dropdown is populated with election names and term numbers
 3. When a user selects an election and clicks "Load Selected Election":
    - The corresponding JSON file is fetched from `/stv-data/`
@@ -46,7 +46,7 @@ To add a new election:
 
 1. Export the RCVis JSON from the STV calculator
 2. Save it to `/public/stv-data/YYYY-MM-month-senate.json`
-3. Add an entry to `/src/data/senate-elections.json`:
+3. Add an entry to `/public/stv-data/senate-elections.json`:
    ```json
    {
      "id": "2026-02-february",

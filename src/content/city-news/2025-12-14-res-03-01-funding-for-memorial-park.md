@@ -1,0 +1,21 @@
+---
+layout: "@layouts/news/city-act.astro"
+changetocitylaw: true
+institution: council
+term_number: 03
+act_number: 01
+headline: Res. 03-01 Funding for Memorial Park
+date: 2025-12-14 12:00:00 +0000
+excerpt: Passed by the December 2025 City Council.
+document:
+  type: markdown
+  value: |
+    50d shall be allocated from the council treasury for the construction of the Memorial Park in memory of the victims of the December 1st terrorist attack.
+changes: []
+icon: /assets/images/law_stock.jpeg
+---
+
+Res. 03-01 Funding for Memorial Park
+
+---
+[Passed by the December 2025 City Council](https://discord.com/channels/558071874161082368/1449630690084786257)

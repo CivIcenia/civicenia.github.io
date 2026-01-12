@@ -23,6 +23,7 @@
         "d3": "^7.9.0",
         "dateformat": "^5.0.3",
         "decap-server": "^3.0.4",
+        "discord.js": "^14.25.1",
         "docx-preview": "^0.3.7",
         "echarts": "^6.0.0",
         "gray-matter": "^4.0.3",

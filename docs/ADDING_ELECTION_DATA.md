@@ -55,7 +55,7 @@ For each election:
 
 4. **Save and register:**
    - Save to `/public/stv-data/YYYY-MM-month-senate.json`
-   - Verify entry exists in `/src/data/senate-elections.json`
+   - Verify entry exists in `/public/stv-data/senate-elections.json`
    - Test in visualizer
 
 ## Data Quality Levels

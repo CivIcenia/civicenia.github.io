@@ -6,7 +6,7 @@ The STV visualizer now allows users to select and view previous Icenian senate e
 
 ## Changes Made
 
-### 1. New Data Structure (`src/data/senate-elections.json`)
+### 1. New Data Structure (`/public/stv-data/senate-elections.json`)
 
 A JSON file that contains metadata for all available senate elections:
 
@@ -47,7 +47,7 @@ Place the JSON file in `/public/stv-data/`
 
 ### Step 3: Update Elections Registry
 
-Add an entry to `/src/data/senate-elections.json`:
+Add an entry to `/public/stv-data/senate-elections.json`:
 
 ```json
 {

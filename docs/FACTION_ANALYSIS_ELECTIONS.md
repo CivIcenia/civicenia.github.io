@@ -1,4 +1,102 @@
 # Faction Analysis Elections Feature - Implementation Summary
+---
+# Quick Reference: Election Data File Formats
+
+## Results Visualization (RCVis format)
+
+- Uses files named `YYYY-MM-month-senate-rcvis.json`
+- Shows round-by-round results in animated bar charts
+- Exported via "Export for RCVis" button in the calculator
+
+### Quick Export Steps
+1. After calculating results in the STV calculator, two export buttons appear.
+2. Click "Export for RCVis".
+   - Saves: `rcvis-election-YOUR-NAME.json`
+   - Rename to: `YYYY-MM-month-senate-rcvis.json`
+   - Use for: Visualization dropdown
+3. Place in `/public/stv-data/`
+4. Update registry: `/public/stv-data/senate-elections.json`
+5. Rebuild: `bun run build`
+
+## Faction & Similarity Analysis (Full format)
+
+- Uses files named `YYYY-MM-month-senate-full.json`
+- Analyzes voter preferences, correlations, and political maps
+- Exported via "Export Election" button in the calculator
+
+### Quick Export Steps
+1. After calculating results in the STV calculator, click "Export Election".
+   - Saves: `stv-election-YOUR-NAME.json`
+   - Rename to: `YYYY-MM-month-senate-full.json`
+   - Use for: Faction analysis dropdown
+2. Place in `/public/stv-data/`
+3. Update registry: `/public/stv-data/senate-elections.json`
+4. Rebuild: `bun run build`
+
+## File Naming Standard
+
+| Format | Purpose | Example |
+|--------|---------|---------|
+| RCVis (Visualization) | Results only | `2026-01-january-senate-rcvis.json` |
+| Full (Faction Analysis) | Ballots & preferences | `2026-01-january-senate-full.json` |
+
+### Registry Entry Example
+```json
+{
+  "id": "2026-01-january",
+  "name": "January 2026",
+  "date": "2026-01-07",
+  "term": 43,
+  "rcvisUrl": "/stv-data/2026-01-january-senate-rcvis.json",
+  "fullUrl": "/stv-data/2026-01-january-senate-full.json",
+  "type": "local"
+}
+```
+
+## Feature Comparison
+
+| Feature | Main Visualizer | Faction Analysis |
+|---------|----------------|------------------|
+| Data Format | RCVis (results only) | Full (with ballots) |
+| File Size | 5-20 KB | 50-200 KB |
+| Shows | Round-by-round results | Voter preferences & correlations |
+| Dropdown | ✅ Yes | ✅ Yes |
+| Custom Upload | ✅ Yes | ✅ Yes |
+| Demo Data | ❌ Removed | ✅ Available (in code) |
+
+## Usage
+
+### For Users
+
+**Main Visualization:**
+1. Visit `/stv/visualize`
+2. Select election from first dropdown
+3. Click "Load Selected Election"
+4. View animated round-by-round results
+
+**Faction Analysis:**
+1. Scroll to "Faction & Similarity Analysis" section
+2. Select election from dropdown
+3. Click "Load Selected Election"
+4. Explore network graph, heatmap, and political map
+
+### For Administrators
+
+**Adding a new election:**
+1. Run election through STV calculator (`/stv`)
+2. Export both formats
+3. Place in `/public/stv-data/`
+4. Update registry (`/public/stv-data/senate-elections.json`)
+5. Rebuild: `bun run build`
+
+## Troubleshooting & Common Issues
+
+- "Failed to load election data": File doesn't exist at specified path. Check file name and location.
+- Only one feature works: Need both file types for both features.
+- Dropdown is empty: Registry file not loaded or has syntax errors.
+- File size: RCVis files are much smaller; prioritize if storage is a concern.
+
+---
 
 ## Overview
 
@@ -32,7 +130,7 @@ Established a standardized naming convention for election data files:
 
 ### 2. Data Structure Update
 
-**Updated `/src/data/senate-elections.json`:**
+**Updated `/public/stv-data/senate-elections.json`:**
 ```json
 {
   "id": "2026-01-january",
@@ -125,7 +223,7 @@ interface SenateElection {
 
 3. **Place in `/public/stv-data/`**
 
-4. **Update registry** (`/src/data/senate-elections.json`):
+4. **Update registry** (`/public/stv-data/senate-elections.json`):
    ```json
    {
      "id": "2026-02-february",
@@ -198,9 +296,7 @@ Potential improvements:
 ├── 2026-01-january-senate-full.json   ✅ Available
 ├── 2025-12-december-senate-rcvis.json ⏳ Needed
 ├── 2025-12-december-senate-full.json  ⏳ Needed
-└── README.md                          ✅ Updated
-
-/src/data/
+├── README.md                          ✅ Updated
 └── senate-elections.json              ✅ Updated (10 elections listed)
 
 /docs/

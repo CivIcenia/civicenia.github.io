@@ -1,4 +1,55 @@
-# Avatar Automation System
+
+# Avatar Automation System - Quick Start & Full Guide
+
+## Quick Start
+
+Automatically updates Discord profile pictures for all government and city officials by fetching current avatars from Discord's API.
+
+### Setup (One-Time)
+1. Get your Discord Bot Token from https://discord.com/developers/applications/1457362098672636007 (Bot section)
+2. Create a `.env` file in the project root:
+   ```env
+   DISCORD_BOT_TOKEN=your_bot_token_here
+   ```
+
+### Usage
+Run whenever officials change their Discord profile pictures:
+```bash
+bun run update-avatars.ts
+```
+Output example:
+```
+📋 Updating government officials...
+  Fetching avatar for ChrisChrispie (161282206113857537)...
+  ✅ Updated president
+  ...
+✅ Government officials updated (10 avatars fetched)
+```
+
+### Adding New Officials
+When adding officials via CMS:
+1. Name: In-game name
+2. Role: Select from dropdown
+3. Action: elected/appointed/etc
+4. Discord User ID: 18-digit ID (e.g., `161282206113857537`) - REQUIRED
+   - Get ID: Right-click user in Discord → Copy User ID (Developer Mode enabled)
+5. Icon URL is auto-generated - no manual entry needed
+
+### Verifying Discord IDs
+Check all extracted IDs:
+```bash
+bun run extract-ids.ts
+```
+
+### When to Run
+- After officials change Discord avatars
+- Monthly/Quarterly refresh
+- Before major site updates
+- After adding new officials via CMS
+
+---
+
+## Full Documentation
 
 This system automates the process of updating Discord profile pictures for government and city officials.
 
