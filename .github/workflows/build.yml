@@ -68,7 +68,7 @@ jobs:
 
       # Convert documents to PDF before build
       - name: Convert Documents to PDF
-        run: bun run convert-documents
+        run: bun run convert-documents-to-pdf
 
       # Check if officials.yml or councillors.yml have changes
       - name: Check for data changes
