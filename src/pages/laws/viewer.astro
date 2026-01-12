@@ -35,6 +35,8 @@ const title = "Document Viewer";
         
         <div id="actions" style="margin-top: 15px; display: none; text-align: right;">
           <a id="download-link" href="#" class="govuk-button" target="_blank">Download Document</a>
+          <button id="pdf-print-btn" class="govuk-button" type="button" style="margin-left: 10px;">Print/Download as PDF</button>
+          <span id="pdf-instructions" style="display:none; margin-left:10px; color:#555;">Use the viewer's print button to save as PDF.</span>
         </div>
       </div>
     </div>
@@ -54,6 +56,8 @@ const title = "Document Viewer";
     const errorMsg = document.getElementById('error-message');
     const actions = document.getElementById('actions');
     const downloadLink = document.getElementById('download-link') as HTMLAnchorElement;
+     const pdfPrintBtn = document.getElementById('pdf-print-btn') as HTMLButtonElement;
+     const pdfInstructions = document.getElementById('pdf-instructions') as HTMLSpanElement;
     const viewerControls = document.getElementById('viewer-controls');
     const toggleButtons = document.querySelectorAll('.viewer-toggle');
     
@@ -85,6 +89,23 @@ const title = "Document Viewer";
     }
 
     const isDocx = file.endsWith('.docx');
+    // PDF Print Button logic
+    if (pdfPrintBtn && isDocx) {
+      pdfPrintBtn.style.display = 'inline-block';
+      pdfPrintBtn.onclick = () => {
+        // Switch to external viewer (Google by default)
+        currentViewer = 'google';
+        loadExternalViewer(currentViewer);
+        // Show instructions
+        if (pdfInstructions) pdfInstructions.style.display = 'inline';
+        // Optionally scroll to iframe
+        setTimeout(() => {
+          iframe.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 500);
+      };
+    } else if (pdfPrintBtn) {
+      pdfPrintBtn.style.display = 'none';
+    }
     
     // Function to load viewer with specified provider
     function loadExternalViewer(viewer: string) {
