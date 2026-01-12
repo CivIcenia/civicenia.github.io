@@ -70,17 +70,18 @@ jobs:
       - name: Convert Documents to PDF
         run: bun run convert-documents-to-pdf
 
-      # Check if officials.yml or councillors.yml have changes
+
+      # Check if officials.yml, councillors.yml, or any PDFs in public/documents/ have changes
       - name: Check for data changes
         id: check_changes
         run: |
-          if git diff --quiet src/data/officials.yml src/data/councillors.yml; then
+          if git diff --quiet src/data/officials.yml src/data/councillors.yml public/documents/**/*.pdf; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
-            echo "No changes detected in officials data"
+            echo "No changes detected in officials data or PDFs"
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "Changes detected in officials data"
-            git diff --stat src/data/officials.yml src/data/councillors.yml
+            echo "Changes detected in officials data or PDFs"
+            git diff --stat src/data/officials.yml src/data/councillors.yml public/documents/**/*.pdf
           fi
 
       # Commit and push changes if data was updated
@@ -89,12 +90,12 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add src/data/officials.yml src/data/councillors.yml
+          git add src/data/officials.yml src/data/councillors.yml public/documents/**/*.pdf
           # Only commit if there are actually staged changes
           if git diff --cached --quiet; then
             echo "No staged changes to commit, skipping"
           else
-            git commit -m "[AUTOMATED] Update officials data [skip ci]"
+            git commit -m "[AUTOMATED] Update officials data or PDFs [skip ci]"
             git push origin master
           fi
       
