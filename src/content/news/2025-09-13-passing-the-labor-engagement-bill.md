@@ -16,7 +16,7 @@ document:
   type: remote-file
   value: https://docs.google.com/document/d/1_5MDZCpeS-cib_agy65pLxqk9GohXNAXjxJwS1aoDSg/preview
 changes:
-  - target: labour-engagement-bill
+  - target: labor-engagement-bill
     kind: passage
 icon: /assets/images/law_stock.jpeg
 ---

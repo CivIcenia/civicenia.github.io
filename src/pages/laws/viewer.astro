@@ -34,7 +34,8 @@ const title = "Document Viewer";
         ></iframe>
         
         <div id="actions" style="margin-top: 15px; display: none; text-align: right;">
-          <a id="download-link" href="#" class="govuk-button" target="_blank">Download Document</a>
+           <a id="download-link" href="#" class="govuk-button" target="_blank">Download Document</a>
+           <a id="download-pdf-link" href="#" class="govuk-button govuk-button--secondary" target="_blank" style="display:none; margin-left:8px;">Download PDF</a>
         </div>
       </div>
     </div>
@@ -67,6 +68,7 @@ const title = "Document Viewer";
     
     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
+        const downloadPdfLink = document.getElementById('download-pdf-link') as HTMLAnchorElement;
     if (!file) {
       if (loadingMsg) loadingMsg.style.display = 'none';
       if (errorMsg) {
@@ -93,6 +95,26 @@ const title = "Document Viewer";
     }
 
     
+
+        // If the file is a .docx or .doc, check if a PDF exists in the same directory
+        if (downloadPdfLink && (file.toLowerCase().endsWith('.docx') || file.toLowerCase().endsWith('.doc'))) {
+          // Replace extension with .pdf
+          let pdfPath = file.replace(/\.(docx|doc)$/i, '.pdf');
+          let pdfUrl = pdfPath;
+          if (pdfPath.startsWith('/')) {
+            pdfUrl = window.location.origin + pdfPath;
+          } else if (!pdfPath.startsWith('http')) {
+            pdfUrl = window.location.origin + '/' + pdfPath;
+          }
+
+          // Check if the PDF actually exists by making a HEAD request
+          fetch(pdfUrl, { method: 'HEAD' }).then(resp => {
+            if (resp.ok) {
+              downloadPdfLink.href = pdfUrl;
+              downloadPdfLink.style.display = '';
+            }
+          });
+        }
     // Function to load viewer with specified provider
     function loadExternalViewer(viewer: string) {
       const encodedUrl = encodeURIComponent(fullUrl);
