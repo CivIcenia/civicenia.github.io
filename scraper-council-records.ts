@@ -8,6 +8,7 @@ import {
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as yaml from 'js-yaml';
 
 dotenv.config();
 
@@ -140,6 +141,34 @@ icon: /assets/images/law_stock.jpeg
     console.log(`  Created: ${filename}`);
 }
 
+// Update scraped items YAML with new items
+function updateScrapedItemsYaml(results: LegislationData[]): void {
+    const yamlPath = path.join(__dirname, 'src', 'data', 'city-scraped-items.yml');
+    
+    let scrapedItems: any[] = [];
+    if (fs.existsSync(yamlPath)) {
+        const yamlContent = fs.readFileSync(yamlPath, 'utf-8');
+        scrapedItems = yaml.load(yamlContent) as any[] || [];
+    }
+    
+    const existingIds = new Set(scrapedItems.map(item => item.id));
+    
+    for (const res of results) {
+        if (!existingIds.has(res.threadId)) {
+            scrapedItems.push({
+                id: res.threadId,
+                title: res.fullTitle,
+                date: res.createdAt.toISOString().substring(0, 10), // YYYY-MM-DD format
+                checked: false
+            });
+        }
+    }
+    
+    const newYamlContent = yaml.dump(scrapedItems);
+    fs.writeFileSync(yamlPath, newYamlContent, 'utf-8');
+    console.log(`Updated ${yamlPath} with ${results.length} new items`);
+}
+
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -178,6 +207,15 @@ async function scrapeForum() {
         limit: 100,
     });
 
+
+    // Find the tag ID for "Passed"
+    const passedTag = forumChannel.availableTags.find(tag => tag.name.toLowerCase() === "passed");
+    if (!passedTag) {
+        console.error("No 'Passed' tag found in forum channel.");
+        return;
+    }
+    const passedTagId = passedTag.id;
+
     const allThreads = new Map<string, ThreadChannel>();
     activeThreads.threads.forEach((t) => allThreads.set(t.id, t));
     archivedThreads.threads.forEach((t) => allThreads.set(t.id, t));
@@ -187,6 +225,11 @@ async function scrapeForum() {
     const pattern = /(\d+)-(\d+)/;
 
     for (const [id, thread] of allThreads) {
+        // Only process threads with the 'Passed' tag
+        if (!thread.appliedTags?.includes(passedTagId)) {
+            console.log(`-> Skipping (not Passed): ${thread.name}`);
+            continue;
+        }
         if (existingThreadIds.has(id)) {
             console.log(`-> Skipping (already scraped): ${thread.name}`);
             continue;
@@ -195,38 +238,41 @@ async function scrapeForum() {
         const title = thread.name;
         const match = title.match(pattern);
 
-        if (match) {
-            const termNumber = match[1];
-            // ParseInt ensures "08" becomes 8 (number)
-            const legislationNumber = parseInt(match[2], 10);
-
-            let content = "";
-            let messageDate = thread.createdAt || new Date();
-
-            try {
-                const starterMsg = await thread.fetchStarterMessage();
-                if (starterMsg) {
-                    content = starterMsg.content;
-                    messageDate = starterMsg.createdAt;
-                } else {
-                    content = "[No text content found]";
-                }
-            } catch (e) {
-                content = "[Unable to fetch message - might be deleted or bot lacks permission]";
-            }
-
-            results.push({
-                fullTitle: title,
-                term: termNumber,
-                legislation: legislationNumber,
-                link: `https://discord.com/channels/${thread.guildId}/${thread.id}`,
-                content: content,
-                threadId: id,
-                createdAt: messageDate,
-            });
-            
-            console.log(`-> Processed: ${title}`);
+        if (!match) {
+            console.log(`-> Skipping (Passed but no number): ${title}`);
+            continue;
         }
+
+        const termNumber = match[1];
+        // ParseInt ensures "08" becomes 8 (number)
+        const legislationNumber = parseInt(match[2], 10);
+
+        let content = "";
+        let messageDate = thread.createdAt || new Date();
+
+        try {
+            const starterMsg = await thread.fetchStarterMessage();
+            if (starterMsg) {
+                content = starterMsg.content;
+                messageDate = starterMsg.createdAt;
+            } else {
+                content = "[No text content found]";
+            }
+        } catch (e) {
+            content = "[Unable to fetch message - might be deleted or bot lacks permission]";
+        }
+
+        results.push({
+            fullTitle: title,
+            term: termNumber,
+            legislation: legislationNumber,
+            link: `https://discord.com/channels/${thread.guildId}/${thread.id}`,
+            content: content,
+            threadId: id,
+            createdAt: messageDate,
+        });
+        
+        console.log(`-> Processed: ${title}`);
     }
 
     console.log(`\n\n--- EXTRACTION COMPLETE: Found ${results.length} new matches ---`);
@@ -239,6 +285,9 @@ async function scrapeForum() {
     for (const res of results) {
         createMarkdownFile(res);
     }
+
+    // Update scraped items YAML
+    updateScrapedItemsYaml(results);
     
     console.log('\nDone!');
 }
