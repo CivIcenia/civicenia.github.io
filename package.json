@@ -8,7 +8,7 @@
         "sync-officials": "bun run sync-officials.ts",
         "update-avatars": "bun run update-avatars.ts",
         "clean-scraped-items": "bun run scripts/clean-scraped-items.ts",
-        "build": "bun run sync-officials.ts && bun run update-avatars.ts && bunx astro check && astro build",
+        "build": "bun run sync-officials.ts && bunx astro check && astro build",
         "preview": "bunx astro preview",
         "astro": "bunx astro"
     },
