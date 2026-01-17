@@ -22,7 +22,11 @@ export default defineConfig({
     vite: {
         plugins: [
             yaml()
-        ]
+        ],
+        build: {
+            // Increase chunk size warning limit
+            chunkSizeWarningLimit: 2000,
+        }
     },
 
     redirects: {

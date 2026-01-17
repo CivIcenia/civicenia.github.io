@@ -5,7 +5,7 @@ import { parse as INTERNAL_parseMarkdown } from "marked";
 import INTERNAL_formatDate from "dateformat";
 import { generateFromObj as INTERNAL_paginate } from "@bramus/pagination-sequence";
 
-import { EXCERPT_SEPARATOR } from "@comptime";
+import { EXCERPT_SEPARATOR } from "./constants";
 
 export namespace Astros {
     export function isDevMode(): boolean {
@@ -206,6 +206,27 @@ export namespace Strings {
         });
     }
     export const formatDate = INTERNAL_formatDate;
+}
+
+export namespace News {
+    export function ensureAct<T extends { changes?: any }>(frontmatter: T): T {
+        frontmatter.changes ??= [];
+        return frontmatter;
+    }
+
+        export function formatActNumber(act: { term_number?: number, act_number?: number }): string {
+        if (act.term_number && act.act_number) {
+            const term = act.term_number.toString().padStart(2, '0');
+            const num = act.act_number.toString().padStart(2, '0');
+            return `${term}-${num}`;
+        }
+        return '';
+    }
+
+    export function ensureOfficialChange<T extends { officials?: any }>(frontmatter: T): T {
+        frontmatter.officials ??= [];
+        return frontmatter;
+    }
 }
 
 export namespace Dates {

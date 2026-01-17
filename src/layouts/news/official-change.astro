@@ -1,13 +1,13 @@
 ---
 import { type MarkdownLayoutProps } from "astro";
-import { Strings } from "@helpers";
-import { OfficialChanges } from "@collections";
+import { Strings, News } from "@helpers";
+import { type OfficialChange } from "@schemas";
 
 import PostLayout from "@layouts/news/post.astro";
 
-export type Props = MarkdownLayoutProps<OfficialChanges.OfficialChange>;
+export type Props = MarkdownLayoutProps<OfficialChange>;
 const { frontmatter } = Astro.props as Props;
-const change = OfficialChanges.ensureOfficialChange(frontmatter);
+const change = News.ensureOfficialChange(frontmatter);
 
 // Get appropriate colors based on action type
 function getActionColours(action: string): { background: string; text: string } {

@@ -43,6 +43,55 @@ const title = "Document Viewer";
 </PageLayout>
 
 <script>
+  // Load docx-preview from CDN to avoid bundling the massive library
+  // This prevents OOM errors during build
+  let docxPreviewCache: any = null;
+  let jszipLoaded = false;
+  
+  // Load JSZip first - required dependency for docx-preview
+  async function loadJSZip(): Promise<void> {
+    if (jszipLoaded) return;
+    
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js';
+      script.onload = () => {
+        if ((window as any).JSZip) {
+          jszipLoaded = true;
+          resolve();
+        } else {
+          reject(new Error('JSZip loaded but not found on window'));
+        }
+      };
+      script.onerror = () => reject(new Error('Failed to load JSZip from CDN'));
+      document.head.appendChild(script);
+    });
+  }
+  
+  async function loadDocxPreviewFromCDN(): Promise<any> {
+    if (docxPreviewCache) return docxPreviewCache;
+    
+    // Ensure JSZip is loaded first
+    await loadJSZip();
+    
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/docx-preview@0.3.7/dist/docx-preview.min.js';
+      script.onload = () => {
+        // docx-preview attaches to window.docx
+        const docx = (window as any).docx;
+        if (docx && docx.renderAsync) {
+          docxPreviewCache = docx;
+          resolve(docx);
+        } else {
+          reject(new Error('docx-preview loaded but renderAsync not found'));
+        }
+      };
+      script.onerror = () => reject(new Error('Failed to load docx-preview from CDN'));
+      document.head.appendChild(script);
+    });
+  }
+  
   // Dynamic import for docx-preview to work as a module
   async function initViewer() {
     const params = new URLSearchParams(window.location.search);
@@ -50,11 +99,11 @@ const title = "Document Viewer";
     // Use Office as default for desktop, Google for mobile
     let currentViewer = params.get('viewer');
     if (!currentViewer) {
-      if (window.innerWidth < 740) {
+      // if (window.innerWidth < 740) {
         currentViewer = 'google';
-      } else {
-        currentViewer = 'office';
-      }
+      // } else {
+      //   currentViewer = 'office';
+      // }
     }
     
     const iframe = document.getElementById('doc-iframe') as HTMLIFrameElement;
@@ -178,15 +227,15 @@ const title = "Document Viewer";
     // Use client-side renderer for localhost OR when explicitly requested
     if (isLocalhost && isDocx) {
       try {
-        // Dynamic import for docx-preview
-        const { renderAsync } = await import('docx-preview');
+        // Load docx-preview from CDN to avoid bundling the massive library
+        const docxPreviewModule = await loadDocxPreviewFromCDN();
         
         const response = await fetch(fullUrl);
         if (!response.ok) throw new Error(`Failed to fetch document: ${response.status}`);
         
         const blob = await response.blob();
         
-        await renderAsync(blob, docxContainer, undefined, {
+        await docxPreviewModule.renderAsync(blob, docxContainer, undefined, {
           className: 'docx-preview',
           inWrapper: true,
           ignoreWidth: false,

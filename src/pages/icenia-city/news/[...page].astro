@@ -1,0 +1,176 @@
+---
+import { type Page } from "astro";
+import { type CollectionEntry, getCollection } from "astro:content";
+import { PERMALINK_ROOTS, getActChangeColours } from "@comptime";
+import { Astros, Arrays, Strings } from "@helpers";
+import { CityActs } from "@collections";
+import PageLayout from "@layouts/page.astro";
+import Pagination from "@components/pagination.astro";
+
+export async function getStaticPaths({ paginate }) {
+    return getCollection("city-news")
+        .then((news) => news.sort(Arrays.sortByDate((entry) => entry.data.date)).reverse())
+        .then((news) => paginate(news, {
+            pageSize: 20
+        }));
+}
+const page = Astro.props["page"] as Page<CollectionEntry<"city-news">>;
+const news = page.data;
+
+// When content frontmatter uses root-absolute paths (e.g. "/assets/...")
+// ensure icons and other frontmatter paths are resolved against the
+// build-time base (import.meta.env.BASE_URL). This avoids raw "/assets/"
+// appearing in the built HTML for project sites.
+const BASE = (import.meta.env.BASE_URL ?? "/");
+
+function getChangeDetails(entry: CollectionEntry<"city-news">) {
+    // Check if this is an act with changes
+    const isAct = CityActs.isCityAct(entry.data);
+    const changes = isAct ? (entry.data as any).changes : [];
+    
+    // Count changes by type for compact display
+    const changeCounts = changes.reduce((acc, change) => {
+        acc[change.kind] = (acc[change.kind] || 0) + 1;
+        return acc;
+    }, {} as Record<string, number>);
+
+    return { changes, changeCounts };
+}
+
+---
+<style>
+    a.news-item-wrapper {
+        display: block;
+        margin-bottom: 25px;
+        box-shadow: 0 1px 1px 0 rgba(60, 64, 67, .08), 0 1px 3px 1px rgba(60, 64, 67, .16);
+        color: #373151;
+        text-decoration: none;
+        font-family: "nta", Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.25;
+    }
+    a.news-item-wrapper:hover {
+        background: #ebe9e8;
+    }
+    a.news-item-wrapper:active {
+        outline: 3px solid #20c997;
+    }
+
+    div.news-item-internal {
+        position: relative;
+        min-height: 130px;
+        display: flex;
+        padding: 10px 15px 10px 130px;
+        border-left: 10px solid #1C70B8;
+        justify-content: space-between;
+        flex-direction: column;
+    }
+
+    div.news-item-icon-wrapper {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+    }
+
+    div.news-item-content {
+        flex-grow: 1;
+    }
+
+    div.news-item-title {
+        font-size: 20px;
+        font-weight: 500;
+    }
+
+    div.news-item-excerpt {
+        font-size: 16px;
+        font-weight: 400;
+        padding: 10px 0;
+    }
+
+    div.news-item-date {
+        padding-right: 15px;
+        padding-top: 7px;
+        padding-bottom: 7px;
+        border-top: 1px dotted rgb(203, 201, 205);
+        margin-right: -15px;
+        margin-bottom: -10px;
+        color: #717171;
+        font-size: 18px;
+        font-weight: 400;
+    }
+
+    div.news-item-changes {
+        padding: 10px 15px;
+        margin: 10px -15px -10px -15px;
+        border-top: 1px dotted rgb(203, 201, 205);
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    div.news-item-changes-label {
+        color: #717171;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+        div.news-item-internal {
+            padding: 10px 15px;
+        }
+        div.news-item-icon-wrapper {
+            display: none;
+        }
+    }
+</style>
+
+<PageLayout chin={false} title="City News - Icenia City" description="Latest news and announcements from Icenia City.">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">City News</h1>
+        <p class="govuk-body-l">Council updates, city ordinances, and official communications from Icenia City.</p>
+    </div>
+
+    {news.map((entry) => {
+        const { changes, changeCounts } = getChangeDetails(entry);
+        
+        return (
+            <a class="news-item-wrapper" href={PERMALINK_ROOTS.cityNews + entry.slug}>
+                <div class="news-item-internal">
+                    <div class="news-item-icon-wrapper">
+                        {/* Resolve frontmatter icon paths that begin with "/" against BASE */}
+                        <img src={(typeof entry.data.icon === "string" && entry.data.icon.startsWith("/")) ? BASE + entry.data.icon.slice(1) : entry.data.icon} width="100px" height="100px"/>
+                    </div>
+                    <div class="news-item-content">
+                        <div class="news-item-title">{entry.data.headline}</div>
+                        <div class="news-item-excerpt">{Strings.normaliseWhitespace(Strings.stripHtml(Astros.getOrGenerateExcerpt(entry)))}</div>
+                    </div>
+                    <div class="news-item-date">{Strings.formatDate(entry.data.date, "dS mmmm yyyy")}</div>
+                    
+                    {/* Show legislation changes if present */}
+                    {changes.length > 0 && (
+                        <div class="news-item-changes">
+                            <div class="news-item-changes-label">Legislation:</div>
+                            {Object.entries(changeCounts).map(([kind, count]) => {
+                                const numCount = count as number;
+                                const colours = getActChangeColours(kind);
+                                const changeLabel = kind === "passage" ? "Enacted" : 
+                                                   kind === "amendment" ? "Amended" : 
+                                                   kind === "repeal" ? "Repealed" : "Changed";
+                                
+                                return (
+                                    <strong class="govuk-tag govuk-tag--small" style={{ backgroundColor: `#${colours.background}`, color: `#${colours.text}` }}>
+                                        {changeLabel}{numCount > 1 ? ` (${numCount})` : ''}
+                                    </strong>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
+            </a>
+        );
+    })}
+
+    <Pagination {page} permalinkRoot={PERMALINK_ROOTS.cityNews}/>
+</PageLayout>

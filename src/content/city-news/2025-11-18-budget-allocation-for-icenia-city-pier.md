@@ -1,8 +1,8 @@
 ---
-layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
+layout: "@layouts/news/city-act.astro"
 institution: council
-term_number: 02
+term_number: 2
 act_number: 1
 headline: Budget Allocation for Icenia City Pier
 date: 2025-11-18 00:25:22 +00:00

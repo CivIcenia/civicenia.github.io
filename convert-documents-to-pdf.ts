@@ -1,5 +1,6 @@
 // convert-documents-to-pdf.ts
 // Converts supported documents in public/documents/ to PDF by calling the LibreOffice CLI
+// "C:\Program Files\LibreOffice\program\soffice.exe" --headless --convert-to pdf --outdir C:\Users\USER\Documents\Icenia-Website\public\documents C:\Users\USER\Documents\Icenia-Website\public\documents\Simple-Sentences-Act.docx
 import { readdir, stat } from 'fs/promises';
 import { join, extname, basename } from 'path';
 import { execFile } from 'child_process';

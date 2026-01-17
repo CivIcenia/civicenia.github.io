@@ -1,20 +1,27 @@
 ---
 import { type MarkdownLayoutProps } from "astro";
 import { Nullish, Arrays, Strings } from "@helpers";
-import { Acts, Laws } from "@collections";
+import { type Act, type Law } from "@schemas";
+import { News } from "@helpers";
+// We still need to fetch laws data, but we should do it in a way that doesn't trigger a circular dependency
+import { Laws } from "../../collections";
 import { getActChangeColours } from "@comptime";
 
 import PostLayout from "@layouts/news/post.astro";
 
-export type Props = MarkdownLayoutProps<Acts.Act>;
+export type Props = MarkdownLayoutProps<Act>;
 const { frontmatter } = Astro.props as Props;
-const act = Acts.ensureAct(frontmatter);
+const act = News.ensureAct(frontmatter);
 const laws = Arrays.toMap(await Laws.getLaws(), (law) => law.slug);
 const BASE = (import.meta.env.BASE_URL ?? "/");
+
+
+
 ---
 <PostLayout chin={false}>
     <div class="govuk-panel govuk-panel--confirmation">
         <h1 class="govuk-panel__title">
+            
             {act.headline}
         </h1>
         <div class="govuk-panel__body">
@@ -93,7 +100,9 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 </style>
 
                 {act.changes.map((change) => {
-                    const law = Nullish.mustExist(laws.get(change.target));
+                    // const law = Nullish.mustExist(laws.get(change.target));
+                    const law = laws.get(change.target);
+                    if (!law) return null;
                     const colours = getActChangeColours(change.kind);
                     const isDocx = law.masterdoc && (law.masterdoc.endsWith('.docx') || law.masterdoc.startsWith('/documents/'));
                     const linkUrl = isDocx 

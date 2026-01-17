@@ -1,8 +1,8 @@
 ---
-layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
+layout: "@layouts/news/city-act.astro"
 institution: council
-term_number: 02
+term_number: 2
 act_number: 7
 headline: Warm Welcome Act
 date: 2025-11-30 02:43:56 +00:00

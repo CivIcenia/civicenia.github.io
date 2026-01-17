@@ -1,8 +1,8 @@
 ---
-layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
+layout: "@layouts/news/city-act.astro"
 institution: council
-term_number: 01
+term_number: 1
 act_number: 7
 headline: Bloom Boulevard Beautification Project
 date: 2025-11-05 04:52:35 +00:00

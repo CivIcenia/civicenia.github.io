@@ -1,8 +1,8 @@
 ---
-layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
+layout: "@layouts/news/city-act.astro"
 institution: council
-term_number: 01
+term_number: 1
 act_number: 4
 headline: City Charter vote clarification
 date: 2025-10-30 01:22:22 +00:00

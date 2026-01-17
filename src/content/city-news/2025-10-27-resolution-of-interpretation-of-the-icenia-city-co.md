@@ -1,8 +1,8 @@
 ---
-layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
+layout: "@layouts/news/city-act.astro"
 institution: council
-term_number: 01
+term_number: 1
 act_number: 1
 headline: RESOLUTION OF INTERPRETATION OF THE ICENIA CITY COUNCIL ACT
 date: 2025-10-27 12:12:26 +00:00

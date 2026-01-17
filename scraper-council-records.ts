@@ -16,10 +16,12 @@ const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 // Icenia City Council Records Forum
 const FORUM_CHANNEL_ID = '1432219989183823902';
 const CITY_NEWS_DIR = path.join(__dirname, 'src', 'content', 'city-news');
+// Cutoff: January 10, 2026
+const DATE_CUTOFF = new Date('2026-01-10');
 
 interface LegislationData {
     fullTitle: string;
-    term: string;
+    term: number;
     legislation: number;
     link: string;
     content: string;
@@ -87,6 +89,14 @@ function formatFullDate(date: Date): string {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds} +00:00`;
 }
 
+// Sanitize content by escaping Discord-style mentions like <@&123456>
+function sanitizeContent(content: string): string {
+    if (!content) return content;
+    // Escape Discord mention tags so MDX/HTML parsers don't treat them as tags.
+    // Matches: <@123>, <@!123>, <@&123>, <#123>
+    return content.replace(/<([@#][!&]?\d+)>/g, '&lt;$1&gt;');
+}
+
 // Create markdown file for a legislation
 function createMarkdownFile(data: LegislationData): void {
     const date = data.createdAt;
@@ -118,9 +128,12 @@ function createMarkdownFile(data: LegislationData): void {
         return;
     }
     
-    const markdown = `---
-layout: "@layouts/news/city-act.astro"
+        // Sanitize content so embedded Discord mention tags don't break MD/MDX parsers
+        const safeContent = sanitizeContent(data.content);
+
+        const markdown = `---
 changetocitylaw: true
+layout: "@layouts/news/city-act.astro"
 institution: council
 term_number: ${data.term}
 act_number: ${data.legislation}
@@ -130,7 +143,7 @@ excerpt: Passed by the ${monthYear} City Council.
 document:
   type: markdown
   value: |
-${data.content.split('\n').map(line => '    ' + line).join('\n')}
+${safeContent.split('\n').map(line => '    ' + line).join('\n')}
 changes: []
 icon: /assets/images/law_stock.jpeg
 ---
@@ -197,16 +210,10 @@ async function scrapeForum() {
     }
 
     const forumChannel = channel as ForumChannel;
-    console.log(`Scanning Forum: ${forumChannel.name}`);
+    console.log(`Scanning Council Forum: ${forumChannel.name}`);
     
     const existingThreadIds = getExistingThreadIds();
     console.log(`Found ${existingThreadIds.size} existing scraped threads`);
-
-    const activeThreads = await forumChannel.threads.fetchActive();
-    const archivedThreads = await forumChannel.threads.fetchArchived({
-        limit: 100,
-    });
-
 
     // Find the tag ID for "Passed"
     const passedTag = forumChannel.availableTags.find(tag => tag.name.toLowerCase() === "passed");
@@ -216,23 +223,63 @@ async function scrapeForum() {
     }
     const passedTagId = passedTag.id;
 
-    const allThreads = new Map<string, ThreadChannel>();
-    activeThreads.threads.forEach((t) => allThreads.set(t.id, t));
-    archivedThreads.threads.forEach((t) => allThreads.set(t.id, t));
-
     const results: LegislationData[] = [];
     // Regex to find things like "02-08" in the title
     const pattern = /(\d+)-(\d+)/;
 
-    for (const [id, thread] of allThreads) {
-        // Only process threads with the 'Passed' tag
+    // 1. Process Active Threads
+    const activeThreads = await forumChannel.threads.fetchActive();
+    console.log(`Checking ${activeThreads.threads.size} active threads...`);
+    
+    for (const thread of activeThreads.threads.values()) {
+        await processThread(thread);
+    }
+
+    // 2. Process Archived Threads (with pagination to minimize API calls and stop early)
+    console.log(`Checking archived threads...`);
+    let hasMore = true;
+    let lastTimestamp: Date | undefined = undefined;
+
+    while (hasMore) {
+        const archived = await forumChannel.threads.fetchArchived({
+            limit: 50,
+            before: lastTimestamp
+        });
+
+        if (archived.threads.size === 0) break;
+
+        for (const thread of archived.threads.values()) {
+            const createdAt = thread.createdAt || new Date();
+            
+            if (createdAt < DATE_CUTOFF) {
+                console.log(`Reached threads older than cutoff (${createdAt.toISOString()}). Stopping.`);
+                hasMore = false;
+                break;
+            }
+
+            await processThread(thread);
+            lastTimestamp = createdAt;
+        }
+
+        if (!archived.hasMore) hasMore = false;
+    }
+
+    async function processThread(thread: ThreadChannel) {
+        const createdAt = thread.createdAt || new Date();
+
+        // 1. Date cutoff check
+        if (createdAt < DATE_CUTOFF) return;
+
+        // 2. Already scraped check
+        if (existingThreadIds.has(thread.id)) {
+            console.log(`-> Skipping (already scraped): ${thread.name}`);
+            return;
+        }
+
+        // 3. 'Passed' tag check
         if (!thread.appliedTags?.includes(passedTagId)) {
             console.log(`-> Skipping (not Passed): ${thread.name}`);
-            continue;
-        }
-        if (existingThreadIds.has(id)) {
-            console.log(`-> Skipping (already scraped): ${thread.name}`);
-            continue;
+            return;
         }
 
         const title = thread.name;
@@ -240,11 +287,10 @@ async function scrapeForum() {
 
         if (!match) {
             console.log(`-> Skipping (Passed but no number): ${title}`);
-            continue;
+            return;
         }
 
-        const termNumber = match[1];
-        // ParseInt ensures "08" becomes 8 (number)
+        const termNumber = parseInt(match[1], 10);
         const legislationNumber = parseInt(match[2], 10);
 
         let content = "";
@@ -268,7 +314,7 @@ async function scrapeForum() {
             legislation: legislationNumber,
             link: `https://discord.com/channels/${thread.guildId}/${thread.id}`,
             content: content,
-            threadId: id,
+            threadId: thread.id,
             createdAt: messageDate,
         });
         

@@ -1,8 +1,8 @@
 ---
-layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
+layout: "@layouts/news/city-act.astro"
 institution: council
-term_number: 01
+term_number: 1
 act_number: 5
 headline: Resolution on By-Election
 date: 2025-11-03 22:30:21 +00:00

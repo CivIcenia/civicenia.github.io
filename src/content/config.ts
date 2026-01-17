@@ -1,20 +1,25 @@
 // https://docs.astro.build/en/guides/content-collections/#defining-collections
 import { z, defineCollection } from "astro:content";
-import { Acts, CityActs, OfficialChanges, CityOfficialChanges } from "@collections";
+import {
+    ActSchema,
+    OfficialChangeSchema,
+    CityActSchema,
+    CityOfficialChangeSchema
+} from "../schemas";
 
 export const collections = {
     "news": defineCollection({
         type: "content",
         schema: z.discriminatedUnion("layout", [
-            Acts.Schema,
-            OfficialChanges.Schema
+            ActSchema,
+            OfficialChangeSchema
         ])
     }),
     "city-news": defineCollection({
         type: "content",
         schema: z.discriminatedUnion("layout", [
-            CityActs.Schema,
-            CityOfficialChanges.Schema
+            CityActSchema,
+            CityOfficialChangeSchema
         ])
     })
 };

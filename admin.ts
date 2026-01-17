@@ -2,7 +2,7 @@
 import { dev as watch } from "astro";
 
 // Check for required dependencies
-const requiredDeps = ['astro', 'decap-server', 'docx-preview'];
+const requiredDeps = ['astro', 'decap-server'];
 const missingDeps: string[] = [];
 
 for (const dep of requiredDeps) {

@@ -1,8 +1,8 @@
 ---
-layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
+layout: "@layouts/news/city-act.astro"
 institution: council
-term_number: 02
+term_number: 2
 act_number: 8
 headline: Subway Surfers Act
 date: 2025-12-01 04:03:19 +00:00

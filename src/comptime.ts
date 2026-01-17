@@ -1,14 +1,14 @@
 import { type AstroGlobal } from "astro";
 import { Astros } from "@helpers";
 
-export const TITLE = "Government of Icenia";
-export const DESCRIPTION = "They work for you.";
-
-export const EXCERPT_SEPARATOR = "<!--more-->";
+import { TITLE as _TITLE, DESCRIPTION as _DESCRIPTION } from "./constants";
+export const TITLE = _TITLE;
+export const DESCRIPTION = _DESCRIPTION;
 
 export const PERMALINK_ROOTS = Object.freeze({
     // Use the build-time BASE so permalinks include the project base path
     news: (import.meta.env.BASE_URL ?? "/") + "news/",
+    cityNews: (import.meta.env.BASE_URL ?? "/") + "icenia-city/news/",
 });
 
 export function getActChangeColours(

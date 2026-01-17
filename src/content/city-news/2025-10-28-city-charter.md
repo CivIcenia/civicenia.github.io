@@ -1,8 +1,8 @@
 ---
-layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
+layout: "@layouts/news/city-act.astro"
 institution: council
-term_number: 01
+term_number: 1
 act_number: 3
 headline: CITY CHARTER
 date: 2025-10-28 21:46:41 +00:00
@@ -10,7 +10,7 @@ excerpt: Passed by the October 2025 City Council.
 document:
   type: markdown
   value: |
-    <@&1431144563229069332> Voting to ratify the Icenia City Charter
+    &lt;@&1431144563229069332&gt; Voting to ratify the Icenia City Charter
 changes: []
 icon: /assets/images/law_stock.jpeg
 ---

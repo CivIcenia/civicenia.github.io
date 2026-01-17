@@ -20,5 +20,3 @@ icon: /assets/images/law_stock.jpeg
 > https://docs.google.com/document/d/12gPz9pJHyhhEne3R97LkimignQApxULDbiha8ZHg2eU/edit?usp=drivesdk
 >
 > Requires 3/5 and Presidential Assent
->
-> <@&986303405624553503>

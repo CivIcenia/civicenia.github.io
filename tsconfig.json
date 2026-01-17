@@ -12,6 +12,7 @@
             "@comptime": ["src/comptime.ts"],
             "@helpers": ["src/helpers.ts"],
             "@collections": ["src/collections.ts"],
+            "@schemas": ["src/schemas.ts"],
             "@layouts/*": ["src/layouts/*"],
             "@components/*": ["src/components/*"],
             "@data/*": ["src/data/*"]

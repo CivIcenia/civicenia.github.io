@@ -1,8 +1,8 @@
 ---
-layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
+layout: "@layouts/news/city-act.astro"
 institution: council
-term_number: 02
+term_number: 2
 act_number: 9
 headline: Budget Allocation for Metro Project
 date: 2025-12-02 03:44:56 +00:00

@@ -1,8 +1,8 @@
 ---
-layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
+layout: "@layouts/news/city-act.astro"
 institution: council
-term_number: 03
+term_number: 3
 act_number: 4
 headline: Funding for Train Station Remodel
 date: 2025-12-18 00:39:39 +00:00

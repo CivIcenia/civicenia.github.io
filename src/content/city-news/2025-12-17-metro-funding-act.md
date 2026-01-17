@@ -1,8 +1,8 @@
 ---
-layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
+layout: "@layouts/news/city-act.astro"
 institution: council
-term_number: 03
+term_number: 3
 act_number: 2
 headline: Metro Funding Act
 date: 2025-12-17 05:06:48 +00:00

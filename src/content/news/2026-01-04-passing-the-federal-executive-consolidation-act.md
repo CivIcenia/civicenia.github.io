@@ -31,4 +31,3 @@ icon: /assets/images/law_stock.jpeg
 > <#1071577317073231982> thread: https://discord.com/channels/558071874161082368/1440415776602325169
 >
 > Requires 5/7 and presidental assent
-> ||<@&986303405624553503>||

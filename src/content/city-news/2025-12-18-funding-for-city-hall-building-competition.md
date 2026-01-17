@@ -1,8 +1,8 @@
 ---
-layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
+layout: "@layouts/news/city-act.astro"
 institution: council
-term_number: 03
+term_number: 3
 act_number: 3
 headline: Funding for City Hall Building Competition
 date: 2025-12-18 00:11:00 +00:00

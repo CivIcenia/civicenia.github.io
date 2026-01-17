@@ -17,7 +17,7 @@ icon: /assets/images/law_stock.jpeg
 
 > https://docs.google.com/document/d/1KeWXHPMDcbKY55wyLZ9LKcKD36ofMEePDDsJgqprAQQ/edit?usp=sharing
 >
-> As quoted from <@531992702099783700> 
+> As quoted from LopsterBisque
 >
 > > I believe that Icenia stands to benefit from having an official military organization of non PVPers who are prepared ahead of time to assist in non-combat and light-combat roles in the event of war, primarily producing and transporting materials.
 >

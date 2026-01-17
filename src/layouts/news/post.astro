@@ -9,9 +9,12 @@ const {
     chin = true
 } = Astro.props;
 
+const isCityNews = Astro.url.pathname.includes("/icenia-city/news/");
+const newsUrl = isCityNews ? PERMALINK_ROOTS.cityNews : PERMALINK_ROOTS.news;
+
 import PageLayout from "@layouts/page.astro";
 ---
 <PageLayout chin={chin}>
-    <a href={PERMALINK_ROOTS.news} class="govuk-back-link">Go to news</a>
+    <a href={newsUrl} class="govuk-back-link">Go to news</a>
     <slot/>
 </PageLayout>

@@ -1,24 +1,27 @@
 ---
 import { type MarkdownLayoutProps } from "astro";
 import { Nullish, Arrays, Strings } from "@helpers";
-import { CityActs, CityLaws } from "@collections";
+import { type CityAct, type CityLaw } from "@schemas";
+import { News } from "@helpers";
+import { CityLaws, CityActs } from "../../collections";
+
 import { getActChangeColours } from "@comptime";
 
 import PostLayout from "@layouts/news/post.astro";
 
-export type Props = MarkdownLayoutProps<CityActs.CityAct>;
+export type Props = MarkdownLayoutProps<CityAct>;
 const { frontmatter } = Astro.props as Props;
-const act = CityActs.ensureCityAct(frontmatter);
+const act = News.ensureAct(frontmatter);
 const laws = Arrays.toMap(await CityLaws.getCityLaws(), (law) => law.slug);
 const BASE = (import.meta.env.BASE_URL ?? "/");
 
 // Format act number for display
-const actNumber = CityActs.formatActNumber(act);
+const actNumber = News.formatActNumber(act);
 ---
 <PostLayout chin={false}>
     <div class="govuk-panel govuk-panel--confirmation" style="background-color: #1C70B8;">
         <h1 class="govuk-panel__title">
-            {actNumber && <span style="font-size: 0.8em; display: block; margin-bottom: 10px;">Act {actNumber}</span>}
+            <!-- {actNumber && <span style="font-size: 0.8em; display: block; margin-bottom: 10px;">Act {actNumber}</span>} -->
             {act.headline}
         </h1>
         <div class="govuk-panel__body">
@@ -51,6 +54,8 @@ const actNumber = CityActs.formatActNumber(act);
                                 <div set:html={Strings.parseMarkdown(act.document.value)}/>
                             </>;
                         case "local-file": {
+
+
                             const url = act.document.value?.startsWith("/") ? BASE + act.document.value.replace(/^\//, "") : act.document.value;
                             return <iframe src={url} style="width: 100%; min-width: 100%; max-width: 100%; aspect-ratio: 1 / 1.4142;"></iframe>;
                         }
@@ -95,6 +100,7 @@ const actNumber = CityActs.formatActNumber(act);
                 </style>
 
                 {act.changes.map((change) => {
+                    // const law = Nullish.mustExist(laws.get(change.target));
                     const law = laws.get(change.target);
                     if (!law) return null;
                     const colours = getActChangeColours(change.kind);

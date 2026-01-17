@@ -1,8 +1,8 @@
 ---
-layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
+layout: "@layouts/news/city-act.astro"
 institution: council
-term_number: 03
+term_number: 3
 act_number: 1
 headline: Funding for Memorial Park
 date: 2025-12-14 13:14:49 +00:00

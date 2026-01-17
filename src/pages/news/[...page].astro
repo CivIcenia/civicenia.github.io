@@ -153,6 +153,7 @@ function getChangeDetails(entry: CollectionEntry<"news">) {
                         <div class="news-item-changes">
                             <div class="news-item-changes-label">Legislation:</div>
                             {Object.entries(changeCounts).map(([kind, count]) => {
+                                const numCount = count as number;
                                 const colours = getActChangeColours(kind);
                                 const changeLabel = kind === "passage" ? "Enacted" : 
                                                    kind === "amendment" ? "Amended" : 
@@ -160,7 +161,7 @@ function getChangeDetails(entry: CollectionEntry<"news">) {
                                 
                                 return (
                                     <strong class="govuk-tag govuk-tag--small" style={{ backgroundColor: `#${colours.background}`, color: `#${colours.text}` }}>
-                                        {changeLabel}{count > 1 ? ` (${count})` : ''}
+                                        {changeLabel}{numCount > 1 ? ` (${numCount})` : ''}
                                     </strong>
                                 );
                             })}

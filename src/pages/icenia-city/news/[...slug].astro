@@ -11,5 +11,11 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
+
+// When content frontmatter uses root-absolute paths (e.g. "/assets/...")
+// ensure icons and other frontmatter paths are resolved against the
+// build-time base (import.meta.env.BASE_URL). This avoids raw "/assets/"
+// appearing in the built HTML for project sites.
+const BASE = (import.meta.env.BASE_URL ?? "/");
 ---
 <Content />

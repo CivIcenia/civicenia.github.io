@@ -1,8 +1,8 @@
 ---
-layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
+layout: "@layouts/news/city-act.astro"
 institution: council
-term_number: 03
+term_number: 3
 act_number: 5
 headline: Election Crisis Stopgap Solution
 date: 2026-01-13 01:10:23 +00:00

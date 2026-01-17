@@ -1,8 +1,8 @@
 ---
-layout: "@layouts/news/city-act.astro"
 changetocitylaw: true
+layout: "@layouts/news/city-act.astro"
 institution: council
-term_number: 02
+term_number: 2
 act_number: 3
 headline: Street Naming & Signage Act
 date: 2025-11-22 12:57:10 +00:00
