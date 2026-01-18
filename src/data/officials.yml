@@ -8,7 +8,7 @@ senate_term: "January 2026"
 # President
 president:
   name: "ChrisChrispie"
-  icon: "https://cdn.discordapp.com/avatars/161282206113857537/a702b23936bf385bcb217df0dfee0a2f.webp?size=256"
+  icon: "https://cdn.discordapp.com/avatars/161282206113857537/dc8ea901aa6653b6d14dab19c170149b.webp?size=256"
   discord_id: "161282206113857537"
 
 # Secretary of Defense
@@ -32,7 +32,7 @@ secretary_of_treasury:
 # Speaker of the Senate
 speaker:
   name: "CreepilyCreep"
-  icon: "https://cdn.discordapp.com/avatars/164188981293088769/0d209f4d82a63c91f97960d9d6221763.webp?size=256"
+  icon: "https://cdn.discordapp.com/avatars/452620205064060939/4f6c907988fabe211c61d04cbadb5eb2.webp?size=256"
   discord_id: "452620205064060939"
 
 # Head of Transportation
