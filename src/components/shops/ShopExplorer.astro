@@ -1,0 +1,1153 @@
+---
+/**
+ * Shop Explorer Component
+ * Interactive map and search for shop chests using Tradex API
+ */
+const BASE = (import.meta.env.BASE_URL ?? "/");
+---
+
+<div class="shop-explorer-container">
+    <!-- Search Overlay -->
+    <div class="search-panel">
+        <div class="search-header">
+            <div class="header-main">
+                <h2 class="govuk-heading-m">Shop Explorer</h2>
+                <button id="show-icenia-shops" class="icenia-quick-btn" title="Show all Icenia City shops">
+                    <img src={BASE + "assets/images/icenia_logo.svg"} alt="Icenia" width="20" height="20">
+                    View Icenia City Shops
+                </button>
+            </div>
+        </div>
+        
+        <div class="search-controls">
+            <div class="search-main-row">
+                <div class="search-input-wrapper">
+                    <input class="govuk-input" id="item-search" name="item-search" type="text" placeholder="Selling (e.g. diamond)">
+                    <button id="search-button" class="search-submit-btn" type="button">
+                        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 19L14.65 14.65M17 9C17 13.4183 13.4183 17 9 17C4.58172 17 1 13.4183 1 9C1 4.58172 4.58172 1 9 1C13.4183 1 17 4.58172 17 9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="advanced-grid">
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-label--s" for="input-search">Buying</label>
+                    <input class="govuk-input govuk-input--small" id="input-search" name="input-search" type="text" placeholder="e.g. iron">
+                </div>
+
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-label--s" for="sort-mode">Sort</label>
+                    <select class="govuk-select" id="sort-mode" name="sort-mode">
+                        <option value="closest" selected>Closest</option>
+                        <option value="cheapest">Cheapest</option>
+                        <option value="latest">Latest</option>
+                        <option value="stock">In Stock</option>
+                    </select>
+                </div>
+
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-label--s" for="updated-after">Time</label>
+                    <select class="govuk-select" id="updated-after" name="updated-after">
+                        <option value="0">Anytime</option>
+                        <option value="86400000">24h</option>
+                        <option value="604800000">7d</option>
+                        <option value="2592000000">30d</option>
+                    </select>
+                </div>
+
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-label--s" for="search-limit">Limit</label>
+                    <input class="govuk-input govuk-input--small" id="search-limit" name="search-limit" type="number" value="500" step="100">
+                </div>
+
+                <div class="govuk-checkboxes govuk-checkboxes--small">
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="allow-unstocked" name="allow-unstocked" type="checkbox">
+                        <label class="govuk-label govuk-checkboxes__label" for="allow-unstocked">Unstocked</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="loading-overlay" class="loading-overlay hidden">
+            <div class="spinner"></div>
+            <p class="govuk-body-s">Searching Tradex...</p>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container">
+            <div class="results-placeholder">
+                <p class="govuk-body-s">Enter an item name above to search shops across the world.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map Controls -->
+    <div class="map-extra-controls">
+        <button id="dark-mode-toggle" class="map-control-btn" title="Toggle Dark Mode">
+            <svg class="sun-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+            <svg class="moon-icon hidden" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+        </button>
+        <button id="center-icenia" class="map-control-btn" title="Center on Icenia City">
+            <img src={BASE + "assets/images/icenia_logo.svg"} alt="Icenia" width="24" height="24">
+        </button>
+        <button id="set-location" class="map-control-btn" title="Set My Location (Click on map)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Map Container -->
+    <div id="shop-map" class="shop-map"></div>
+    
+    <!-- Map Controls Info -->
+    <div class="map-controls-info">
+        <span>🖱️ Scroll to zoom • Drag to pan • Click markers for details</span>
+    </div>
+</div>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+<style>
+    .shop-explorer-container {
+        position: relative;
+        width: 100%;
+        height: calc(100vh - 96px); /* Default desktop: 56px header + 40px navbar */
+        overflow: hidden;
+        background: #1a1a2e;
+    }
+
+    @media (max-width: 768px) {
+        .shop-explorer-container {
+            height: calc(100vh - 44px); /* Mobile: 44px header */
+        }
+    }
+
+    /* Search Panel */
+    .search-panel {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        bottom: 20px;
+        width: 380px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        z-index: 1000;
+        border-radius: 16px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: background 0.3s, border-color 0.3s, color 0.3s;
+    }
+
+    /* Dark Mode Styles */
+    .shop-explorer-container.dark-mode .search-panel {
+        background: rgba(15, 15, 26, 0.98);
+        border-color: rgba(255, 255, 255, 0.08);
+        color: #eee;
+    }
+
+    .shop-explorer-container.dark-mode .search-controls {
+        background: #0f0f1a;
+        border-bottom-color: #1c1c30;
+    }
+
+    .shop-explorer-container.dark-mode .advanced-grid {
+        border-top-color: #1c1c30;
+    }
+
+    .shop-explorer-container.dark-mode .govuk-label {
+        color: #aaa;
+    }
+
+    .shop-explorer-container.dark-mode .govuk-input,
+    .shop-explorer-container.dark-mode .govuk-select {
+        background: #1c1c30;
+        color: white;
+        border-color: #333;
+    }
+
+    .shop-explorer-container.dark-mode .results-container {
+        background: #0a0a14;
+    }
+
+    .shop-explorer-container.dark-mode :global(.shop-result-card) {
+        background: #141423 !important;
+        border-color: #1c1c30 !important;
+        color: #eee !important;
+    }
+
+    .shop-explorer-container.dark-mode :global(.trade-display) {
+        background: #1c1c30 !important;
+        border-color: #2d2d44 !important;
+    }
+
+    .shop-explorer-container.dark-mode :global(.item-label) {
+        color: #bbb !important;
+    }
+
+    .shop-explorer-container.dark-mode :global(.item-icon-bg) {
+        background: #1a1a2e !important;
+    }
+
+    .shop-explorer-container.dark-mode :global(.stack-count) {
+        background: rgba(0, 0, 0, 0.6) !important;
+        color: white !important;
+        border-color: #444 !important;
+    }
+
+    .shop-explorer-container.dark-mode :global(.result-meta) {
+        color: #999 !important;
+    }
+
+    .shop-explorer-container.dark-mode :global(.freshness-badge) {
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .shop-explorer-container.dark-mode :global(.results-placeholder) {
+        color: #888 !important;
+    }
+
+    .shop-explorer-container.dark-mode .map-control-btn {
+        background: #141423;
+        color: white;
+        border: 1px solid #2d2d44;
+    }
+
+    .shop-explorer-container.dark-mode .map-control-btn:hover {
+        background: #1c1c30;
+    }
+
+    .shop-explorer-container.dark-mode :global(.shop-popup .leaflet-popup-content-wrapper),
+    .shop-explorer-container.dark-mode :global(.shop-popup .leaflet-popup-tip) {
+        background: #141423;
+        color: white;
+    }
+
+    .shop-explorer-container.dark-mode :global(.shop-popup h3) {
+        color: white;
+        border-bottom-color: #333;
+    }
+
+    .shop-explorer-container.dark-mode :global(.exchange-row) {
+        border-bottom-color: #333;
+    }
+
+    .shop-explorer-container.dark-mode :global(.exchange-output) {
+        color: #eee;
+    }
+
+    .shop-explorer-container.dark-mode :global(.exchange-price) {
+        background: #1c1c30;
+        color: #4da3ff;
+    }
+
+    .search-header {
+        padding: 16px 20px;
+        background: linear-gradient(135deg, #1C70B8 0%, #003078 100%);
+        color: white;
+    }
+
+    .header-main {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .search-header h2 {
+        color: white;
+        margin-bottom: 0;
+        font-weight: 700;
+        font-size: 18px;
+    }
+
+    .icenia-quick-btn {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 6px 14px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .icenia-quick-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .icenia-quick-btn img {
+        background: white;
+        border-radius: 50%;
+        padding: 2px;
+        width: 22px;
+        height: 22px;
+        object-fit: contain;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3);
+    }
+
+    .search-controls {
+        padding: 12px 16px;
+        border-bottom: 1px solid #e5e5e5;
+        background: #fcfcfc;
+        transition: background 0.3s, border-color 0.3s;
+    }
+
+    .search-main-row {
+        margin-bottom: 12px;
+    }
+
+    .advanced-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding: 0;
+        border-top: 1px solid #eee;
+        padding-top: 12px;
+    }
+
+    .advanced-grid .govuk-form-group {
+        margin-bottom: 4px;
+    }
+
+    .advanced-grid .govuk-label {
+        font-size: 12px;
+        margin-bottom: 2px;
+    }
+
+    .advanced-grid .govuk-input, .advanced-grid .govuk-select {
+        font-size: 13px;
+        padding: 4px;
+        height: auto;
+    }
+
+    .search-input-wrapper {
+        display: flex;
+        gap: 6px;
+    }
+
+    .search-submit-btn {
+        background: #1C70B8;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 0 16px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .search-submit-btn:hover {
+        background: #003078;
+        transform: scale(1.05);
+    }
+
+    /* Results Container */
+    .results-container {
+        flex: 1;
+        overflow-y: auto;
+        padding: 12px;
+        background: #f3f2f1;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    :global(.results-placeholder) {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: #505a5f;
+        text-align: center;
+        padding: 40px;
+        font-style: italic;
+    }
+
+    :global(.shop-result-card) {
+        background: white !important;
+        border: 1px solid #d5d8da !important;
+        border-radius: 12px !important;
+        padding: 12px !important;
+        cursor: pointer !important;
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        animation: slideIn 0.3s ease-out forwards !important;
+        position: relative !important;
+        overflow: visible !important;
+        min-height: 110px !important;
+        flex-shrink: 0 !important;
+    }
+
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    :global(.shop-result-card:hover) {
+        border-color: #1C70B8 !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+        transform: translateY(-2px) !important;
+    }
+
+    :global(.shop-result-card.active) {
+        border: 2px solid #1C70B8 !important;
+        background: #f0f7ff !important;
+        box-shadow: 0 4px 12px rgba(28, 112, 184, 0.15) !important;
+    }
+
+    :global(.trade-display) {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 8px !important;
+        background: #f8f9fa !important;
+        padding: 10px !important;
+        border-radius: 10px !important;
+        border: 1px solid #eee !important;
+        min-height: 70px !important;
+    }
+
+    :global(.item-stack) {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 4px !important;
+        flex: 1 !important;
+        min-width: 0 !important;
+    }
+
+    :global(.item-icon-bg) {
+        width: 44px;
+        height: 44px;
+        background: white;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+        position: relative;
+    }
+
+    :global(.item-icon) {
+        width: 32px;
+        height: 32px;
+        image-rendering: pixelated;
+    }
+
+    :global(.stack-count) {
+        font-size: 11px;
+        font-weight: 800;
+        color: #333;
+        background: rgba(255,255,255,0.9);
+        padding: 1px 4px;
+        border-radius: 4px;
+        position: absolute;
+        bottom: -2px;
+        right: -2px;
+        border: 1px solid #ddd;
+    }
+
+    :global(.trade-arrow) {
+        font-size: 18px;
+        color: #999;
+        font-weight: bold;
+    }
+
+    :global(.item-label) {
+        font-size: 12px;
+        font-weight: 600;
+        color: #555;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+    }
+
+    :global(.result-meta) {
+        font-size: 11px;
+        color: #666;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 4px;
+    }
+
+    .stock-badge {
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    .stock-high { background: #cce2d8; color: #005a30; }
+    .stock-low { background: #fff7bf; color: #594d00; }
+    .stock-none { background: #f6d7d2; color: #942514; }
+
+    :global(.freshness-badge) {
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 10px;
+        text-transform: uppercase;
+    }
+    :global(.fresh-green) { background: #00703c; color: white; }
+    :global(.fresh-yellow) { background: #ffdd00; color: #0b0c0c; }
+    :global(.fresh-red) { background: #d4351c; color: white; }
+
+    /* Map Controls */
+    .map-extra-controls {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .map-control-btn {
+        width: 44px;
+        height: 44px;
+        background: white;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+
+    .map-control-btn:hover {
+        background: #f3f2f1;
+        transform: scale(1.05);
+    }
+
+    .map-control-btn.active {
+        background: #1C70B8;
+        color: white;
+    }
+
+    /* Map */
+    .shop-map {
+        width: 100%;
+        height: 100%;
+        background: #1a1a2e;
+    }
+
+    /* Fix blurriness on extreme zoom - keep pixels sharp */
+    :global(.leaflet-tile) {
+        image-rendering: pixelated !important;
+        image-rendering: crisp-edges !important;
+        -ms-interpolation-mode: nearest-neighbor;
+    }
+
+    .map-controls-info {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(20, 20, 35, 0.85);
+        backdrop-filter: blur(8px);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 24px;
+        font-size: 13px;
+        z-index: 1000;
+        pointer-events: none;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Loading Overlay */
+    .loading-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.9);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 1100;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .spinner {
+        width: 48px;
+        height: 48px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #1C70B8;
+        border-radius: 50%;
+        animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        margin-bottom: 16px;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* User Location Radar */
+    :global(.user-location-radar) {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        pointer-events: none;
+        width: 0 !important;
+        height: 0 !important;
+    }
+    :global(.radar-dot) {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        background: #ff3e00;
+        border: 2px solid white;
+        border-radius: 50%;
+        z-index: 2;
+        box-shadow: 0 0 15px rgba(255, 62, 0, 0.8);
+    }
+    :global(.radar-ring) {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        background: rgba(255, 62, 0, 0.6);
+        border-radius: 50%;
+        animation: radar-pulse 1.5s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+        z-index: 1;
+    }
+    @keyframes radar-pulse {
+        0% { transform: scale(1); opacity: 0.8; }
+        100% { transform: scale(5); opacity: 0; }
+    }
+
+    /* Shop Pointer Markers */
+    :global(.shop-pointer-marker) {
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    :global(.pointer-inner) {
+        width: 18px;
+        height: 18px;
+        background: #1C70B8;
+        border: 2px solid white;
+        border-radius: 50% 50% 50% 0;
+        transform: rotate(-45deg);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    :global(.pointer-inner::after) {
+        content: '';
+        width: 6px;
+        height: 6px;
+        background: white;
+        border-radius: 50%;
+    }
+    :global(.shop-pointer-marker:hover .pointer-inner) {
+        background: #FFD700;
+        transform: rotate(-45deg) scale(1.3);
+        box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+    }
+
+    /* Ping Animation for selected results */
+    :global(.ping-animation .pointer-inner) {
+        animation: marker-ping 1s ease-out;
+        background: #FFD700 !important;
+        transform: rotate(-45deg) scale(1.8);
+    }
+    @keyframes marker-ping {
+        0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.8); }
+        100% { box-shadow: 0 0 0 30px rgba(255, 215, 0, 0); }
+    }
+
+    /* Popup Styling */
+    :global(.shop-popup) {
+        min-width: 240px;
+        font-family: "nta", Arial, sans-serif;
+    }
+
+    :global(.shop-popup h3) {
+        margin: 0 0 12px 0;
+        font-size: 16px;
+        font-weight: 700;
+        border-bottom: 2px solid #f3f2f1;
+        padding-bottom: 8px;
+        color: #0b0c0c;
+    }
+
+    :global(.exchanges-list) {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    :global(.exchange-row) {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        font-size: 14px;
+        border-bottom: 1px solid #f3f2f1;
+    }
+
+    :global(.exchange-row:last-child) {
+        border-bottom: none;
+    }
+
+    :global(.exchange-output) {
+        font-weight: 600;
+        color: #0b0c0c;
+    }
+
+    :global(.exchange-price) {
+        font-weight: 700;
+        color: #1C70B8;
+        background: #f0f7ff;
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+
+    @media (max-width: 768px) {
+        .search-panel {
+            width: calc(100% - 20px);
+            height: 40%;
+            top: auto;
+            left: 10px;
+            bottom: 10px;
+        }
+        
+        .map-extra-controls {
+            top: 10px;
+            right: 10px;
+        }
+    }
+</style>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- Map Initialization ---
+        const map = L.map('shop-map', {
+            crs: L.CRS.Simple,
+            minZoom: -5,
+            maxZoom: 6,
+            zoomSnap: 0.1,
+            attributionControl: false
+        });
+
+        const ICENIA_CITY_COORDS = [4400, -3870]; 
+
+        function flyToWithOffset(latlng, zoom, options = {}) {
+            const isMobile = window.innerWidth <= 768;
+            const point = map.project(latlng, zoom);
+            let offsetPoint;
+            if (isMobile) {
+                offsetPoint = point.add([0, window.innerHeight * 0.2]);
+            } else {
+                offsetPoint = point.subtract([200, 0]);
+            }
+            const offsetLatLng = map.unproject(offsetPoint, zoom);
+            map.flyTo(offsetLatLng, zoom, { duration: 0.8, ...options });
+        }
+
+        const initialPoint = map.project(ICENIA_CITY_COORDS, 0);
+        const isMobileInitial = window.innerWidth <= 768;
+        const initialOffsetPoint = isMobileInitial 
+            ? initialPoint.add([0, window.innerHeight * 0.2]) 
+            : initialPoint.subtract([200, 0]);
+        map.setView(map.unproject(initialOffsetPoint, 0), 0);
+
+        L.tileLayer('https://civmc-map.duckdns.org/tiles/terrain/z{z}/{x},{y}.png', {
+            minZoom: -5,
+            maxZoom: 6,
+            maxNativeZoom: 0,
+            minNativeZoom: -5,
+            tileSize: 256,
+            noWrap: true
+        }).addTo(map);
+
+        L.control.attribution({
+            prefix: '<a href="https://map.civinfo.net" target="_blank">CivMap</a> | Tradex API'
+        }).addTo(map);
+
+        // --- State ---
+        let markers = [];
+        let userLocation = null;
+        let userMarker = null;
+        let isSettingLocation = false;
+        let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const markerGroup = L.layerGroup().addTo(map);
+
+        // --- UI Elements ---
+        const searchInput = document.getElementById('item-search');
+        const searchButton = document.getElementById('search-button');
+        const sortModeSelect = document.getElementById('sort-mode');
+        const allowUnstockedCheckbox = document.getElementById('allow-unstocked');
+        const resultsContainer = document.getElementById('results-container');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const centerIceniaBtn = document.getElementById('center-icenia');
+        const setLocationBtn = document.getElementById('set-location');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+        const ICENIA_CITY_BOUNDS = {
+            minX: -4300,
+            maxX: -3500,
+            minZ: -4900,
+            maxZ: -3900
+        };
+
+        function mcToLatLng(x, z) {
+            return [-z, x];
+        }
+
+        function formatItemName(item) {
+            return item.material.toLowerCase().replace(/_/g, ' ');
+        }
+
+        function getItemIconUrl(material) {
+            if (!material) return '';
+            const mat = material.toLowerCase().replace(/ /g, '_');
+            // Updated to 1.21 assets as requested
+            return `https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.21/items/${mat}.png`;
+        }
+
+        async function performSearch(isIceniaOnly = false) {
+            const outputQuery = searchInput.value.trim();
+            const inputQuery = document.getElementById('input-search').value.trim();
+            const limitInput = document.getElementById('search-limit');
+            const updatedAfterSelect = document.getElementById('updated-after');
+            
+            const limit = isIceniaOnly ? 1000 : (parseInt(limitInput.value) || 500);
+            
+            if (!outputQuery && !inputQuery && !isIceniaOnly) return;
+
+            loadingOverlay.classList.remove('hidden');
+            
+            try {
+                const searchParams = {
+                    limit: limit,
+                    allowUnstocked: isIceniaOnly ? true : allowUnstockedCheckbox.checked,
+                    sortMode: isIceniaOnly ? 'closest' : sortModeSelect.value
+                };
+
+                if (outputQuery) searchParams.output = outputQuery;
+                if (inputQuery) searchParams.input = inputQuery;
+                
+                const updatedAfterMs = parseInt(updatedAfterSelect.value);
+                if (updatedAfterMs > 0) {
+                    searchParams.updatedAfter = Date.now() - updatedAfterMs;
+                }
+
+                if (sortModeSelect.value === 'closest' || isIceniaOnly) {
+                    const pos = userLocation || { x: -3870, z: -4400 };
+                    searchParams.pos = {
+                        x: Math.round(pos.x),
+                        y: 70,
+                        z: Math.round(pos.z),
+                        world: "overworld",
+                        server: "civmc"
+                    };
+                }
+
+                // Using allorigins raw proxy for better POST/CORS support
+                const API_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://api.tradex.civinfo.net/exchanges/search');
+                
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(searchParams)
+                });
+
+                if (!response.ok) throw new Error('API response not ok');
+
+                const data = await response.json();
+                let exchanges = data.exchanges || [];
+
+                // Client-side filtering for better accuracy (Fixes "golden carrot" issue)
+                if (outputQuery) {
+                    const q = outputQuery.toLowerCase();
+                    exchanges = exchanges.filter(ex => 
+                        ex.output.material.toLowerCase().replace(/_/g, ' ').includes(q)
+                    );
+                }
+                if (inputQuery) {
+                    const q = inputQuery.toLowerCase();
+                    exchanges = exchanges.filter(ex => 
+                        ex.input.material.toLowerCase().replace(/_/g, ' ').includes(q)
+                    );
+                }
+
+                if (isIceniaOnly) {
+                    exchanges = exchanges.filter(ex => 
+                        ex.pos.x >= ICENIA_CITY_BOUNDS.minX && 
+                        ex.pos.x <= ICENIA_CITY_BOUNDS.maxX && 
+                        ex.pos.z >= ICENIA_CITY_BOUNDS.minZ && 
+                        ex.pos.z <= ICENIA_CITY_BOUNDS.maxZ
+                    );
+                }
+
+                // Client-side sorting (Fixes "Sort by doesn't work" issue)
+                const sortMode = sortModeSelect.value;
+                if (sortMode === 'cheapest') {
+                    exchanges.sort((a, b) => (a.input.count / a.output.count) - (b.input.count / b.output.count));
+                } else if (sortMode === 'latest') {
+                    exchanges.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+                } else if (sortMode === 'stock') {
+                    exchanges.sort((a, b) => b.stock - a.stock);
+                } else if (sortMode === 'closest') {
+                    const pos = userLocation || { x: -3870, z: -4400 };
+                    const dist = (p) => Math.sqrt(Math.pow(p.x - pos.x, 2) + Math.pow(p.z - pos.z, 2));
+                    exchanges.sort((a, b) => dist(a.pos) - dist(b.pos));
+                }
+
+                displayResults(exchanges, isIceniaOnly ? "Icenia City" : (outputQuery || inputQuery));
+            } catch (error) {
+                console.error('Search failed:', error);
+                resultsContainer.innerHTML = `<div class="results-placeholder"><p class="govuk-body-s" style="color: #d4351c;">Error fetching data from Tradex. Please try again.<br><small>${error.message}</small></p></div>`;
+            } finally {
+                loadingOverlay.classList.add('hidden');
+            }
+        }
+
+        function displayResults(exchanges, queryLabel) {
+            markerGroup.clearLayers();
+            markers = [];
+
+            if (!exchanges || exchanges.length === 0) {
+                const updatedAfter = document.getElementById('updated-after').value;
+                const allowUnstocked = allowUnstockedCheckbox.checked;
+                
+                let warning = `<div class="results-placeholder no-results">
+                    <div class="warning-icon">⚠️</div>
+                    <p class="govuk-body-s"><strong>No shops found for "${queryLabel}"</strong></p>
+                    <ul class="govuk-list govuk-list--bullet govuk-body-s">
+                        ${!allowUnstocked ? '<li>Try enabling <strong>"Unstocked"</strong> in options</li>' : ''}
+                        ${updatedAfter !== '0' ? '<li>Try setting <strong>"Time"</strong> to "Anytime"</li>' : ''}
+                        <li>Check for typos in the item name</li>
+                    </ul>
+                </div>`;
+                resultsContainer.innerHTML = warning;
+                return;
+            }
+
+            const grouped = {};
+            exchanges.forEach(ex => {
+                const key = `${ex.pos.x},${ex.pos.y},${ex.pos.z}`;
+                if (!grouped[key]) grouped[key] = [];
+                grouped[key].push(ex);
+            });
+
+            Object.entries(grouped).forEach(([key, locExchanges]) => {
+                const first = locExchanges[0];
+                const latLng = mcToLatLng(first.pos.x, first.pos.z);
+                
+                const marker = L.marker(latLng, {
+                    icon: L.divIcon({
+                        className: 'shop-pointer-marker',
+                        html: '<div class="pointer-inner"></div>',
+                        iconSize: [24, 24],
+                        iconAnchor: [12, 24]
+                    })
+                }).addTo(markerGroup);
+                
+                let popupContent = `<div class="shop-popup">
+                    <h3>Shop at ${first.pos.x}, ${first.pos.z}</h3>
+                    <div class="exchanges-list">`;
+                
+                locExchanges.forEach(ex => {
+                    popupContent += `
+                        <div class="exchange-row">
+                            <span class="exchange-output">${ex.output.count}x ${formatItemName(ex.output)}</span>
+                            <span class="exchange-price">${ex.input.count}x ${ex.input.material}</span>
+                        </div>
+                    `;
+                });
+                
+                popupContent += `</div></div>`;
+                marker.bindPopup(popupContent);
+                markers.push({ key, marker, exchanges: locExchanges });
+            });
+
+            resultsContainer.innerHTML = '';
+            exchanges.forEach((ex, index) => {
+                const card = document.createElement('div');
+                card.className = 'shop-result-card';
+                card.style.animationDelay = `${index * 0.04}s`;
+                
+                const stockClass = ex.stock > 64 ? 'stock-high' : (ex.stock > 0 ? 'stock-low' : 'stock-none');
+                const stockText = ex.stock > 0 ? `Stock: ${ex.stock}` : 'Out of Stock';
+                const outputName = formatItemName(ex.output);
+                const inputName = formatItemName(ex.input);
+
+                // Freshness logic
+                const now = Date.now();
+                const updatedAt = ex.updatedAt || now;
+                const ageDays = (now - updatedAt) / (1000 * 60 * 60 * 24);
+                let freshnessClass = 'fresh-red';
+                let freshnessText = 'Old';
+                if (ageDays < 7) {
+                    freshnessClass = 'fresh-green';
+                    freshnessText = 'Recent';
+                } else if (ageDays < 30) {
+                    freshnessClass = 'fresh-yellow';
+                    freshnessText = '30d';
+                }
+
+                card.innerHTML = `
+                    <div class="trade-display">
+                        <div class="item-stack">
+                            <div class="item-icon-bg">
+                                <img class="item-icon" src="${getItemIconUrl(ex.output.material)}" onerror="this.src='https://minecraftitemids.com/item/32/chest.png'" alt="">
+                                <span class="stack-count">${ex.output.count}</span>
+                            </div>
+                            <span class="item-label">${outputName}</span>
+                        </div>
+                        <div class="trade-arrow">→</div>
+                        <div class="item-stack">
+                            <div class="item-icon-bg">
+                                <img class="item-icon" src="${getItemIconUrl(ex.input.material)}" onerror="this.style.display='none'" alt="">
+                                <span class="stack-count">${ex.input.count}</span>
+                            </div>
+                            <span class="item-label">${inputName}</span>
+                        </div>
+                    </div>
+                    <div class="result-meta">
+                        <div style="display: flex; gap: 4px; align-items: center;">
+                            <span class="stock-badge ${stockClass}">${stockText}</span>
+                            <span class="freshness-badge ${freshnessClass}" title="Last updated: ${new Date(updatedAt).toLocaleDateString()}">${freshnessText}</span>
+                        </div>
+                        <span class="coords-label">📍 ${ex.pos.x}, ${ex.pos.z}</span>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => {
+                    const latLng = mcToLatLng(ex.pos.x, ex.pos.z);
+                    flyToWithOffset(latLng, 0);
+                    const markerObj = markers.find(m => m.key === `${ex.pos.x},${ex.pos.y},${ex.pos.z}`);
+                    if (markerObj) {
+                        markerObj.marker.openPopup();
+                        const el = markerObj.marker.getElement();
+                        if (el) {
+                            el.classList.remove('ping-animation');
+                            void el.offsetWidth;
+                            el.classList.add('ping-animation');
+                        }
+                    }
+                    document.querySelectorAll('.shop-result-card').forEach(c => c.classList.remove('active'));
+                    card.classList.add('active');
+                });
+                resultsContainer.appendChild(card);
+            });
+
+            if (markers.length > 0) {
+                const bounds = L.featureGroup(markers.map(m => m.marker)).getBounds();
+                const isMobile = window.innerWidth <= 768;
+                map.fitBounds(bounds, { 
+                    paddingTopLeft: isMobile ? [20, 20] : [420, 50],
+                    paddingBottomRight: isMobile ? [20, window.innerHeight * 0.45] : [50, 50],
+                    maxZoom: 0 
+                });
+            }
+        }
+
+        searchButton.addEventListener('click', () => performSearch(false));
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch(false);
+        });
+        
+        document.getElementById('show-icenia-shops').addEventListener('click', () => {
+            searchInput.value = ''; 
+            searchInput.placeholder = "Showing all Icenia City shops...";
+            performSearch(true);
+        });
+
+        sortModeSelect.addEventListener('change', () => performSearch(false));
+        allowUnstockedCheckbox.addEventListener('change', () => performSearch(false));
+        centerIceniaBtn.addEventListener('click', () => flyToWithOffset(ICENIA_CITY_COORDS, 0));
+
+        setLocationBtn.addEventListener('click', () => {
+            isSettingLocation = !isSettingLocation;
+            setLocationBtn.classList.toggle('active', isSettingLocation);
+            document.getElementById('shop-map').style.cursor = isSettingLocation ? 'crosshair' : '';
+        });
+
+        function updateDarkMode() {
+            const container = document.querySelector('.shop-explorer-container');
+            const sunIcon = darkModeToggle.querySelector('.sun-icon');
+            const moonIcon = darkModeToggle.querySelector('.moon-icon');
+            if (isDarkMode) {
+                container.classList.add('dark-mode');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            } else {
+                container.classList.remove('dark-mode');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            }
+        }
+
+        darkModeToggle.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            updateDarkMode();
+        });
+
+        updateDarkMode();
+
+        map.on('click', (e) => {
+            if (isSettingLocation) {
+                const x = Math.round(e.latlng.lng);
+                const z = Math.round(-e.latlng.lat);
+                userLocation = { x, z };
+                if (userMarker) map.removeLayer(userMarker);
+                userMarker = L.marker(e.latlng, {
+                    icon: L.divIcon({
+                        className: 'user-location-radar',
+                        html: '<div class="radar-ring"></div><div class="radar-dot"></div>',
+                        iconSize: [0, 0],
+                        iconAnchor: [0, 0]
+                    })
+                }).addTo(map).bindPopup("Your Location").openPopup();
+                isSettingLocation = false;
+                setLocationBtn.classList.remove('active');
+                document.getElementById('shop-map').style.cursor = '';
+                if (sortModeSelect.value === 'closest') performSearch(false);
+            }
+        });
+    });
+</script>

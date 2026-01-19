@@ -1,0 +1,26 @@
+---
+import DefaultLayout from "@layouts/default.astro";
+import ShopExplorer from "@components/shops/ShopExplorer.astro";
+
+const title = "Shop Explorer - Republic of Icenia";
+const description = "Search for shop chests and item prices across Icenia and the CivMC server.";
+---
+
+<DefaultLayout title={title} description={description}>
+    <main id="main-content" role="main">
+        <ShopExplorer />
+    </main>
+</DefaultLayout>
+
+<style is:global>
+    /* Ensure the main content takes up remaining space and has no padding */
+    #main-content {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: none !important;
+    }
+
+    /* Override govuk-width-container if it's used in DefaultLayout 
+       Actually, looking at default.astro, it doesn't wrap the slot in a container.
+       The container is in page.astro. So using DefaultLayout directly is correct. */
+</style>
