@@ -43,8 +43,5 @@
         "@types/dotenv": "^8.2.0",
         "@types/js-yaml": "^4.0.9",
         "rimraf": "^6.1.2"
-    },
-    "optionalDependencies": {
-        "@rollup/rollup-linux-x64-gnu": "^4.6.1"
     }
 }
