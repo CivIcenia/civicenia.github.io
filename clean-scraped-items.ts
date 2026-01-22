@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as yaml from 'js-yaml';
 
-const YAML_PATH = path.join(__dirname, '..', 'src', 'data', 'city-scraped-items.yml');
+const YAML_PATH = path.join(__dirname, 'src', 'data', 'city-scraped-items.yml');
 
 interface ScrapedItem {
     id: string;

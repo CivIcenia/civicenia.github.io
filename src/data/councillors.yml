@@ -3,13 +3,13 @@
 # Use https://toolscord.com/ to get Discord profile pictures
 
 # Council term label (e.g., "September 2025")
-council_term: "December 2025"
+council_term: "January 2026"
 
 # Mayor
 mayor:
-  name: "Ratat0ing"
-  icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=256"
-  discord_id: "477240196564385823"
+  name: "Lordchieftain"
+  icon: "https://cdn.discordapp.com/avatars/493690358480502787/dcb877f0bf58802d282874232ae138cf.webp?size=256"
+  discord_id: "493690358480502787"
 
 # CTA Commissioner
 cta_commissioner:
@@ -20,22 +20,22 @@ cta_commissioner:
 # Councillor Seats - 5 seats
 councillors:
   - seat: 1
-    name: "Ratat0ing"
-    icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=256"
-    discord_id: "477240196564385823"
+    name: "Anvil"
+    icon: "https://cdn.discordapp.com/avatars/164188981293088769/0d209f4d82a63c91f97960d9d6221763.webp?size=256"
+    discord_id: "164188981293088769"
   - seat: 2
-    name: "Jaimiemie"
-    icon: "https://cdn.discordapp.com/avatars/206334799160279041/2da42ef4869be645071102cacbfc6e7b.webp?size=256"
-    discord_id: "206334799160279041"
-  - seat: 3
     name: "CreepilyCreep"
     icon: "https://cdn.discordapp.com/avatars/452620205064060939/4f6c907988fabe211c61d04cbadb5eb2.webp?size=256"
     discord_id: "452620205064060939"
-  - seat: 4
+  - seat: 3
     name: "Lordchieftain"
     icon: "https://cdn.discordapp.com/avatars/493690358480502787/dcb877f0bf58802d282874232ae138cf.webp?size=256"
     discord_id: "493690358480502787"
+  - seat: 4
+    name: "Ratat0ing"
+    icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=256"
+    discord_id: "477240196564385823"
   - seat: 5
-    name: "_peemcgee"
-    icon: "https://cdn.discordapp.com/avatars/1075170822353858620/cddd5a005eded7ff81ce32013b118a5b.webp?size=256"
-    discord_id: "1075170822353858620"
+    name: "SeaRed"
+    icon: "https://cdn.discordapp.com/avatars/185078987784060930/2c89053e81c372fd7437463dd9747a80.webp?size=256"
+    discord_id: "185078987784060930"

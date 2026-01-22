@@ -62,6 +62,27 @@ jobs:
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
         continue-on-error: true  # Don't fail build if avatar update fails
 
+      # Scrape Council Records
+      - name: Scrape Council Records
+        id: scrape_council
+        run: bun run scrape-council-records
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+        continue-on-error: true
+
+      # Scrape Senate Records
+      - name: Scrape Senate Records
+        id: scrape_senate
+        run: bun run scrape-senate-records
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+        continue-on-error: true
+
+      # Clean Scraped Items
+      - name: Clean Scraped Items
+        run: bun run clean-scraped-items
+        continue-on-error: true
+
       # Install LibreOffice for document conversion
       - name: Install LibreOffice
         run: sudo apt-get update && sudo apt-get install -y libreoffice
@@ -74,7 +95,7 @@ jobs:
       - name: Download Map Tiles
         run: bun run download-tiles
 
-      # Check if officials.yml, councillors.yml, PDFs, or tiles have changes
+      # Check if data, news, PDFs, or tiles have changes
       - name: Check for data changes
         id: check_changes
         run: |
@@ -82,14 +103,14 @@ jobs:
           shopt -s globstar nullglob
           pdfs=(public/documents/**/*.pdf)
           tiles=(public/tiles/terrain/**/*.png)
-          # Run git diff quietly for YAML files, PDFs, and tiles
-          if git diff --quiet -- src/data/officials.yml src/data/councillors.yml "${pdfs[@]}" "${tiles[@]}"; then
+          # Run git diff quietly for YAML files, news content, PDFs, and tiles
+          if git diff --quiet -- src/data/*.yml src/content/news/ src/content/city-news/ "${pdfs[@]}" "${tiles[@]}"; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
-            echo "No changes detected in data, PDFs, or tiles"
+            echo "No changes detected in data, news, PDFs, or tiles"
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "Changes detected in data, PDFs, or tiles"
-            git diff --stat -- src/data/officials.yml src/data/councillors.yml "${pdfs[@]}" "${tiles[@]}" || true
+            echo "Changes detected in data, news, PDFs, or tiles"
+            git diff --stat -- src/data/*.yml src/content/news/ src/content/city-news/ "${pdfs[@]}" "${tiles[@]}" || true
           fi
 
       # Commit and push changes if data was updated
@@ -99,8 +120,8 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           set -e
-          # Add YAML files (ignore if missing)
-          git add src/data/officials.yml src/data/councillors.yml || true
+          # Add YAML files and news content
+          git add src/data/*.yml src/content/news/ src/content/city-news/ || true
           # Add PDFs and tiles only if they exist
           shopt -s globstar nullglob
           pdfs=(public/documents/**/*.pdf)
@@ -115,7 +136,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No staged changes to commit, skipping"
           else
-            git commit -m "[AUTOMATED] Update data, PDFs, or map tiles [skip ci]"
+            git commit -m "[AUTOMATED] Update data, news, PDFs, or map tiles [skip ci]"
             git push origin master
           fi
       
@@ -146,4 +167,6 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Officials Sync**: ${{ steps.sync_officials.outcome }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Avatar Update**: ${{ steps.update_avatars.outcome }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Council Scrape**: ${{ steps.scrape_council.outcome }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Senate Scrape**: ${{ steps.scrape_senate.outcome }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Data Changes**: ${{ steps.check_changes.outputs.has_changes || 'N/A' }}" >> $GITHUB_STEP_SUMMARY

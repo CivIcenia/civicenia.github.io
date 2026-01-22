@@ -8,7 +8,8 @@ import { getActChangeColours } from "@comptime";
 
 // Had to rename because it weirdly conflicts with laws.astro
 // There's probably some weird Astro shenanigans going on
-import { Laws as AllLaws, Acts, LawIncorporations } from "@collections";
+import { Laws as AllLaws, LawIncorporations } from "../lib/laws";
+import { Acts } from "../lib/acts";
 const laws = await AllLaws.getLaws();
 const recentActs = (await Acts.getActs()).slice(0, 5);
 

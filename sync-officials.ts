@@ -146,7 +146,6 @@ function syncGovernmentOfficials() {
 
     // Read current officials file
     const currentContent = fs.readFileSync(OFFICIALS_FILE, "utf-8");
-    const lines = currentContent.split("\n");
     
     // Get current senators early for reference when processing changes
     const currentSenators = extractSenators(currentContent);
@@ -466,7 +465,7 @@ function extractSenators(content: string): Map<number, { name: string; icon: str
     // Match each senator entry - more flexible regex
     const seatRegex = /-\s*seat:\s*(\d+)\s*\n\s*name:\s*"?([^"\n]*)"?\s*\n\s*icon:\s*"?([^"\n]*)"?(?:\s*\n\s*discord_id:\s*"?([^"\n]*)"?)?/g;
     
-    let match;
+    let match: RegExpExecArray | null;
     while ((match = seatRegex.exec(senatorsSection)) !== null) {
         const seat = parseInt(match[1]);
         const name = match[2].trim();
@@ -490,7 +489,7 @@ function extractCouncillors(content: string): Map<number, { name: string; icon: 
     // Match each councillor entry - more flexible regex
     const seatRegex = /-\s*seat:\s*(\d+)\s*\n\s*name:\s*"?([^"\n]*)"?(?:\s*\n\s*icon:\s*"?([^"\n]*)"?)?(?:\s*\n\s*discord_id:\s*"?([^"\n]*)"?)?/g;
     
-    let match;
+    let match: RegExpExecArray | null;
     while ((match = seatRegex.exec(councillorsSection)) !== null) {
         const seat = parseInt(match[1]);
         const name = match[2].trim();

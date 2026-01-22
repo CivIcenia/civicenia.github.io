@@ -1,9 +1,17 @@
 items:
-  - id: "1"
-    title: "Senate minutes 2026-01-01"
-    date: 2026-01-01
+  - id: "1463103552443388005"
+    title: Modify Constitution on civilian bunker perms
+    date: 2026-01-20
     checked: false
-  - id: "2"
-    title: "Senate minutes 2026-01-08"
-    date: 2026-01-08
+  - id: "1462687549238677719"
+    title: Vote on Icenia's vote on the admission of Fairhill into WARDA
+    date: 2026-01-19
+    checked: false
+  - id: "1461801340505428059"
+    title: Salerno-Icenia Wholesome Friendship Treaty
+    date: 2026-01-16
+    checked: false
+  - id: "1459897498536640685"
+    title: Icenia Micronook Friendship Pact
+    date: 2026-01-11
     checked: false

@@ -9,8 +9,8 @@
  * 2. Each worker thread loads the entire module (including all YAML data)
  * 3. With many workers, this exhausts the 8GB heap limit
  * 
- * Now, each namespace is in its own file under src/lib/, so imports only
- * load the data they actually need.
+ * UPDATE: Pages and components should now import directly from src/lib/ to 
+ * avoid loading unnecessary data. This file now only re-exports schemas.
  */
 
 // Re-export schemas
@@ -31,13 +31,3 @@ export {
     RoleDefinitionSchema,
     RoleConfigSchema
 } from "./schemas";
-
-// Re-export from individual modules
-export { Acts } from "./lib/acts";
-export { CityActs } from "./lib/city-acts";
-export { Laws, LawIncorporations } from "./lib/laws";
-export { CityLaws, CityLawIncorporations } from "./lib/city-laws";
-export { GovOfficials, OfficialChanges } from "./lib/officials";
-export { Councillors, CityOfficialChanges } from "./lib/councillors";
-export { RoleConfig } from "./lib/role-config";
-export { ScrapedItems } from "./lib/scraped-items";

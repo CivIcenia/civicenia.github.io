@@ -239,6 +239,7 @@ collections:
           - label: "Items"
             name: "items"
             widget: "list"
+            summary: "{{title}}"
             hint: "To clear an item once handled, you can either check 'Reviewed' or delete it using the cross icon on the top right of the item (recommended)."
             fields:
               - {label: "ID", name: "id", widget: "string", required: true}
@@ -254,6 +255,7 @@ collections:
           - label: "Items"
             name: "items"
             widget: "list"
+            summary: "{{title}}"
             hint: "To clear an item once handled, you can either check 'Reviewed' or delete it using the cross icon on the top right of the item (recommended)."
             fields:
               - {label: "ID", name: "id", widget: "string", required: true}
@@ -529,6 +531,7 @@ collections:
   - name: "lawchanges"
     label: "Changes to Legislation"
     label_singular: "Change to Legislation"
+    description: "We should probably not add new entries manually, unless we are sure they do not exist in #bill-voting for republic and #council-records for city."
     folder: "src/content/news"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{headline}}"
@@ -817,6 +820,7 @@ collections:
   - name: "citylawchanges"
     label: "Changes to City Legislation"
     label_singular: "Change to City Legislation"
+    description: "We should probably not add new entries manually, unless we are sure they do not exist in #bill-voting for republic and #council-records for city."
     folder: "src/content/city-news"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{headline}}"

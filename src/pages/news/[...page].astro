@@ -3,7 +3,8 @@ import { type Page } from "astro";
 import { type CollectionEntry, getCollection } from "astro:content";
 import { PERMALINK_ROOTS, getActChangeColours } from "@comptime";
 import { Astros, Arrays, Strings } from "@helpers";
-import { Acts, Laws, ScrapedItems } from "@collections";
+import { Acts } from "../../lib/acts";
+import { ScrapedItems } from "../../lib/scraped-items";
 import PageLayout from "@layouts/page.astro";
 import Pagination from "@components/pagination.astro";
 

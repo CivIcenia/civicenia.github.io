@@ -143,6 +143,7 @@ excerpt: Passed by the ${monthYear} City Council.
 document:
   type: markdown
   value: |
+AUTOMATICALLY SCRAPED CONTENT:
 ${safeContent.split('\n').map(line => '    ' + line).join('\n')}
 changes: []
 icon: /assets/images/law_stock.jpeg
@@ -194,7 +195,7 @@ const client = new Client({
     ]
 });
 
-client.once('ready', async () => {
+client.once('clientReady', async () => {
     console.log(`Logged in as ${client.user?.tag}`);
 
     try {

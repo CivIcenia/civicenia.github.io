@@ -15,15 +15,13 @@ dotenv.config();
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 // Republic of Icenia Senate Records Forum
 // NOTE: Replace this with the actual Senate forum ID if different
-const FORUM_CHANNEL_ID = '1109403848035123200'; 
+const FORUM_CHANNEL_ID = '1071577869505011822'; 
 const NEWS_DIR = path.join(__dirname, 'src', 'content', 'news');
 // Cutoff: January 10, 2026
 const DATE_CUTOFF = new Date('2026-01-10');
 
 interface LegislationData {
     fullTitle: string;
-    term: number;
-    legislation: number;
     link: string;
     content: string;
     threadId: string;
@@ -116,13 +114,12 @@ function createMarkdownFile(data: LegislationData): void {
 changetolaw: true
 layout: "@layouts/news/act.astro"
 institution: senate
-term: ${data.term}
-legislation_number: ${data.legislation}
 headline: ${headline}
 date: ${fullTimestamp}
 document:
   type: markdown
   value: |
+AUTOMATICALLY SCRAPED CONTENT:
 ${safeContent.split('\n').map(line => '    ' + line).join('\n')}
 changes: []
 icon: /assets/images/law_stock.jpeg
@@ -174,7 +171,7 @@ const client = new Client({
     ]
 });
 
-client.once('ready', async () => {
+client.once('clientReady', async () => {
     console.log(`Logged in as ${client.user?.tag}`);
     try {
         await scrapeForum();
@@ -206,7 +203,6 @@ async function scrapeForum() {
     const passedTagId = passedTag.id;
 
     const results: LegislationData[] = [];
-    const pattern = /(\d+)-(\d+)/;
 
     // 1. Process Active Threads
     const activeThreads = await forumChannel.threads.fetchActive();
@@ -264,15 +260,6 @@ async function scrapeForum() {
         }
 
         const title = thread.name;
-        const match = title.match(pattern);
-
-        if (!match) {
-            console.log(`-> Skipping (Passed but no number): ${title}`);
-            return;
-        }
-
-        const termNumber = parseInt(match[1], 10);
-        const legislationNumber = parseInt(match[2], 10);
 
         let content = "";
         try {
@@ -288,8 +275,6 @@ async function scrapeForum() {
 
         results.push({
             fullTitle: title,
-            term: termNumber,
-            legislation: legislationNumber,
             link: `https://discord.com/channels/${thread.guildId}/${thread.id}`,
             content: content,
             threadId: thread.id,
