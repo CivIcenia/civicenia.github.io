@@ -70,22 +70,26 @@ jobs:
       - name: Convert Documents to PDF
         run: bun run convert-documents-to-pdf
 
+      # Download map tiles for local hosting
+      - name: Download Map Tiles
+        run: bun run download-tiles
 
-      # Check if officials.yml, councillors.yml, or any PDFs in public/documents/ have changes
+      # Check if officials.yml, councillors.yml, PDFs, or tiles have changes
       - name: Check for data changes
         id: check_changes
         run: |
           set -e
           shopt -s globstar nullglob
           pdfs=(public/documents/**/*.pdf)
-          # Run git diff quietly for YAML files and any PDFs if present
-          if git diff --quiet -- src/data/officials.yml src/data/councillors.yml "${pdfs[@]}"; then
+          tiles=(public/tiles/terrain/**/*.png)
+          # Run git diff quietly for YAML files, PDFs, and tiles
+          if git diff --quiet -- src/data/officials.yml src/data/councillors.yml "${pdfs[@]}" "${tiles[@]}"; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
-            echo "No changes detected in officials data or PDFs"
+            echo "No changes detected in data, PDFs, or tiles"
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "Changes detected in officials data or PDFs"
-            git diff --stat -- src/data/officials.yml src/data/councillors.yml "${pdfs[@]}" || true
+            echo "Changes detected in data, PDFs, or tiles"
+            git diff --stat -- src/data/officials.yml src/data/councillors.yml "${pdfs[@]}" "${tiles[@]}" || true
           fi
 
       # Commit and push changes if data was updated
@@ -97,17 +101,21 @@ jobs:
           set -e
           # Add YAML files (ignore if missing)
           git add src/data/officials.yml src/data/councillors.yml || true
-          # Add PDFs only if they exist
+          # Add PDFs and tiles only if they exist
           shopt -s globstar nullglob
           pdfs=(public/documents/**/*.pdf)
+          tiles=(public/tiles/terrain/**/*.png)
           if [ ${#pdfs[@]} -gt 0 ]; then
             git add "${pdfs[@]}"
+          fi
+          if [ ${#tiles[@]} -gt 0 ]; then
+            git add "${tiles[@]}"
           fi
           # Only commit if there are actually staged changes
           if git diff --cached --quiet; then
             echo "No staged changes to commit, skipping"
           else
-            git commit -m "[AUTOMATED] Update officials data or PDFs [skip ci]"
+            git commit -m "[AUTOMATED] Update data, PDFs, or map tiles [skip ci]"
             git push origin master
           fi
       

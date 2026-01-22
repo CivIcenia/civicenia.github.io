@@ -138,17 +138,22 @@ icon: /assets/images/law_stock.jpeg
 function updateScrapedItemsYaml(results: LegislationData[]): void {
     const yamlPath = path.join(__dirname, 'src', 'data', 'scraped-items.yml');
     
-    let scrapedItems: any[] = [];
+    let data: any = { items: [] };
     if (fs.existsSync(yamlPath)) {
         const yamlContent = fs.readFileSync(yamlPath, 'utf-8');
-        scrapedItems = yaml.load(yamlContent) as any[] || [];
+        const loaded = yaml.load(yamlContent) as any;
+        if (Array.isArray(loaded)) {
+            data.items = loaded;
+        } else if (loaded && Array.isArray(loaded.items)) {
+            data = loaded;
+        }
     }
     
-    const existingIds = new Set(scrapedItems.map(item => String(item.id)));
+    const existingIds = new Set(data.items.map((item: any) => String(item.id)));
     
     for (const res of results) {
         if (!existingIds.has(res.threadId)) {
-            scrapedItems.push({
+            data.items.push({
                 id: res.threadId,
                 title: res.fullTitle,
                 date: res.createdAt.toISOString().substring(0, 10),
@@ -157,7 +162,7 @@ function updateScrapedItemsYaml(results: LegislationData[]): void {
         }
     }
     
-    const newYamlContent = yaml.dump(scrapedItems);
+    const newYamlContent = yaml.dump(data);
     fs.writeFileSync(yamlPath, newYamlContent, 'utf-8');
     console.log(`Updated ${yamlPath} with ${results.length} new items`);
 }

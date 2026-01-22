@@ -3,7 +3,7 @@ import { type Page } from "astro";
 import { type CollectionEntry, getCollection } from "astro:content";
 import { PERMALINK_ROOTS, getActChangeColours } from "@comptime";
 import { Astros, Arrays, Strings } from "@helpers";
-import { CityActs } from "@collections";
+import { CityActs, ScrapedItems } from "@collections";
 import PageLayout from "@layouts/page.astro";
 import Pagination from "@components/pagination.astro";
 
@@ -16,6 +16,8 @@ export async function getStaticPaths({ paginate }) {
 }
 const page = Astro.props["page"] as Page<CollectionEntry<"city-news">>;
 const news = page.data;
+
+const pendingScrapedCount = ScrapedItems.getPendingCityCount();
 
 // When content frontmatter uses root-absolute paths (e.g. "/assets/...")
 // ensure icons and other frontmatter paths are resolved against the
@@ -39,6 +41,30 @@ function getChangeDetails(entry: CollectionEntry<"city-news">) {
 
 ---
 <style>
+    .scraped-tracker {
+        background: #fef7f3;
+        border-left: 6px solid #f47738;
+        padding: 15px 20px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .scraped-tracker-text {
+        margin: 0;
+    }
+
+    .scraped-count-badge {
+        background: #f47738;
+        color: white;
+        padding: 2px 10px;
+        border-radius: 15px;
+        font-weight: bold;
+    }
+
     a.news-item-wrapper {
         display: block;
         margin-bottom: 25px;
@@ -131,6 +157,16 @@ function getChangeDetails(entry: CollectionEntry<"city-news">) {
         <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">City News</h1>
         <p class="govuk-body-l">Council updates, city ordinances, and official communications from Icenia City.</p>
     </div>
+
+    {pendingScrapedCount > 0 && (
+        <div class="scraped-tracker">
+            <p class="scraped-tracker-text govuk-body">
+                <span class="scraped-count-badge">{pendingScrapedCount}</span>
+                {pendingScrapedCount === 1 ? " item has" : " items have"} been scraped and {pendingScrapedCount === 1 ? "is" : "are"} awaiting review.
+            </p>
+            <a href={BASE + "icenia-city/news/scraped/"} class="govuk-link">View Scraped Items →</a>
+        </div>
+    )}
 
     {news.map((entry) => {
         const { changes, changeCounts } = getChangeDetails(entry);

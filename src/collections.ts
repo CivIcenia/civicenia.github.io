@@ -40,3 +40,4 @@ export { CityLaws, CityLawIncorporations } from "./lib/city-laws";
 export { GovOfficials, OfficialChanges } from "./lib/officials";
 export { Councillors, CityOfficialChanges } from "./lib/councillors";
 export { RoleConfig } from "./lib/role-config";
+export { ScrapedItems } from "./lib/scraped-items";

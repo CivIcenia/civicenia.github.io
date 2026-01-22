@@ -15,7 +15,7 @@
     
     /* Header & navbar heights for layout calculations */
     --header-height-desktop: 56px;
-    --header-height-mobile: 54px;
+    --header-height-mobile: 56px;
     --navbar-height: 54px; /* nav links (~44px) + blue border (10px) */
 }
 
@@ -489,18 +489,22 @@ body {
     top: 0;
     left: 0;
     width: 100%;
+    height: var(--header-height-desktop);
     z-index: 9999;
     background: #0b0c0c;
     color: #ffffff;
     font-family: arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
 }
 
 .icenia-header__container {
     max-width: 960px;
     margin: 0 auto;
-    padding: 8px 0px;
+    padding: 0;
+    height: 100%;
     box-sizing: border-box;
     display: flex;
     justify-content: space-between;
@@ -544,7 +548,8 @@ body {
 
 @media (max-width: 768px) {
     .icenia-header__container {
-        padding: 9px 0px;
+        height: var(--header-height-mobile);
+        padding: 0;
     }
     
     .icenia-header__link {
@@ -634,13 +639,17 @@ body {
 .icenia-navbar {
     background: #0b0c0c;
     position: sticky;
-    top: 56px;
+    top: var(--header-height-desktop);
+    height: var(--navbar-height);
     z-index: 998;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
     .icenia-navbar {
-        top: 54px;
+        top: var(--header-height-mobile);
     }
 }
 
@@ -648,6 +657,7 @@ body {
     max-width: 960px;
     margin: 0 auto;
     padding: 0 15px;
+    height: 100%;
     box-sizing: border-box;
     border-bottom: 10px solid var(--icenia-blue, #1C70B8);
 }

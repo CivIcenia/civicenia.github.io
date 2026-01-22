@@ -34,6 +34,7 @@ const navigationItems: NavItem[] = [
         label: "Government",
         // href: BASE + "government/officials/",
         children: [
+            { label: "Home", href: BASE },
             { label: "Officials", href: BASE + "government/officials/" },
             { label: "News", href: BASE + "news/" },
             { label: "Legislation", href: BASE + "laws/" },
@@ -53,6 +54,7 @@ const navigationItems: NavItem[] = [
         children: [
             { label: "Home", href: BASE + "icenia-city/" },
             { label: "City Council", href: BASE + "icenia-city/council/" },
+            { label: "City News", href: BASE + "icenia-city/news/" },
             { label: "City Laws", href: BASE + "icenia-city/laws/" },
             { label: "Shops", href: BASE + "icenia-city/shops/" },
         ]
@@ -200,7 +202,6 @@ const HEADER_HEIGHT_MOBILE = 44;
                     </ul>
                 </div>
             </nav>
-        </>
 
         <slot/>
 

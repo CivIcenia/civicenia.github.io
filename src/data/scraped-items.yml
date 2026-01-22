@@ -1,9 +1,9 @@
-# Example scraped items for republic
-- id: "1"
-  title: "Senate minutes 2026-01-01"
-  date: 2026-01-01
-  checked: false
-- id: "2"
-  title: "Senate minutes 2026-01-08"
-  date: 2026-01-08
-  checked: false
+items:
+  - id: "1"
+    title: "Senate minutes 2026-01-01"
+    date: 2026-01-01
+    checked: false
+  - id: "2"
+    title: "Senate minutes 2026-01-08"
+    date: 2026-01-08
+    checked: false

@@ -231,6 +231,36 @@ collections:
                 widget: "text"
                 required: false
                 hint: "Optional notes about this incorporation (e.g., what sections were changed)"
+      - label: "Scraped Items (Republic)"
+        name: "scraped-items"
+        file: "src/data/scraped-items.yml"
+        description: "Review automatically detected items for the Republic. To clear an item once handled, you can either check 'Reviewed' or delete it using the cross icon on the top right of the item (recommended)."
+        fields:
+          - label: "Items"
+            name: "items"
+            widget: "list"
+            hint: "To clear an item once handled, you can either check 'Reviewed' or delete it using the cross icon on the top right of the item (recommended)."
+            fields:
+              - {label: "ID", name: "id", widget: "string", required: true}
+              - {label: "Title", name: "title", widget: "string", required: true}
+              - {label: "Date", name: "date", widget: "string", required: true}
+              - {label: "Reviewed?", name: "checked", widget: "boolean", default: false}
+              - {label: "URL", name: "url", widget: "string", required: false}
+      - label: "Scraped Items (City)"
+        name: "city-scraped-items"
+        file: "src/data/city-scraped-items.yml"
+        description: "Review automatically detected items for Icenia City. To clear an item once handled, you can either check 'Reviewed' or delete it using the cross icon on the top right of the item (recommended)."
+        fields:
+          - label: "Items"
+            name: "items"
+            widget: "list"
+            hint: "To clear an item once handled, you can either check 'Reviewed' or delete it using the cross icon on the top right of the item (recommended)."
+            fields:
+              - {label: "ID", name: "id", widget: "string", required: true}
+              - {label: "Title", name: "title", widget: "string", required: true}
+              - {label: "Date", name: "date", widget: "string", required: true}
+              - {label: "Reviewed?", name: "checked", widget: "boolean", default: false}
+              - {label: "URL", name: "url", widget: "string", required: false}
       - label: "Role Configuration"
         name: "role-config"
         file: "src/data/role-config.yml"

@@ -1,0 +1,133 @@
+---
+import PageLayout from "@layouts/page.astro";
+import { ScrapedItems } from "@collections";
+import { Strings } from "@helpers";
+
+const BASE = import.meta.env.BASE_URL ?? "/";
+
+// Get scraped items
+const scrapedItems = ScrapedItems.getRepublicItems().filter(item => !item.checked);
+---
+<style>
+    .scraped-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .scraped-count {
+        font-size: 48px;
+        font-weight: bold;
+        color: #1C70B8;
+        display: inline-block;
+        margin-right: 15px;
+    }
+
+    .scraped-item {
+        background: white;
+        border: 1px solid #b1b4b6;
+        border-left: 6px solid #1C70B8;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .scraped-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .scraped-item-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #0b0c0c;
+    }
+
+    .scraped-item-date {
+        color: #6f777b;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    .info-box {
+        background: #f3f2f1;
+        padding: 20px;
+        margin-bottom: 30px;
+        border-left: 6px solid #1C70B8;
+    }
+
+    .success-message {
+        background: #e6f4ea;
+        border-left: 6px solid #00703c;
+        padding: 15px;
+        margin-bottom: 30px;
+    }
+</style>
+
+<PageLayout chin={false} title="Scraped Items Tracker - Republic of Icenia" description="Track automatically detected news and legislative items awaiting review.">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Scraped Items Tracker</h1>
+        <p class="govuk-body-l">Review automatically detected items from official records.</p>
+    </div>
+
+    <!-- Info Box -->
+    <div class="info-box">
+        <h2 class="govuk-heading-s" style="margin-top: 0;">About This Page</h2>
+        <p class="govuk-body" style="margin-bottom: 0;">
+            This page lists news articles that have been automatically added to the site by our scrapers (e.g. from <code>#bill-voting</code>). 
+            <br> Maintainers should review these items and mark them as legislative changes where appropriate. 
+            <br> Run the cleanup script to see the most up-to-date list of pending items.
+        </p>
+    </div>
+
+    <!-- Scraped Items List -->
+    {scrapedItems.length > 0 ? (
+        <div>
+            <div class="scraped-header">
+                <span class="scraped-count">{scrapedItems.length}</span>
+                <div>
+                    <h2 class="govuk-heading-m" style="margin: 0;">Items Awaiting Review</h2>
+                    <p class="govuk-body" style="margin: 0;">These items need to be processed and added to the site.</p>
+                </div>
+            </div>
+
+            {scrapedItems.map((item) => (
+                <div class="scraped-item">
+                    <div class="scraped-item-header">
+                        <div>
+                            <div class="scraped-item-title">{item.title}</div>
+                            <div class="scraped-item-date">
+                                Detected on {Strings.formatDate(item.date, "dS mmmm yyyy")}
+                            </div>
+                        </div>
+                        {item.url && (
+                            <a href={item.url} target="_blank" class="govuk-link">View Source</a>
+                        )}
+                    </div>
+                </div>
+            ))}
+
+            <div class="govuk-inset-text">
+                <p class="govuk-body">
+                    <strong>How to clear items:</strong> Once an item has been handled, mark it as <code>checked: true</code> 
+                    in <code>src/data/scraped-items.yml</code> or run the cleanup script.
+                </p>
+            </div>
+        </div>
+    ) : (
+        <div class="success-message">
+            <h2 class="govuk-heading-m" style="margin-top: 0;">✓ No Pending Items</h2>
+            <p class="govuk-body" style="margin-bottom: 0;">
+                All scraped items have been reviewed and processed.
+            </p>
+        </div>
+    )}
+
+    <!-- Link Back -->
+    <div class="govuk-!-margin-top-6">
+        <a href={BASE + "news/"} class="govuk-link">← Back to Republic News</a>
+    </div>
+</PageLayout>

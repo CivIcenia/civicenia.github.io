@@ -23,6 +23,11 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             <div class="search-main-row">
                 <div class="search-input-wrapper">
                     <input class="govuk-input" id="item-search" name="item-search" type="text" placeholder="I want to buy (e.g. diamond)">
+                    <button id="toggle-options" class="options-toggle-btn" title="Toggle Search Options">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>
+                        </svg>
+                    </button>
                     <button id="search-button" class="search-submit-btn" type="button">
                         <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M19 19L14.65 14.65M17 9C17 13.4183 13.4183 17 9 17C4.58172 17 1 13.4183 1 9C1 4.58172 4.58172 1 9 1C13.4183 1 17 4.58172 17 9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -31,45 +36,60 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 </div>
             </div>
 
-            <div class="advanced-grid">
-                <div class="govuk-form-group">
-                    <label class="govuk-label govuk-label--s" for="input-search">I want to pay with</label>
-                    <input class="govuk-input govuk-input--small" id="input-search" name="input-search" type="text" placeholder="e.g. iron">
-                </div>
-
-                <div class="govuk-form-group">
-                    <label class="govuk-label govuk-label--s" for="sort-mode">Sort</label>
-                    <select class="govuk-select" id="sort-mode" name="sort-mode">
-                        <option value="closest">Closest</option>
-                        <option value="cheapest" selected>Cheapest</option>
-                        <option value="latest">Latest</option>
-                        <option value="stock">In Stock</option>
-                    </select>
-                </div>
-
-                <div class="govuk-form-group">
-                    <label class="govuk-label govuk-label--s" for="updated-after">Time</label>
-                    <select class="govuk-select" id="updated-after" name="updated-after">
-                        <option value="0">Anytime</option>
-                        <option value="86400000">24h</option>
-                        <option value="604800000" selected>7d</option>
-                        <option value="2592000000">30d</option>
-                    </select>
-                </div>
-
-                <div class="govuk-form-group">
-                    <label class="govuk-label govuk-label--s" for="search-limit">Limit</label>
-                    <input class="govuk-input govuk-input--small" id="search-limit" name="search-limit" type="number" value="500" step="100">
-                </div>
-
-                <div class="govuk-checkboxes govuk-checkboxes--small side-by-side">
-                    <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="allow-unstocked" name="allow-unstocked" type="checkbox">
-                        <label class="govuk-label govuk-checkboxes__label" for="allow-unstocked">Unstocked</label>
+            <div id="advanced-options-wrapper" class="advanced-options-wrapper scroll-container">
+                <div id="advanced-options" class="advanced-grid">
+                    <div class="govuk-form-group">
+                        <label class="govuk-label govuk-label--s" for="input-search">I want to pay with</label>
+                        <input class="govuk-input govuk-input--small" id="input-search" name="input-search" type="text" placeholder="e.g. iron">
                     </div>
-                    <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="icenia-only" name="icenia-only" type="checkbox">
-                        <label class="govuk-label govuk-checkboxes__label" for="icenia-only">Icenia Only</label>
+
+                    <div class="govuk-form-group">
+                        <label class="govuk-label govuk-label--s" for="sort-mode">Sort</label>
+                        <select class="govuk-select" id="sort-mode" name="sort-mode">
+                            <option value="closest">Closest</option>
+                            <option value="cheapest" selected>Cheapest</option>
+                            <option value="latest">Latest</option>
+                            <option value="stock">In Stock</option>
+                        </select>
+                    </div>
+
+                    <div class="govuk-form-group">
+                        <label class="govuk-label govuk-label--s" for="updated-after">Last Updated Within</label>
+                        <select class="govuk-select" id="updated-after" name="updated-after">
+                            <option value="0">Anytime</option>
+                            <option value="86400000">24h</option>
+                            <option value="604800000" selected>7d</option>
+                            <option value="2592000000">30d</option>
+                        </select>
+                    </div>
+
+                    <div class="enchantment-filter-container" style="grid-column: span 2;">
+                        <label class="govuk-label govuk-label--s">Enchantment Filters</label>
+                        <div id="enchantment-filters-list" class="enchant-filters-list">
+                            <!-- Rows added via JS -->
+                        </div>
+                        <button type="button" id="add-enchant-filter" class="add-enchant-btn">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Add Enchantment
+                        </button>
+                    </div>
+
+                    <div class="govuk-checkboxes govuk-checkboxes--small side-by-side">
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="allow-unstocked" name="allow-unstocked" type="checkbox">
+                            <label class="govuk-label govuk-checkboxes__label" for="allow-unstocked">Unstocked</label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="icenia-only" name="icenia-only" type="checkbox">
+                            <label class="govuk-label govuk-checkboxes__label" for="icenia-only">Icenia Only</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="scroll-indicator" id="advanced-scroll-indicator">
+                    <div class="scroll-track">
+                        <div class="scroll-thumb"></div>
                     </div>
                 </div>
             </div>
@@ -81,12 +101,22 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         </div>
 
         <!-- Results Container -->
-        <div id="results-container" class="results-container">
-            <div class="results-placeholder">
-                <p class="govuk-body-s">Enter an item name above to search shops across the world.</p>
+        <div class="results-scroll-wrapper scroll-container">
+            <div id="results-container" class="results-container">
+                <div class="results-placeholder">
+                    <p class="govuk-body-s">Enter an item name above to search shops across the world.</p>
+                </div>
+            </div>
+            <div class="scroll-indicator" id="results-scroll-indicator">
+                <div class="scroll-track">
+                    <div class="scroll-thumb"></div>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Item Tooltip -->
+    <div id="item-tooltip" class="item-tooltip hidden"></div>
 
     <!-- Map Controls -->
     <div class="map-extra-controls">
@@ -126,27 +156,57 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     <!-- Map Container -->
     <div id="shop-map" class="shop-map"></div>
     
-    <!-- Map Attribution -->
-    <div class="custom-map-attribution">
-        <div class="attribution-main">
-            <div class="attribution-item">
-                <span class="attr-label">Backend</span>
-                <a href="https://github.com/gjum/tradex" target="_blank" title="Huge thanks to Gjum for the amazing Tradex backend!">Gjum ❤️</a>
+    <!-- Map Info & Attribution -->
+    <div class="map-info-container">
+        <div id="info-panel" class="info-panel hidden scroll-container">
+            <div class="info-content" id="info-content">
+                <div class="info-section">
+                    <h5>Controls</h5>
+                    <p>🖱️ Scroll to zoom</p>
+                    <p>🖐️ Drag to pan</p>
+                    <p>📍 Click markers for details</p>
+                </div>
+                <div class="info-cta-box">
+                    <a href="https://modrinth.com/mod/tradex" target="_blank" class="modrinth-cta">
+                        <div class="cta-title">🚀 Install Tradex Mod</div>
+                        <div class="cta-desc">Help keep the map updated! <br> Shopkeepers & Travellers wanted <br> for data logging.</div>
+                    </a>
+                </div>
+                <div class="info-section">
+                    <h5>Credits</h5>
+                    <p>Backend: <a href="https://github.com/gjum/tradex" target="_blank">Tradex</a></p>
+                    <p>Map: <a href="https://map.civinfo.net" target="_blank">CivInfo</a></p>
+                    <p>Thanks Gjum for making Tradex and Civinfo.net! ❤️</p>
+                </div>
+                <div class="info-section">
+                    <h5>Donations</h5>
+                    <div class="donation-item">
+                        <span>Creepily</span>
+                        <code class="sortcode">HS-9363</code>
+                    </div>
+                    <div class="donation-item">
+                        <span>Gjum</span>
+                        <code class="sortcode">HS-3134</code>
+                    </div>
+                    <div class="donation-item">
+                        <span>Icenia City</span>
+                        <code class="sortcode">HS-1901</code>
+                    </div>
+                </div>
             </div>
-            <div class="attribution-divider"></div>
-            <div class="attribution-item">
-                <span class="attr-label">Map</span>
-                <a href="https://map.civinfo.net" target="_blank">CivInfo</a>
+            <div class="scroll-indicator" id="info-scroll-indicator">
+                <div class="scroll-track">
+                    <div class="scroll-thumb"></div>
+                </div>
             </div>
         </div>
-        <div class="attribution-cta">
-            <a href="https://github.com/gjum/tradex#readme" target="_blank">Update the map: Install the Tradex mod! 🚀</a>
-        </div>
-    </div>
-
-    <!-- Map Controls Info -->
-    <div class="map-controls-info">
-        <span>🖱️ Scroll to zoom • Drag to pan • Click markers for details</span>
+        <button id="info-toggle" class="map-control-btn info-btn" title="Map Info & Credits">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+        </button>
     </div>
 </div>
 
@@ -157,15 +217,27 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     .shop-explorer-container {
         position: relative;
         width: 100%;
-        height: calc(100vh - 96px); /* Default desktop: 56px header + 40px navbar */
+        height: 100%;
         overflow: hidden;
         background: #121212;
-    }
 
-    @media (max-width: 768px) {
-        .shop-explorer-container {
-            height: calc(100vh - 44px); /* Mobile: 44px header */
-        }
+        /* Minecraft Color Variables - Light Mode Defaults (High Contrast) */
+        --mc-0: #000000;
+        --mc-1: #0000AA;
+        --mc-2: #00AA00;
+        --mc-3: #00AAAA;
+        --mc-4: #AA0000;
+        --mc-5: #AA00AA;
+        --mc-6: #D9A300;
+        --mc-7: #777777;
+        --mc-8: #555555;
+        --mc-9: #0000FF;
+        --mc-a: #008800;
+        --mc-b: #008888;
+        --mc-c: #CC0000;
+        --mc-d: #AA00AA;
+        --mc-e: #999900;
+        --mc-f: #222222;
     }
 
     /* Search Panel */
@@ -189,6 +261,26 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     }
 
     /* Dark Mode Styles */
+    .shop-explorer-container.dark-mode {
+        /* Minecraft Color Variables - Dark Mode Overrides (High Contrast) */
+        --mc-0: #FFFFFF;
+        --mc-1: #5555FF;
+        --mc-2: #55FF55;
+        --mc-3: #55FFFF;
+        --mc-4: #FF5555;
+        --mc-5: #FF55FF;
+        --mc-6: #FFAA00;
+        --mc-7: #AAAAAA;
+        --mc-8: #CCCCCC;
+        --mc-9: #5555FF;
+        --mc-a: #55FF55;
+        --mc-b: #55FFFF;
+        --mc-c: #FF5555;
+        --mc-d: #FF55FF;
+        --mc-e: #FFFF55;
+        --mc-f: #FFFFFF;
+    }
+
     .shop-explorer-container.dark-mode .search-panel {
         background: rgba(24, 24, 24, 0.98);
         border-color: rgba(255, 255, 255, 0.08);
@@ -244,6 +336,35 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         border-color: #444 !important;
     }
 
+    :global(.count) {
+        color: black;
+    }
+    .shop-explorer-container.dark-mode :global(.count) {
+        color: white !important;
+    }
+
+    /* Compacted (ci) styling - High priority */
+    :global(.stack-count.compacted),
+    :global(.count.compacted) {
+        color: #7b00ff !important;
+        /* background: #000 !important; */
+        /* border: 2px solid #FFD700 !important; */
+        /* text-shadow: 0 0 4px rgba(0,0,0,0.8), 1px 1px 0px #000 !important; */
+        font-weight: 900 !important;
+        /* box-shadow: 0 2px 4px rgba(0,0,0,0.5) !important; */
+        z-index: 10 !important;
+    }
+
+    .shop-explorer-container.dark-mode :global(.stack-count.compacted),
+    .shop-explorer-container.dark-mode :global(.count.compacted) {
+        color: #bb88ff !important;
+    }
+
+    /* Ensure yellow text in active cards */
+    /* :global(.shop-result-card.active .stack-count.compacted) {
+        color: #FFD700 !important;
+    } */
+
     .shop-explorer-container.dark-mode :global(.result-meta) {
         color: #999 !important;
     }
@@ -294,16 +415,11 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         border-bottom-color: #333;
     }
 
-    .shop-explorer-container.dark-mode :global(.exchange-output) {
+    .shop-explorer-container.dark-mode :global(.exchange-output),
+    .shop-explorer-container.dark-mode :global(.exchange-price) {
         background: #1a1a2e !important;
         color: #4da3ff !important;
         border: 1px solid rgba(77, 163, 255, 0.2) !important;
-    }
-
-    .shop-explorer-container.dark-mode :global(.exchange-price) {
-        background: #262626 !important;
-        color: #eee !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
 
     .search-header {
@@ -371,13 +487,56 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         margin-bottom: 12px;
     }
 
+    .advanced-options-wrapper {
+        display: flex;
+        flex-direction: column;
+        max-height: 500px;
+        overflow: hidden;
+        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                    opacity 0.3s ease,
+                    padding 0.4s ease,
+                    margin 0.4s ease;
+        position: relative;
+        padding-right: 10px;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .advanced-options-wrapper {
+            max-height: 250px;
+        }
+    }
+
+    .advanced-options-wrapper.collapsed {
+        max-height: 0;
+        opacity: 0;
+        padding-top: 0;
+        margin-top: 0;
+        pointer-events: none;
+    }
+
     .advanced-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 10px;
-        padding: 0;
+        padding: 12px 0;
         border-top: 1px solid #eee;
-        padding-top: 12px;
+        overflow-y: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .advanced-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .advanced-grid.collapsed {
+        max-height: 0;
+        opacity: 0;
+        padding-top: 0;
+        margin-top: 0;
+        border-top-color: transparent;
+        pointer-events: none;
     }
 
     .advanced-grid .govuk-form-group {
@@ -395,9 +554,112 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         height: auto;
     }
 
+    /* Checkbox Refinements - Fixed Vertical Alignment */
+    .side-by-side {
+        display: flex !important;
+        flex-wrap: wrap;
+        gap: 15px;
+        grid-column: span 2;
+        margin-top: 8px;
+        padding-bottom: 4px;
+        justify-content: flex-start;
+    }
+
+    .side-by-side .govuk-checkboxes__item {
+        margin-bottom: 0 !important;
+        min-height: 24px !important;
+        display: flex !important;
+        align-items: center !important;
+        padding-left: 32px !important;
+        position: relative !important;
+    }
+
+    .side-by-side .govuk-checkboxes__input {
+        width: 24px !important;
+        height: 24px !important;
+        top: 0 !important;
+        margin: 0 !important;
+        left: 0 !important;
+        z-index: 2 !important;
+    }
+
+    .side-by-side .govuk-checkboxes__label {
+        padding: 0 !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        display: inline-block !important;
+        line-height: 24px !important;
+        margin: 0 !important;
+    }
+
+    .side-by-side .govuk-checkboxes__label::before {
+        top: 0 !important;
+        width: 24px !important;
+        height: 24px !important;
+        left: 0 !important;
+    }
+
+    .side-by-side .govuk-checkboxes__label::after {
+        top: 10px !important;
+        left: 7px !important;
+        width: 9px !important;
+        height: 4px !important;
+        border-width: 0 0 3px 3px !important;
+        transform: rotate(-45deg) !important;
+    }
+
+    /* Fix oversized hover indicator on checkboxes */
+    .govuk-checkboxes__item:hover .govuk-checkboxes__input:not(:disabled) + .govuk-checkboxes__label::before {
+        box-shadow: none !important;
+    }
+
+    /* Remove yellow focus borders from all elements */
+    .shop-explorer-container *:focus,
+    .shop-explorer-container *:focus-visible,
+    .shop-explorer-container *:active {
+        outline: none !important;
+        box-shadow: none !important;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    :global(.leaflet-container *:focus),
+    :global(.leaflet-marker-icon:focus) {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    .govuk-checkboxes__input:focus + .govuk-checkboxes__label::before {
+        box-shadow: none !important;
+    }
+
     .search-input-wrapper {
         display: flex;
         gap: 6px;
+    }
+
+    .options-toggle-btn {
+        background: #f3f2f1;
+        color: #505a5f;
+        border: 1px solid #d5d8da;
+        border-radius: 6px;
+        padding: 0 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .shop-explorer-container.dark-mode .options-toggle-btn {
+        background: #262626;
+        color: #aaa;
+        border-color: #444;
+    }
+
+    .options-toggle-btn:hover, .options-toggle-btn.active {
+        background: #1C70B8;
+        color: white;
+        border-color: #1C70B8;
     }
 
     .search-submit-btn {
@@ -418,15 +680,278 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         transform: scale(1.05);
     }
 
+    /* Item Tooltip */
+    .item-tooltip {
+        position: fixed;
+        z-index: 10000;
+        background: rgba(245, 245, 250, 0.96);
+        color: #111;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 15px;
+        pointer-events: none;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        max-width: 350px;
+        line-height: 1.4;
+        white-space: pre-wrap;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        transition: opacity 0.15s ease;
+        font-family: "Minecraft", monospace/*, "Segoe UI", "Roboto", Helvetica, Arial, sans-serif*/;
+        font-weight: 600;
+    }
+
+    .shop-explorer-container.dark-mode .item-tooltip {
+        background: rgba(20, 20, 30, 0.96);
+        color: #eee;
+        border-color: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Minecraft Formatting Colors - Theme Aware */
+    :global(.mc-0) { color: var(--mc-0); }
+    :global(.mc-1) { color: var(--mc-1); }
+    :global(.mc-2) { color: var(--mc-2); }
+    :global(.mc-3) { color: var(--mc-3); }
+    :global(.mc-4) { color: var(--mc-4); }
+    :global(.mc-5) { color: var(--mc-5); }
+    :global(.mc-6) { color: var(--mc-6); }
+    :global(.mc-7) { color: var(--mc-7); }
+    :global(.mc-8) { color: var(--mc-8); }
+    :global(.mc-9) { color: var(--mc-9); }
+    :global(.mc-a) { color: var(--mc-a); }
+    :global(.mc-b) { color: var(--mc-b); }
+    :global(.mc-c) { color: var(--mc-c); }
+    :global(.mc-d) { color: var(--mc-d); }
+    :global(.mc-e) { color: var(--mc-e); }
+    :global(.mc-f) { color: var(--mc-f); }
+    
+    :global(.mc-l) { font-weight: 900; }
+    :global(.mc-m) { text-decoration: line-through; }
+    :global(.mc-n) { text-decoration: underline; }
+    :global(.mc-o) { font-style: italic; }
+    :global(.mc-k) { 
+        display: inline-block;
+        filter: blur(1px);
+        user-select: none;
+        animation: mc-obfuscated 0.15s infinite; 
+    }
+
+    @keyframes mc-obfuscated {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+
+    .item-tooltip.hidden {
+        display: none;
+        opacity: 0;
+    }
+
+    :global(.lore-indicator) {
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        width: 10px;
+        height: 10px;
+        background: #00d4ff;
+        border-radius: 50%;
+        box-shadow: 0 0 12px rgba(0, 212, 255, 1), inset 0 0 4px white;
+        z-index: 10;
+        border: 2px solid white;
+    }
+
+    /* Enchantment Filter Styles */
+    .enchantment-filter-container {
+        margin-top: 4px;
+        padding-top: 8px;
+        border-top: 1px solid #eee;
+    }
+
+    .shop-explorer-container.dark-mode .enchantment-filter-container {
+        border-top-color: #333;
+    }
+
+    .enchant-filters-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+
+    :global(.enchant-filter-row) {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        animation: slideIn 0.2s ease-out;
+    }
+
+    :global(.enchant-name-select) {
+        flex: 1;
+        font-size: 12px !important;
+        padding: 4px !important;
+        height: 30px !important;
+    }
+
+    :global(.enchant-level-input) {
+        width: 55px !important;
+        font-size: 12px !important;
+        padding: 4px !important;
+        height: 30px !important;
+        text-align: center;
+    }
+
+    :global(.remove-enchant-btn) {
+        background: #f3f2f1;
+        color: #d4351c;
+        border: 1px solid #d5d8da;
+        border-radius: 4px;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        transition: all 0.2s;
+    }
+
+    .shop-explorer-container.dark-mode :global(.remove-enchant-btn) {
+        background: #262626;
+        border-color: #444;
+    }
+
+    :global(.remove-enchant-btn:hover) {
+        background: #d4351c;
+        color: white;
+        border-color: #d4351c;
+    }
+
+    .add-enchant-btn {
+        background: transparent;
+        color: #1C70B8;
+        border: 1px dashed #1C70B8;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        width: 100%;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+
+    .add-enchant-btn:hover {
+        background: rgba(28, 112, 184, 0.05);
+        border-style: solid;
+    }
+
+    .shop-explorer-container.dark-mode .add-enchant-btn {
+        color: #4da3ff;
+        border-color: #4da3ff;
+    }
+
     /* Results Container */
+    .results-scroll-wrapper {
+        flex: 1;
+        min-height: 0;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        padding-right: 10px;
+        background: #f3f2f1;
+    }
+
+    .shop-explorer-container.dark-mode .results-scroll-wrapper {
+        background: #121212;
+    }
+
     .results-container {
         flex: 1;
         overflow-y: auto;
         padding: 12px;
-        background: #f3f2f1;
         display: flex;
         flex-direction: column;
         gap: 8px;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .results-container::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Elegant Scroll Indicator Styles */
+    .scroll-container {
+        position: relative;
+    }
+
+    .scroll-indicator {
+        position: absolute;
+        width: 4px;
+        height: calc(100% - 20px);
+        right: 4px;
+        top: 10px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 10;
+        pointer-events: none;
+    }
+
+    .scroll-container:hover .scroll-indicator,
+    .scroll-indicator.visible,
+    #info-panel .scroll-indicator {
+        opacity: 1 !important;
+    }
+
+    .scroll-track {
+        height: 100%;
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 2px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .shop-explorer-container.dark-mode .scroll-track {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .scroll-thumb {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 30%;
+        background: rgba(28, 112, 184, 0.4);
+        border-radius: 2px;
+        transition: top 0.1s ease-out;
+    }
+
+    .shop-explorer-container.dark-mode .scroll-thumb {
+        background: rgba(77, 163, 255, 0.4);
+    }
+
+    .scroll-thumb::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent);
+        border-radius: 2px;
+        animation: scrollGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollGlow {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 0.8; }
+    }
+
+    .scroll-indicator.at-bottom .scroll-thumb::after {
+        animation: none;
+        opacity: 0.1;
     }
 
     :global(.results-placeholder) {
@@ -531,6 +1056,13 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         justify-content: center;
         box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
         position: relative;
+        cursor: help;
+    }
+
+    :global(.item-icon-bg.small) {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
     }
 
     :global(.item-icon) {
@@ -542,14 +1074,14 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     :global(.stack-count) {
         font-size: 12px;
         font-weight: 900;
-        color: white;
-        background: #1C70B8; /* Icenian Blue */
+        color: black;
+        background: #ffffffc1; /* Icenian Blue */
         padding: 2px 6px;
         border-radius: 6px;
         position: absolute;
         bottom: -4px;
         right: -4px;
-        border: 2px solid white;
+        border: 2px solid gray;
         box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         z-index: 2;
     }
@@ -578,6 +1110,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         height: 2.4em;
         word-break: break-word;
     }
+
 
     :global(.result-meta) {
         font-size: 11px;
@@ -671,101 +1204,234 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         border-top-right-radius: 0;
     }
 
-    /* Custom Attribution */
-    .custom-map-attribution {
+    /* Map Info Container */
+    .map-info-container {
         position: absolute;
         bottom: 20px;
         right: 20px;
+        z-index: 1000;
         display: flex;
         flex-direction: column;
         align-items: flex-end;
-        gap: 6px;
-        z-index: 1000;
-        transition: all 0.3s;
-    }
-
-    .attribution-main {
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(8px);
-        padding: 6px 14px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
         gap: 10px;
-        font-size: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        border: 1px solid rgba(0,0,0,0.05);
     }
 
-    .attribution-cta {
-        background: #1C70B8;
-        padding: 4px 12px;
-        border-radius: 20px;
-        box-shadow: 0 4px 12px rgba(28, 112, 184, 0.3);
-        animation: pulse-cta 2s infinite;
+    .info-panel {
+        width: 480px;
+        max-height: 400px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(12px);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-origin: bottom right;
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        pointer-events: auto;
+        display: flex;
+        flex-direction: column;
     }
 
-    @keyframes pulse-cta {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.03); }
-        100% { transform: scale(1); }
+    .info-content {
+        padding: 16px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        overflow-y: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
     }
 
-    .attribution-cta a {
-        color: white;
-        text-decoration: none;
-        font-weight: 700;
+    /* Ensure CTA box is on the right of the first section on PC */
+    .info-content > *:nth-child(1) { grid-area: auto; }
+    .info-content > *:nth-child(2) { grid-area: auto; }
+
+    .info-content .info-cta-box {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    .info-content::-webkit-scrollbar {
+        display: none;
+    }
+
+    .shop-explorer-container.dark-mode .info-panel {
+        background: rgba(24, 24, 35, 0.95);
+        border-color: rgba(255, 255, 255, 0.1);
+        color: #eee;
+    }
+
+    .info-panel.hidden {
+        opacity: 0;
+        transform: scale(0.9) translateY(10px);
+        pointer-events: none;
+    }
+
+
+    .info-section h5 {
+        margin: 0 0 8px 0;
         font-size: 11px;
-    }
-
-    .shop-explorer-container.dark-mode .attribution-main {
-        background: rgba(20, 20, 35, 0.85);
-        color: #aaa;
-        border-color: rgba(255,255,255,0.1);
-    }
-
-    .attr-label {
-        color: #666;
-        font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
-        font-size: 9px;
+        letter-spacing: 0.1em;
+        color: #666;
+        font-weight: 700;
     }
 
-    .shop-explorer-container.dark-mode .attr-label {
-        color: #888;
+    .shop-explorer-container.dark-mode .info-section h5 {
+        color: #999;
     }
 
-    .attribution-item a {
+    .info-section p {
+        margin: 4px 0;
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    .info-section a {
         color: #1C70B8;
         text-decoration: none;
-        font-weight: 700;
+        font-weight: 600;
     }
 
-    .attribution-item a:hover {
+    .info-section a:hover {
         text-decoration: underline;
     }
 
-    .attribution-divider {
-        width: 1px;
-        height: 12px;
-        background: #ddd;
+    .info-section code {
+        background: rgba(0, 0, 0, 0.05);
+        padding: 2px 4px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 12px;
+        color: #d4351c;
     }
 
-    .shop-explorer-container.dark-mode .attribution-divider {
-        background: #444;
+    .shop-explorer-container.dark-mode .info-section code {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ff6b6b;
+    }
+
+    .info-cta-box {
+        margin-top: 4px;
+    }
+
+    .modrinth-cta {
+        display: block;
+        background: #1bd96a;
+        color: #111 !important;
+        text-align: center;
+        padding: 12px 8px;
+        border-radius: 12px;
+        text-decoration: none !important;
+        transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 4px 0 #14a350;
+        margin-top: 8px;
+    }
+
+    .modrinth-cta:hover {
+        background: #22e577;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 0 #14a350;
+    }
+
+    .modrinth-cta:active {
+        transform: translateY(1px);
+        box-shadow: 0 2px 0 #14a350;
+    }
+
+    .cta-title {
+        font-weight: 800;
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+
+    .cta-desc {
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1.3;
+        opacity: 0.9;
+    }
+
+    .info-btn {
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 50% !important;
+        background: #1C70B8 !important;
+        color: white !important;
+        box-shadow: 0 4px 12px rgba(28, 112, 184, 0.4) !important;
+    }
+
+    .info-btn:hover {
+        transform: scale(1.1) !important;
     }
 
     @media (max-width: 768px) {
-        .custom-map-attribution {
-            right: 10px;
-            bottom: 60px;
-            align-items: center;
-            width: calc(100% - 20px);
+        .map-info-container {
+            bottom: calc(50% + 10px);
+            left: 10px;
+            right: auto;
+            align-items: flex-start;
+            z-index: 1001;
         }
-        .map-controls-info {
+        .info-panel {
+            width: 220px;
+            transform-origin: bottom left;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .info-content {
+            grid-template-columns: 1fr;
+        }
+        .advanced-grid.hidden-mobile {
             display: none;
         }
+        .search-panel {
+            height: 50% !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            border-radius: 16px 16px 0 0 !important;
+            top: auto !important;
+        }
+    }
+
+    .donation-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .donation-item span {
+        font-size: 13px;
+        color: #666;
+        font-weight: 500;
+    }
+
+    .shop-explorer-container.dark-mode .donation-item span {
+        color: #aaa;
+    }
+
+    .sortcode {
+        font-weight: 800;
+        font-size: 13px;
+        letter-spacing: 0.05em;
+        background: #fff;
+        padding: 3px 8px;
+        border-radius: 6px;
+        color: #d4351c;
+        border: 1px solid rgba(212, 53, 28, 0.3);
+        font-family: monospace;
+        box-shadow: 0 2px 4px rgba(212, 53, 28, 0.1);
+    }
+
+    .shop-explorer-container.dark-mode .sortcode {
+        background: #1a1a1a;
+        color: #ff6b6b;
+        border-color: rgba(255, 107, 107, 0.4);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
 
     /* Map */
@@ -780,21 +1446,6 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         image-rendering: pixelated !important;
         image-rendering: crisp-edges !important;
         -ms-interpolation-mode: nearest-neighbor;
-    }
-
-    .map-controls-info {
-        position: absolute;
-        bottom: 20px;
-        right: 20px;
-        background: rgba(20, 20, 35, 0.85);
-        backdrop-filter: blur(8px);
-        color: white;
-        padding: 10px 20px;
-        border-radius: 24px;
-        font-size: 13px;
-        z-index: 1000;
-        pointer-events: none;
-        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     /* Loading Overlay */
@@ -813,6 +1464,10 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     .shop-explorer-container.dark-mode .loading-overlay {
         background: rgba(18, 18, 18, 0.9);
         color: white;
+    }
+
+    .shop-explorer-container.dark-mode .loading-overlay p {
+        color: white !important;
     }
 
     .hidden {
@@ -908,10 +1563,27 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         100% { box-shadow: 0 0 0 30px rgba(255, 215, 0, 0); }
     }
 
-    /* Popup Styling */
+    /* Popup Styling - Fixed Overflow and Width */
     :global(.shop-popup) {
-        min-width: 240px;
+        min-width: 350px;
+        width: max-content;
+        max-width: 550px;
         font-family: "nta", Arial, sans-serif;
+    }
+
+    :global(.leaflet-popup-content-wrapper) {
+        width: max-content !important;
+        min-width: 380px;
+        max-width: 600px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+        border-radius: 12px !important;
+    }
+
+    :global(.leaflet-popup-content) {
+        width: auto !important;
+        margin: 12px 16px !important;
+        max-width: none !important;
     }
 
     :global(.shop-popup h3) {
@@ -956,46 +1628,46 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     }
 
     :global(.popup-item-icon) {
-        width: 24px;
-        height: 24px;
+        width: 22px;
+        height: 22px;
         image-rendering: pixelated;
         flex-shrink: 0;
     }
 
     :global(.exchange-price), :global(.exchange-output) {
         display: inline-flex !important;
-        align-items: baseline !important;
+        align-items: center !important;
         gap: 4px !important;
-        padding: 4px 8px !important;
+        padding: 2px 8px !important;
         border-radius: 8px !important;
-        line-height: 1.2 !important;
+        line-height: 1 !important;
         min-width: 0 !important;
         max-width: 100% !important;
     }
 
-    :global(.exchange-price) {
-        font-weight: 600;
-        color: #0b0c0c;
-        background: #f3f2f1;
-    }
-
-    :global(.exchange-output) {
+    :global(.exchange-price), :global(.exchange-output) {
         font-weight: 700;
         color: #1C70B8;
         background: #f0f7ff;
+        border: 1px solid rgba(28, 112, 184, 0.1);
     }
 
     :global(.exchange-price .count), :global(.exchange-output .count) {
         white-space: nowrap;
         font-weight: 800;
-        font-size: 0.95em;
         opacity: 0.9;
+        position: relative;
+        top: -1px; /* Fix slight downward shift */
     }
 
     :global(.exchange-price .name), :global(.exchange-output .name) {
-        word-break: break-word;
-        overflow: hidden;
+        word-break: normal;
+        overflow: visible;
+        white-space: nowrap;
+        display: inline-block;
+        max-width: none;
     }
+
 
     :global(.exchange-arrow) {
         color: #999;
@@ -1016,13 +1688,25 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             top: 10px;
             right: 10px;
         }
+
+        .side-by-side {
+            gap: 10px;
+        }
+        
+        :global(.shop-popup) {
+            min-width: 260px;
+        }
+        :global(.exchange-price .name), :global(.exchange-output .name) {
+            white-space: normal;
+            max-width: 100px;
+        }
     }
 </style>
 
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-<script is:inline>
+<script is:inline define:vars={{ BASE }}>
     // --- Configuration ---
     const MC_VERSION = '1.21.8';
 
@@ -1034,20 +1718,23 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             maxZoom: 6,
             zoomSnap: 0.1,
             attributionControl: false,
-            zoomControl: false
+            zoomControl: false,
+            preferCanvas: true,
+            wheelPxPerZoomLevel: 120, // Smoother scroll zoom
+            bounceAtZoomLimits: false
         });
 
-        const ICENIA_CITY_COORDS = [4400, -3850]; 
+        const ICENIA_CITY_COORDS = [4380, -3850]; 
 
         function flyToWithOffset(latlng, zoom, options = {}) {
             const isMobile = window.innerWidth <= 768;
             const point = map.project(latlng, zoom);
             let offsetPoint;
             if (isMobile) {
-                offsetPoint = point.add([0, window.innerHeight * 0.2]);
+                offsetPoint = point.add([0, window.innerHeight * 0.14]);
             } else {
                 // Shift map right by 190px (half of search panel width) to center visually
-                offsetPoint = point.subtract([190, 0]);
+                offsetPoint = point.subtract([200, 0]);
             }
             const offsetLatLng = map.unproject(offsetPoint, zoom);
             map.flyTo(offsetLatLng, zoom, { duration: 0.8, ...options });
@@ -1074,22 +1761,36 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         const initialPoint = map.project(ICENIA_CITY_COORDS, 0);
         const isMobileInitial = window.innerWidth <= 768;
         const initialOffsetPoint = isMobileInitial 
-            ? initialPoint.add([0, window.innerHeight * 0.2]) 
-            : initialPoint.subtract([200, 0]);
+            ? initialPoint.add([0, window.innerHeight * 0.14]) 
+            : initialPoint.subtract([-0.145 * window.innerWidth + 360.93, 0]);
         map.setView(map.unproject(initialOffsetPoint, 0), 0);
 
-        L.tileLayer('https://civmc-map.duckdns.org/tiles/terrain/z{z}/{x},{y}.png', {
+        const localTiles = BASE + 'tiles/terrain/z{z}/{x},{y}.png';
+        const primaryTiles = 'https://civmc-map.duckdns.org/tiles/terrain/z{z}/{x},{y}.png';
+        const fallbackTiles = 'https://civmc-map.github.io/tiles/terrain/z{z}/{x},{y}.png';
+
+        // Multi-tier tile loading strategy
+        const tiles = L.tileLayer(localTiles, {
             minZoom: -5,
             maxZoom: 6,
             maxNativeZoom: 0,
             minNativeZoom: -5,
             tileSize: 256,
-            noWrap: true
+            noWrap: true,
+            updateWhenIdle: true,
+            updateWhenZooming: false,
+            keepBuffer: 2
         }).addTo(map);
 
-        L.control.attribution({
-            prefix: '<a href="https://map.civinfo.net" target="_blank">CivMap</a> | Tradex API'
-        }).addTo(map);
+        tiles.on('tileerror', function(error) {
+            if (this._url === localTiles) {
+                console.log('Local tiles not found, trying primary server...');
+                this.setUrl(primaryTiles);
+            } else if (this._url === primaryTiles) {
+                console.warn('Primary tile server failed, switching to fallback');
+                this.setUrl(fallbackTiles);
+            }
+        });
 
         // --- State ---
         let markers = [];
@@ -1098,12 +1799,16 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         let isSettingLocation = false;
         let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
         const markerGroup = L.layerGroup().addTo(map);
+        
+        let lastExchanges = [];
+        let lastQueryLabel = "";
 
         // --- UI Elements ---
         const searchInput = document.getElementById('item-search');
         const searchButton = document.getElementById('search-button');
         const sortModeSelect = document.getElementById('sort-mode');
         const allowUnstockedCheckbox = document.getElementById('allow-unstocked');
+        const iceniaOnlyCheckbox = document.getElementById('icenia-only');
         const resultsContainer = document.getElementById('results-container');
         const loadingOverlay = document.getElementById('loading-overlay');
         const centerIceniaBtn = document.getElementById('center-icenia');
@@ -1121,38 +1826,287 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             return [-z, x];
         }
 
+        const ICON_OVERRIDES = {
+            'barrel': 'blocks/barrel_side.png',
+            'reinforced_deepslate': 'blocks/reinforced_deepslate_top.png',
+            'beehive': 'blocks/beehive_front.png',
+            'bee_nest': 'blocks/bee_nest_front.png',
+            'blast_furnace': 'blocks/blast_furnace_front.png',
+            'furnace': 'blocks/furnace_front.png',
+            'smoker': 'blocks/smoker_front.png',
+            'dispenser': 'blocks/dispenser_front.png',
+            'dropper': 'blocks/dropper_front.png',
+            'observer': 'blocks/observer_front.png',
+            'crafter': 'blocks/crafter_top.png'
+        };
+
         function formatItemName(item) {
-            return item.material.toLowerCase().replace(/_/g, ' ');
+            const baseName = item.material.toLowerCase().replace(/minecraft:/, '').replace(/_/g, ' ');
+            if (item.customName) {
+                // Strip Minecraft color codes for the display name
+                const cleanCustom = item.customName.replace(/§[0-9a-fk-or]/g, '');
+                return `${cleanCustom}<br>(${baseName})`;
+            }
+            return baseName;
+        }
+
+        function formatLoreText(item) {
+            if (!item) return '';
+            let parts = [];
+            
+            // Helper to format enchantment maps
+            const formatEnchantMap = (map, color = '§7') => {
+                if (!map || Object.keys(map).length === 0) return [];
+                return Object.entries(map).map(([name, level]) => {
+                    const enchantName = name.replace('minecraft:', '').replace(/_/g, ' ');
+                    const prettyName = enchantName.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                    return `${color}${prettyName} ${level}`;
+                });
+            };
+
+            // Prioritize Custom Name in lore if it exists
+            if (item.customName) {
+                parts.push(`§b§l${item.customName}`);
+            }
+            
+            // Enchantments (on the item)
+            if (item.enchants && Object.keys(item.enchants).length > 0) {
+                parts.push(...formatEnchantMap(item.enchants, '§7'));
+            }
+
+            // Stored Enchantments (e.g. on Enchanted Books)
+            if (item.storedEnchants && Object.keys(item.storedEnchants).length > 0) {
+                parts.push('§e§nStored Enchantments:');
+                parts.push(...formatEnchantMap(item.storedEnchants, '§e'));
+            }
+
+            // Required Enchantments (Tradex specific)
+            if (item.requiredEnchants && Object.keys(item.requiredEnchants).length > 0) {
+                parts.push('§9§nRequired Enchantments:');
+                parts.push(...formatEnchantMap(item.requiredEnchants, '§9'));
+            }
+
+            // Excluded Enchantments (Tradex specific)
+            if (item.excludedEnchants && item.excludedEnchants.length > 0) {
+                parts.push('§c§nExcluded Enchantments:');
+                item.excludedEnchants.forEach(e => {
+                    const name = e.replace('minecraft:', '').replace(/_/g, ' ');
+                    const prettyName = name.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                    parts.push(`§c- ${prettyName}`);
+                });
+            }
+
+            // Unlisted Enchants Allowed (Tradex specific) - Only show if there are required enchants
+            const hasRequiredEnchants = item.requiredEnchants && Object.keys(item.requiredEnchants).length > 0;
+            if (hasRequiredEnchants) {
+                if (item.unlistedEnchantsAllowed === false) {
+                    parts.push('§8Unlisted Enchants: §a§cForbidden');
+                } else if (item.unlistedEnchantsAllowed === true) {
+                    parts.push('§8Unlisted Enchants: §aAllowed');
+                }
+            }
+
+            // Durable items check
+            const isDurable = /pickaxe|shovel|axe|hoe|shears|sword|bow|crossbow|trident|mace|helmet|chestplate|leggings|boots|elytra|shield|fishing_rod|flint_and_steel|carrot_on_a_stick|warped_fungus_on_a_stick|brush/.test(item.material.toLowerCase());
+
+            // Condition (Tradex specific)
+            if (item.condition !== undefined) {
+                parts.push(`§8Condition: §f§o${item.condition}`);
+            } else if (isDurable) {
+                parts.push(`§8Condition: §cNot Defined`);
+            }
+
+            // Repair Level (Tradex specific) - Only show for durable items
+            const repairVal = item.repairLevel ?? item.repair;
+            if (isDurable && repairVal !== undefined) {
+                parts.push(`§6Repair Level: §6§o${repairVal}`);
+            }
+
+            // Lore lines
+            if (item.lore) {
+                const loreLines = Array.isArray(item.lore) ? item.lore : [String(item.lore)];
+                // Avoid duplicating custom name if it's already in lore
+                loreLines.forEach(line => {
+                    if (item.customName && line.includes(item.customName)) return;
+                    parts.push(`§r${line}`);
+                });
+            }
+
+            // Repair Cost
+            if (item.repairCost > 0) {
+                parts.push(`§8Repair Cost: §7${item.repairCost}`);
+            }
+
+            return parts.join('\n').trim();
+        }
+
+        function renderMinecraftText(text) {
+            if (!text) return '';
+            
+            const codes = {
+                '0': 'mc-0', '1': 'mc-1', '2': 'mc-2', '3': 'mc-3',
+                '4': 'mc-4', '5': 'mc-5', '6': 'mc-6', '7': 'mc-7',
+                '8': 'mc-8', '9': 'mc-9', 'a': 'mc-a', 'b': 'mc-b',
+                'c': 'mc-c', 'd': 'mc-d', 'e': 'mc-e', 'f': 'mc-f',
+                'l': 'mc-l', 'm': 'mc-m', 'n': 'mc-n', 'o': 'mc-o',
+                'k': 'mc-k', 'r': 'mc-r'
+            };
+
+            let html = '';
+            let currentClasses = new Set();
+            let i = 0;
+
+            while (i < text.length) {
+                if (text[i] === '§' && i + 1 < text.length) {
+                    const code = text[i + 1].toLowerCase();
+                    if (codes[code]) {
+                        if (code === 'r') {
+                            currentClasses.clear();
+                        } else if (['l', 'm', 'n', 'o', 'k'].includes(code)) {
+                            currentClasses.add(codes[code]);
+                        } else {
+                            // In Minecraft, color codes reset all formatting codes
+                            currentClasses.forEach(cls => {
+                                if (['mc-l', 'mc-m', 'mc-n', 'mc-o', 'mc-k'].includes(cls)) {
+                                    currentClasses.delete(cls);
+                                }
+                            });
+                            // Also remove any previous color
+                            currentClasses.forEach(cls => {
+                                if (cls.startsWith('mc-') && !['l', 'm', 'n', 'o', 'k', 'r'].includes(cls.slice(3))) {
+                                    currentClasses.delete(cls);
+                                }
+                            });
+                            currentClasses.add(codes[code]);
+                        }
+                        i += 2;
+                        continue;
+                    }
+                }
+
+                if (text[i] === '\n') {
+                    html += '<br>';
+                } else {
+                    const char = text[i];
+                    if (currentClasses.size > 0) {
+                        // For obfuscated text, we replace the character with a random one
+                        if (currentClasses.has('mc-k')) {
+                            html += `<span class="${Array.from(currentClasses).join(' ')}">?</span>`;
+                        } else {
+                            html += `<span class="${Array.from(currentClasses).join(' ')}">${char}</span>`;
+                        }
+                    } else {
+                        html += char;
+                    }
+                }
+                i++;
+            }
+            return html;
+        }
+
+        function formatCount(count, item) {
+            let loreText = '';
+            if (item && item.lore) {
+                loreText = Array.isArray(item.lore) ? item.lore.join(' ') : String(item.lore);
+            }
+            
+            const loreCompacted = (loreText.toLowerCase().includes('compacted')) ||
+                                 (item && item.material && item.material.toLowerCase().includes('compacted'));
+            
+            if (loreCompacted) {
+                return { text: `${count}ci`, isCompacted: true };
+            }
+            
+            if (count > 0 && count % 64 === 0) {
+                return { text: `${count / 64}ci`, isCompacted: true };
+            }
+            
+            return { text: `${count}x`, isCompacted: false };
         }
 
         function getItemIconUrl(material) {
             if (!material) return '';
-            const mat = material.toLowerCase().replace(/ /g, '_');
+            const mat = material.toLowerCase().replace(/ /g, '_').replace(/minecraft:/, '');
+            if (ICON_OVERRIDES[mat]) {
+                return `https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/${MC_VERSION}/${ICON_OVERRIDES[mat]}`;
+            }
             return `https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/${MC_VERSION}/items/${mat}.png`;
         }
+
+        const ENCHANTMENTS = [
+            "Mending", "Unbreaking", "Efficiency", "Silk Touch", "Fortune",
+            "Protection", "Fire Protection", "Blast Protection", "Projectile Protection",
+            "Sharpness", "Smite", "Bane of Arthropods", "Knockback", "Fire Aspect", "Looting",
+            "Power", "Punch", "Flame", "Infinity", "Luck of the Sea", "Lure",
+            "Depth Strider", "Frost Walker", "Respiration", "Aqua Affinity", "Thorns",
+            "Sweeping Edge", "Efficiency", "Silk Touch", "Fortune",
+            "Quick Charge", "Multishot", "Piercing", "Loyalty", "Impaling", "Riptide", "Channeling"
+        ].sort();
+
+        function createEnchantFilterRow() {
+            const row = document.createElement('div');
+            row.className = 'enchant-filter-row';
+            
+            let options = '<option value="">Any Enchantment</option>';
+            ENCHANTMENTS.forEach(e => {
+                options += `<option value="${e.toLowerCase().replace(/ /g, '_')}">${e}</option>`;
+            });
+
+            row.innerHTML = `
+                <select class="govuk-select enchant-name-select">
+                    ${options}
+                </select>
+                <input class="govuk-input enchant-level-input" type="number" placeholder="Lvl" min="1" max="10">
+                <button type="button" class="remove-enchant-btn" title="Remove filter">×</button>
+            `;
+
+            row.querySelector('.enchant-name-select').addEventListener('change', () => applyFiltersAndDisplay());
+            row.querySelector('.enchant-level-input').addEventListener('input', () => applyFiltersAndDisplay());
+            row.querySelector('.remove-enchant-btn').addEventListener('click', () => {
+                row.remove();
+                applyFiltersAndDisplay();
+            });
+
+            return row;
+        }
+
+        document.getElementById('add-enchant-filter').addEventListener('click', () => {
+            document.getElementById('enchantment-filters-list').appendChild(createEnchantFilterRow());
+        });
 
         async function performSearch(isIceniaOnly = false) {
             const outputQuery = searchInput.value.trim();
             const inputQuery = document.getElementById('input-search').value.trim();
-            const limitInput = document.getElementById('search-limit');
             const updatedAfterSelect = document.getElementById('updated-after');
-            const iceniaOnlyCheckbox = document.getElementById('icenia-only');
             
-            const limitToIcenia = isIceniaOnly || (iceniaOnlyCheckbox && iceniaOnlyCheckbox.checked);
-            const limit = limitToIcenia ? 1000 : (parseInt(limitInput.value) || 500);
+            // If isIceniaOnly is true (from button), we force the checkbox and fetch
+            if (isIceniaOnly) {
+                iceniaOnlyCheckbox.checked = true;
+            }
             
-            if (!outputQuery && !inputQuery && !limitToIcenia) return;
+            const limit = isIceniaOnly ? 1000 : 100;
+            
+            if (!outputQuery && !inputQuery && !isIceniaOnly) return;
 
             loadingOverlay.classList.remove('hidden');
             
             try {
                 const searchParams = {
                     limit: limit,
-                    allowUnstocked: limitToIcenia ? true : allowUnstockedCheckbox.checked,
-                    sortMode: limitToIcenia ? 'closest' : sortModeSelect.value
+                    allowUnstocked: isIceniaOnly ? true : allowUnstockedCheckbox.checked,
+                    sortMode: isIceniaOnly ? 'closest' : sortModeSelect.value
                 };
 
-                if (outputQuery) searchParams.output = outputQuery;
+                // Search Bypass Logic: If searching for custom items known to be barrels or player heads, search for the base material
+                let apiOutputQuery = outputQuery;
+                const lowerQuery = outputQuery.toLowerCase();
+                if (lowerQuery.includes('repair kit') || lowerQuery.includes('dropbox') || lowerQuery.includes('compactor') || lowerQuery.includes('smelter')) {
+                    apiOutputQuery = 'barrel';
+                } else if (lowerQuery.includes('head')) {
+                    apiOutputQuery = 'player_head';
+                }
+
+                if (apiOutputQuery) searchParams.output = apiOutputQuery;
                 if (inputQuery) searchParams.input = inputQuery;
                 
                 const updatedAfterMs = parseInt(updatedAfterSelect.value);
@@ -1160,7 +2114,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                     searchParams.updatedAfter = Date.now() - updatedAfterMs;
                 }
 
-                if (sortModeSelect.value === 'closest' || limitToIcenia) {
+                if (sortModeSelect.value === 'closest' || isIceniaOnly) {
                     const pos = userLocation || { x: -3900, z: -4400 };
                     searchParams.pos = {
                         x: Math.round(pos.x),
@@ -1170,75 +2124,176 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                     };
                 }
 
-                // Try direct fetch first, fallback to proxy if it fails (CORS or network error)
                 const TARGET_URL = 'https://api.tradex.civinfo.net/exchanges/search';
-                let response;
-                try {
-                    response = await fetch(TARGET_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(searchParams)
-                    });
-                    if (!response.ok) throw new Error(`Direct fetch status: ${response.status}`);
-                } catch (e) {
-                    console.warn('Direct fetch failed (likely CORS), trying proxy...', e);
-                    const PROXY_URL = 'https://corsproxy.io/?' + encodeURIComponent(TARGET_URL);
-                    response = await fetch(PROXY_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(searchParams)
-                    });
+                
+                // List of proxies to try in order. 
+                // We include the self-hosted worker as the first backup for speed and reliability.
+                const PROXIES = [
+                    { name: 'Direct API', url: TARGET_URL },
+                    { name: 'AllOrigins (Raw)', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(TARGET_URL) },
+                    { name: 'YaCDN', url: 'https://yacdn.org/proxy/' + TARGET_URL },
+                    { name: 'HTMLDriven', url: 'https://cors-anywhere.htmldriven.com/?url=' + TARGET_URL },
+                    { name: 'CodeTabs', url: 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(TARGET_URL) },
+                    { name: 'CORSProxy.io', url: 'https://corsproxy.io/?' + encodeURIComponent(TARGET_URL) },
+                    { name: 'ThingProxy', url: 'https://thingproxy.freeboard.io/fetch/' + TARGET_URL },
+                    { name: 'AllOrigins (JSON)', url: 'https://api.allorigins.win/get?url=' + encodeURIComponent(TARGET_URL) },
+                    { name: 'CORS Bridged', url: 'https://cors.bridged.cc/' + TARGET_URL }
+                ];
+                
+                async function tryFetch(proxy, attemptIndex) {
+                    console.log(`Attempting search via ${proxy.name}...`);
+                    const isAllOriginsJson = proxy.url.includes('allorigins.win/get');
+                    
+                    const controller = new AbortController();
+                    // Use shorter timeout for first few attempts to speed up fallback, 
+                    // but keep 8s for later ones as Tradex can be slow.
+                    const timeoutMs = attemptIndex < 2 ? 5000 : 8000;
+                    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+                    try {
+                        const res = await fetch(proxy.url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(searchParams),
+                            signal: controller.signal
+                        });
+                        
+                        clearTimeout(timeoutId);
+                        
+                        if (!res.ok) throw new Error(`${proxy.name} returned status ${res.status}`);
+                        
+                        const text = await res.text();
+                        
+                        try {
+                            let json = JSON.parse(text);
+                            // AllOrigins /get wraps the response in a JSON object with a 'contents' field
+                            if (isAllOriginsJson && json.contents) {
+                                json = JSON.parse(json.contents);
+                            }
+                            
+                            if (json && (json.exchanges || Array.isArray(json))) {
+                                return json;
+                            }
+                            throw new Error('Invalid JSON structure');
+                        } catch (e) {
+                            throw new Error(`${proxy.name} response was not valid JSON`);
+                        }
+                    } catch (e) {
+                        clearTimeout(timeoutId);
+                        throw e;
+                    }
                 }
 
-                if (!response.ok) throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                let data = null;
+                let lastError = null;
 
-                const data = await response.json();
+                for (let i = 0; i < PROXIES.length; i++) {
+                    const proxy = PROXIES[i];
+                    try {
+                        data = await tryFetch(proxy, i);
+                        if (data) break;
+                    } catch (e) {
+                        console.warn(`${proxy.name} failed:`, e.message);
+                        lastError = e;
+                        continue; // Try next proxy
+                    }
+                }
+
+                if (!data) {
+                    console.error('All search methods failed');
+                    throw new Error(lastError ? `Search failed: ${lastError.message}` : 'Search failed. All proxies are currently unavailable.');
+                }
                 let exchanges = data.exchanges || [];
 
-                // Client-side filtering for better accuracy (Fixes "golden carrot" issue)
+                // Client-side filtering for better accuracy (Fixes "golden carrot" issue and supports custom names/lore)
+                // Uses a multi-word match: all words in the query must appear in the item's metadata
                 if (outputQuery) {
-                    const q = outputQuery.toLowerCase();
-                    exchanges = exchanges.filter(ex => 
-                        ex.output.material.toLowerCase().replace(/_/g, ' ').includes(q)
-                    );
+                    const words = outputQuery.toLowerCase().split(/\s+/).filter(w => w.length > 0);
+                    exchanges = exchanges.filter(ex => {
+                        const material = (ex.output.material || '').toLowerCase().replace(/_/g, ' ');
+                        const customName = (ex.output.customName || '').toLowerCase();
+                        const lore = (Array.isArray(ex.output.lore) ? ex.output.lore.join(' ') : String(ex.output.lore || '')).toLowerCase();
+                        const combined = `${material} ${customName} ${lore}`;
+                        
+                        return words.every(word => combined.includes(word));
+                    });
                 }
                 if (inputQuery) {
-                    const q = inputQuery.toLowerCase();
-                    exchanges = exchanges.filter(ex => 
-                        ex.input.material.toLowerCase().replace(/_/g, ' ').includes(q)
-                    );
+                    const words = inputQuery.toLowerCase().split(/\s+/).filter(w => w.length > 0);
+                    exchanges = exchanges.filter(ex => {
+                        const material = (ex.input.material || '').toLowerCase().replace(/_/g, ' ');
+                        const customName = (ex.input.customName || '').toLowerCase();
+                        const lore = (Array.isArray(ex.input.lore) ? ex.input.lore.join(' ') : String(ex.input.lore || '')).toLowerCase();
+                        const combined = `${material} ${customName} ${lore}`;
+                        
+                        return words.every(word => combined.includes(word));
+                    });
                 }
 
-                if (limitToIcenia) {
-                    exchanges = exchanges.filter(ex => 
-                        ex.pos.x >= ICENIA_CITY_BOUNDS.minX && 
-                        ex.pos.x <= ICENIA_CITY_BOUNDS.maxX && 
-                        ex.pos.z >= ICENIA_CITY_BOUNDS.minZ && 
-                        ex.pos.z <= ICENIA_CITY_BOUNDS.maxZ
-                    );
-                }
-
-                // Client-side sorting (Fixes "Sort by doesn't work" issue)
-                const sortMode = sortModeSelect.value;
-                if (sortMode === 'cheapest') {
-                    exchanges.sort((a, b) => (a.input.count / a.output.count) - (b.input.count / b.output.count));
-                } else if (sortMode === 'latest') {
-                    exchanges.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-                } else if (sortMode === 'stock') {
-                    exchanges.sort((a, b) => b.stock - a.stock);
-                } else if (sortMode === 'closest') {
-                    const pos = userLocation || { x: -3870, z: -4400 };
-                    const dist = (p) => Math.sqrt(Math.pow(p.x - pos.x, 2) + Math.pow(p.z - pos.z, 2));
-                    exchanges.sort((a, b) => dist(a.pos) - dist(b.pos));
-                }
-
-                displayResults(exchanges, isIceniaOnly ? "Icenia City" : (outputQuery || inputQuery));
+                lastExchanges = exchanges;
+                lastQueryLabel = isIceniaOnly ? "Icenia City" : (outputQuery || inputQuery);
+                
+                applyFiltersAndDisplay();
             } catch (error) {
                 console.error('Search failed:', error);
                 resultsContainer.innerHTML = `<div class="results-placeholder"><p class="govuk-body-s" style="color: #d4351c;">Error fetching data from Tradex. Please try again.<br><small>${error.message}</small></p></div>`;
             } finally {
                 loadingOverlay.classList.add('hidden');
             }
+        }
+
+        function applyFiltersAndDisplay() {
+            if (lastExchanges.length === 0 && !lastQueryLabel) return;
+            const iceniaOnly = iceniaOnlyCheckbox.checked;
+            let filtered = [...lastExchanges];
+            
+            // Enchantment filters
+            const enchantRows = document.querySelectorAll('.enchant-filter-row');
+            const activeFilters = [];
+            enchantRows.forEach(row => {
+                const name = row.querySelector('.enchant-name-select').value;
+                const level = parseInt(row.querySelector('.enchant-level-input').value) || 0;
+                if (name) {
+                    activeFilters.push({ name, level });
+                }
+            });
+
+            if (activeFilters.length > 0) {
+                filtered = filtered.filter(ex => {
+                    // Check output item for enchants
+                    if (!ex.output.enchants) return false;
+                    
+                    return activeFilters.every(filter => {
+                        const itemLevel = ex.output.enchants[filter.name] || ex.output.enchants['minecraft:' + filter.name] || 0;
+                        return itemLevel >= filter.level;
+                    });
+                });
+            }
+
+            if (iceniaOnly) {
+                filtered = filtered.filter(ex => 
+                    ex.pos.x >= ICENIA_CITY_BOUNDS.minX && 
+                    ex.pos.x <= ICENIA_CITY_BOUNDS.maxX && 
+                    ex.pos.z >= ICENIA_CITY_BOUNDS.minZ && 
+                    ex.pos.z <= ICENIA_CITY_BOUNDS.maxZ
+                );
+            }
+            
+            // Client-side sorting (Fixes "Sort by doesn't work" issue)
+            const sortMode = sortModeSelect.value;
+            if (sortMode === 'cheapest') {
+                filtered.sort((a, b) => (a.input.count / a.output.count) - (b.input.count / b.output.count));
+            } else if (sortMode === 'latest') {
+                filtered.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+            } else if (sortMode === 'stock') {
+                filtered.sort((a, b) => b.stock - a.stock);
+            } else if (sortMode === 'closest') {
+                const pos = userLocation || { x: -3870, z: -4400 };
+                const dist = (p) => Math.sqrt(Math.pow(p.x - pos.x, 2) + Math.pow(p.z - pos.z, 2));
+                filtered.sort((a, b) => dist(a.pos) - dist(b.pos));
+            }
+
+            displayResults(filtered, lastQueryLabel);
         }
 
         function displayResults(exchanges, queryLabel) {
@@ -1287,22 +2342,34 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                     <div class="exchanges-list">`;
                 
                 locExchanges.forEach(ex => {
+                    const inputFmt = formatCount(ex.input.count, ex.input);
+                    const outputFmt = formatCount(ex.output.count, ex.output);
+                    
+                    const inputLore = formatLoreText(ex.input);
+                    const outputLore = formatLoreText(ex.output);
+
                     popupContent += `
                         <div class="exchange-row">
                             <div class="exchange-item-bundle">
-                                <img class="popup-item-icon" src="${getItemIconUrl(ex.input.material)}" onerror="this.style.opacity='0'">
+                                <div class="item-icon-bg small" ${inputLore ? `data-lore="${inputLore.replace(/"/g, '&quot;')}"` : ''}>
+                                    <img class="popup-item-icon" src="${getItemIconUrl(ex.input.material)}" onerror="if(!this.dataset.triedBlock){this.dataset.triedBlock=true; this.src=this.src.replace('/items/', '/blocks/');}else{this.style.opacity='0';}">
+                                    ${inputLore ? '<div class="lore-indicator"></div>' : ''}
+                                </div>
                                 <span class="exchange-price">
-                                    <span class="count">${ex.input.count}x</span>
+                                    <span class="count ${inputFmt.isCompacted ? 'compacted' : ''}">${inputFmt.text}</span>
                                     <span class="name">${formatItemName(ex.input)}</span>
                                 </span>
                             </div>
                             <span class="exchange-arrow">→</span>
                             <div class="exchange-item-bundle output">
                                 <span class="exchange-output">
-                                    <span class="count">${ex.output.count}x</span>
+                                    <span class="count ${outputFmt.isCompacted ? 'compacted' : ''}">${outputFmt.text}</span>
                                     <span class="name">${formatItemName(ex.output)}</span>
                                 </span>
-                                <img class="popup-item-icon" src="${getItemIconUrl(ex.output.material)}" onerror="this.style.opacity='0'">
+                                <div class="item-icon-bg small" ${outputLore ? `data-lore="${outputLore.replace(/"/g, '&quot;')}"` : ''}>
+                                    <img class="popup-item-icon" src="${getItemIconUrl(ex.output.material)}" onerror="if(!this.dataset.triedBlock){this.dataset.triedBlock=true; this.src=this.src.replace('/items/', '/blocks/');}else{this.style.opacity='0';}">
+                                    ${outputLore ? '<div class="lore-indicator"></div>' : ''}
+                                </div>
                             </div>
                         </div>
                     `;
@@ -1314,6 +2381,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             });
 
             resultsContainer.innerHTML = '';
+            const fragment = document.createDocumentFragment();
             exchanges.forEach((ex, index) => {
                 const card = document.createElement('div');
                 card.className = 'shop-result-card';
@@ -1323,6 +2391,11 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 const stockText = ex.stock > 0 ? `Stock: ${ex.stock}` : 'Out of Stock';
                 const outputName = formatItemName(ex.output);
                 const inputName = formatItemName(ex.input);
+                const inputFmt = formatCount(ex.input.count, ex.input);
+                const outputFmt = formatCount(ex.output.count, ex.output);
+                
+                const inputLore = formatLoreText(ex.input);
+                const outputLore = formatLoreText(ex.output);
 
                 // Freshness logic
                 const now = Date.now();
@@ -1341,17 +2414,19 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 card.innerHTML = `
                     <div class="trade-display">
                         <div class="item-stack">
-                            <div class="item-icon-bg">
-                                <img class="item-icon" src="${getItemIconUrl(ex.input.material)}" onerror="this.style.opacity='0'" alt="">
-                                <span class="stack-count">${ex.input.count}x</span>
+                            <div class="item-icon-bg" ${inputLore ? `data-lore="${inputLore.replace(/"/g, '&quot;')}"` : ''}>
+                                <img class="item-icon" src="${getItemIconUrl(ex.input.material)}" onerror="if(!this.dataset.triedBlock){this.dataset.triedBlock=true; this.src=this.src.replace('/items/', '/blocks/');}else{this.style.opacity='0';}" alt="">
+                                <span class="stack-count ${inputFmt.isCompacted ? 'compacted' : ''}">${inputFmt.text}</span>
+                                ${inputLore ? '<div class="lore-indicator"></div>' : ''}
                             </div>
                             <span class="item-label">${inputName}</span>
                         </div>
                         <div class="trade-arrow">→</div>
                         <div class="item-stack">
-                            <div class="item-icon-bg">
-                                <img class="item-icon" src="${getItemIconUrl(ex.output.material)}" onerror="this.style.opacity='0'" alt="">
-                                <span class="stack-count">${ex.output.count}x</span>
+                            <div class="item-icon-bg" ${outputLore ? `data-lore="${outputLore.replace(/"/g, '&quot;')}"` : ''}>
+                                <img class="item-icon" src="${getItemIconUrl(ex.output.material)}" onerror="if(!this.dataset.triedBlock){this.dataset.triedBlock=true; this.src=this.src.replace('/items/', '/blocks/');}else{this.style.opacity='0';}" alt="">
+                                <span class="stack-count ${outputFmt.isCompacted ? 'compacted' : ''}">${outputFmt.text}</span>
+                                ${outputLore ? '<div class="lore-indicator"></div>' : ''}
                             </div>
                             <span class="item-label">${outputName}</span>
                         </div>
@@ -1381,8 +2456,9 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                     document.querySelectorAll('.shop-result-card').forEach(c => c.classList.remove('active'));
                     card.classList.add('active');
                 });
-                resultsContainer.appendChild(card);
+                fragment.appendChild(card);
             });
+            resultsContainer.appendChild(fragment);
 
             if (markers.length > 0) {
                 const bounds = L.featureGroup(markers.map(m => m.marker)).getBounds();
@@ -1399,18 +2475,133 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') performSearch(false);
         });
+
+        searchInput.addEventListener('input', () => {
+            searchInput.placeholder = "I want to buy (e.g. diamond)";
+        });
         
         document.getElementById('show-icenia-shops').addEventListener('click', () => {
             searchInput.value = ''; 
             searchInput.placeholder = "Showing all Icenia City shops...";
-            const iceniaOnlyCheckbox = document.getElementById('icenia-only');
-            if (iceniaOnlyCheckbox) iceniaOnlyCheckbox.checked = true;
             performSearch(true);
         });
 
-        sortModeSelect.addEventListener('change', () => performSearch(false));
-        allowUnstockedCheckbox.addEventListener('change', () => performSearch(false));
-        document.getElementById('icenia-only').addEventListener('change', () => performSearch(false));
+        sortModeSelect.addEventListener('change', () => applyFiltersAndDisplay());
+        allowUnstockedCheckbox.addEventListener('change', () => applyFiltersAndDisplay());
+        iceniaOnlyCheckbox.addEventListener('change', () => applyFiltersAndDisplay());
+        
+        const toggleOptionsBtn = document.getElementById('toggle-options');
+        const advancedOptionsWrapper = document.getElementById('advanced-options-wrapper');
+        const advancedOptionsGrid = document.getElementById('advanced-options');
+
+        // Initial state: Open on PC, Closed on Mobile
+        if (window.innerWidth <= 768) {
+            advancedOptionsWrapper.classList.add('collapsed');
+            toggleOptionsBtn.classList.remove('active');
+        } else {
+            toggleOptionsBtn.classList.add('active');
+        }
+
+        toggleOptionsBtn.addEventListener('click', () => {
+            advancedOptionsWrapper.classList.toggle('collapsed');
+            toggleOptionsBtn.classList.toggle('active');
+            // Update scroll indicator when toggled
+            setTimeout(updateAdvancedScroll, 450);
+        });
+
+        // --- Custom Scroll Indicator Logic ---
+        function setupScrollIndicator(scrollEl, indicatorEl) {
+            if (!scrollEl || !indicatorEl) return;
+            
+            const scrollThumb = indicatorEl.querySelector('.scroll-thumb');
+            let hideTimeout;
+            
+            function updateScrollIndicator() {
+                const { scrollTop, scrollHeight, clientHeight } = scrollEl;
+                const scrollableHeight = scrollHeight - clientHeight;
+                
+                // Hide indicator if no scrolling needed
+                if (scrollableHeight <= 0) {
+                    indicatorEl.style.display = 'none';
+                    return;
+                }
+                indicatorEl.style.display = 'block';
+                
+                // Calculate thumb position (0 to 70% to leave room for thumb height)
+                const scrollPercent = scrollTop / scrollableHeight;
+                const thumbTop = scrollPercent * 70;
+                scrollThumb.style.top = thumbTop + '%';
+                
+                // Add/remove at-bottom class to stop glow animation
+                if (scrollPercent > 0.98) {
+                    indicatorEl.classList.add('at-bottom');
+                } else {
+                    indicatorEl.classList.remove('at-bottom');
+                }
+                
+                // Show indicator briefly when scrolling
+                indicatorEl.classList.add('visible');
+                
+                // Don't hide if it's the info panel
+                if (scrollEl.id !== 'info-content') {
+                    clearTimeout(hideTimeout);
+                    hideTimeout = setTimeout(() => {
+                        indicatorEl.classList.remove('visible');
+                    }, 1500);
+                } else {
+                    // For info panel, keep it visible if scrollable
+                    indicatorEl.classList.add('visible');
+                    // Force opacity for info panel indicator
+                    indicatorEl.style.opacity = '1';
+                }
+            }
+            
+            scrollEl.addEventListener('scroll', updateScrollIndicator);
+            
+            // Initial check
+            updateScrollIndicator();
+            
+            return updateScrollIndicator;
+        }
+
+        const updateResultsScroll = setupScrollIndicator(
+            document.getElementById('results-container'),
+            document.getElementById('results-scroll-indicator')
+        );
+
+        const updateAdvancedScroll = setupScrollIndicator(
+            document.getElementById('advanced-options'),
+            document.getElementById('advanced-scroll-indicator')
+        );
+
+        const updateInfoScroll = setupScrollIndicator(
+            document.getElementById('info-content'),
+            document.getElementById('info-scroll-indicator')
+        );
+
+        // Update indicators when content changes
+        const resultsObserver = new MutationObserver(() => {
+            setTimeout(updateResultsScroll, 100);
+        });
+        resultsObserver.observe(document.getElementById('results-container'), { childList: true, subtree: true });
+
+        const advancedObserver = new MutationObserver(() => {
+            setTimeout(updateAdvancedScroll, 100);
+        });
+        advancedObserver.observe(document.getElementById('advanced-options'), { childList: true, subtree: true });
+
+        const infoObserver = new MutationObserver(() => {
+            setTimeout(updateInfoScroll, 100);
+        });
+        infoObserver.observe(document.getElementById('info-content'), { childList: true, subtree: true });
+
+        // Update all scroll indicators on window resize
+        window.addEventListener('resize', () => {
+            updateResultsScroll();
+            updateAdvancedScroll();
+            updateInfoScroll();
+        });
+
         centerIceniaBtn.addEventListener('click', () => flyToWithOffset(ICENIA_CITY_COORDS, 0));
 
         setLocationBtn.addEventListener('click', () => {
@@ -1440,6 +2631,97 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         });
 
         updateDarkMode();
+
+        // --- Tooltip Logic ---
+        const tooltip = document.getElementById('item-tooltip');
+        let tooltipTimeout;
+
+        function showTooltip(e, text) {
+            if (!text) return;
+            tooltip.innerHTML = renderMinecraftText(text);
+            tooltip.classList.remove('hidden');
+            updateTooltipPos(e);
+        }
+
+        function hideTooltip() {
+            tooltip.classList.add('hidden');
+        }
+
+        function updateTooltipPos(e) {
+            const x = e.clientX + 15;
+            const y = e.clientY + 15;
+            
+            // Keep on screen
+            const width = tooltip.offsetWidth;
+            const height = tooltip.offsetHeight;
+            
+            let finalX = x;
+            let finalY = y;
+            
+            if (x + width > window.innerWidth) finalX = e.clientX - width - 15;
+            if (y + height > window.innerHeight) finalY = e.clientY - height - 15;
+            
+            tooltip.style.left = finalX + 'px';
+            tooltip.style.top = finalY + 'px';
+        }
+
+        document.addEventListener('mouseover', (e) => {
+            const target = e.target.closest('[data-lore]');
+            if (target) {
+                showTooltip(e, target.dataset.lore);
+            }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!tooltip.classList.contains('hidden')) {
+                updateTooltipPos(e);
+            }
+        });
+
+        document.addEventListener('mouseout', (e) => {
+            const target = e.target.closest('[data-lore]');
+            if (target) {
+                hideTooltip();
+            }
+        });
+
+        // Mobile support: toggle on click
+        document.addEventListener('click', (e) => {
+            const target = e.target.closest('[data-lore]');
+            if (target && window.innerWidth <= 768) {
+                if (tooltip.classList.contains('hidden')) {
+                    showTooltip(e, target.dataset.lore);
+                    // Auto hide after 3s on mobile
+                    clearTimeout(tooltipTimeout);
+                    tooltipTimeout = setTimeout(hideTooltip, 3000);
+                } else {
+                    hideTooltip();
+                }
+            } else if (!target) {
+                hideTooltip();
+            }
+        });
+
+        const infoToggle = document.getElementById('info-toggle');
+        const infoPanel = document.getElementById('info-panel');
+
+        // PC: Toggled ON by default, Mobile: Toggled OFF
+        if (window.innerWidth > 768) {
+            infoPanel.classList.remove('hidden');
+        }
+
+        infoToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            infoPanel.classList.toggle('hidden');
+            if (!infoPanel.classList.contains('hidden')) {
+                setTimeout(updateInfoScroll, 100);
+            }
+        });
+
+        // Close panel when clicking elsewhere on the map
+        map.on('click', () => {
+            infoPanel.classList.add('hidden');
+        });
 
         document.getElementById('zoom-in').addEventListener('click', () => map.zoomIn());
         document.getElementById('zoom-out').addEventListener('click', () => map.zoomOut());

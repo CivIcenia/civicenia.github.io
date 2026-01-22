@@ -13,14 +13,42 @@ const description = "Search for shop chests and item prices across Icenia and th
 </DefaultLayout>
 
 <style is:global>
+    /* Prevent the whole page from scrolling on the shops page */
+    html, body {
+        height: 100%;
+        overflow: hidden;
+        padding-top: 0 !important; /* Remove body padding to handle it manually */
+    }
+
+    /* Fix navbar position for this page to ensure it doesn't shift */
+    .icenia-navbar {
+        position: fixed !important;
+        top: var(--header-height-desktop) !important;
+        left: 0;
+        width: 100%;
+        height: var(--navbar-height) !important;
+        z-index: 9998 !important;
+        margin: 0 !important;
+    }
+
     /* Ensure the main content takes up remaining space and has no padding */
     #main-content {
         padding: 0 !important;
         margin: 0 !important;
         max-width: none !important;
+        position: fixed;
+        /* Default desktop: header + navbar (navbar-height already includes the 10px border) */
+        top: calc(var(--header-height-desktop) + var(--navbar-height)) !important;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        z-index: 1;
     }
 
-    /* Override govuk-width-container if it's used in DefaultLayout 
-       Actually, looking at default.astro, it doesn't wrap the slot in a container.
-       The container is in page.astro. So using DefaultLayout directly is correct. */
+    /* Mobile mode: navbar is hidden, only header remains */
+    body.menu-mode #main-content {
+        top: var(--header-height-mobile) !important;
+    }
 </style>
