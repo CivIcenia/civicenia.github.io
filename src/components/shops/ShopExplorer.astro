@@ -1525,20 +1525,26 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
 
     /* Shop Pointer Markers */
     :global(.shop-pointer-marker) {
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        will-change: transform;
+        z-index: 500;
     }
     :global(.pointer-inner) {
-        width: 18px;
-        height: 18px;
+        position: absolute;
+        left: 16px;
+        top: 12px;
+        width: 20px;
+        height: 20px;
         background: #1C70B8;
         border: 2px solid white;
         border-radius: 50% 50% 50% 0;
         transform: rotate(-45deg);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        transition: all 0.2s;
+        transform-origin: bottom left; /* Keep the tip fixed during scaling */
+        box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
         display: flex;
         align-items: center;
         justify-content: center;
+        will-change: transform;
     }
     :global(.pointer-inner::after) {
         content: '';
@@ -1554,14 +1560,26 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     }
 
     /* Ping Animation for selected results */
+    :global(.ping-animation) {
+        z-index: 1000 !important;
+    }
     :global(.ping-animation .pointer-inner) {
-        animation: marker-ping 1s ease-out;
         background: #FFD700 !important;
-        transform: rotate(-45deg) scale(1.8);
+        transform: rotate(-45deg) scale(1.2);
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+    }
+    :global(.ping-animation .pointer-inner::before) {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 50% 50% 50% 0;
+        border: 2px solid #FFD700;
+        animation: marker-ping 1.5s infinite;
+        pointer-events: none;
     }
     @keyframes marker-ping {
-        0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.8); }
-        100% { box-shadow: 0 0 0 30px rgba(255, 215, 0, 0); }
+        0% { transform: scale(1); opacity: 1; }
+        100% { transform: scale(3); opacity: 0; }
     }
 
     /* Popup Styling - Fixed Overflow and Width */
@@ -1815,11 +1833,16 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             if (isMobile) {
                 offsetPoint = point.add([0, window.innerHeight * 0.14]);
             } else {
-                // Shift map right by 190px (half of search panel width) to center visually
-                offsetPoint = point.subtract([200, 0]);
+                // Shift map right by 190px to center visually (accounting for search panel)
+                offsetPoint = point.subtract([190, 0]);
             }
             const offsetLatLng = map.unproject(offsetPoint, zoom);
-            map.flyTo(offsetLatLng, zoom, { duration: 0.8, ...options });
+            map.flyTo(offsetLatLng, zoom, { 
+                duration: 0.6,
+                easeLinearity: 0.25,
+                noMoveStart: true,
+                ...options 
+            });
         }
 
         // Override zoom methods to maintain visual center
@@ -1844,7 +1867,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         const isMobileInitial = window.innerWidth <= 768;
         const initialOffsetPoint = isMobileInitial 
             ? initialPoint.add([0, window.innerHeight * 0.14]) 
-            : initialPoint.subtract([-0.145 * window.innerWidth + 360.93, 0]);
+            : initialPoint.subtract([190, 0]);
         map.setView(map.unproject(initialOffsetPoint, 0), 0);
 
         const localTiles = BASE + 'tiles/terrain/z{z}/{x},{y}.png';
@@ -1874,10 +1897,16 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             }
         });
 
+        // --- Configuration ---
+        // Change this value to adjust how close the map zooms when clicking a result (higher = closer)
+        const DEFAULT_CLICK_ZOOM = 3;
+
         // --- State ---
         let markers = [];
         let userLocation = null;
         let userMarker = null;
+        let activeMarker = null;
+        let activeCard = null;
         let isSettingLocation = false;
         let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
         const markerGroup = L.layerGroup().addTo(map);
@@ -1905,7 +1934,8 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         };
 
         function mcToLatLng(x, z) {
-            return [-z, x];
+            // Center on the block by adding 0.5
+            return [-(z + 0.5), x + 0.5];
         }
 
         function formatItemName(item) {
@@ -2313,6 +2343,26 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             }
         }
 
+        function selectMarker(marker) {
+            // Remove ping and reset z-index from previous marker
+            if (activeMarker) {
+                const oldEl = activeMarker.getElement();
+                if (oldEl) {
+                    oldEl.classList.remove('ping-animation');
+                    activeMarker.setZIndexOffset(0);
+                }
+            }
+            
+            activeMarker = marker;
+            const el = marker.getElement();
+            if (el) {
+                el.classList.remove('ping-animation');
+                void el.offsetWidth; // trigger reflow
+                el.classList.add('ping-animation');
+                marker.setZIndexOffset(1000); // Bring to front
+            }
+        }
+
         function applyFiltersAndDisplay() {
             if (lastExchanges.length === 0 && !lastQueryLabel) return;
             const iceniaOnly = iceniaOnlyCheckbox.checked;
@@ -2370,6 +2420,8 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         function displayResults(exchanges, queryLabel) {
             markerGroup.clearLayers();
             markers = [];
+            activeMarker = null;
+            activeCard = null;
 
             if (!exchanges || exchanges.length === 0) {
                 const updatedAfter = document.getElementById('updated-after').value;
@@ -2403,8 +2455,9 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                     icon: L.divIcon({
                         className: 'shop-pointer-marker',
                         html: '<div class="pointer-inner"></div>',
-                        iconSize: [24, 24],
-                        iconAnchor: [12, 24]
+                        iconSize: [32, 32],
+                        iconAnchor: [16, 32],
+                        popupAnchor: [0, -35]
                     })
                 }).addTo(markerGroup);
                 
@@ -2448,6 +2501,11 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 
                 popupContent += `</div></div>`;
                 marker.bindPopup(popupContent);
+                marker.on('click', () => {
+                    const latLng = mcToLatLng(first.pos.x, first.pos.z);
+                    flyToWithOffset(latLng, DEFAULT_CLICK_ZOOM);
+                    selectMarker(marker);
+                });
                 markers.push({ key, marker, exchanges: locExchanges });
             });
 
@@ -2513,19 +2571,41 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 
                 card.addEventListener('click', () => {
                     const latLng = mcToLatLng(ex.pos.x, ex.pos.z);
-                    flyToWithOffset(latLng, 0);
+                    
+                    if (activeCard === card) {
+                        // Second click: Zoom out
+                        if (markers.length > 0) {
+                            const bounds = L.featureGroup(markers.map(m => m.marker)).getBounds();
+                            const isMobile = window.innerWidth <= 768;
+                            map.fitBounds(bounds, { 
+                                paddingTopLeft: isMobile ? [20, 20] : [420, 50],
+                                paddingBottomRight: isMobile ? [20, window.innerHeight * 0.45] : [50, 50],
+                                maxZoom: 0 
+                            });
+                        }
+                        if (activeMarker) {
+                            const oldEl = activeMarker.getElement();
+                            if (oldEl) oldEl.classList.remove('ping-animation');
+                            activeMarker.setZIndexOffset(0);
+                            activeMarker.closePopup();
+                        }
+                        card.classList.remove('active');
+                        activeCard = null;
+                        activeMarker = null;
+                        return;
+                    }
+
+                    flyToWithOffset(latLng, DEFAULT_CLICK_ZOOM);
+                    
                     const markerObj = markers.find(m => m.key === `${ex.pos.x},${ex.pos.y},${ex.pos.z}`);
                     if (markerObj) {
                         markerObj.marker.openPopup();
-                        const el = markerObj.marker.getElement();
-                        if (el) {
-                            el.classList.remove('ping-animation');
-                            void el.offsetWidth;
-                            el.classList.add('ping-animation');
-                        }
+                        selectMarker(markerObj.marker);
                     }
-                    document.querySelectorAll('.shop-result-card').forEach(c => c.classList.remove('active'));
+                    
+                    if (activeCard) activeCard.classList.remove('active');
                     card.classList.add('active');
+                    activeCard = card;
                 });
                 fragment.appendChild(card);
             });
@@ -2587,6 +2667,9 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             const scrollThumb = indicatorEl.querySelector('.scroll-thumb');
             let hideTimeout;
             
+            // Use passive listener for better scroll performance
+            const scrollOptions = { passive: true };
+            
             function updateScrollIndicator() {
                 const { scrollTop, scrollHeight, clientHeight } = scrollEl;
                 const scrollableHeight = scrollHeight - clientHeight;
@@ -2627,7 +2710,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 }
             }
             
-            scrollEl.addEventListener('scroll', updateScrollIndicator);
+            scrollEl.addEventListener('scroll', updateScrollIndicator, scrollOptions);
             
             // Initial check
             updateScrollIndicator();
