@@ -1735,11 +1735,6 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-<script is:inline define:vars={{ BASE }}>
-    // --- Configuration ---
-    const MC_VERSION = '1.21.8';
-</script>
-
 <script>
     import { ITEM_MAPPINGS } from '../../data/item-mappings';
     
@@ -1754,6 +1749,9 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
 </script>
 
 <script is:inline define:vars={{ BASE }}>
+    // --- Configuration ---
+    const MC_VERSION = '1.21.8';
+
     /**
      * Item Mapping System
      * Use this to map Tradex material IDs to specific filenames on mc.nerothe.com
@@ -1789,7 +1787,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             mat = window.ITEM_MAPPINGS[mat];
         }
 
-        return `https://mc.nerothe.com/img/1.21.8/minecraft_${mat}.png`;
+        return `https://mc.nerothe.com/img/${MC_VERSION}/minecraft_${mat}.png`;
     };
 
     /**
