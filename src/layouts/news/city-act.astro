@@ -4,6 +4,7 @@ import { Nullish, Arrays, Strings } from "@helpers";
 import { type CityAct, type CityLaw } from "@schemas";
 import { News } from "@helpers";
 import { CityLaws } from "../../lib/city-laws";
+import { ScrapedItems } from "../../lib/scraped-items";
 
 import { getActChangeColours } from "@comptime";
 
@@ -17,10 +18,19 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
 
 // Format act number for display
 const actNumber = News.formatActNumber(act);
+
+const isUnchecked = ScrapedItems.isUnchecked(act.headline, act.date, true);
 ---
 <PostLayout chin={false}>
     <div class="govuk-panel govuk-panel--confirmation" style="background-color: #1C70B8;">
         <h1 class="govuk-panel__title">
+            {isUnchecked && (
+                <div style="margin-bottom: 15px;">
+                    <strong class="govuk-tag" style="background-color: #f47738; color: #ffffff;" title="This item was automatically scraped and has not been human-checked.">
+                        Awaiting Review
+                    </strong>
+                </div>
+            )}
             <!-- {actNumber && <span style="font-size: 0.8em; display: block; margin-bottom: 10px;">Act {actNumber}</span>} -->
             {act.headline}
         </h1>

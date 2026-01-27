@@ -40,4 +40,33 @@ export namespace ScrapedItems {
     export function getPendingCityCount(): number {
         return getCityItems().filter(item => !item.checked).length;
     }
+
+    export function isUnchecked(headline: string, date: Date | string, isCity: boolean): boolean {
+        const items = isCity ? getCityItems() : getRepublicItems();
+        
+        // Ensure we have a valid Date object
+        const dateObj = typeof date === 'string' ? new Date(date) : date;
+        if (!(dateObj instanceof Date) || isNaN(dateObj.getTime())) {
+            return false;
+        }
+
+        const cleanHeadline = headline.trim().toLowerCase();
+
+        return items.some(item => {
+            if (item.checked) return false;
+            
+            const scrapedHeadline = item.title.replace(/^[^\d]*\d{2}-\d{2}[:\s—-]*\s*/i, '').trim().toLowerCase();
+            
+            // Headlines must match
+            if (scrapedHeadline !== cleanHeadline) return false;
+
+            // Dates can be slightly off (e.g. due to timezones or scraper delay)
+            // We allow up to 2 days difference
+            const itemDate = item.date instanceof Date ? item.date : new Date(item.date);
+            const diffTime = Math.abs(dateObj.getTime() - itemDate.getTime());
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            return diffDays <= 2;
+        });
+    }
 }

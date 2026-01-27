@@ -4,14 +4,23 @@ layout: "@layouts/news/city-act.astro"
 institution: council
 term_number: 1
 act_number: 5
-headline: Resolution on By-Election
+headline: Passing the Decision on By-election
 date: 2025-11-03 22:30:21 +00:00
-excerpt: Passed by the November 2025 City Council.
+discord_thread_id: 1434912593515905000
+excerpt: Sponsored by ratat0ing_
 document:
   type: markdown
-  value: |
-    At the earliest opportunity, the City Council shall hold a by-election to fill the 1 vacant seat, pursuant to Section 3(2) of the the Icenia City Council Act.
+  value: >
+    The City Council votes on whether to hold a by-election to fill the 1 vacant
+    seat, pursuant to Section 3(2) of the the Icenia City Council Act.
+
+
+    > If a Member of the City Council is removed, the City
+
+    Council must determine, by way of simple majority vote,
+
+    whether to host a by-election to replace that Member.
 changes: []
 icon: /assets/images/law_stock.jpeg
 ---
-[Passed by the November 2025 City Council](https://discord.com/channels/558071874161082368/1434912593515905076)
+[Passed by the Term 1 City Council](https://discord.com/channels/558071874161082368/1434912593515905076)

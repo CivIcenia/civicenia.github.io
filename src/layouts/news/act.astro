@@ -5,6 +5,7 @@ import { type Act, type Law } from "@schemas";
 import { News } from "@helpers";
 // We still need to fetch laws data, but we should do it in a way that doesn't trigger a circular dependency
 import { Laws } from "../../lib/laws";
+import { ScrapedItems } from "../../lib/scraped-items";
 import { getActChangeColours } from "@comptime";
 
 import PostLayout from "@layouts/news/post.astro";
@@ -15,13 +16,19 @@ const act = News.ensureAct(frontmatter);
 const laws = Arrays.toMap(await Laws.getLaws(), (law) => law.slug);
 const BASE = (import.meta.env.BASE_URL ?? "/");
 
-
+const isUnchecked = ScrapedItems.isUnchecked(act.headline, act.date, false);
 
 ---
 <PostLayout chin={false}>
     <div class="govuk-panel govuk-panel--confirmation">
         <h1 class="govuk-panel__title">
-            
+            {isUnchecked && (
+                <div style="margin-bottom: 15px;">
+                    <strong class="govuk-tag" style="background-color: #f47738; color: #ffffff;" title="This item was automatically scraped and has not been human-checked.">
+                        Awaiting Review
+                    </strong>
+                </div>
+            )}
             {act.headline}
         </h1>
         <div class="govuk-panel__body">

@@ -2,12 +2,15 @@
 import { type MarkdownLayoutProps } from "astro";
 import { Strings, News } from "@helpers";
 import { type OfficialChange } from "@schemas";
+import { ScrapedItems } from "../../lib/scraped-items";
 
 import PostLayout from "@layouts/news/post.astro";
 
 export type Props = MarkdownLayoutProps<OfficialChange>;
 const { frontmatter } = Astro.props as Props;
 const change = News.ensureOfficialChange(frontmatter);
+
+const isUnchecked = ScrapedItems.isUnchecked(change.headline, change.date, false);
 
 // Get appropriate colors based on action type
 function getActionColours(action: string): { background: string; text: string } {
@@ -58,6 +61,13 @@ function formatRoleName(role: string): string {
 <PostLayout chin={false}>
     <div class="govuk-panel govuk-panel--confirmation">
         <h1 class="govuk-panel__title">
+            {isUnchecked && (
+                <div style="margin-bottom: 15px;">
+                    <strong class="govuk-tag" style="background-color: #f47738; color: #ffffff;" title="This item was automatically scraped and has not been human-checked.">
+                        Awaiting Review
+                    </strong>
+                </div>
+            )}
             {change.headline}
         </h1>
         <div class="govuk-panel__body">

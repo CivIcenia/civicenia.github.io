@@ -4,9 +4,10 @@ layout: "@layouts/news/city-act.astro"
 institution: council
 term_number: 1
 act_number: 4
-headline: City Charter vote clarification
+headline: Passing the City Charter Vote Clarification
 date: 2025-10-30 01:22:22 +00:00
-excerpt: Passed by the October 2025 City Council.
+discord_thread_id: 1433143940848156700
+excerpt: Sponsored by creepily
 document:
   type: markdown
   value: |
@@ -16,4 +17,4 @@ document:
 changes: []
 icon: /assets/images/law_stock.jpeg
 ---
-[Passed by the October 2025 City Council](https://discord.com/channels/558071874161082368/1433143940848156712)
+[Passed by the Term 1 City Council](https://discord.com/channels/558071874161082368/1433143940848156712)

@@ -581,6 +581,12 @@ collections:
         # https://day.js.org/docs/en/display/format
         format: "YYYY-MM-DD HH:mm:00 Z"
         hint: "Typically it's when the President gave assent."
+      # Discord Thread ID
+      - label: "Discord Thread ID"
+        name: "discord_thread_id"
+        widget: "string"
+        required: false
+        hint: "The ID of the Discord thread this legislation was scraped from."
       # Excerpt
       - label: "Excerpt"
         name: "excerpt"
@@ -830,6 +836,12 @@ collections:
     sortable_fields: ["date", "term_number", "act_number"]
     summary: "{{#term_number}}{{term_number}}-{{act_number}} | {{/term_number}}{{headline}}"
     filter: { field: "changetocitylaw", value: true }
+    view_groups:
+      - label : "Term"
+        field: term_number
+      - label: "Year"
+        field: date
+        pattern: \d{4}
     fields:
       # ChangeToCityLaw
       - label: "ChangeToCityLaw"
@@ -883,6 +895,12 @@ collections:
         required: true
         format: "YYYY-MM-DD HH:mm:00 Z"
         hint: "Typically when the ordinance was passed by the Council."
+      # Discord Thread ID
+      - label: "Discord Thread ID"
+        name: "discord_thread_id"
+        widget: "string"
+        required: false
+        hint: "The ID of the Discord thread this legislation was scraped from."
       # Excerpt
       - label: "Excerpt"
         name: "excerpt"

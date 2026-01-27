@@ -4,16 +4,19 @@ layout: "@layouts/news/city-act.astro"
 institution: council
 term_number: 3
 act_number: 4
-headline: Funding for Train Station Remodel
+headline: Passing the Funding for Train Station Remodel
 date: 2025-12-18 00:39:39 +00:00
-excerpt: Passed by the December 2025 City Council.
+discord_thread_id: 1450890199654596900
+excerpt: Sponsored by creepily
 document:
   type: markdown
-  value: |
-    An initial budget of 400 diamonds shall be allocated from the City Treasury towards the revamp of Icenia's International Rail Station.
-    
+  value: >
+    An initial budget of 400 diamonds shall be allocated from the City Treasury
+    towards the revamp of Icenia's International Rail Station.
+
+
     Extra budget may be used for restocking the city council's block storage.
 changes: []
 icon: /assets/images/law_stock.jpeg
 ---
-[Passed by the December 2025 City Council](https://discord.com/channels/558071874161082368/1450890199654596769)
+[Passed by the Term 3 City Council](https://discord.com/channels/558071874161082368/1450890199654596769)

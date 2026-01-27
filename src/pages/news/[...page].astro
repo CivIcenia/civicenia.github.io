@@ -106,6 +106,10 @@ function getChangeDetails(entry: CollectionEntry<"news">) {
     div.news-item-title {
         font-size: 20px;
         font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
     }
 
     div.news-item-excerpt {
@@ -171,6 +175,7 @@ function getChangeDetails(entry: CollectionEntry<"news">) {
 
     {news.map((entry) => {
         const { changes, changeCounts } = getChangeDetails(entry);
+        const isUnchecked = ScrapedItems.isUnchecked(entry.data.headline, entry.data.date, false);
         
         return (
             <a class="news-item-wrapper" href={PERMALINK_ROOTS.news + entry.slug}>
@@ -180,7 +185,14 @@ function getChangeDetails(entry: CollectionEntry<"news">) {
                         <img src={(typeof entry.data.icon === "string" && entry.data.icon.startsWith("/")) ? BASE + entry.data.icon.slice(1) : entry.data.icon} width="100px" height="100px"/>
                     </div>
                     <div class="news-item-content">
-                        <div class="news-item-title">{entry.data.headline}</div>
+                        <div class="news-item-title">
+                            {entry.data.headline}
+                            {isUnchecked && (
+                                <strong class="govuk-tag" style="background-color: #f47738; color: #ffffff;" title="This item was automatically scraped and has not been human-checked.">
+                                    Awaiting Review
+                                </strong>
+                            )}
+                        </div>
                         <div class="news-item-excerpt">{Strings.normaliseWhitespace(Strings.stripHtml(Astros.getOrGenerateExcerpt(entry)))}</div>
                     </div>
                     <div class="news-item-date">{Strings.formatDate(entry.data.date, "dS mmmm yyyy")}</div>

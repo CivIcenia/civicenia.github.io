@@ -11,7 +11,9 @@ import { getActChangeColours } from "@comptime";
 import { Laws as AllLaws, LawIncorporations } from "../lib/laws";
 import { Acts } from "../lib/acts";
 const laws = await AllLaws.getLaws();
-const recentActs = (await Acts.getActs()).slice(0, 5);
+
+const allActs = await Acts.getActs();
+const recentActs = allActs.filter(act => act.data.changes.length > 0).slice(0, 5);
 
 const currentLaws = laws.filter((law) => law.hidden !== true);
 const expiredLaws = laws.filter((law) => law.hidden === true);
@@ -136,33 +138,39 @@ const BASE = import.meta.env.BASE_URL ?? "/";
         </p>
     </div>
 
-        <!-- Recent Changes Section -->
-    {recentActs.length > 0 && (
-        <div class="recent-changes-section">
-            <h2 class="govuk-heading-m" style="margin-top: 0;">Recent Changes to Legislation</h2>
-            {recentActs.map((act) => (
-                <div class="change-item">
-                    <div class="change-info">
-                        <div class="change-date">
-                            {Strings.formatDate(act.data.date, "dS mmmm yyyy")}
-                        </div>
-                        <div class="change-title">
-                             <a href={BASE + "news/" + act.slug} class="govuk-link">
-                                {act.data.headline}
-                            </a>
-                        </div>
+    <!-- Recent Changes Section -->
+    <div class="recent-changes-section">
+        <h2 class="govuk-heading-m" style="margin-top: 0;">Recent Changes to Legislation</h2>
+        {recentActs.length > 0 ? recentActs.map((act) => (
+            <div class="change-item">
+                <div class="change-info">
+                    <div class="change-date">
+                        {Strings.formatDate(act.data.date, "dS mmmm yyyy")}
                     </div>
-                    <div class="change-tags">
-                        {(act.data as Acts.Act).changes.map((change) => (
-                            <strong class="govuk-tag govuk-tag--small" style={`background-color: #${getActChangeColours(change.kind).background}; margin-left: 5px;`}>
-                                {change.kind === "passage" ? "Enacted" : change.kind === "amendment" ? "Amended" : change.kind === "repeal" ? "Repealed" : "Changed"}
-                            </strong>
-                        ))}
+                    <div class="change-title">
+                        <a href={BASE + "news/" + act.slug} class="govuk-link">
+                            {act.data.headline}
+                        </a>
                     </div>
                 </div>
-            ))}
-        </div>
-    )}
+                <div class="change-tags">
+                    {(act.data as Acts.Act).changes.map((change) => (
+                        <strong class="govuk-tag govuk-tag--small" style={`background-color: #${getActChangeColours(change.kind).background}; margin-left: 5px;`}>
+                            {change.kind === "passage" ? "Enacted" : change.kind === "amendment" ? "Amended" : change.kind === "repeal" ? "Repealed" : "Changed"}
+                        </strong>
+                    ))}
+                </div>
+            </div>
+        )) : (
+            <div class="change-item">
+                <div class="change-info">
+                    <div class="change-title" style="color: #6f777b; font-weight: 400;">
+                        No recent changes to legislation.
+                    </div>
+                </div>
+            </div>
+        )}
+    </div>
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-half">

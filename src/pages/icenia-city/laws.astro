@@ -10,7 +10,9 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
 
 // Get city laws and recent acts
 const cityLaws = await CityLaws.getCityLaws();
-const recentActs = (await CityActs.getCityActs()).slice(0, 5);
+
+const allActs = await CityActs.getCityActs();
+const recentActs = allActs.filter(act => (act.data as CityActs.CityAct).changes.length > 0).slice(0, 5);
 
 const currentLaws = cityLaws.filter((law) => law.hidden !== true);
 const expiredLaws = cityLaws.filter((law) => law.hidden === true);
@@ -54,26 +56,25 @@ for (const law of currentLaws) {
     )}
 
     <!-- Recent Changes Section -->
-    {recentActs.length > 0 && (
-        <div class="recent-changes-section">
-            <h2 class="govuk-heading-m" style="margin-top: 0;">Recent Changes to City Legislation</h2>
-            {recentActs.map((act) => {
-                const actData = act.data as CityActs.CityAct;
-                const actNumber = CityActs.formatActNumber(actData);
-                return (
-                    <div class="change-item">
-                        <div class="change-info">
-                            <div class="change-date">
-                                {Strings.formatDate(act.data.date, "dS mmmm yyyy")}
-                                {actNumber && <span style="margin-left: 10px; font-weight: 600; color: #1C70B8;">Act {actNumber}</span>}
-                            </div>
-                            <div class="change-title">
-                                <a href={BASE + "icenia-city/news/" + act.slug} class="govuk-link">
-                                    {act.data.headline}
-                                </a>
-                            </div>
+    <div class="recent-changes-section">
+        <h2 class="govuk-heading-m" style="margin-top: 0;">Recent Changes to City Legislation</h2>
+        {recentActs.length > 0 ? recentActs.map((act) => {
+            const actData = act.data as CityActs.CityAct;
+            const actNumber = CityActs.formatActNumber(actData);
+            return (
+                <div class="change-item">
+                    <div class="change-info">
+                        <div class="change-date">
+                            {Strings.formatDate(act.data.date, "dS mmmm yyyy")}
+                            {actNumber && <span style="margin-left: 10px; font-weight: 600; color: #1C70B8;">Act {actNumber}</span>}
                         </div>
-                        <div class="change-tags">
+                        <div class="change-title">
+                            <a href={BASE + "icenia-city/news/" + act.slug} class="govuk-link">
+                                {act.data.headline}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="change-tags">
                             {actData.changes.map((change) => (
                                 <strong class="govuk-tag govuk-tag--small" style={`background-color: #${getActChangeColours(change.kind).background}; margin-left: 5px;`}>
                                     {change.kind === "passage" ? "Enacted" : change.kind === "amendment" ? "Amended" : change.kind === "repeal" ? "Repealed" : "Changed"}
@@ -82,9 +83,16 @@ for (const law of currentLaws) {
                         </div>
                     </div>
                 );
-            })}
-        </div>
-    )}
+            }) : (
+                <div class="change-item">
+                    <div class="change-info">
+                        <div class="change-title" style="color: #6f777b; font-weight: 400;">
+                            No recent changes to city legislation.
+                        </div>
+                    </div>
+                </div>
+            )}
+    </div>
 
     <!-- Laws Grid -->
     <div class="govuk-grid-row">

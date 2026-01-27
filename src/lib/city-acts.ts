@@ -13,7 +13,7 @@ export namespace CityActs {
 
     export function isCityAct(
         frontmatter: any
-    ) {
+    ): frontmatter is CityAct {
         return frontmatter["changetocitylaw"] === true;
     }
 

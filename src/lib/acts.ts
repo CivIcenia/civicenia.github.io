@@ -13,7 +13,7 @@ export namespace Acts {
 
     export function isAct(
         frontmatter: any
-    ) {
+    ): frontmatter is Act {
         return frontmatter["changetolaw"] === true;
     }
 

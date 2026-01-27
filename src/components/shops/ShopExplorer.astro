@@ -214,6 +214,15 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
 <style>
+    @font-face {
+        font-family: "Minecraft Seven";
+        src: url("/assets/fonts/Minecraft_Seven_v3.woff2") format("woff2"),
+             url("/assets/fonts/minecraft-seven.woff") format("woff");
+        font-weight: 600;
+        font-style: normal;
+        font-display: swap;
+    }
+
     .shop-explorer-container {
         position: relative;
         width: 100%;
@@ -698,7 +707,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         transition: opacity 0.15s ease;
-        font-family: "Minecraft", monospace/*, "Segoe UI", "Roboto", Helvetica, Arial, sans-serif*/;
+        font-family: "Minecraft Seven", "Minecraft", monospace, "Segoe UI", "Roboto", Helvetica, Arial, sans-serif;
         font-weight: 600;
     }
 
@@ -2122,12 +2131,13 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
 
         const ENCHANTMENTS = [
             "Mending", "Unbreaking", "Efficiency", "Silk Touch", "Fortune",
-            "Protection", "Fire Protection", "Blast Protection", "Projectile Protection",
-            "Sharpness", "Smite", "Bane of Arthropods", "Knockback", "Fire Aspect", "Looting",
-            "Power", "Punch", "Flame", "Infinity", "Luck of the Sea", "Lure",
-            "Depth Strider", "Frost Walker", "Respiration", "Aqua Affinity", "Thorns",
-            "Sweeping Edge", "Efficiency", "Silk Touch", "Fortune",
-            "Quick Charge", "Multishot", "Piercing", "Loyalty", "Impaling", "Riptide", "Channeling"
+            "Protection", "Fire Protection", "Blast Protection", "Projectile Protection", "Thorns",
+            "Respiration", "Aqua Affinity", "Swift Sneak", "Depth Strider", "Feather Falling", "Frost Walker", "Soul Speed",
+            "Smite", "Bane of Arthropods", "Knockback", "Fire Aspect", "Looting", "Sharpness", "Sweeping Edge", 
+            "Channeling", "Riptide", "Impaling", "Loyalty",
+            "Power", "Punch", "Flame", "Infinity", 
+            "Luck of the Sea", "Lure",
+            "Curse of Vanishing", "Curse of Binding"
         ].sort();
 
         function createEnchantFilterRow() {
@@ -2371,19 +2381,43 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             const activeFilters = [];
             enchantRows.forEach(row => {
                 const name = row.querySelector('.enchant-name-select').value;
-                const level = parseInt(row.querySelector('.enchant-level-input').value) || 0;
+                const levelStr = row.querySelector('.enchant-level-input').value;
+                const level = levelStr ? (parseInt(levelStr) || 0) : 0;
                 if (name) {
                     activeFilters.push({ name, level });
                 }
             });
 
             if (activeFilters.length > 0) {
+                // Helper: robustly find enchant level in various maps (case-insensitive, fuzzy)
+                const getEnchantLevel = (item, enchantName) => {
+                    if (!item) return 0;
+                    const enchantNorm = enchantName.replace(/_/g, ' ').toString().toLowerCase();
+                    const sources = ['enchants', 'requiredEnchants', 'storedEnchants'];
+                    for (const src of sources) {
+                        const map = item[src];
+                        if (!map) continue;
+                        for (const [k, val] of Object.entries(map)) {
+                            if (!k) continue;
+                            let keyNorm = k.toString().toLowerCase();
+                            if (keyNorm.startsWith('minecraft:')) keyNorm = keyNorm.slice('minecraft:'.length);
+                            keyNorm = keyNorm.replace(/_/g, ' ');
+                            // Exact match
+                            if (keyNorm === enchantNorm) return Number(val) || 0;
+                            // Fuzzy: matches like "fortune" in "fortune 3" or keys with minor formatting differences
+                            if (keyNorm.includes(enchantNorm) || enchantNorm.includes(keyNorm)) return Number(val) || 0;
+                        }
+                    }
+                    return 0;
+                };
+
                 filtered = filtered.filter(ex => {
-                    // Check output item for enchants
-                    if (!ex.output.enchants) return false;
-                    
                     return activeFilters.every(filter => {
-                        const itemLevel = ex.output.enchants[filter.name] || ex.output.enchants['minecraft:' + filter.name] || 0;
+                        const itemLevel = getEnchantLevel(ex.output, filter.name);
+                        // If no level specified (0), match any item that has the enchant at any level
+                        if (filter.level === 0) {
+                            return itemLevel > 0;
+                        }
                         return itemLevel >= filter.level;
                     });
                 });

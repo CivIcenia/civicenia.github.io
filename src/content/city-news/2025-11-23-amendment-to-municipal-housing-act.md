@@ -4,12 +4,15 @@ layout: "@layouts/news/city-act.astro"
 institution: council
 term_number: 2
 act_number: 5
-headline: Amendment to Municipal Housing Act
+headline: Passing the Amendment to Municipal Housing Act
 date: 2025-11-23 16:37:03 +00:00
-excerpt: Passed by the November 2025 City Council.
+discord_thread_id: 1442071440584347730
+excerpt: Sponsored by creepily
 document:
   type: markdown
   value: |
+    AUTOMATICALLY SCRAPED CONTENT:
+
     ## Section 5. Tenant Rights and Regulations
     ### Tenants residing in Municipal Housing Units are subject to the following regulations:
     4. Prohibition on Over-reinforcement: Tenants are strictly prohibited from constructing or reinforcing obsidian in their MHUs.
@@ -20,4 +23,4 @@ document:
 changes: []
 icon: /assets/images/law_stock.jpeg
 ---
-[Passed by the November 2025 City Council](https://discord.com/channels/558071874161082368/1442071440584347730)
+[Passed by the Term 2 City Council](https://discord.com/channels/558071874161082368/1442071440584347730)
