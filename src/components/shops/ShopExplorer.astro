@@ -1,4 +1,5 @@
 ---
+import { ITEM_MAPPINGS } from '../../data/item-mappings';
 /**
  * Shop Explorer Component
  * Interactive map and search for shop chests using Tradex API
@@ -57,7 +58,6 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                         <label class="govuk-label govuk-label--s" for="updated-after">Last Updated Within</label>
                         <select class="govuk-select" id="updated-after" name="updated-after">
                             <option value="0">Anytime</option>
-                            <option value="86400000">24h</option>
                             <option value="604800000" selected>7d</option>
                             <option value="2592000000">30d</option>
                         </select>
@@ -273,14 +273,14 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     .shop-explorer-container.dark-mode {
         /* Minecraft Color Variables - Dark Mode Overrides (High Contrast) */
         --mc-0: #FFFFFF;
-        --mc-1: #5555FF;
-        --mc-2: #55FF55;
-        --mc-3: #55FFFF;
-        --mc-4: #FF5555;
-        --mc-5: #FF55FF;
+        --mc-1: #0000AA;
+        --mc-2: #00AA00;
+        --mc-3: #00AAAA;
+        --mc-4: #AA0000;
+        --mc-5: #AA00AA;
         --mc-6: #FFAA00;
         --mc-7: #AAAAAA;
-        --mc-8: #CCCCCC;
+        --mc-8: #555555;
         --mc-9: #5555FF;
         --mc-a: #55FF55;
         --mc-b: #55FFFF;
@@ -689,18 +689,36 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         transform: scale(1.05);
     }
 
-    /* Item Tooltip */
+    /* Item Tooltip - Always use Minecraft-style dark tooltip */
     .item-tooltip {
+        /* Force Minecraft formatting color variables to the dark-mode high-contrast palette */
+        --mc-0: #FFFFFF;
+        --mc-1: #5555FF;
+        --mc-2: #55FF55;
+        --mc-3: #55FFFF;
+        --mc-4: #FF5555;
+        --mc-5: #FF55FF;
+        --mc-6: #FFAA00;
+        --mc-7: #AAAAAA;
+        --mc-8: #CCCCCC;
+        --mc-9: #5555FF;
+        --mc-a: #55FF55;
+        --mc-b: #55FFFF;
+        --mc-c: #FF5555;
+        --mc-d: #FF55FF;
+        --mc-e: #FFFF55;
+        --mc-f: #FFFFFF;
+
         position: fixed;
         z-index: 10000;
-        background: rgba(245, 245, 250, 0.96);
-        color: #111;
+        background: rgba(20, 20, 30, 0.96);
+        color: #eee;
         padding: 12px 16px;
         border-radius: 8px;
         font-size: 15px;
         pointer-events: none;
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-        border: 2px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+        border: 2px solid rgba(255, 255, 255, 0.08);
         max-width: 350px;
         line-height: 1.4;
         white-space: pre-wrap;
@@ -711,12 +729,6 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         font-weight: 600;
     }
 
-    .shop-explorer-container.dark-mode .item-tooltip {
-        background: rgba(20, 20, 30, 0.96);
-        color: #eee;
-        border-color: rgba(255, 255, 255, 0.1);
-        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
-    }
 
     /* Minecraft Formatting Colors - Theme Aware */
     :global(.mc-0) { color: var(--mc-0); }
@@ -756,19 +768,6 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     .item-tooltip.hidden {
         display: none;
         opacity: 0;
-    }
-
-    :global(.lore-indicator) {
-        position: absolute;
-        top: -2px;
-        left: -2px;
-        width: 10px;
-        height: 10px;
-        background: #00d4ff;
-        border-radius: 50%;
-        box-shadow: 0 0 12px rgba(0, 212, 255, 1), inset 0 0 4px white;
-        z-index: 10;
-        border: 2px solid white;
     }
 
     /* Enchantment Filter Styles */
@@ -1744,20 +1743,9 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-<script>
-    import { ITEM_MAPPINGS } from '../../data/item-mappings';
-    
-    // Expose to window for the inline script
-    (window as any).ITEM_MAPPINGS = {
-        ...ITEM_MAPPINGS,
-        water: 'water_bucket',
-        // Add more entries here as needed, e.g.,
-        // lava: 'lava_bucket',
-    };
-    
-</script>
 
-<script is:inline define:vars={{ BASE }}>
+<script is:inline define:vars={{ BASE, ITEM_MAPPINGS }}>
+
     // --- Configuration ---
     const MC_VERSION = '1.21.8';
 
@@ -1945,104 +1933,156 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             return [-(z + 0.5), x + 0.5];
         }
 
+        function prettyMaterialName(material) {
+            if (!material) return '';
+            const base = material.toLowerCase().replace(/minecraft:/, '').replace(/_/g, ' ');
+            return base.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+
         function formatItemName(item) {
-            const baseName = item.material.toLowerCase().replace(/minecraft:/, '').replace(/_/g, ' ');
+            const pretty = prettyMaterialName(item.material || '');
             if (item.customName) {
                 // Strip Minecraft color codes for the display name
                 const cleanCustom = item.customName.replace(/§[0-9a-fk-or]/g, '');
-                return `${cleanCustom}<br>(${baseName})`;
+                return `${cleanCustom}<br>(${pretty})`;
             }
-            return baseName;
+            return pretty;
         }
 
         function formatLoreText(item) {
+            // Build tooltip text using Minecraft formatting codes (§)
             if (!item) return '';
-            let parts = [];
-            
-            // Helper to format enchantment maps
-            const formatEnchantMap = (map, color = '§7') => {
-                if (!map || Object.keys(map).length === 0) return [];
-                return Object.entries(map).map(([name, level]) => {
-                    const enchantName = name.replace('minecraft:', '').replace(/_/g, ' ');
-                    const prettyName = enchantName.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-                    return `${color}${prettyName} ${level}`;
-                });
-            };
+            const lines = [];
 
-            // Prioritize Custom Name in lore if it exists
+            // Helper: pretty name from material id
+            const baseName = prettyMaterialName(item.material || '');
+
+            // Detect compacted (same heuristic as formatCount)
+            const loreText = item && item.lore ? (Array.isArray(item.lore) ? item.lore.join(' ') : String(item.lore)) : '';
+            const loreCompacted = (loreText.toLowerCase().includes('compacted')) ||
+                                  (item && item.material && item.material.toLowerCase().includes('compacted'));
+
+            // 1) Title: custom name (italic) or base name (not italic) — both in aqua (§b)
             if (item.customName) {
-                parts.push(`§b§l${item.customName}`);
-            }
-            
-            // Enchantments (on the item)
-            if (item.enchants && Object.keys(item.enchants).length > 0) {
-                parts.push(...formatEnchantMap(item.enchants, '§7'));
+                lines.push(`§b§o${item.customName}`);
+            } else if (baseName) {
+                lines.push(`§b${baseName}`);
             }
 
-            // Stored Enchantments (e.g. on Enchanted Books)
-            if (item.storedEnchants && Object.keys(item.storedEnchants).length > 0) {
-                parts.push('§e§nStored Enchantments:');
-                parts.push(...formatEnchantMap(item.storedEnchants, '§e'));
-            }
-
-            // Required Enchantments (Tradex specific)
-            if (item.requiredEnchants && Object.keys(item.requiredEnchants).length > 0) {
-                parts.push('§9§nRequired Enchantments:');
-                parts.push(...formatEnchantMap(item.requiredEnchants, '§9'));
-            }
-
-            // Excluded Enchantments (Tradex specific)
-            if (item.excludedEnchants && item.excludedEnchants.length > 0) {
-                parts.push('§c§nExcluded Enchantments:');
-                item.excludedEnchants.forEach(e => {
-                    const name = e.replace('minecraft:', '').replace(/_/g, ' ');
-                    const prettyName = name.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-                    parts.push(`§c- ${prettyName}`);
+            // 2) Compacted indicator (dark purple §5, italic)
+            // 6) Lore with the lore's own formatting.
+            // If lore contains "Compacted Item" make that line §5§o,
+            // other lore lines keep their formatting if present, otherwise render as gold (§6).
+            if (item.lore) {
+                const loreLines = Array.isArray(item.lore) ? item.lore : [String(item.lore)];
+                loreLines.forEach(l => {
+                    if (!l) return;
+                    const plain = String(l).trim();
+                    if (/compacted item/i.test(plain)) {
+                        // Force the compacted indicator styling
+                        lines.push(`§5§oCompacted Item`);
+                    } else {
+                        // If the lore line already includes Minecraft formatting codes, preserve it.
+                        if (/§[0-9a-fk-or]/i.test(plain)) {
+                            lines.push(plain);
+                        } else {
+                            // Otherwise render as gold normal text
+                            lines.push(`§6${plain}`);
+                        }
+                    }
                 });
             }
 
-            // Unlisted Enchants Allowed (Tradex specific) - Only show if there are required enchants
-            const hasRequiredEnchants = item.requiredEnchants && Object.keys(item.requiredEnchants).length > 0;
-            if (hasRequiredEnchants) {
+            // 3) Repair level: Only show for items that appear to have durability (tools/armor)
+            const isDurable = (() => {
+                if (!item) return false;
+                // Explicit durability fields from API
+                if (item.maxDurability || item.durability || item.repairable) return true;
+                // Fallback heuristic based on material name
+                const mat = (item.material || '').toString().toLowerCase();
+                const durableKeywords = [
+                    'helmet','chestplate','leggings','boots',
+                    'sword','pickaxe','axe','shovel','hoe',
+                    'trident','bow','crossbow','shield','elytra',
+                    'fishing_rod','shears','flint_and_steel'
+                ];
+                return durableKeywords.some(k => mat.includes(k));
+            })();
+            const repairVal = isDurable ? (item.repairLevel ?? item.repair) : undefined;
+            if (repairVal !== undefined && repairVal !== null) {
+                lines.push(`§b${repairVal} levels to repair`);
+            }
+
+            // 4) Enchantments in gray (§7) — aggregate enchants from various sources
+            const collectEnchants = (sources) => {
+                const out = [];
+                for (const src of sources) {
+                    const map = item[src];
+                    if (!map) continue;
+                    for (const [k, v] of Object.entries(map)) {
+                        let name = k.toString().toLowerCase();
+                        if (name.startsWith('minecraft:')) name = name.slice('minecraft:'.length);
+                        name = name.replace(/_/g, ' ');
+                        name = name.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                        out.push(`${name} ${v}`);
+                    }
+                }
+                return out;
+            };
+            const enchList = collectEnchants(['enchants', 'storedEnchants', 'requiredEnchants']);
+            if (enchList.length > 0) {
+                for (const ench of enchList) { // Special case: if the enchant has only 1 possible level, show as EnchantName instead of EnchantName 1
+                    const singleLevelEnchants = ['Aqua Affinity', 'Channeling', 'Curse of Binding', 'Curse of Vanishing', 'Flame', 'Infinity', 'Mending', 'Multishot', 'Silk Touch'];
+                
+                    lines.push(`§7${singleLevelEnchants.includes(ench.replace(' 1', '')) ? ench.replace(' 1', '') : ench}`);
+                }
+                // lines.push(`§7${enchList.join(', ')}`);
+            }
+
+            // 5) Condition in white (§f)
+            if (item.condition !== undefined && item.condition !== null) {
+                lines.push(`§fCondition: ${item.condition}`);
+            }
+
+            // 7) Blank line separator
+            lines.push('');
+
+            // 8) Other information: unlisted/forbidden/excluded enchants — only for enchantable items
+            const isEnchantable = (() => {
+                if (!item) return false;
+                // Primary rule: enchantable if item appears durable (tools/armor/weapons)
+                if (isDurable) return true;
+                // Fallback: treat as enchantable only if the enchant maps/arrays are present and non-empty
+                const hasEnchants = (obj) => {
+                    if (!obj) return false;
+                    if (Array.isArray(obj)) return obj.length > 0;
+                    if (typeof obj === 'object') return Object.keys(obj).length > 0;
+                    return false;
+                };
+                if (hasEnchants(item.enchants) || hasEnchants(item.storedEnchants) || hasEnchants(item.requiredEnchants)) return true;
+                return false;
+            })();
+
+            if (isEnchantable) {
                 if (item.unlistedEnchantsAllowed === false) {
-                    parts.push('§8Unlisted Enchants: §a§cForbidden');
+                    lines.push(`§7Unlisted Enchants: §cForbidden`);
                 } else if (item.unlistedEnchantsAllowed === true) {
-                    parts.push('§8Unlisted Enchants: §aAllowed');
+                    lines.push(`§7Unlisted Enchants: §aAllowed`);
+                }
+
+                // 9) Excluded enchants summary (if present), show in gray with red bullets
+                if (item.excludedEnchants && item.excludedEnchants.length > 0) {
+                    const ex = item.excludedEnchants.map(e => {
+                        let n = e.toString().replace('minecraft:', '').replace(/_/g, ' ');
+                        n = n.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                        return `§c- ${n}`;
+                    }).join('\n');
+                    lines.push(`§7Excluded Enchants:`);
+                    lines.push(ex);
                 }
             }
 
-            // Durable items check
-            const isDurable = /pickaxe|shovel|axe|hoe|shears|sword|bow|crossbow|trident|mace|helmet|chestplate|leggings|boots|elytra|shield|fishing_rod|flint_and_steel|carrot_on_a_stick|warped_fungus_on_a_stick|brush/.test(item.material.toLowerCase());
-
-            // Condition (Tradex specific)
-            if (item.condition !== undefined) {
-                parts.push(`§8Condition: §f§o${item.condition}`);
-            } else if (isDurable) {
-                parts.push(`§8Condition: §cNot Defined`);
-            }
-
-            // Repair Level (Tradex specific) - Only show for durable items
-            const repairVal = item.repairLevel ?? item.repair;
-            if (isDurable && repairVal !== undefined) {
-                parts.push(`§6Repair Level: §6§o${repairVal}`);
-            }
-
-            // Lore lines
-            if (item.lore) {
-                const loreLines = Array.isArray(item.lore) ? item.lore : [String(item.lore)];
-                // Avoid duplicating custom name if it's already in lore
-                loreLines.forEach(line => {
-                    if (item.customName && line.includes(item.customName)) return;
-                    parts.push(`§r${line}`);
-                });
-            }
-
-            // Repair Cost
-            if (item.repairCost > 0) {
-                parts.push(`§8Repair Cost: §7${item.repairCost}`);
-            }
-
-            return parts.join('\n').trim();
+            return lines.join('\n').trim();
         }
 
         function renderMinecraftText(text) {
@@ -2107,6 +2147,20 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 i++;
             }
             return html;
+        }
+
+        function formatTimeAgo(ms) {
+            const seconds = Math.floor(ms / 1000);
+            if (seconds < 60) return `${seconds}s ago`;
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return `${minutes}m ago`;
+            const hours = Math.floor(minutes / 60);
+            if (hours < 48) return `${hours}h ago`;
+            // Show days with one decimal place (e.g. "2.7d ago")
+            const daysFloat = ms / (1000 * 60 * 60 * 24);
+            if (daysFloat < 30) return `${daysFloat.toFixed(1)}d ago`;
+            const months = Math.floor(daysFloat / 30);
+            return `${months}mo ago`;
         }
 
         function formatCount(count, item) {
@@ -2437,7 +2491,8 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             if (sortMode === 'cheapest') {
                 filtered.sort((a, b) => (a.input.count / a.output.count) - (b.input.count / b.output.count));
             } else if (sortMode === 'latest') {
-                filtered.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+                // Prefer `time` from API, fall back to `updatedAt`
+                filtered.sort((a, b) => (b.time || b.updatedAt || 0) - (a.time || a.updatedAt || 0));
             } else if (sortMode === 'stock') {
                 filtered.sort((a, b) => b.stock - a.stock);
             } else if (sortMode === 'closest') {
@@ -2509,7 +2564,6 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                             <div class="exchange-item-bundle">
                                 <div class="item-icon-bg small" ${inputLore ? `data-lore="${inputLore.replace(/"/g, '&quot;')}"` : ''}>
                                     <img class="popup-item-icon" src="${getItemIconUrl(ex.input.material)}" onerror="if(!this.dataset.triedFallback){this.dataset.triedFallback=true; this.src=getFallbackIconUrl('${ex.input.material}');}else if(!this.dataset.triedBlock){this.dataset.triedBlock=true; this.src=this.src.replace('/items/', '/blocks/');}else{this.style.opacity='0';}">
-                                    ${inputLore ? '<div class="lore-indicator"></div>' : ''}
                                 </div>
                                 <span class="exchange-price">
                                     <span class="count ${inputFmt.isCompacted ? 'compacted' : ''}">${inputFmt.text}</span>
@@ -2524,7 +2578,6 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                                 </span>
                                 <div class="item-icon-bg small" ${outputLore ? `data-lore="${outputLore.replace(/"/g, '&quot;')}"` : ''}>
                                     <img class="popup-item-icon" src="${getItemIconUrl(ex.output.material)}" onerror="if(!this.dataset.triedFallback){this.dataset.triedFallback=true; this.src=getFallbackIconUrl('${ex.output.material}');}else if(!this.dataset.triedBlock){this.dataset.triedBlock=true; this.src=this.src.replace('/items/', '/blocks/');}else{this.style.opacity='0';}">
-                                    ${outputLore ? '<div class="lore-indicator"></div>' : ''}
                                 </div>
                             </div>
                         </div>
@@ -2558,13 +2611,28 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 const inputLore = formatLoreText(ex.input);
                 const outputLore = formatLoreText(ex.output);
 
-                // Freshness logic
+                // Robust freshness logic — accept multiple timestamp fields and numeric strings
                 const now = Date.now();
-                const updatedAt = ex.updatedAt || now;
-                const ageDays = (now - updatedAt) / (1000 * 60 * 60 * 24);
+                const rawTs = (ex.time ?? ex.updatedAt ?? ex.timeMillis ?? ex.timestamp ?? null);
+                let updatedAt = null;
+                if (rawTs !== null && rawTs !== undefined) {
+                    const n = Number(rawTs);
+                    if (Number.isFinite(n) && n > 0) updatedAt = n;
+                }
+                const hasUpdated = updatedAt !== null;
+                const ageMs = hasUpdated ? (now - updatedAt) : Infinity;
+                const ageDays = hasUpdated ? (ageMs / (1000 * 60 * 60 * 24)) : Infinity;
+
                 let freshnessClass = 'fresh-red';
                 let freshnessText = 'Old';
-                if (ageDays < 7) {
+                if (!hasUpdated) {
+                    freshnessClass = 'fresh-red';
+                    freshnessText = 'Unknown';
+                } else if (ageMs < 0) {
+                    // Future timestamps — treat as very recent
+                    freshnessClass = 'fresh-green';
+                    freshnessText = 'Recent';
+                } else if (ageDays < 7) {
                     freshnessClass = 'fresh-green';
                     freshnessText = 'Recent';
                 } else if (ageDays < 30) {
@@ -2572,13 +2640,17 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                     freshnessText = '30d';
                 }
 
+                // Human-readable hover title: relative time + full timestamp when available
+                const freshnessTitle = hasUpdated
+                    ? `${formatTimeAgo(Math.abs(ageMs))} — ${new Date(updatedAt).toLocaleString()}`
+                    : 'Last updated: Unknown';
+
                 card.innerHTML = `
                     <div class="trade-display">
                         <div class="item-stack">
                             <div class="item-icon-bg" ${inputLore ? `data-lore="${inputLore.replace(/"/g, '&quot;')}"` : ''}>
                                 <img class="item-icon" src="${getItemIconUrl(ex.input.material)}" onerror="if(!this.dataset.triedFallback){this.dataset.triedFallback=true; this.src=getFallbackIconUrl('${ex.input.material}');}else if(!this.dataset.triedBlock){this.dataset.triedBlock=true; this.src=this.src.replace('/items/', '/blocks/');}else{this.style.opacity='0';}" alt="">
                                 <span class="stack-count ${inputFmt.isCompacted ? 'compacted' : ''}">${inputFmt.text}</span>
-                                ${inputLore ? '<div class="lore-indicator"></div>' : ''}
                             </div>
                             <span class="item-label">${inputName}</span>
                         </div>
@@ -2587,7 +2659,6 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                             <div class="item-icon-bg" ${outputLore ? `data-lore="${outputLore.replace(/"/g, '&quot;')}"` : ''}>
                                 <img class="item-icon" src="${getItemIconUrl(ex.output.material)}" onerror="if(!this.dataset.triedFallback){this.dataset.triedFallback=true; this.src=getFallbackIconUrl('${ex.output.material}');}else if(!this.dataset.triedBlock){this.dataset.triedBlock=true; this.src=this.src.replace('/items/', '/blocks/');}else{this.style.opacity='0';}" alt="">
                                 <span class="stack-count ${outputFmt.isCompacted ? 'compacted' : ''}">${outputFmt.text}</span>
-                                ${outputLore ? '<div class="lore-indicator"></div>' : ''}
                             </div>
                             <span class="item-label">${outputName}</span>
                         </div>
@@ -2595,7 +2666,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                     <div class="result-meta">
                         <div style="display: flex; gap: 4px; align-items: center;">
                             <span class="stock-badge ${stockClass}">${stockText}</span>
-                            <span class="freshness-badge ${freshnessClass}" title="Last updated: ${new Date(updatedAt).toLocaleDateString()}">${freshnessText}</span>
+                            <span class="freshness-badge ${freshnessClass}" title="${freshnessTitle}">${freshnessText}</span>
                         </div>
                         <span class="coords-label">📍 ${ex.pos.x}, ${ex.pos.z}</span>
                     </div>
