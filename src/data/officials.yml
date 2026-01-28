@@ -8,7 +8,7 @@ senate_term: "January 2026"
 # President
 president:
   name: "ChrisChrispie"
-  icon: "https://cdn.discordapp.com/avatars/161282206113857537/dc8ea901aa6653b6d14dab19c170149b.webp?size=256"
+  icon: "https://cdn.discordapp.com/avatars/161282206113857537/f1ec51ee34b93e06f6766e2a857170e2.webp?size=256"
   discord_id: "161282206113857537"
 
 # Secretary of Defense
@@ -49,7 +49,7 @@ senators:
     discord_id: "982344847925051433"
   - seat: 2
     name: "Dr_Bacon_Hair"
-    icon: "https://cdn.discordapp.com/avatars/689297659907145831/2782939e0ee7efe7c1898ed46825f8d7.webp?size=256"
+    icon: "https://cdn.discordapp.com/avatars/689297659907145831/128236dfe42d62508041d1561306bf68.webp?size=256"
     discord_id: "689297659907145831"
   - seat: 3
     name: "Ratat0ing"
