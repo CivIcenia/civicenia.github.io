@@ -1867,10 +1867,23 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
 
         const localTiles = BASE + 'tiles/terrain/z{z}/{x},{y}.png';
         const primaryTiles = 'https://civmc-map.duckdns.org/tiles/terrain/z{z}/{x},{y}.png';
-        const fallbackTiles = 'https://civmc-map.github.io/tiles/terrain/z{z}/{x},{y}.png';
 
-        // Multi-tier tile loading strategy
-        const tiles = L.tileLayer(localTiles, {
+        // Custom tile layer that rounds zoom to integers
+        const RoundedTileLayer = L.TileLayer.extend({
+            getTileUrl: function(coords) {
+                const data = {
+                    r: L.Browser.retina ? '@2x' : '',
+                    s: this._getSubdomain(coords),
+                    x: coords.x,
+                    y: coords.y,
+                    z: Math.round(coords.z) // Force integer zoom
+                };
+                return L.Util.template(this._url, L.extend(data, this.options));
+            }
+        });
+
+        // Tile loading with rounded zoom levels
+        const tiles = new RoundedTileLayer(localTiles, {
             minZoom: -5,
             maxZoom: 6,
             maxNativeZoom: 0,
@@ -1882,13 +1895,11 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             keepBuffer: 2
         }).addTo(map);
 
+        // Fallback to primary server if local tiles fail
         tiles.on('tileerror', function(error) {
             if (this._url === localTiles) {
                 console.log('Local tiles not found, trying primary server...');
                 this.setUrl(primaryTiles);
-            } else if (this._url === primaryTiles) {
-                console.warn('Primary tile server failed, switching to fallback');
-                this.setUrl(fallbackTiles);
             }
         });
 
