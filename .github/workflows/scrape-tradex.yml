@@ -1,0 +1,101 @@
+name: Scrape Tradex dataset
+
+on:
+  schedule:
+    - cron: '*/30 * * * *' # every 30 minutes; change to '0 */1 * * *' for hourly
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scrape-tradex
+  cancel-in-progress: true
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Fetch Tradex data
+        env:
+          TRADEX_API_URL: ${{ secrets.TRADEX_API_URL }}
+          TRADEX_API_KEY: ${{ secrets.TRADEX_API_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p public
+
+          if [ -z "${TRADEX_API_URL:-}" ]; then
+            echo "TRADEX_API_URL secret is not set. Exiting."
+            exit 1
+          fi
+
+          # Fetch the dataset using curl. Include Authorization header only when key is present.
+          if [ -n "${TRADEX_API_KEY:-}" ]; then
+            curl -fsSL -H "Authorization: Bearer ${TRADEX_API_KEY}" "${TRADEX_API_URL}" -o public/data.json
+          else
+            curl -fsSL "${TRADEX_API_URL}" -o public/data.json
+          fi
+
+          # Normalize output: if the API returned a top-level array, wrap it so we always get an object.
+          # This avoids losing metadata when adding _scraped_at.
+          node - <<'NODE'
+          const fs = require('fs');
+          const p = 'public/data.json';
+          let raw;
+          try {
+            raw = fs.readFileSync(p, 'utf8');
+          } catch (err) {
+            console.error('No data.json file to normalize:', err.message);
+            process.exit(0);
+          }
+          let parsed;
+          try {
+            parsed = JSON.parse(raw);
+          } catch (err) {
+            console.error('Failed to parse JSON from public/data.json:', err.message);
+            process.exit(0);
+          }
+          const out = Array.isArray(parsed)
+            ? { _scraped_at: new Date().toISOString(), data: parsed }
+            : (typeof parsed === 'object' && parsed !== null
+                ? Object.assign({}, parsed, { _scraped_at: new Date().toISOString() })
+                : { _scraped_at: new Date().toISOString(), data: parsed });
+          fs.writeFileSync(p, JSON.stringify(out, null, 2));
+          NODE
+
+      - name: Publish scraped data to scraped-data branch
+        env:
+          REPO_URL: https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+        run: |
+          set -euo pipefail
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Prepare a minimal temporary repository to push only the scraped artefacts to a dedicated branch.
+          TMPDIR="$(mktemp -d)"
+          echo "Using tempdir: $TMPDIR"
+          # Copy files if they exist
+          mkdir -p "$TMPDIR"
+          cp public/data.json "$TMPDIR/" 2>/dev/null || true
+          # scraper-status.json may have been created earlier; ensure it exists
+          echo "{\"last_success\":\"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\"}" > public/scraper-status.json
+          cp public/scraper-status.json "$TMPDIR/" 2>/dev/null || true
+
+          cd "$TMPDIR"
+          git init
+          git remote add origin "${REPO_URL}"
+          git add -A
+          git commit -m "chore(scraper): update scraped data [skip ci]" || true
+          # Force-push to the dedicated branch so updates replace previous snapshots.
+          git push -f origin HEAD:refs/heads/scraped-data
+          # Cleanup
+          cd /
+          rm -rf "$TMPDIR"
+
+      - name: Success message
+        run: echo "Scrape job completed."

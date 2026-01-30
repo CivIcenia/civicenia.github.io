@@ -2350,15 +2350,42 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 let data = null;
                 let lastError = null;
 
-                for (let i = 0; i < PROXIES.length; i++) {
-                    const proxy = PROXIES[i];
-                    try {
-                        data = await tryFetch(proxy, i);
-                        if (data) break;
-                    } catch (e) {
-                        console.warn(`${proxy.name} failed:`, e.message);
-                        lastError = e;
-                        continue; // Try next proxy
+                // Try local cached scrape first (public/data.json) to avoid CORS and expensive remote proxies.
+                // If present and valid, prefer it and skip remote fetch attempts.
+                try {
+                    const LOCAL_DATA_URL = (BASE || "/") + "data.json";
+                    const localRes = await fetch(LOCAL_DATA_URL, { cache: "no-cache" });
+                    if (localRes.ok) {
+                        const localJson = await localRes.json();
+                        if (Array.isArray(localJson)) {
+                            data = { exchanges: localJson };
+                        } else if (Array.isArray(localJson.exchanges)) {
+                            data = { exchanges: localJson.exchanges };
+                        } else if (Array.isArray(localJson.data)) {
+                            data = { exchanges: localJson.data };
+                        } else {
+                            // If it's an object that looks like the API response (has exchanges property), accept it.
+                            if (localJson && localJson.exchanges) data = localJson;
+                        }
+                        if (data) {
+                            console.log('Using local cached Tradex data from', LOCAL_DATA_URL);
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Local data.json not available or invalid:', e.message);
+                }
+
+                if (!data) {
+                    for (let i = 0; i < PROXIES.length; i++) {
+                        const proxy = PROXIES[i];
+                        try {
+                            data = await tryFetch(proxy, i);
+                            if (data) break;
+                        } catch (e) {
+                            console.warn(`${proxy.name} failed:`, e.message);
+                            lastError = e;
+                            continue; // Try next proxy
+                        }
                     }
                 }
 
@@ -2366,7 +2393,17 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                     console.error('All search methods failed');
                     throw new Error(lastError ? `Search failed: ${lastError.message}` : 'Search failed. All proxies are currently unavailable.');
                 }
-                let exchanges = data.exchanges || [];
+                // Normalise data shape: accept either { exchanges: [...] } or a raw array
+                let exchanges = [];
+                if (Array.isArray(data)) {
+                    exchanges = data;
+                } else if (Array.isArray(data.exchanges)) {
+                    exchanges = data.exchanges;
+                } else if (Array.isArray(data.data)) {
+                    exchanges = data.data;
+                } else {
+                    exchanges = [];
+                }
 
                 // Client-side filtering for better accuracy (Fixes "golden carrot" issue and supports custom names/lore)
                 // Uses a multi-word match: all words in the query must appear in the item's metadata
