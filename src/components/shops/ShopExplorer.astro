@@ -1821,6 +1821,23 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
 
         const ICENIA_CITY_COORDS = [4380, -3850]; 
 
+        function getVisualCenter() {
+            // Get the current visual center by reversing the offset
+            const isMobile = window.innerWidth <= 768;
+            const currentCenter = map.getCenter();
+            const currentZoom = map.getZoom();
+            const point = map.project(currentCenter, currentZoom);
+            let visualPoint;
+            if (isMobile) {
+                // Reverse the mobile offset
+                visualPoint = point.subtract([0, window.innerHeight * 0.14]);
+            } else {
+                // Reverse the desktop offset
+                visualPoint = point.add([190, 0]);
+            }
+            return map.unproject(visualPoint, currentZoom);
+        }
+
         function flyToWithOffset(latlng, zoom, options = {}) {
             const isMobile = window.innerWidth <= 768;
             const point = map.project(latlng, zoom);
@@ -1845,16 +1862,16 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         const originalZoomOut = map.zoomOut.bind(map);
 
         map.zoomIn = function(delta, options) {
-            const center = map.getCenter();
+            const visualCenter = getVisualCenter();
             const zoom = map.getZoom() + (delta || 1);
-            flyToWithOffset(center, zoom, options);
+            flyToWithOffset(visualCenter, zoom, options);
             return this;
         };
 
         map.zoomOut = function(delta, options) {
-            const center = map.getCenter();
+            const visualCenter = getVisualCenter();
             const zoom = map.getZoom() - (delta || 1);
-            flyToWithOffset(center, zoom, options);
+            flyToWithOffset(visualCenter, zoom, options);
             return this;
         };
 
