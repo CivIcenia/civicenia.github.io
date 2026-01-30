@@ -355,7 +355,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     /* Compacted (ci) styling - High priority */
     :global(.stack-count.compacted),
     :global(.count.compacted) {
-        color: #7b00ff !important;
+        color: #7f00ff !important;
         /* background: #000 !important; */
         /* border: 2px solid #FFD700 !important; */
         /* text-shadow: 0 0 4px rgba(0,0,0,0.8), 1px 1px 0px #000 !important; */
@@ -368,11 +368,6 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     .shop-explorer-container.dark-mode :global(.count.compacted) {
         color: #bb88ff !important;
     }
-
-    /* Ensure yellow text in active cards */
-    /* :global(.shop-result-card.active .stack-count.compacted) {
-        color: #FFD700 !important;
-    } */
 
     .shop-explorer-container.dark-mode :global(.result-meta) {
         color: #999 !important;
@@ -410,7 +405,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
 
     .shop-explorer-container.dark-mode :global(.leaflet-popup-content-wrapper),
     .shop-explorer-container.dark-mode :global(.leaflet-popup-tip) {
-        background: #141423 !important;
+        background: #262626 !important;
         color: white !important;
         border: 1px solid #2d2d44;
     }
@@ -1057,7 +1052,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     :global(.item-icon-bg) {
         width: 52px !important;
         height: 52px !important;
-        background: white;
+        background: #8B8B8B;
         border-radius: 8px;
         display: flex;
         align-items: center;
@@ -1081,17 +1076,21 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     }
 
     :global(.stack-count) {
+        font-family: "Minecraft Seven", "Minecraft", monospace, "Segoe UI", "Roboto", Helvetica, Arial, sans-serif;
         font-size: 12px;
         font-weight: 900;
-        color: black;
-        background: #ffffffc1; /* Icenian Blue */
-        padding: 2px 6px;
+        color: white;
+        /* background: #ffffffc1; */
+        background: #8b8b8bab;
+        padding: 0px 4px;
         border-radius: 6px;
         position: absolute;
-        bottom: -4px;
-        right: -4px;
-        border: 2px solid gray;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        /* bottom: -2px; */
+        /* right: -2px; */
+        bottom: 0px;
+        right: 0px;
+        /* border: 2px solid gray; */
+        /* box-shadow: 0 2px 4px rgba(0,0,0,0); */
         z-index: 2;
     }
 
@@ -1130,22 +1129,28 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         padding-top: 4px;
     }
 
-    .stock-badge {
-        padding: 2px 8px;
-        border-radius: 10px;
-        font-weight: 600;
-    }
-
-    .stock-high { background: #cce2d8; color: #005a30; }
-    .stock-low { background: #fff7bf; color: #594d00; }
-    .stock-none { background: #f6d7d2; color: #942514; }
-
-    :global(.freshness-badge) {
-        padding: 2px 8px;
+    :global(.stock-badge) {
+        padding: 3px 8px 0px 8px;
         border-radius: 10px;
         font-weight: 600;
         font-size: 10px;
         text-transform: uppercase;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    :global(.stock-high) { background: #cce2d8; color: #005a30; }
+    :global(.stock-low) { background: #fff7bf; color: #594d00; }
+    :global(.stock-none) { background: #f6d7d2; color: #942514; }
+
+    :global(.freshness-badge) {
+        padding: 3px 8px 0px 8px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 10px;
+        text-transform: uppercase;
+        display: inline-flex;
+        align-items: center;
     }
     :global(.fresh-green) { background: #00703c; color: white; }
     :global(.fresh-yellow) { background: #ffdd00; color: #0b0c0c; }
@@ -1592,17 +1597,17 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
 
     /* Popup Styling - Fixed Overflow and Width */
     :global(.shop-popup) {
-        min-width: 350px;
+        min-width: 150px;
         width: max-content;
-        max-width: 550px;
+        max-width: 750px;
         font-family: "nta", Arial, sans-serif;
         overflow: visible !important;
     }
 
     :global(.leaflet-popup-content-wrapper) {
         width: max-content !important;
-        min-width: 380px;
-        max-width: 600px;
+        min-width: 200px;
+        max-width: 800px;
         overflow: visible !important;
         box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
         border-radius: 12px !important;
@@ -1638,7 +1643,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
 
     :global(.exchange-row) {
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: center;
         padding: 8px 4px;
         font-size: 13px;
@@ -1654,7 +1659,6 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         display: flex;
         align-items: center;
         gap: 8px;
-        flex: 1;
         min-width: 0;
         overflow: visible;
     }
@@ -1675,11 +1679,13 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         display: inline-flex !important;
         align-items: center !important;
         gap: 4px !important;
-        padding: 2px 8px !important;
+        padding: 8px 8px !important;
         border-radius: 8px !important;
         line-height: 1 !important;
         min-width: 0 !important;
-        max-width: 100% !important;
+        overflow: hidden !important;
+        white-space: nowrap !important;
+        flex-shrink: 0;
     }
 
     :global(.exchange-price), :global(.exchange-output) {
@@ -1694,15 +1700,16 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         font-weight: 800;
         opacity: 0.9;
         position: relative;
-        top: -1px; /* Fix slight downward shift */
+        top: 0px; /* Fix slight downward shift */
     }
 
     :global(.exchange-price .name), :global(.exchange-output .name) {
-        word-break: normal;
-        overflow: visible;
+        overflow: hidden;
+        text-overflow: ellipsis;
         white-space: nowrap;
         display: inline-block;
-        max-width: none;
+        max-width: 300px;
+        min-width: 0;
     }
 
 
@@ -1734,7 +1741,6 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             min-width: 260px;
         }
         :global(.exchange-price .name), :global(.exchange-output .name) {
-            white-space: normal;
             max-width: 100px;
         }
     }
@@ -1972,7 +1978,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             if (item.customName) {
                 // Strip Minecraft color codes for the display name
                 const cleanCustom = item.customName.replace(/§[0-9a-fk-or]/g, '');
-                return `${cleanCustom}<br>(${pretty})`;
+                return `${cleanCustom} (${pretty})`;
             }
             return pretty;
         }
@@ -2208,7 +2214,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 return { text: `${count / 64}ci`, isCompacted: true };
             }
             
-            return { text: `${count}x`, isCompacted: false };
+            return { text: `${count}`, isCompacted: false };
         }
 
         const ENCHANTMENTS = [
