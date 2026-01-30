@@ -2287,74 +2287,86 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                     };
                 }
 
-                // Prefer local scraped JSON first (served from the site).
-                // If missing, fall back to the scraped-data branch raw URL on GitHub.
+                const TARGET_URL = 'https://api.tradex.civinfo.net/exchanges/search';
+                
+                // List of proxies to try in order. 
+                // We include the self-hosted worker as the first backup for speed and reliability.
+                const PROXIES = [
+                    { name: 'Direct API', url: TARGET_URL },
+                    { name: 'AllOrigins (Raw)', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(TARGET_URL) },
+                    { name: 'YaCDN', url: 'https://yacdn.org/proxy/' + TARGET_URL },
+                    { name: 'HTMLDriven', url: 'https://cors-anywhere.htmldriven.com/?url=' + TARGET_URL },
+                    { name: 'CodeTabs', url: 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(TARGET_URL) },
+                    { name: 'CORSProxy.io', url: 'https://corsproxy.io/?' + encodeURIComponent(TARGET_URL) },
+                    { name: 'ThingProxy', url: 'https://thingproxy.freeboard.io/fetch/' + TARGET_URL },
+                    { name: 'AllOrigins (JSON)', url: 'https://api.allorigins.win/get?url=' + encodeURIComponent(TARGET_URL) },
+                    { name: 'CORS Bridged', url: 'https://cors.bridged.cc/' + TARGET_URL }
+                ];
+                
+                async function tryFetch(proxy, attemptIndex) {
+                    console.log(`Attempting search via ${proxy.name}...`);
+                    const isAllOriginsJson = proxy.url.includes('allorigins.win/get');
+                    
+                    const controller = new AbortController();
+                    // Use shorter timeout for first few attempts to speed up fallback, 
+                    // but keep 8s for later ones as Tradex can be slow.
+                    const timeoutMs = attemptIndex < 2 ? 5000 : 8000;
+                    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+                    try {
+                        const res = await fetch(proxy.url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(searchParams),
+                            signal: controller.signal
+                        });
+                        
+                        clearTimeout(timeoutId);
+                        
+                        if (!res.ok) throw new Error(`${proxy.name} returned status ${res.status}`);
+                        
+                        const text = await res.text();
+                        
+                        try {
+                            let json = JSON.parse(text);
+                            // AllOrigins /get wraps the response in a JSON object with a 'contents' field
+                            if (isAllOriginsJson && json.contents) {
+                                json = JSON.parse(json.contents);
+                            }
+                            
+                            if (json && (json.exchanges || Array.isArray(json))) {
+                                return json;
+                            }
+                            throw new Error('Invalid JSON structure');
+                        } catch (e) {
+                            throw new Error(`${proxy.name} response was not valid JSON`);
+                        }
+                    } catch (e) {
+                        clearTimeout(timeoutId);
+                        throw e;
+                    }
+                }
+
                 let data = null;
                 let lastError = null;
 
-                try {
-                    const LOCAL_DATA_URL = (BASE || "/") + "data.json";
-                    const localRes = await fetch(LOCAL_DATA_URL, { cache: "no-cache" });
-                    if (localRes.ok) {
-                        const localJson = await localRes.json();
-                        if (Array.isArray(localJson)) {
-                            data = { exchanges: localJson };
-                        } else if (Array.isArray(localJson.exchanges)) {
-                            data = { exchanges: localJson.exchanges };
-                        } else if (Array.isArray(localJson.data)) {
-                            data = { exchanges: localJson.data };
-                        } else {
-                            if (localJson && localJson.exchanges) data = localJson;
-                        }
-                        if (data) {
-                            console.log('Using local cached Tradex data from', LOCAL_DATA_URL);
-                        }
-                    }
-                } catch (e) {
-                    console.warn('Local data.json not available or invalid:', e.message);
-                }
-
-                if (!data) {
+                for (let i = 0; i < PROXIES.length; i++) {
+                    const proxy = PROXIES[i];
                     try {
-                        // Raw URL for scraped-data branch (public, no auth). Adjust owner/repo if different.
-                        const RAW_SCRAPED_URL = 'https://raw.githubusercontent.com/CivIcenia/civicenia.github.io/scraped-data/data.json';
-                        const rawRes = await fetch(RAW_SCRAPED_URL, { cache: "no-cache" });
-                        if (rawRes.ok) {
-                            const rawJson = await rawRes.json();
-                            if (Array.isArray(rawJson)) {
-                                data = { exchanges: rawJson };
-                            } else if (Array.isArray(rawJson.exchanges)) {
-                                data = { exchanges: rawJson.exchanges };
-                            } else if (Array.isArray(rawJson.data)) {
-                                data = { exchanges: rawJson.data };
-                            } else if (rawJson && rawJson.exchanges) {
-                                data = rawJson;
-                            }
-                            if (data) console.log('Using scraped-data branch JSON from', RAW_SCRAPED_URL);
-                        } else {
-                            lastError = new Error(`Raw scraped-data responded ${rawRes.status}`);
-                        }
+                        data = await tryFetch(proxy, i);
+                        if (data) break;
                     } catch (e) {
-                        console.warn('Failed to fetch scraped-data branch JSON:', e.message);
+                        console.warn(`${proxy.name} failed:`, e.message);
                         lastError = e;
+                        continue; // Try next proxy
                     }
                 }
 
                 if (!data) {
-                    console.error('No scraped data available locally or on scraped-data branch');
-                    throw new Error(lastError ? `Search failed: ${lastError.message}` : 'No scraped data available.');
+                    console.error('All search methods failed');
+                    throw new Error(lastError ? `Search failed: ${lastError.message}` : 'Search failed. All proxies are currently unavailable.');
                 }
-                // Normalise data shape: accept either { exchanges: [...] } or a raw array
-                let exchanges = [];
-                if (Array.isArray(data)) {
-                    exchanges = data;
-                } else if (Array.isArray(data.exchanges)) {
-                    exchanges = data.exchanges;
-                } else if (Array.isArray(data.data)) {
-                    exchanges = data.data;
-                } else {
-                    exchanges = [];
-                }
+                let exchanges = data.exchanges || [];
 
                 // Client-side filtering for better accuracy (Fixes "golden carrot" issue and supports custom names/lore)
                 // Uses a multi-word match: all words in the query must appear in the item's metadata
