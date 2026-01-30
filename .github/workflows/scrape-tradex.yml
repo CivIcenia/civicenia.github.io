@@ -22,50 +22,123 @@ jobs:
           persist-credentials: true
 
       - name: Fetch Tradex data
-        env:
-          TRADEX_API_URL: ${{ secrets.TRADEX_API_URL }}
-          TRADEX_API_KEY: ${{ secrets.TRADEX_API_KEY }}
         run: |
           set -euo pipefail
           mkdir -p public
 
-          if [ -z "${TRADEX_API_URL:-}" ]; then
-            echo "TRADEX_API_URL secret is not set. Exiting."
-            exit 1
-          fi
-
-          # Fetch the dataset using curl. Include Authorization header only when key is present.
-          if [ -n "${TRADEX_API_KEY:-}" ]; then
-            curl -fsSL -H "Authorization: Bearer ${TRADEX_API_KEY}" "${TRADEX_API_URL}" -o public/data.json
-          else
-            curl -fsSL "${TRADEX_API_URL}" -o public/data.json
-          fi
-
-          # Normalize output: if the API returned a top-level array, wrap it so we always get an object.
-          # This avoids losing metadata when adding _scraped_at.
+          # Fetch the dataset using Node.js with proxy fallback
           node - <<'NODE'
           const fs = require('fs');
-          const p = 'public/data.json';
-          let raw;
-          try {
-            raw = fs.readFileSync(p, 'utf8');
-          } catch (err) {
-            console.error('No data.json file to normalize:', err.message);
-            process.exit(0);
+          const https = require('https');
+          const http = require('http');
+
+          const TARGET_URL = 'https://api.tradex.civinfo.net/exchanges/search';
+          
+          // List of proxies to try in order
+          const PROXIES = [
+              { name: 'Direct API', url: TARGET_URL },
+              { name: 'AllOrigins (Raw)', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(TARGET_URL) },
+              { name: 'YaCDN', url: 'https://yacdn.org/proxy/' + TARGET_URL },
+              { name: 'HTMLDriven', url: 'https://cors-anywhere.htmldriven.com/?url=' + TARGET_URL },
+              { name: 'CodeTabs', url: 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(TARGET_URL) },
+              { name: 'CORSProxy.io', url: 'https://corsproxy.io/?' + encodeURIComponent(TARGET_URL) },
+              { name: 'ThingProxy', url: 'https://thingproxy.freeboard.io/fetch/' + TARGET_URL },
+              { name: 'AllOrigins (JSON)', url: 'https://api.allorigins.win/get?url=' + encodeURIComponent(TARGET_URL) },
+              { name: 'CORS Bridged', url: 'https://cors.bridged.cc/' + TARGET_URL }
+          ];
+
+          const searchParams = {}; // Empty search to get all exchanges
+
+          async function tryFetch(proxy, attemptIndex) {
+              console.log(`Attempting search via ${proxy.name}...`);
+              const isAllOriginsJson = proxy.url.includes('allorigins.win/get');
+              
+              const timeoutMs = attemptIndex < 2 ? 5000 : 8000;
+              
+              return new Promise((resolve, reject) => {
+                  const url = new URL(proxy.url);
+                  const lib = url.protocol === 'https:' ? https : http;
+                  const body = JSON.stringify(searchParams);
+                  
+                  const options = {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json',
+                          'Content-Length': Buffer.byteLength(body)
+                      },
+                      timeout: timeoutMs
+                  };
+                  
+                  const req = lib.request(url, options, (res) => {
+                      if (res.statusCode < 200 || res.statusCode >= 300) {
+                          return reject(new Error(`${proxy.name} returned status ${res.statusCode}`));
+                      }
+                      
+                      let data = '';
+                      res.on('data', (chunk) => data += chunk);
+                      res.on('end', () => {
+                          try {
+                              let json = JSON.parse(data);
+                              // AllOrigins /get wraps the response in a JSON object with a 'contents' field
+                              if (isAllOriginsJson && json.contents) {
+                                  json = JSON.parse(json.contents);
+                              }
+                              
+                              if (json && (json.exchanges || Array.isArray(json))) {
+                                  resolve(json);
+                              } else {
+                                  reject(new Error('Invalid JSON structure'));
+                              }
+                          } catch (e) {
+                              reject(new Error(`${proxy.name} response was not valid JSON: ${e.message}`));
+                          }
+                      });
+                  });
+                  
+                  req.on('error', reject);
+                  req.on('timeout', () => {
+                      req.destroy();
+                      reject(new Error(`${proxy.name} request timed out after ${timeoutMs}ms`));
+                  });
+                  
+                  req.write(body);
+                  req.end();
+              });
           }
-          let parsed;
-          try {
-            parsed = JSON.parse(raw);
-          } catch (err) {
-            console.error('Failed to parse JSON from public/data.json:', err.message);
-            process.exit(0);
+
+          async function fetchWithFallback() {
+              for (let i = 0; i < PROXIES.length; i++) {
+                  try {
+                      const result = await tryFetch(PROXIES[i], i);
+                      console.log(`✓ Successfully fetched data via ${PROXIES[i].name}`);
+                      return result;
+                  } catch (err) {
+                      console.error(`✗ ${PROXIES[i].name} failed: ${err.message}`);
+                      if (i === PROXIES.length - 1) {
+                          throw new Error('All proxy attempts failed');
+                      }
+                  }
+              }
           }
-          const out = Array.isArray(parsed)
-            ? { _scraped_at: new Date().toISOString(), data: parsed }
-            : (typeof parsed === 'object' && parsed !== null
-                ? Object.assign({}, parsed, { _scraped_at: new Date().toISOString() })
-                : { _scraped_at: new Date().toISOString(), data: parsed });
-          fs.writeFileSync(p, JSON.stringify(out, null, 2));
+
+          (async () => {
+              try {
+                  const data = await fetchWithFallback();
+                  
+                  // Normalize output and add timestamp
+                  const out = Array.isArray(data)
+                      ? { _scraped_at: new Date().toISOString(), data }
+                      : (typeof data === 'object' && data !== null
+                          ? Object.assign({}, data, { _scraped_at: new Date().toISOString() })
+                          : { _scraped_at: new Date().toISOString(), data });
+                  
+                  fs.writeFileSync('public/data.json', JSON.stringify(out, null, 2));
+                  console.log('Successfully saved data to public/data.json');
+              } catch (err) {
+                  console.error('Failed to fetch Tradex data:', err.message);
+                  process.exit(1);
+              }
+          })();
           NODE
 
       - name: Publish scraped data to scraped-data branch
