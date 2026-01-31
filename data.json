@@ -1,0 +1,3674 @@
+{
+  "exchanges": [
+    {
+      "pos": {
+        "server": "play.civmc.net",
+        "world": "the_nether",
+        "x": 6005,
+        "y": 77,
+        "z": 5289
+      },
+      "index": 1,
+      "time": 1769841925710,
+      "stock": 2,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Ancient Debris",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Minecart",
+        "customName": "Bumcart",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3394,
+        "y": 71,
+        "z": 8071
+      },
+      "index": 1,
+      "time": 1769835543083,
+      "stock": 503,
+      "multi": 3,
+      "adjacent": 0,
+      "input": {
+        "count": 5,
+        "material": "Raw Gold",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Block of Gold",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3394,
+        "y": 71,
+        "z": 8071
+      },
+      "index": 3,
+      "time": 1769835542064,
+      "stock": 5,
+      "multi": 3,
+      "adjacent": 0,
+      "input": {
+        "count": 50,
+        "material": "Block of Raw Gold",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 90,
+        "material": "Block of Gold",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3394,
+        "y": 71,
+        "z": 8071
+      },
+      "index": 2,
+      "time": 1769835539931,
+      "stock": 55,
+      "multi": 3,
+      "adjacent": 0,
+      "input": {
+        "count": 5,
+        "material": "Block of Raw Gold",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 9,
+        "material": "Block of Gold",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3392,
+        "y": 71,
+        "z": 8071
+      },
+      "index": 1,
+      "time": 1769835503815,
+      "stock": 2145,
+      "multi": 4,
+      "adjacent": 0,
+      "input": {
+        "count": 6,
+        "material": "Raw Iron",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Block of Iron",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3763,
+        "y": 76,
+        "z": 5428
+      },
+      "index": 2,
+      "time": 1769835108829,
+      "stock": 3,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 7,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 6,
+        "material": "Oak Log",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Compacted Item"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3763,
+        "y": 76,
+        "z": 5428
+      },
+      "index": 1,
+      "time": 1769835108472,
+      "stock": 11,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 3,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 2,
+        "material": "Oak Log",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Compacted Item"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3764,
+        "y": 76,
+        "z": 5428
+      },
+      "index": 2,
+      "time": 1769835108280,
+      "stock": 1,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 7,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 6,
+        "material": "Birch Log",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Compacted Item"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3764,
+        "y": 76,
+        "z": 5428
+      },
+      "index": 1,
+      "time": 1769835107938,
+      "stock": 5,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 3,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 2,
+        "material": "Birch Log",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Compacted Item"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3765,
+        "y": 76,
+        "z": 5428
+      },
+      "index": 1,
+      "time": 1769835106768,
+      "stock": 2,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 3,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 2,
+        "material": "Jungle Log",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Compacted Item"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3765,
+        "y": 75,
+        "z": 5428
+      },
+      "index": 1,
+      "time": 1769835105829,
+      "stock": 5,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 12,
+        "material": "Iron Ingot",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3764,
+        "y": 75,
+        "z": 5428
+      },
+      "index": 1,
+      "time": 1769835105271,
+      "stock": 2,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 10,
+        "material": "Iron Ingot",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "play.civmc.net",
+        "world": "overworld",
+        "x": -4091,
+        "y": 78,
+        "z": -5707
+      },
+      "index": 1,
+      "time": 1769832691615,
+      "stock": 4,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 3,
+        "material": "Eye of Ender",
+        "customName": "Player Essence",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Activity reward used to fuel pearls"
+        ]
+      },
+      "output": {
+        "count": 1,
+        "material": "Minecart",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3286,
+        "y": 64,
+        "z": 9268
+      },
+      "index": 1,
+      "time": 1769832667531,
+      "stock": 2,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 10,
+        "material": "Eye of Ender",
+        "customName": "Player Essence",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Activity reward used to fuel pearls"
+        ]
+      },
+      "output": {
+        "count": 1,
+        "material": "Water Bucket",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3390,
+        "y": 77,
+        "z": 9276
+      },
+      "index": 1,
+      "time": 1769832610895,
+      "stock": 2,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Bucket of Axolotl",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": 3593,
+        "y": -1,
+        "z": -3146
+      },
+      "index": 2,
+      "time": 1769832608862,
+      "stock": 10,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 21,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Netherite Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": 3593,
+        "y": -1,
+        "z": -3146
+      },
+      "index": 1,
+      "time": 1769832606846,
+      "stock": 12,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 3,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 2,
+        "material": "Diamond Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3340,
+        "y": 69,
+        "z": 9267
+      },
+      "index": 1,
+      "time": 1769832469996,
+      "stock": 1,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 10,
+        "material": "Eye of Ender",
+        "customName": "Player Essence",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Activity reward used to fuel pearls"
+        ]
+      },
+      "output": {
+        "count": 1,
+        "material": "Water Bucket",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3336,
+        "y": 69,
+        "z": 9287
+      },
+      "index": 1,
+      "time": 1769832466342,
+      "stock": 2,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 10,
+        "material": "Eye of Ender",
+        "customName": "Player Essence",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Activity reward used to fuel pearls"
+        ]
+      },
+      "output": {
+        "count": 1,
+        "material": "Water Bucket",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3300,
+        "y": 64,
+        "z": 9282
+      },
+      "index": 1,
+      "time": 1769832454998,
+      "stock": 2,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 10,
+        "material": "Eye of Ender",
+        "customName": "Player Essence",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Activity reward used to fuel pearls"
+        ]
+      },
+      "output": {
+        "count": 1,
+        "material": "Water Bucket",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3307,
+        "y": 64,
+        "z": 9276
+      },
+      "index": 1,
+      "time": 1769832452265,
+      "stock": 2,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 10,
+        "material": "Eye of Ender",
+        "customName": "Player Essence",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Activity reward used to fuel pearls"
+        ]
+      },
+      "output": {
+        "count": 1,
+        "material": "Water Bucket",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3373,
+        "y": 71,
+        "z": 9275
+      },
+      "index": 1,
+      "time": 1769832325829,
+      "stock": 6,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Shovel",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3373,
+        "y": 70,
+        "z": 9275
+      },
+      "index": 1,
+      "time": 1769832325043,
+      "stock": 9,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 2,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3374,
+        "y": 71,
+        "z": 9275
+      },
+      "index": 1,
+      "time": 1769832324496,
+      "stock": 6,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Shovel",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3375,
+        "y": 68,
+        "z": 9274
+      },
+      "index": 1,
+      "time": 1769832316399,
+      "stock": 5,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 75,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Netherite Pickaxe",
+        "customName": "Volution",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Efficiency": 5,
+          "Unbreaking": 3,
+          "Silk Touch": 1
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 3,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3374,
+        "y": 68,
+        "z": 9276
+      },
+      "index": 1,
+      "time": 1769832309538,
+      "stock": 7,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 24,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Netherite Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3374,
+        "y": 70,
+        "z": 9275
+      },
+      "index": 1,
+      "time": 1769832295077,
+      "stock": 9,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 2,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3374,
+        "y": 69,
+        "z": 9277
+      },
+      "index": 1,
+      "time": 1769832293332,
+      "stock": 3,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 30,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Netherite Shovel",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3373,
+        "y": 69,
+        "z": 9277
+      },
+      "index": 1,
+      "time": 1769832292981,
+      "stock": 3,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 30,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Netherite Shovel",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3375,
+        "y": 68,
+        "z": 9276
+      },
+      "index": 1,
+      "time": 1769832291619,
+      "stock": 10,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 24,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Netherite Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3374,
+        "y": 69,
+        "z": 9275
+      },
+      "index": 2,
+      "time": 1769832289835,
+      "stock": 1,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 80,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Netherite Shovel",
+        "customName": "Volution",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Efficiency": 5,
+          "Unbreaking": 3,
+          "Silk Touch": 1
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 3,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3374,
+        "y": 69,
+        "z": 9275
+      },
+      "index": 1,
+      "time": 1769832289234,
+      "stock": 2,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 80,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Netherite Shovel",
+        "customName": "Volution",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Efficiency": 5,
+          "Unbreaking": 3,
+          "Fortune": 3
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 3,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3373,
+        "y": 69,
+        "z": 9275
+      },
+      "index": 2,
+      "time": 1769832288902,
+      "stock": 1,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 80,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Netherite Shovel",
+        "customName": "Volution",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Efficiency": 5,
+          "Unbreaking": 3,
+          "Silk Touch": 1
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 3,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3374,
+        "y": 68,
+        "z": 9274
+      },
+      "index": 1,
+      "time": 1769832287481,
+      "stock": 5,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 75,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Netherite Pickaxe",
+        "customName": "Volution",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Efficiency": 5,
+          "Unbreaking": 3,
+          "Silk Touch": 1
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 3,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3377,
+        "y": 69,
+        "z": 9274
+      },
+      "index": 1,
+      "time": 1769832285395,
+      "stock": 2,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 80,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Netherite Hoe",
+        "customName": "Volution",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Efficiency": 5,
+          "Unbreaking": 3,
+          "Fortune": 3
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 3,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3377,
+        "y": 69,
+        "z": 9275
+      },
+      "index": 1,
+      "time": 1769832284414,
+      "stock": 2,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 80,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Netherite Hoe",
+        "customName": "Volution",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Efficiency": 5,
+          "Unbreaking": 3,
+          "Fortune": 3
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 3,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3392,
+        "y": 68,
+        "z": 9276
+      },
+      "index": 1,
+      "time": 1769832275391,
+      "stock": 43,
+      "multi": 5,
+      "adjacent": 0,
+      "input": {
+        "count": 3,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 4,
+        "material": "Sand",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Compacted Item"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3392,
+        "y": 68,
+        "z": 9276
+      },
+      "index": 5,
+      "time": 1769832275188,
+      "stock": 1,
+      "multi": 5,
+      "adjacent": 0,
+      "input": {
+        "count": 30,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 64,
+        "material": "Sandstone",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Compacted Item"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3392,
+        "y": 68,
+        "z": 9276
+      },
+      "index": 4,
+      "time": 1769832274820,
+      "stock": 33,
+      "multi": 5,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 2,
+        "material": "Sandstone",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Compacted Item"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3392,
+        "y": 68,
+        "z": 9276
+      },
+      "index": 3,
+      "time": 1769832274595,
+      "stock": 15,
+      "multi": 5,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 2,
+        "material": "Terracotta",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Compacted Item"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3392,
+        "y": 68,
+        "z": 9276
+      },
+      "index": 2,
+      "time": 1769832274302,
+      "stock": 2,
+      "multi": 5,
+      "adjacent": 0,
+      "input": {
+        "count": 40,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 64,
+        "material": "Sand",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Compacted Item"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3388,
+        "y": 68,
+        "z": 9274
+      },
+      "index": 1,
+      "time": 1769832273453,
+      "stock": 10,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 3,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 10,
+        "material": "Emerald",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3388,
+        "y": 68,
+        "z": 9274
+      },
+      "index": 2,
+      "time": 1769832273097,
+      "stock": 3,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 21,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 8,
+        "material": "Block of Emerald",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3392,
+        "y": 68,
+        "z": 9336
+      },
+      "index": 1,
+      "time": 1769832255874,
+      "stock": 7,
+      "multi": 4,
+      "adjacent": 0,
+      "input": {
+        "count": 3,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 2,
+        "material": "Diamond Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3392,
+        "y": 68,
+        "z": 9336
+      },
+      "index": 4,
+      "time": 1769832255569,
+      "stock": 1,
+      "multi": 4,
+      "adjacent": 0,
+      "input": {
+        "count": 2,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Fortune": 2
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3392,
+        "y": 68,
+        "z": 9336
+      },
+      "index": 3,
+      "time": 1769832255258,
+      "stock": 4,
+      "multi": 4,
+      "adjacent": 0,
+      "input": {
+        "count": 2,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Fortune": 1
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3392,
+        "y": 68,
+        "z": 9336
+      },
+      "index": 2,
+      "time": 1769832254971,
+      "stock": 1,
+      "multi": 4,
+      "adjacent": 0,
+      "input": {
+        "count": 2,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Silk Touch": 1
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3392,
+        "y": 68,
+        "z": 9335
+      },
+      "index": 3,
+      "time": 1769832254245,
+      "stock": 4,
+      "multi": 4,
+      "adjacent": 0,
+      "input": {
+        "count": 2,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Fortune": 1
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3392,
+        "y": 68,
+        "z": 9335
+      },
+      "index": 2,
+      "time": 1769832254042,
+      "stock": 1,
+      "multi": 4,
+      "adjacent": 0,
+      "input": {
+        "count": 2,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Silk Touch": 1
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3392,
+        "y": 68,
+        "z": 9335
+      },
+      "index": 1,
+      "time": 1769832253815,
+      "stock": 7,
+      "multi": 4,
+      "adjacent": 0,
+      "input": {
+        "count": 3,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 2,
+        "material": "Diamond Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3392,
+        "y": 68,
+        "z": 9335
+      },
+      "index": 4,
+      "time": 1769832253440,
+      "stock": 1,
+      "multi": 4,
+      "adjacent": 0,
+      "input": {
+        "count": 2,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Fortune": 2
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 68,
+        "z": 9335
+      },
+      "index": 3,
+      "time": 1769832251805,
+      "stock": 4,
+      "multi": 4,
+      "adjacent": 0,
+      "input": {
+        "count": 2,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Fortune": 1
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 68,
+        "z": 9335
+      },
+      "index": 2,
+      "time": 1769832251489,
+      "stock": 1,
+      "multi": 4,
+      "adjacent": 0,
+      "input": {
+        "count": 2,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Silk Touch": 1
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 68,
+        "z": 9335
+      },
+      "index": 1,
+      "time": 1769832251285,
+      "stock": 7,
+      "multi": 4,
+      "adjacent": 0,
+      "input": {
+        "count": 3,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 2,
+        "material": "Diamond Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 68,
+        "z": 9336
+      },
+      "index": 1,
+      "time": 1769832250475,
+      "stock": 7,
+      "multi": 4,
+      "adjacent": 0,
+      "input": {
+        "count": 3,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 2,
+        "material": "Diamond Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 68,
+        "z": 9336
+      },
+      "index": 4,
+      "time": 1769832250187,
+      "stock": 1,
+      "multi": 4,
+      "adjacent": 0,
+      "input": {
+        "count": 2,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Fortune": 2
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 68,
+        "z": 9336
+      },
+      "index": 3,
+      "time": 1769832249973,
+      "stock": 4,
+      "multi": 4,
+      "adjacent": 0,
+      "input": {
+        "count": 2,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Fortune": 1
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 68,
+        "z": 9336
+      },
+      "index": 2,
+      "time": 1769832249637,
+      "stock": 1,
+      "multi": 4,
+      "adjacent": 0,
+      "input": {
+        "count": 2,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Pickaxe",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Silk Touch": 1
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3376,
+        "y": 68,
+        "z": 9338
+      },
+      "index": 1,
+      "time": 1769832236971,
+      "stock": 1,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Player Head",
+        "customName": "Belgian beer",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3374,
+        "y": 68,
+        "z": 9338
+      },
+      "index": 1,
+      "time": 1769832235998,
+      "stock": 1,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Player Head",
+        "customName": "Taco",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3372,
+        "y": 68,
+        "z": 9338
+      },
+      "index": 1,
+      "time": 1769832235025,
+      "stock": 1,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Player Head",
+        "customName": "Spiked Hot Chocolate",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3370,
+        "y": 68,
+        "z": 9338
+      },
+      "index": 1,
+      "time": 1769832233425,
+      "stock": 1,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Player Head",
+        "customName": "Apple",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3370,
+        "y": 68,
+        "z": 9336
+      },
+      "index": 1,
+      "time": 1769832229487,
+      "stock": 1,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Player Head",
+        "customName": "Present",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3372,
+        "y": 68,
+        "z": 9336
+      },
+      "index": 1,
+      "time": 1769832227202,
+      "stock": 1,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Player Head",
+        "customName": "Halloween Decoration",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Trick-or-Treat!"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3375,
+        "y": 68,
+        "z": 9336
+      },
+      "index": 1,
+      "time": 1769832226447,
+      "stock": 1,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Player Head",
+        "customName": "Potted Azalea Plant",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3375,
+        "y": 68,
+        "z": 9333
+      },
+      "index": 1,
+      "time": 1769832222056,
+      "stock": 1,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Player Head",
+        "customName": "Iron ore",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3373,
+        "y": 68,
+        "z": 9333
+      },
+      "index": 1,
+      "time": 1769832221473,
+      "stock": 2,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Player Head",
+        "customName": "Hay bale",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3372,
+        "y": 68,
+        "z": 9333
+      },
+      "index": 1,
+      "time": 1769832221165,
+      "stock": 1,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Player Head",
+        "customName": "Cardboard Box",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3371,
+        "y": 68,
+        "z": 9333
+      },
+      "index": 1,
+      "time": 1769832220779,
+      "stock": 1,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Player Head",
+        "customName": "Jukebox",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3370,
+        "y": 68,
+        "z": 9333
+      },
+      "index": 1,
+      "time": 1769832220366,
+      "stock": 1,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Player Head",
+        "customName": "Trash can",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3368,
+        "y": 68,
+        "z": 9333
+      },
+      "index": 1,
+      "time": 1769832219755,
+      "stock": 1,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Player Head",
+        "customName": "Globe",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3371,
+        "y": 68,
+        "z": 9331
+      },
+      "index": 1,
+      "time": 1769832217565,
+      "stock": 1,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Player Head",
+        "customName": "Monitor",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3372,
+        "y": 68,
+        "z": 9331
+      },
+      "index": 1,
+      "time": 1769832216944,
+      "stock": 1,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Player Head",
+        "customName": "Monitor",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3375,
+        "y": 68,
+        "z": 9331
+      },
+      "index": 1,
+      "time": 1769832214254,
+      "stock": 1,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Player Head",
+        "customName": "Medkit",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3372,
+        "y": 68,
+        "z": 9330
+      },
+      "index": 1,
+      "time": 1769832212280,
+      "stock": 1,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Player Head",
+        "customName": "Monitor",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3371,
+        "y": 68,
+        "z": 9330
+      },
+      "index": 1,
+      "time": 1769832212021,
+      "stock": 1,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Player Head",
+        "customName": "Monitor",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3377,
+        "y": 68,
+        "z": 9343
+      },
+      "index": 1,
+      "time": 1769832128860,
+      "stock": 12,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Strong Healing",
+        "potionName": "Strong Healing",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Compacted Item"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3375,
+        "y": 68,
+        "z": 9343
+      },
+      "index": 1,
+      "time": 1769832127991,
+      "stock": 10,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Strong Regeneration",
+        "potionName": "Strong Regeneration",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Compacted Item"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3373,
+        "y": 68,
+        "z": 9343
+      },
+      "index": 1,
+      "time": 1769832127172,
+      "stock": 11,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Strong Strength",
+        "potionName": "Strong Strength",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Compacted Item"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3368,
+        "y": 68,
+        "z": 9343
+      },
+      "index": 1,
+      "time": 1769832124977,
+      "stock": 9,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 9,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "TNT",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Compacted Item"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3370,
+        "y": 68,
+        "z": 9343
+      },
+      "index": 1,
+      "time": 1769832124078,
+      "stock": 12,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Strong Swiftness",
+        "potionName": "Strong Swiftness",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "Compacted Item"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 68,
+        "z": 9329
+      },
+      "index": 2,
+      "time": 1769832114420,
+      "stock": 3,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 3,
+        "material": "Potion",
+        "customName": "Valar Winter Cheesecake",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "§tA thick and creamy treat.",
+          "§u",
+          "§s[⭑⭑⭑⭑⭑]",
+          "§gBrewer: RipoffPingu"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 68,
+        "z": 9329
+      },
+      "index": 1,
+      "time": 1769832114185,
+      "stock": 11,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 4,
+        "material": "Iron Ingot",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Potion",
+        "customName": "Valar Winter Cheesecake",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "§tA thick and creamy treat.",
+          "§u",
+          "§s[⭑⭑⭑⭑⭑]",
+          "§gBrewer: RipoffPingu"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 68,
+        "z": 9328
+      },
+      "index": 1,
+      "time": 1769832113905,
+      "stock": 14,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 4,
+        "material": "Iron Ingot",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Potion",
+        "customName": "Delightful Tonkatsu Ramen",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "§tPride of Japan",
+          "§u",
+          "§s[⭑⭑⭑⭑⭑]",
+          "§gBrewer: RipoffPingu"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 68,
+        "z": 9328
+      },
+      "index": 2,
+      "time": 1769832113615,
+      "stock": 4,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 3,
+        "material": "Potion",
+        "customName": "Delightful Tonkatsu Ramen",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "§tPride of Japan",
+          "§u",
+          "§s[⭑⭑⭑⭑⭑]",
+          "§gBrewer: RipoffPingu"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 69,
+        "z": 9329
+      },
+      "index": 1,
+      "time": 1769832109984,
+      "stock": 15,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 4,
+        "material": "Iron Ingot",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Potion",
+        "customName": "Candied Carrots",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "§tCarrots but tasty!",
+          "§u",
+          "§s[⭑⭑⭑⭑⭑]",
+          "§gBrewer: RipoffPingu"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 69,
+        "z": 9329
+      },
+      "index": 2,
+      "time": 1769832109761,
+      "stock": 5,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 3,
+        "material": "Potion",
+        "customName": "Candied Carrots",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "§tCarrots but tasty!",
+          "§u",
+          "§s[⭑⭑⭑⭑⭑]",
+          "§gBrewer: RipoffPingu"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 68,
+        "z": 9332
+      },
+      "index": 1,
+      "time": 1769832108928,
+      "stock": 10,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 4,
+        "material": "Iron Ingot",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Potion",
+        "customName": "Espresso",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "§tThe basic but unbeatable black coffee",
+          "§u",
+          "§s[⭑⭑⭑⭑⭑]",
+          "§gBrewer: RipoffPingu"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 68,
+        "z": 9332
+      },
+      "index": 2,
+      "time": 1769832108725,
+      "stock": 3,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 3,
+        "material": "Potion",
+        "customName": "Espresso",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "§tThe basic but unbeatable black coffee",
+          "§u",
+          "§s[⭑⭑⭑⭑⭑]",
+          "§gBrewer: RipoffPingu"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 68,
+        "z": 9333
+      },
+      "index": 1,
+      "time": 1769832107672,
+      "stock": 17,
+      "multi": 1,
+      "adjacent": 0,
+      "input": {
+        "count": 2,
+        "material": "Iron Ingot",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Potion",
+        "customName": "Tonic",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "§tThe base for any mix",
+          "§u",
+          "§s[⭑⭑⭑⭑⭑]",
+          "§gBrewer: RipoffPingu"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 69,
+        "z": 9332
+      },
+      "index": 2,
+      "time": 1769832106445,
+      "stock": 3,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 3,
+        "material": "Potion",
+        "customName": "Chamomile Tea",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "§tHealing and warming",
+          "§u",
+          "§s[⭑⭑⭑⭑⭑]",
+          "§gBrewer: RipoffPingu"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 69,
+        "z": 9332
+      },
+      "index": 1,
+      "time": 1769832106100,
+      "stock": 9,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 4,
+        "material": "Iron Ingot",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Potion",
+        "customName": "Chamomile Tea",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "§tHealing and warming",
+          "§u",
+          "§s[⭑⭑⭑⭑⭑]",
+          "§gBrewer: RipoffPingu"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 69,
+        "z": 9333
+      },
+      "index": 2,
+      "time": 1769832105831,
+      "stock": 4,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 1,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 3,
+        "material": "Potion",
+        "customName": "Sarsaparilla",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "§tDeeply flavorful",
+          "§u",
+          "§s[⭑⭑⭑⭑⭑]",
+          "§gBrewer: RipoffPingu"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 69,
+        "z": 9333
+      },
+      "index": 1,
+      "time": 1769832105585,
+      "stock": 13,
+      "multi": 2,
+      "adjacent": 0,
+      "input": {
+        "count": 4,
+        "material": "Iron Ingot",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Potion",
+        "customName": "Sarsaparilla",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": [
+          "§tDeeply flavorful",
+          "§u",
+          "§s[⭑⭑⭑⭑⭑]",
+          "§gBrewer: RipoffPingu"
+        ]
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 68,
+        "z": 9342
+      },
+      "index": 3,
+      "time": 1769832099635,
+      "stock": 1,
+      "multi": 3,
+      "adjacent": 0,
+      "input": {
+        "count": 6,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Axe",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Efficiency": 3,
+          "Unbreaking": 3
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 5,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 68,
+        "z": 9342
+      },
+      "index": 2,
+      "time": 1769832099141,
+      "stock": 2,
+      "multi": 3,
+      "adjacent": 0,
+      "input": {
+        "count": 6,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Axe",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Efficiency": 3,
+          "Unbreaking": 3
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 3,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 68,
+        "z": 9342
+      },
+      "index": 1,
+      "time": 1769832098878,
+      "stock": 1,
+      "multi": 3,
+      "adjacent": 0,
+      "input": {
+        "count": 6,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Axe",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Efficiency": 3,
+          "Unbreaking": 3
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 0,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 69,
+        "z": 9341
+      },
+      "index": 4,
+      "time": 1769832098206,
+      "stock": 1,
+      "multi": 4,
+      "adjacent": 0,
+      "input": {
+        "count": 12,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Axe",
+        "customName": "Spider Bites",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Efficiency": 5,
+          "Unbreaking": 3,
+          "Fortune": 2
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 9,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 69,
+        "z": 9341
+      },
+      "index": 3,
+      "time": 1769832097859,
+      "stock": 2,
+      "multi": 4,
+      "adjacent": 0,
+      "input": {
+        "count": 12,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Axe",
+        "customName": "Spider Bites",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Efficiency": 5,
+          "Unbreaking": 3,
+          "Fortune": 3
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 3,
+        "lore": []
+      }
+    },
+    {
+      "pos": {
+        "server": "Play.CivMC.net",
+        "world": "overworld",
+        "x": -3393,
+        "y": 69,
+        "z": 9342
+      },
+      "index": 4,
+      "time": 1769832096453,
+      "stock": 1,
+      "multi": 4,
+      "adjacent": 0,
+      "input": {
+        "count": 12,
+        "material": "Diamond",
+        "storedEnchants": {},
+        "requiredEnchants": {},
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "repairLevel": 0,
+        "lore": []
+      },
+      "output": {
+        "count": 1,
+        "material": "Diamond Axe",
+        "customName": "Spider Bites",
+        "storedEnchants": {},
+        "requiredEnchants": {
+          "Efficiency": 5,
+          "Unbreaking": 3,
+          "Fortune": 2
+        },
+        "excludedEnchants": [],
+        "unlistedEnchantsAllowed": false,
+        "condition": "Undamaged",
+        "repairLevel": 9,
+        "lore": []
+      }
+    }
+  ],
+  "_scraped_at": "2026-01-31T07:02:12.313Z"
+}
