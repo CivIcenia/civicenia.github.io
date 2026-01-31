@@ -1759,6 +1759,8 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
      * Item Mapping System
      * Use this to map Tradex material IDs to specific filenames on mc.nerothe.com
      */
+    // Make ITEM_MAPPINGS available globally for icon URL functions
+    window.ITEM_MAPPINGS = ITEM_MAPPINGS;
 
     /**
      * Legacy Fallback Overrides
