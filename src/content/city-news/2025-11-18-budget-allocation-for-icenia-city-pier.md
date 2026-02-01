@@ -5,7 +5,7 @@ institution: council
 term_number: 2
 act_number: 1
 headline: Passing the Budget Allocation for Icenia City Pier
-date: 2025-11-18 00:25:22 +00:00
+date: 2025-11-18 01:56:00 +08:00
 discord_thread_id: 1440014967607787500
 excerpt: Sponsored by creepily
 document:

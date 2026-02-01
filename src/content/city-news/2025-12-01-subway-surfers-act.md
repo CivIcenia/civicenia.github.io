@@ -5,7 +5,7 @@ institution: council
 term_number: 2
 act_number: 8
 headline: Passing the Subway Surfers Act
-date: 2025-12-01 04:03:19 +00:00
+date: 2025-12-01 04:21:00 +08:00
 discord_thread_id: 1444780860376219600
 excerpt: Sponsored by ratat0ing_
 document:
@@ -47,7 +47,9 @@ document:
     c. The Capital Transit Authority may pursue litigation against violators in accordance with city and federal law.
 
     d. A rail connection to HoldenVCaulfield's "Countryside Metro” is hereby authorized at the Riverwalk station.
-changes: []
+changes:
+  - target: subway-surfers-act
+    kind: passage
 icon: /assets/images/law_stock.jpeg
 ---
 [Passed by the Term 2 City Council](https://discord.com/channels/558071874161082368/1444780860376219769)

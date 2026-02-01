@@ -5,7 +5,7 @@ institution: council
 term_number: 2
 act_number: 3
 headline: Passing the Street Naming & Signage Act
-date: 2025-11-22 12:57:10 +00:00
+date: 2025-11-23 00:06:00 +08:00
 discord_thread_id: 1441653717412614100
 excerpt: Sponsored by ratat0ing_
 document:
@@ -18,7 +18,9 @@ document:
       a. A budget of 111 diamonds shall be allocated from the City Treasury for signage of the currently existing streets, as tabulated in Appendix B.
       b. Any unspent diamonds remaining after completion of the initial signage project shall be returned to the City Treasury.
     3. All future public streets within city limits shall be named at the time of construction, either by the constructing party or by an act of the City Council.
-changes: []
+changes:
+  - target: street-naming-and-signage-act
+    kind: passage
 icon: /assets/images/law_stock.jpeg
 ---
 [Passed by the Term 2 City Council](https://discord.com/channels/558071874161082368/1441653717412614164)

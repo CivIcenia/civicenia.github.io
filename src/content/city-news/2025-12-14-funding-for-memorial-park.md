@@ -5,7 +5,7 @@ institution: council
 term_number: 3
 act_number: 1
 headline: Passing the Funding for Memorial Park
-date: 2025-12-14 13:14:49 +00:00
+date: 2025-12-15 23:36:00 +08:00
 discord_thread_id: 1449630690084786200
 excerpt: Sponsored by creepily
 document:

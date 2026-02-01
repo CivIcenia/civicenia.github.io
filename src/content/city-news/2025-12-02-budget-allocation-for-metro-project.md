@@ -5,7 +5,7 @@ institution: council
 term_number: 2
 act_number: 9
 headline: Passing the Budget Allocation for Metro Project
-date: 2025-12-02 03:44:56 +00:00
+date: 2025-12-02 05:32:00 +08:00
 discord_thread_id: 1445138621178057000
 excerpt: Sponsored by ratat0ing_
 document:

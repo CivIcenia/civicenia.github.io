@@ -5,7 +5,7 @@ institution: council
 term_number: 1
 act_number: 8
 headline: Passing the City Treasury Bank Account
-date: 2025-11-06 19:24:21 +00:00
+date: 2025-11-09 09:01:00 +08:00
 discord_thread_id: 1435952946847289300
 excerpt: Sponsored by Creepily and Ratat0ing_
 document:
@@ -75,7 +75,9 @@ document:
 
 
     ---
-changes: []
+changes:
+  - target: city-treasury-bank-account-act
+    kind: passage
 icon: /assets/images/law_stock.jpeg
 ---
 [Passed by the Term 1 City Council](https://discord.com/channels/558071874161082368/1435952946847289445)

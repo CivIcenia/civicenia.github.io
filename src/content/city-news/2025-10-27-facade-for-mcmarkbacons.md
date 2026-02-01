@@ -5,7 +5,7 @@ institution: council
 term_number: 1
 act_number: 2
 headline: Passing the Resolution on Facade for McMarkBacons
-date: 2025-10-27 12:16:22 +00:00
+date: 2025-10-28 01:01:00 +08:00
 discord_thread_id: 1432221362323460000
 excerpt: Sponsored by DrBaconHair
 document:

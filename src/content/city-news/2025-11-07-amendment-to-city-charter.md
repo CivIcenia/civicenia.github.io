@@ -5,7 +5,7 @@ institution: council
 term_number: 1
 act_number: 9
 headline: Passing the Amendment to City Charter
-date: 2025-11-07 02:10:11 +00:00
+date: 2025-11-08 23:44:00 +08:00
 discord_thread_id: 1436055077961076700
 excerpt: Sponsored by creepily
 document:
@@ -23,7 +23,9 @@ document:
     Charter amendments - acts of the Council amending this City Charter.
 
     **`Decisions - formal votes resolving a specific question or proposal, wherein both “yes” and “no” votes express the Council’s position, recording the Council’s resolved stance on requiring binary determination, such as appointments, interpretations, or procedural motions. A Decision may fail if more than fifty percent (>50%) of city councillors abstain.`**
-changes: []
+changes:
+  - target: city-charter
+    kind: amendment
 icon: /assets/images/law_stock.jpeg
 ---
 [Passed by the Term 1 City Council](https://discord.com/channels/558071874161082368/1436055077961076746)

@@ -170,7 +170,7 @@ collections:
                 name: "masterdoc"
                 widget: "string"
                 required: true
-                hint: "What's the updated document link? It can be a local file such as `/public/archive/Icenia-City-Charter.pdf`. It can be Google Doc but make sure it ends in `/preview`. And make sure it's an archived copy owned by Icenia."
+                hint: "What's the updated document link? It can be a local file such as `/archive/Icenia-City-Charter.pdf` or `/documents/Icenia-City-Charter.docx`. It can be Google Doc but make sure it ends in `/preview`. And make sure it's an archived copy owned by Icenia."
               # Expired?
               - label: "Repealed"
                 name: "hidden"
@@ -206,7 +206,7 @@ collections:
                 name: "law_slug"
                 widget: "relation"
                 collection: "data"
-                file: "laws"
+                file: "city-laws"
                 search_fields: ["entries.*.name", "entries.*.fullname", "entries.*.slug"]
                 display_fields: ["entries.*.name"]
                 value_field: "entries.*.slug"

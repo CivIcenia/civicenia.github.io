@@ -3,29 +3,57 @@ entries:
     slug: city-charter
     name: Icenia City Charter
     fullname: The Charter of Icenia City
-    masterdoc: /archive/Icenia-City-Charter.pdf
+    masterdoc: /documents/Icenia-City-Charter.docx
     kind: charter
-  - hidden: true
-    slug: building-code
-    name: City Building Code
-    fullname: Icenia City Building Standards and Regulations
-    masterdoc: https://docs.google.com/document/d/example-building-code/preview
+  - hidden: false
+    name: City Development Act
+    slug: city-development-act
+    kind: ordinance
+    masterdoc: /documents/City-Development-Act.docx
+  - hidden: false
+    name: City Council Voting Act
+    slug: city-council-voting-act
+    kind: ordinance
+    masterdoc: /documents/City-Council-Voting-Act.docx
+  - hidden: false
+    slug: newfriend-zone-act
+    name: Newfriend Zone Act
+    kind: ordinance
+    masterdoc: /documents/Newfriend-Zone-Act.docx
+  - hidden: false
+    slug: shops-act
+    name: Icenia SHOPS Act
+    fullname: Icenia Substantiating Healthy Opportunities for Profitable Shopping Act
+    kind: ordinance
+    masterdoc: /documents/Icenia-SHOPS-Act-City.docx
+  - hidden: false
+    name: Newfriend Zone Build Code
+    slug: newfriend-zone-build-code
+    masterdoc: /documents/Newfriend-Zone-Build-Code.docx
     kind: ordinance
   - hidden: false
-    slug: zoning-ordinance
-    name: Zoning Ordinance
-    fullname: Icenia City Zoning and Land Use Ordinance
-    masterdoc: https://docs.google.com/document/d/example-zoning/preview
+    name: Metro Funding Act
+    slug: metro-funding-act
     kind: ordinance
+    masterdoc: /documents/Metro-Funding-Act.docx
   - hidden: false
-    slug: shop-regulations
-    name: Shop Regulations
-    fullname: Commercial District and Shop Regulations
-    masterdoc: https://docs.google.com/document/d/example-shop-regs/preview
+    slug: subway-surfers-act
+    name: Subway Surfers Act
     kind: ordinance
+    masterdoc: /documents/Subway-Surfers-Act.docx
   - hidden: false
-    slug: public-spaces-act
-    name: Public Spaces Act
-    fullname: Maintenance and Use of Public Spaces Act
-    masterdoc: https://docs.google.com/document/d/example-public-spaces/preview
+    name: Municipal Housing Act
+    slug: municipal-housing-act
     kind: ordinance
+    masterdoc: /documents/Municipal-Housing-Act.docx
+  - hidden: false
+    name: Street Naming & Signage Act
+    slug: street-naming-and-signage-act
+    kind: ordinance
+    masterdoc: /documents/Street-Naming-and-Signange-Act.docx
+  - hidden: false
+    fullname: ""
+    name: City Treasury Bank Account Act
+    slug: city-treasury-bank-account-act
+    kind: ordinance
+    masterdoc: /documents/City-Treasury-Bank-Account-Act.docx

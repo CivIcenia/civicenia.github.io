@@ -389,3 +389,23 @@ entries:
     masterdoc: /archive/Bloom-Icenia-Trading-Contract-for-Heliador-(BITCH)-Agreement.pdf
     kind: treaty
     name: Bloom-Icenia Trade Contract for Heliodor (BITCH) Agreement
+  - hidden: false
+    slug: civil-equity-and-integrity-act
+    name: Civil Equity and Integrity Act
+    kind: statute
+    masterdoc: /documents/Civil-Equity-and-Integrity-Act.docx
+  - hidden: false
+    slug: criminal-justice-act
+    name: Criminal Justice Act
+    kind: statute
+    masterdoc: /documents/Criminal-Justice-Act.docx
+  - hidden: false
+    slug: icenia-salerno-friendship-treaty
+    name: Icenia-Salerno Friendship Treaty
+    kind: treaty
+    masterdoc: /archive/Icenia-Salerno-Friendship-Treaty.pdf
+  - hidden: false
+    slug: icenia-micronook-friendship-pact
+    name: Icenia-Micronook Friendship Pact
+    kind: treaty
+    masterdoc: /archive/Icenia-Micronook-Friendship-Pact.pdf

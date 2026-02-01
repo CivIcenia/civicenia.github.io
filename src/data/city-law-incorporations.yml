@@ -1,1 +1,17 @@
-incorporations: []
+incorporations:
+  - change_slugs:
+      - 2025-11-23-amendment-to-municipal-housing-act
+    law_slug: municipal-housing-act
+    incorporated_at: 2026-02-01 10:06:00 +08:00
+    incorporated_by: Creepily
+  - change_slugs:
+      - 2025-11-23-municipal-housing-act
+    law_slug: city-development-act
+    incorporated_at: 2026-02-01 10:06:00 +08:00
+    incorporated_by: Creepily
+  - change_slugs:
+      - 2025-10-30-city-charter-vote-clarification
+      - 2025-11-07-amendment-to-city-charter
+    law_slug: city-charter
+    incorporated_at: 2026-02-01 10:06:00 +08:00
+    incorporated_by: Creepily

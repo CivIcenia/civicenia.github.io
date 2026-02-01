@@ -5,7 +5,7 @@ institution: council
 term_number: 2
 act_number: 7
 headline: Passing the Warm Welcome Act
-date: 2025-11-30 02:43:56 +00:00
+date: 2025-11-30 02:57:00 +08:00
 discord_thread_id: 1444398493924852000
 excerpt: Sponsored by ratat0ing_
 document:

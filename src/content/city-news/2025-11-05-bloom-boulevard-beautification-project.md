@@ -5,7 +5,7 @@ institution: council
 term_number: 1
 act_number: 7
 headline: Passing the Bloom Boulevard Beautification Project
-date: 2025-11-05 04:52:35 +00:00
+date: 2025-11-05 10:56:00 +08:00
 discord_thread_id: 1435371172005937200
 excerpt: Sponsored by ratat0ing_
 document:

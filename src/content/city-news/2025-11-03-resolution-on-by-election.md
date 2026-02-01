@@ -5,7 +5,7 @@ institution: council
 term_number: 1
 act_number: 5
 headline: Passing the Decision on By-election
-date: 2025-11-03 22:30:21 +00:00
+date: 2025-11-04 23:49:00 +08:00
 discord_thread_id: 1434912593515905000
 excerpt: Sponsored by ratat0ing_
 document:
