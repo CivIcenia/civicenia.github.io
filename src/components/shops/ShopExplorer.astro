@@ -1786,13 +1786,15 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     window.getItemIconUrl = function(material) {
         if (!material) return '';
         let mat = material.toLowerCase().replace(/ /g, '_').replace(/minecraft:/, '');
+        // Ensure material is safe for use in URLs (encode any unexpected characters)
+        const safeMat = encodeURIComponent(mat);
         
         // Use mappings from window.ITEM_MAPPINGS if available (runtime lookup)
         if (window.ITEM_MAPPINGS && window.ITEM_MAPPINGS[mat]) {
             mat = window.ITEM_MAPPINGS[mat];
         }
 
-        return `https://mc.nerothe.com/img/${MC_VERSION}/minecraft_${mat}.png`;
+        return `https://mc.nerothe.com/img/${MC_VERSION}/minecraft_${safeMat}.png`;
     };
 
     /**
@@ -1801,6 +1803,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     window.getFallbackIconUrl = function(material) {
         if (!material) return '';
         let mat = material.toLowerCase().replace(/ /g, '_').replace(/minecraft:/, '');
+        const safeMat = encodeURIComponent(mat);
         
         // Use mappings from window.ITEM_MAPPINGS if available (runtime lookup)
         if (window.ITEM_MAPPINGS && window.ITEM_MAPPINGS[mat]) {
@@ -1810,7 +1813,28 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         if (ICON_OVERRIDES[mat]) {
             return `https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/${MC_VERSION}/${ICON_OVERRIDES[mat]}`;
         }
-        return `https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/${MC_VERSION}/items/${mat}.png`;
+        return `https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/${MC_VERSION}/items/${safeMat}.png`;
+    };
+
+    // Generic onerror handler for item images to avoid embedding dynamic values into inline JS
+    window.handleItemImageError = function() {
+        try {
+            if (!this.dataset) return;
+            const mat = this.dataset.material || '';
+            if (!this.dataset.triedFallback) {
+                this.dataset.triedFallback = 'true';
+                this.src = window.getFallbackIconUrl(mat);
+                return;
+            }
+            if (!this.dataset.triedBlock) {
+                this.dataset.triedBlock = 'true';
+                this.src = this.src.replace('/items/', '/blocks/');
+                return;
+            }
+            this.style.opacity = '0';
+        } catch (e) {
+            // silent
+        }
     };
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -2137,6 +2161,15 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
 
         function renderMinecraftText(text) {
             if (!text) return '';
+            // Escape raw text to prevent HTML injection when this function's output
+            // is assigned to innerHTML. We preserve § codes and newlines; other
+            // special characters are escaped here.
+            text = String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\"/g, '&quot;')
+                .replace(/'/g, '&#39;');
             
             const codes = {
                 '0': 'mc-0', '1': 'mc-1', '2': 'mc-2', '3': 'mc-3',
@@ -2188,10 +2221,10 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                         if (currentClasses.has('mc-k')) {
                             html += `<span class="${Array.from(currentClasses).join(' ')}">?</span>`;
                         } else {
-                            html += `<span class="${Array.from(currentClasses).join(' ')}">${char}</span>`;
+                                html += `<span class="${Array.from(currentClasses).join(' ')}">${char}</span>`;
                         }
                     } else {
-                        html += char;
+                            html += char;
                     }
                 }
                 i++;
@@ -2613,7 +2646,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                         <div class="exchange-row">
                             <div class="exchange-item-bundle">
                                 <div class="item-icon-bg small" ${inputLore ? `data-lore="${inputLore.replace(/"/g, '&quot;')}"` : ''}>
-                                    <img class="popup-item-icon" src="${getItemIconUrl(ex.input.material)}" onerror="if(!this.dataset.triedFallback){this.dataset.triedFallback=true; this.src=getFallbackIconUrl('${ex.input.material}');}else if(!this.dataset.triedBlock){this.dataset.triedBlock=true; this.src=this.src.replace('/items/', '/blocks/');}else{this.style.opacity='0';}">
+                                    <img class="popup-item-icon" src="${getItemIconUrl(ex.input.material)}" data-material="${escapeHtml(ex.input.material)}" onerror="handleItemImageError.call(this)">
                                 </div>
                                 <span class="exchange-price">
                                     <span class="count ${inputFmt.isCompacted ? 'compacted' : ''}">${inputFmt.text}</span>
@@ -2627,7 +2660,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                                     <span class="name">${formatItemName(ex.output)}</span>
                                 </span>
                                 <div class="item-icon-bg small" ${outputLore ? `data-lore="${outputLore.replace(/"/g, '&quot;')}"` : ''}>
-                                    <img class="popup-item-icon" src="${getItemIconUrl(ex.output.material)}" onerror="if(!this.dataset.triedFallback){this.dataset.triedFallback=true; this.src=getFallbackIconUrl('${ex.output.material}');}else if(!this.dataset.triedBlock){this.dataset.triedBlock=true; this.src=this.src.replace('/items/', '/blocks/');}else{this.style.opacity='0';}">
+                                    <img class="popup-item-icon" src="${getItemIconUrl(ex.output.material)}" data-material="${escapeHtml(ex.output.material)}" onerror="handleItemImageError.call(this)">
                                 </div>
                             </div>
                         </div>
@@ -2699,7 +2732,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                     <div class="trade-display">
                         <div class="item-stack">
                             <div class="item-icon-bg" ${inputLore ? `data-lore="${inputLore.replace(/"/g, '&quot;')}"` : ''}>
-                                <img class="item-icon" src="${getItemIconUrl(ex.input.material)}" onerror="if(!this.dataset.triedFallback){this.dataset.triedFallback=true; this.src=getFallbackIconUrl('${ex.input.material}');}else if(!this.dataset.triedBlock){this.dataset.triedBlock=true; this.src=this.src.replace('/items/', '/blocks/');}else{this.style.opacity='0';}" alt="">
+                                <img class="item-icon" src="${getItemIconUrl(ex.input.material)}" data-material="${escapeHtml(ex.input.material)}" onerror="handleItemImageError.call(this)" alt="">
                                 <span class="stack-count ${inputFmt.isCompacted ? 'compacted' : ''}">${inputFmt.text}</span>
                             </div>
                             <span class="item-label">${inputName}</span>
@@ -2707,7 +2740,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                         <div class="trade-arrow">→</div>
                         <div class="item-stack">
                             <div class="item-icon-bg" ${outputLore ? `data-lore="${outputLore.replace(/"/g, '&quot;')}"` : ''}>
-                                <img class="item-icon" src="${getItemIconUrl(ex.output.material)}" onerror="if(!this.dataset.triedFallback){this.dataset.triedFallback=true; this.src=getFallbackIconUrl('${ex.output.material}');}else if(!this.dataset.triedBlock){this.dataset.triedBlock=true; this.src=this.src.replace('/items/', '/blocks/');}else{this.style.opacity='0';}" alt="">
+                                <img class="item-icon" src="${getItemIconUrl(ex.output.material)}" data-material="${escapeHtml(ex.output.material)}" onerror="handleItemImageError.call(this)" alt="">
                                 <span class="stack-count ${outputFmt.isCompacted ? 'compacted' : ''}">${outputFmt.text}</span>
                             </div>
                             <span class="item-label">${outputName}</span>
@@ -2734,6 +2767,10 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                                 paddingTopLeft: isMobile ? [20, 20] : [420, 50],
                                 paddingBottomRight: isMobile ? [20, window.innerHeight * 0.45] : [50, 50],
                                 maxZoom: 0 
+                            });
+                            // Ensure tile layer is rendered for the final zoom (fixes tiles/markers mismatch)
+                            map.once('moveend', () => {
+                                try { tiles.redraw(); } catch (e) { /* silent */ }
                             });
                         }
                         if (activeMarker) {
@@ -2771,6 +2808,10 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                     paddingTopLeft: isMobile ? [20, 20] : [420, 50],
                     paddingBottomRight: isMobile ? [20, window.innerHeight * 0.45] : [50, 50],
                     maxZoom: 0 
+                });
+                // Force tile layer redraw after the animated move completes to keep tiles and DOM markers in sync
+                map.once('moveend', () => {
+                    try { tiles.redraw(); } catch (e) { /* silent */ }
                 });
             }
         }
