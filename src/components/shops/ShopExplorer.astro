@@ -200,13 +200,25 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 </div>
             </div>
         </div>
-        <button id="info-toggle" class="map-control-btn info-btn" title="Map Info & Credits">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="16" x2="12" y2="12"></line>
-                <line x1="12" y1="8" x2="12.01" y2="8"></line>
-            </svg>
-        </button>
+        <div class="map-controls-row">
+            <button id="info-toggle" class="map-control-btn info-btn" title="Map Info & Credits">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+            </button>
+            <div class="coords-panel" title="Map cursor and pin coordinates">
+                <div class="coords-item">
+                    <div class="label">Cursor</div>
+                    <div id="cursor-coords" class="value">—</div>
+                </div>
+                <div class="coords-item">
+                    <div class="label">Pin</div>
+                    <div id="pin-coords" class="value">—</div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -1381,6 +1393,49 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         transform: scale(1.1) !important;
     }
 
+    /* Coordinate readout panel */
+    .coords-panel {
+        background: rgba(0,0,0,0.6);
+        color: #fff;
+        font-family: monospace;
+        font-size: 13px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+    }
+    .coords-item {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    .coords-item .label {
+        font-weight: 700;
+        font-size: 10px;
+        opacity: 0.85;
+        text-transform: uppercase;
+    }
+    .coords-item .value {
+        font-weight: 800;
+        font-size: 13px;
+        letter-spacing: 0.02em;
+    }
+
+    .map-controls-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+    /* Desktop: show coords to the left of the info toggle */
+    .map-controls-row .coords-panel { order: -1; }
+
+    @media (max-width: 768px) {
+        /* Mobile: show coords to the right of the info toggle */
+        .map-controls-row .coords-panel { order: 1; }
+    }
+
     @media (max-width: 768px) {
         .map-info-container {
             bottom: calc(50% + 10px);
@@ -1980,6 +2035,8 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         const centerIceniaBtn = document.getElementById('center-icenia');
         const setLocationBtn = document.getElementById('set-location');
         const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const cursorCoordsEl = document.getElementById('cursor-coords');
+        const pinCoordsEl = document.getElementById('pin-coords');
 
         const ICENIA_CITY_BOUNDS = {
             minX: -4300,
@@ -2980,6 +3037,22 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
 
         updateDarkMode();
 
+        // Initialize pin display
+        if (pinCoordsEl) pinCoordsEl.textContent = '—';
+
+        // Update cursor coordinates as the user moves over the map
+        if (map && cursorCoordsEl) {
+            map.on('mousemove', (e) => {
+                try {
+                    const x = Math.round(e.latlng.lng);
+                    const z = Math.round(-e.latlng.lat);
+                    cursorCoordsEl.textContent = `${x}, ${z}`;
+                } catch (err) {
+                    // ignore
+                }
+            });
+        }
+
         // --- Tooltip Logic ---
         const tooltip = document.getElementById('item-tooltip');
         let tooltipTimeout;
@@ -3067,7 +3140,9 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         });
 
         // Close panel when clicking elsewhere on the map
+        // But do not close when the user is currently placing a location pin
         map.on('click', () => {
+            if (isSettingLocation) return;
             infoPanel.classList.add('hidden');
         });
 
@@ -3091,10 +3166,9 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 isSettingLocation = false;
                 setLocationBtn.classList.remove('active');
                 document.getElementById('shop-map').style.cursor = '';
-                
-                // Automatically switch to closest sort mode and search
+                // Update pin readout but do NOT trigger a search
                 sortModeSelect.value = 'closest';
-                performSearch(false);
+                if (pinCoordsEl) pinCoordsEl.textContent = `${x}, ${z}`;
             }
         });
     });
