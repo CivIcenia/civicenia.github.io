@@ -1975,12 +1975,24 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             return base.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
         }
 
+        // Escape HTML but preserve Minecraft section sign (§) and formatting codes
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         function formatItemName(item) {
             const pretty = prettyMaterialName(item.material || '');
             if (item.customName) {
                 // Strip Minecraft color codes for the display name
                 const cleanCustom = item.customName.replace(/§[0-9a-fk-or]/g, '');
-                return `${cleanCustom} (${pretty})`;
+                const safeCustom = escapeHtml(cleanCustom);
+                return `${safeCustom} (${pretty})`;
             }
             return pretty;
         }
@@ -2000,7 +2012,8 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
 
             // 1) Title: custom name (italic) or base name (not italic) — both in aqua (§b)
             if (item.customName) {
-                lines.push(`§b§o${item.customName}`);
+                // Escape any HTML in custom names while preserving § codes
+                lines.push(`§b§o${escapeHtml(item.customName)}`);
             } else if (baseName) {
                 lines.push(`§b${baseName}`);
             }
@@ -2013,18 +2026,19 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 const loreLines = Array.isArray(item.lore) ? item.lore : [String(item.lore)];
                 loreLines.forEach(l => {
                     if (!l) return;
-                    const plain = String(l).trim();
+                        const plain = String(l).trim();
                     if (/compacted item/i.test(plain)) {
                         // Force the compacted indicator styling
                         lines.push(`§5§oCompacted Item`);
                     } else {
                         // If the lore line already includes Minecraft formatting codes, preserve it.
-                        if (/§[0-9a-fk-or]/i.test(plain)) {
-                            lines.push(plain);
-                        } else {
-                            // Otherwise render as gold normal text
-                            lines.push(`§6${plain}`);
-                        }
+                            if (/§[0-9a-fk-or]/i.test(plain)) {
+                                // Preserve provided formatting codes but escape stray HTML
+                                lines.push( plain.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') );
+                            } else {
+                                // Otherwise render as gold normal text (escape HTML)
+                                lines.push(`§6${escapeHtml(plain)}`);
+                            }
                     }
                 });
             }
@@ -2435,7 +2449,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 applyFiltersAndDisplay();
             } catch (error) {
                 console.error('Search failed:', error);
-                resultsContainer.innerHTML = `<div class="results-placeholder"><p class="govuk-body-s" style="color: #d4351c;">Error fetching data from Tradex. Please try again.<br><small>${error.message}</small></p></div>`;
+                resultsContainer.innerHTML = `<div class="results-placeholder"><p class="govuk-body-s" style="color: #d4351c;">Error fetching data from Tradex. Please try again.<br><small>${escapeHtml(error.message)}</small></p></div>`;
             } finally {
                 loadingOverlay.classList.add('hidden');
             }
@@ -2552,7 +2566,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 
                 let warning = `<div class="results-placeholder no-results">
                     <div class="warning-icon">⚠️</div>
-                    <p class="govuk-body-s"><strong>No shops found for "${queryLabel}"</strong></p>
+                    <p class="govuk-body-s"><strong>No shops found for "${escapeHtml(queryLabel)}"</strong></p>
                     <ul class="govuk-list govuk-list--bullet govuk-body-s">
                         ${!allowUnstocked ? '<li>Try enabling <strong>"Unstocked"</strong> in options</li>' : ''}
                         ${updatedAfter !== '0' ? '<li>Try setting <strong>"Time"</strong> to "Anytime"</li>' : ''}
