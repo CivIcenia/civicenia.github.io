@@ -8,7 +8,8 @@
  * @route /stv/visualize
  */
 import PageLayout from "@layouts/page.astro";
-
+import AnimatedBarChart from "@components/AnimatedBarChart.astro";
+import SankeyDiagram from "@components/SankeyDiagram.astro";
 ---
 
 <PageLayout chin={false} title="STV Results Visualization" description="Animated visualization of Single Transferable Vote election results round by round.">
@@ -185,8 +186,7 @@ import PageLayout from "@layouts/page.astro";
                     />
                     <button type="button" id="load-faction-btn" class="icenia-btn" style="margin-top: 0.5rem;">
                         Analyze Custom File
-                    </button>
-                </div>
+                    </div>
                     
                     <!-- Error/Status Messages -->
                     <div id="faction-status-message" class="status-message" style="display: none;"></div>
@@ -315,7 +315,6 @@ import PageLayout from "@layouts/page.astro";
 
 <script>
     import * as echarts from 'echarts';
-    import { SpeedController, buildSankeyData } from "../../lib/stv-viz";
     
     // Types
     interface SenateElection {
@@ -328,10 +327,9 @@ import PageLayout from "@layouts/page.astro";
         type: 'local';
     }
     
-        // DOM Elements
+    // DOM Elements
     const electionSelector = document.getElementById('election-selector') as HTMLSelectElement;
     const loadElectionBtn = document.getElementById('load-election-btn') as HTMLButtonElement;
-        const factionElectionSelector = document.getElementById('faction-election-selector') as HTMLSelectElement;
     const fileInput = document.getElementById('election-file') as HTMLInputElement;
     const loadFileBtn = document.getElementById('load-file-btn') as HTMLButtonElement;
     const statusMessage = document.getElementById('status-message') as HTMLDivElement;
@@ -350,6 +348,121 @@ import PageLayout from "@layouts/page.astro";
     
     // Senate elections data - load at runtime
     let senateElections: SenateElection[] = [];
+    
+    /**
+     * ============================================================================
+     * UNIFIED SPEED CONTROL SYSTEM
+     * ============================================================================
+     * 
+     * All timings are defined as BASE values at 1x speed, then scaled by the
+     * speed multiplier. This ensures everything stays in sync at any speed.
+     * 
+     * The key insight: to speed up a video 2x, you divide all durations by 2.
+     * So speedMultiplier = 2 means duration = baseDuration / 2.
+     */
+    class SpeedController {
+        // Base timings at 1x speed (milliseconds)
+        static readonly BASE = {
+            // Chart bar animation duration
+            CHART_ANIMATION: 600,
+            // Chart update transition duration  
+            CHART_UPDATE: 400,
+            // Time to display current round before transfer animation starts
+            PRE_ANIMATION_DISPLAY: 600,
+            // Gold bar fade-in pause at origin
+            GOLD_BAR_SPAWN_PAUSE: 400,
+            // Gold bar flight duration
+            GOLD_BAR_FLIGHT: 800,
+            // Gold bar fade-out pause at destination
+            GOLD_BAR_LANDING_PAUSE: 400,
+            // Delay after chart updates before gold bars disappear
+            GOLD_BAR_CLEANUP_DELAY: 300,
+            // Pause between rounds during autoplay
+            BETWEEN_ROUNDS_PAUSE: 600,
+        };
+        
+        private _speedMultiplier: number = 1.0;
+        
+        get speedMultiplier(): number {
+            return this._speedMultiplier;
+        }
+        
+        set speedMultiplier(value: number) {
+            // Clamp between 0.5x and 10x
+            this._speedMultiplier = Math.max(0.5, Math.min(10, value));
+        }
+        
+        /**
+         * Convert slider value (0-100) to speed multiplier.
+         * Exponential curve for better feel: slow speeds have more precision.
+         * 0 = 0.5x, 50 = 1x, 100 = 10x
+         */
+        static sliderToSpeed(sliderValue: number): number {
+            // Exponential mapping: 0.5 * 20^(slider/100)
+            // At 0: 0.5 * 20^0 = 0.5
+            // At 50: 0.5 * 20^0.5 ≈ 2.2
+            // At 100: 0.5 * 20^1 = 10
+            // Using a simpler exponential for smoother feel
+            const t = sliderValue / 100;
+            return 0.5 * Math.pow(20, t);
+        }
+        
+        /**
+         * Convert speed multiplier back to slider value
+         */
+        static speedToSlider(speed: number): number {
+            // Inverse of sliderToSpeed
+            return 100 * Math.log(speed / 0.5) / Math.log(20);
+        }
+        
+        /** Get scaled timing - this is the core method */
+        getScaled(baseTiming: number): number {
+            return baseTiming / this._speedMultiplier;
+        }
+        
+        // Convenience getters for common timings
+        get chartAnimation(): number {
+            return this.getScaled(SpeedController.BASE.CHART_ANIMATION);
+        }
+        
+        get chartUpdate(): number {
+            return this.getScaled(SpeedController.BASE.CHART_UPDATE);
+        }
+        
+        get preAnimationDisplay(): number {
+            return this.getScaled(SpeedController.BASE.PRE_ANIMATION_DISPLAY);
+        }
+        
+        get goldBarSpawnPause(): number {
+            return this.getScaled(SpeedController.BASE.GOLD_BAR_SPAWN_PAUSE);
+        }
+        
+        get goldBarFlight(): number {
+            return this.getScaled(SpeedController.BASE.GOLD_BAR_FLIGHT);
+        }
+        
+        get goldBarLandingPause(): number {
+            return this.getScaled(SpeedController.BASE.GOLD_BAR_LANDING_PAUSE);
+        }
+        
+        get goldBarCleanupDelay(): number {
+            return this.getScaled(SpeedController.BASE.GOLD_BAR_CLEANUP_DELAY);
+        }
+        
+        get betweenRoundsPause(): number {
+            return this.getScaled(SpeedController.BASE.BETWEEN_ROUNDS_PAUSE);
+        }
+        
+        /** Total duration of gold bar animation sequence */
+        get goldBarTotalDuration(): number {
+            return this.goldBarSpawnPause + this.goldBarFlight + this.goldBarLandingPause;
+        }
+        
+        /** When to trigger chart update (during gold bar landing) */
+        get chartUpdateTriggerTime(): number {
+            return this.goldBarSpawnPause + this.goldBarFlight + (this.goldBarLandingPause * 0.3);
+        }
+    }
     
     // Global speed controller instance
     const speedController = new SpeedController();
@@ -812,7 +925,8 @@ import PageLayout from "@layouts/page.astro";
                         name: 'Transferred/Surplus',
                         type: 'bar',
                         stack: 'total',
-                                                data: transferredParts.map((value) => {
+                        data: transferredParts.map((value, index) => {
+                            const candidate = candidates[index];
                             return {
                                 value,
                                 itemStyle: {
@@ -1022,8 +1136,11 @@ import PageLayout from "@layouts/page.astro";
                 const transferredSeriesData = chartOption.series[1].data;
                 
                 // Extract the numeric value from the data object
-                                const baseDataItem = baseSeriesData[transfer.fromIndex];
+                const baseDataItem = baseSeriesData[transfer.fromIndex];
+                const grayDataItem = transferredSeriesData[transfer.fromIndex];
                 const baseValue = (typeof baseDataItem === 'object' && baseDataItem !== null) ? baseDataItem.value : (baseDataItem || 0);
+                const grayValue = (typeof grayDataItem === 'object' && grayDataItem !== null) ? grayDataItem.value : (grayDataItem || 0);
+                
                 // Get all transfers from this source to calculate stacking
                 const sourceTransfers = transfersBySource.get(transfer.fromIndex)!;
                 const transferIndexInStack = sourceTransfers.findIndex(t => t === transfer);
@@ -1432,41 +1549,407 @@ import PageLayout from "@layouts/page.astro";
         showRound(0, true);
     }
     
-        function createSankeyDiagram(
-        roundResults: any[],
+    /**
+     * Create Sankey diagram showing vote transfers
+     * Supports dynamic quota per round and accumulating exhausted votes
+     */
+    function createSankeyDiagram(
+        roundResults: Array<{ round: number; tally: { [key: string]: number }; quota?: number; exhausted?: number; isFinalRound?: boolean }>,
         candidates: string[],
-        fallbackQuota: number = 0,
-        outcomes?: any[]
+        fallbackQuota?: number,
+        outcomes?: Array<{ type: 'elected' | 'eliminated'; candidate: string; round: number }>
     ) {
-        if (sankeyInstance) sankeyInstance.dispose();
+        // Clean up existing chart
+        if (sankeyInstance) {
+            sankeyInstance.dispose();
+        }
+        
+        // Store data for buildSankeyData to access
+        (window as any).sankeyRoundResults = roundResults;
+        (window as any).sankeyFallbackQuota = fallbackQuota;
+        (window as any).electionOutcomes = outcomes;
+        
+        // Create container HTML
         dynamicSankeyContainer.innerHTML = `<div id="sankey-chart" style="height: 700px; width: 100%;"></div>`;
+        
+        // Initialize ECharts
         const container = document.getElementById('sankey-chart')!;
         sankeyInstance = echarts.init(container);
-        const sankeyData = buildSankeyData(roundResults, candidates, fallbackQuota, outcomes || []);
-        const option: any = {
+        
+        // Build Sankey data
+        const sankeyData = buildSankeyData(roundResults, candidates);
+        
+        const option: echarts.EChartsOption = {
             tooltip: {
                 trigger: 'item',
                 triggerOn: 'mousemove',
-                formatter: (p: any) => p.dataType === 'edge' ? `${p.data.source} → ${p.data.target}<br/>Votes: ${p.value.toFixed(2)}` : `${p.name}<br/>Total: ${p.value.toFixed(2)} votes`
-            },
-            series: [{
-                type: 'sankey', emphasis: { focus: 'adjacency' }, nodeAlign: 'left', nodeGap: 12, nodeWidth: 25, layoutIterations: 0,
-                data: sankeyData.nodes, links: sankeyData.links,
-                lineStyle: { color: 'gradient', curveness: 0.5, opacity: 0.3 },
-                label: {
-                    fontSize: 11,
-                    formatter: (p: any) => {
-                        const match = p.name.match(/^R\d+: (.+)$/);
-                        if (match) return match[1] === 'Exhausted' ? '🗑️ Exhausted' : match[1];
-                        return p.name.startsWith('Final: ') ? (p.name.substring(7) === 'Exhausted' ? '🗑️ Exhausted' : `✓ ${p.name.substring(7)}`) : p.name;
+                formatter: function(params: any) {
+                    if (params.dataType === 'edge') {
+                        return `${params.data.source} → ${params.data.target}<br/>Votes: ${params.value.toFixed(2)}`;
+                    } else if (params.dataType === 'node') {
+                        return `${params.name}<br/>Total: ${params.value.toFixed(2)} votes`;
                     }
+                    return '';
                 }
-            }]
+            },
+            series: [
+                {
+                    type: 'sankey',
+                    emphasis: {
+                        focus: 'adjacency'
+                    },
+                    nodeAlign: 'left',
+                    nodeGap: 12,
+                    nodeWidth: 25,
+                    layoutIterations: 0,
+                    data: sankeyData.nodes,
+                    links: sankeyData.links,
+                    lineStyle: {
+                        color: 'gradient',
+                        curveness: 0.5,
+                        opacity: 0.3
+                    },
+                    label: {
+                        fontSize: 11,
+                        formatter: function(params: any) {
+                            const name = params.name;
+                            // Extract just the candidate name (remove round prefix)
+                            const match = name.match(/^R\d+: (.+)$/);
+                            if (match) {
+                                // Mark winners with a check mark
+                                const candidateName = match[1];
+                                if (candidateName === 'Exhausted') return '🗑️ Exhausted';
+                                return candidateName;
+                            }
+                            // Handle final round special names
+                            if (name.startsWith('Final: ')) {
+                                const finalName = name.substring(7);
+                                if (finalName === 'Exhausted') return '🗑️ Exhausted';
+                                return `✓ ${finalName}`;
+                            }
+                            return name;
+                        }
+                    }
+                } as any
+            ]
         };
+        
         sankeyInstance.setOption(option);
+        
+        // Handle resize
         const resizeObserver = new ResizeObserver(() => sankeyInstance?.resize());
         resizeObserver.observe(container);
+        
+        // Show the Sankey wrapper
         sankeyWrapper.style.display = 'block';
+    }
+    
+    /**
+     * Build Sankey nodes and links from round results
+     * Features:
+     * - Dynamic quota per round for winners
+     * - Exhausted votes shown as accumulating bar with proper links
+     * - Final stage showing only winners and total exhausted
+     */
+    function buildSankeyData(
+        roundResults: Array<{ round: number; tally: { [key: string]: number }; quota?: number; exhausted?: number; isFinalRound?: boolean }>,
+        candidates: string[]
+    ): { nodes: any[]; links: any[] } {
+        const nodes: any[] = [];
+        const links: any[] = [];
+        
+        // Color palette
+        const colors = [
+            '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
+            '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#48b8d0'
+        ];
+        
+        const candidateColors: { [key: string]: string } = {};
+        candidates.forEach((c, i) => {
+            candidateColors[c] = colors[i % colors.length];
+        });
+        
+        // Get stored data
+        const fallbackQuota = (window as any).sankeyFallbackQuota || 0;
+        const outcomes = (window as any).electionOutcomes as Array<{ type: 'elected' | 'eliminated'; candidate: string; round: number }> || [];
+        
+        // Map outcomes to rounds
+        const electedInRound: { [key: string]: { round: number; quota: number } } = {};
+        const eliminatedInRound: { [key: string]: number } = {};
+        
+        outcomes.forEach(outcome => {
+            if (outcome.type === 'elected') {
+                // Find the quota at the round they were elected (dynamic quota)
+                const electedRoundData = roundResults.find(r => r.round === outcome.round);
+                const winningQuota = electedRoundData?.quota ?? fallbackQuota;
+                electedInRound[outcome.candidate] = { round: outcome.round, quota: winningQuota };
+            } else {
+                eliminatedInRound[outcome.candidate] = outcome.round;
+            }
+        });
+        
+        // Filter to non-final rounds for main processing
+        const regularRounds = roundResults.filter(r => !r.isFinalRound);
+        const finalRound = roundResults.find(r => r.isFinalRound);
+        
+        // Track cumulative exhausted votes for accumulating bar
+        let cumulativeExhausted = 0;
+        const exhaustedPerRound: Map<number, number> = new Map();
+        
+        // Build augmented rounds with winners at their winning quota
+        const augmentedRounds: Array<{ round: number; tally: { [key: string]: number }; depth: number }> = [];
+        
+        regularRounds.forEach((round, roundIndex) => {
+            const tally: { [key: string]: number } = { ...round.tally };
+            
+            // Add back elected candidates from previous rounds at their winning quota
+            Object.entries(electedInRound).forEach(([candidate, info]) => {
+                if (info.round < round.round) {
+                    tally[candidate] = info.quota;
+                }
+            });
+            
+            augmentedRounds.push({ round: round.round, tally, depth: roundIndex });
+            
+            // Track exhausted votes for this round
+            if (round.exhausted !== undefined) {
+                exhaustedPerRound.set(round.round, round.exhausted);
+                cumulativeExhausted = round.exhausted;
+            }
+        });
+        
+        // Create nodes for each round
+        augmentedRounds.forEach((round, idx) => {
+            // Add candidate nodes
+            Object.entries(round.tally).forEach(([candidate, votes]) => {
+                if (votes > 0.001) {
+                    const isWinner = electedInRound[candidate] !== undefined && electedInRound[candidate].round <= round.round;
+                    nodes.push({
+                        name: `R${round.round}: ${candidate}`,
+                        value: votes,
+                        itemStyle: { 
+                            color: isWinner ? '#10b981' : (candidateColors[candidate] || '#999'),
+                            opacity: isWinner ? 0.85 : 1
+                        },
+                        depth: round.depth
+                    });
+                }
+            });
+            
+            // Add exhausted node for this round if there are exhausted votes
+            const exhaustedAtThisRound = exhaustedPerRound.get(round.round) ?? 0;
+            if (exhaustedAtThisRound > 0.001) {
+                nodes.push({
+                    name: `R${round.round}: Exhausted`,
+                    value: exhaustedAtThisRound,
+                    itemStyle: { color: '#9ca3af' },
+                    depth: round.depth
+                });
+            }
+        });
+        
+        // Create links between rounds
+        for (let i = 0; i < regularRounds.length - 1; i++) {
+            const currentRound = regularRounds[i];
+            const nextRound = regularRounds[i + 1];
+            const augCurrent = augmentedRounds[i];
+            const augNext = augmentedRounds[i + 1];
+            
+            // Get current round quota
+            const currentQuota = currentRound.quota ?? fallbackQuota;
+            
+            // Calculate vote changes for each candidate
+            const changes: { [candidate: string]: { before: number; after: number; change: number } } = {};
+            const allCandidates = new Set([...Object.keys(currentRound.tally), ...Object.keys(nextRound.tally)]);
+            
+            allCandidates.forEach(candidate => {
+                const before = currentRound.tally[candidate] || 0;
+                const after = nextRound.tally[candidate] || 0;
+                changes[candidate] = { before, after, change: after - before };
+            });
+            
+            // Calculate new exhausted votes this round (difference in cumulative)
+            const prevExhausted = exhaustedPerRound.get(currentRound.round) ?? 0;
+            const nextExhausted = exhaustedPerRound.get(nextRound.round) ?? 0;
+            const newExhaustedThisRound = Math.max(0, nextExhausted - prevExhausted);
+            
+            // Process each candidate
+            Object.entries(augCurrent.tally).forEach(([candidate, currentVotes]) => {
+                if (currentVotes < 0.001) return;
+                
+                const sourceName = `R${currentRound.round}: ${candidate}`;
+                const nextVotes = augNext.tally[candidate] || 0;
+                const wasElectedThisRound = electedInRound[candidate]?.round === currentRound.round;
+                const wasEliminatedThisRound = eliminatedInRound[candidate] === currentRound.round;
+                
+                if (wasElectedThisRound) {
+                    // Elected: keep their winning quota, redistribute surplus
+                    const winningQuota = electedInRound[candidate].quota;
+                    const kept = Math.min(currentVotes, winningQuota);
+                    const surplus = currentVotes - kept;
+                    
+                    // Link to self in next round (quota portion)
+                    if (kept > 0.001) {
+                        links.push({
+                            source: sourceName,
+                            target: `R${nextRound.round}: ${candidate}`,
+                            value: kept
+                        });
+                    }
+                    
+                    // Redistribute surplus
+                    if (surplus > 0.001) {
+                        redistributeSankeyVotes(links, sourceName, changes, nextRound.round, surplus, candidate, newExhaustedThisRound);
+                    }
+                } else if (wasEliminatedThisRound) {
+                    // Eliminated: redistribute all votes
+                    redistributeSankeyVotes(links, sourceName, changes, nextRound.round, currentVotes, candidate, newExhaustedThisRound);
+                } else if (nextVotes > 0.001) {
+                    // Continues: transfer to self
+                    const transfer = Math.min(currentVotes, nextVotes);
+                    if (transfer > 0.001) {
+                        links.push({
+                            source: sourceName,
+                            target: `R${nextRound.round}: ${candidate}`,
+                            value: transfer
+                        });
+                    }
+                }
+            });
+            
+            // Link previous exhausted to current exhausted (accumulating)
+            if (prevExhausted > 0.001 && nextExhausted > 0.001) {
+                links.push({
+                    source: `R${currentRound.round}: Exhausted`,
+                    target: `R${nextRound.round}: Exhausted`,
+                    value: prevExhausted
+                });
+            }
+        }
+        
+        // Add FINAL stage with only winners and exhausted
+        if (finalRound || regularRounds.length > 0) {
+            const lastRegularRound = regularRounds[regularRounds.length - 1];
+            const finalDepth = augmentedRounds.length;
+            const finalExhausted = finalRound?.exhausted ?? cumulativeExhausted;
+            
+            // Get all winners with their winning quotas
+            const winners = Object.entries(electedInRound);
+            
+            // Add final winner nodes
+            winners.forEach(([candidate, info]) => {
+                nodes.push({
+                    name: `Final: ${candidate}`,
+                    value: info.quota,
+                    itemStyle: { color: '#10b981', opacity: 0.9 },
+                    depth: finalDepth
+                });
+                
+                // Link from last round to final
+                const lastRoundVotes = augmentedRounds[augmentedRounds.length - 1]?.tally[candidate] ?? info.quota;
+                if (lastRoundVotes > 0.001) {
+                    links.push({
+                        source: `R${lastRegularRound.round}: ${candidate}`,
+                        target: `Final: ${candidate}`,
+                        value: info.quota
+                    });
+                }
+            });
+            
+            // Add final exhausted node
+            if (finalExhausted > 0.001) {
+                nodes.push({
+                    name: `Final: Exhausted`,
+                    value: finalExhausted,
+                    itemStyle: { color: '#9ca3af' },
+                    depth: finalDepth
+                });
+                
+                // Link from last round exhausted to final exhausted
+                const lastRoundExhausted = exhaustedPerRound.get(lastRegularRound.round) ?? 0;
+                if (lastRoundExhausted > 0.001) {
+                    links.push({
+                        source: `R${lastRegularRound.round}: Exhausted`,
+                        target: `Final: Exhausted`,
+                        value: lastRoundExhausted
+                    });
+                }
+            }
+        }
+        
+        return { nodes, links };
+    }
+    
+    /**
+     * Redistribute votes in Sankey diagram based on actual candidate gains
+     * Handles exhausted votes properly with links to the exhausted bar
+     */
+    function redistributeSankeyVotes(
+        links: any[],
+        sourceName: string,
+        changes: { [candidate: string]: { before: number; after: number; change: number } },
+        nextRound: number,
+        votesToRedistribute: number,
+        excludeCandidate: string,
+        newExhaustedThisRound: number
+    ) {
+        if (votesToRedistribute < 0.001) return;
+        
+        // Find candidates who gained votes (excluding source)
+        const gainers: { [candidate: string]: number } = {};
+        let totalGains = 0;
+        
+        Object.entries(changes).forEach(([candidate, data]) => {
+            if (candidate !== excludeCandidate && data.change > 0.001) {
+                gainers[candidate] = data.change;
+                totalGains += data.change;
+            }
+        });
+        
+        // Calculate exhausted portion from this redistribution
+        // This is proportional to the new exhausted vs total redistribution happening
+        const totalTransferring = totalGains + newExhaustedThisRound;
+        const exhaustedProportion = totalTransferring > 0 ? newExhaustedThisRound / totalTransferring : 0;
+        const exhaustedFromThis = votesToRedistribute * exhaustedProportion;
+        const toDistribute = votesToRedistribute - exhaustedFromThis;
+        
+        // If no gainers, all goes to exhausted
+        if (totalGains < 0.001) {
+            if (votesToRedistribute > 0.001) {
+                links.push({
+                    source: sourceName,
+                    target: `R${nextRound}: Exhausted`,
+                    value: votesToRedistribute
+                });
+            }
+            return;
+        }
+        
+        // Distribute proportionally to gainers
+        let distributed = 0;
+        Object.entries(gainers).forEach(([candidate, gain]) => {
+            const proportion = gain / totalGains;
+            const transfer = toDistribute * proportion;
+            
+            if (transfer > 0.001) {
+                links.push({
+                    source: sourceName,
+                    target: `R${nextRound}: ${candidate}`,
+                    value: transfer
+                });
+                distributed += transfer;
+            }
+        });
+        
+        // Remainder goes to exhausted
+        const remainder = votesToRedistribute - distributed;
+        if (remainder > 0.001) {
+            links.push({
+                source: sourceName,
+                target: `R${nextRound}: Exhausted`,
+                value: remainder
+            });
+        }
     }
     
     /**
@@ -1566,15 +2049,9 @@ import PageLayout from "@layouts/page.astro";
         initializeHandlers();
     }
     
-        function populateElectionDropdown() {
-        const options = senateElections.map(e => `<option value="${e.rcvisUrl}">${e.name} (${e.date})</option>`).join('');
-        if (electionSelector) electionSelector.innerHTML += options;
-        if (factionElectionSelector) factionElectionSelector.innerHTML += options;
-    }
-
     function initializeHandlers() {
         // Load senate elections data
-        fetch('/stv-data/senate-elections.json')
+        fetch('/src/data/senate-elections.json')
             .then(res => res.json())
             .then((data: SenateElection[]) => {
                 senateElections = data;
@@ -1583,12 +2060,6 @@ import PageLayout from "@layouts/page.astro";
             .catch(err => {
                 console.error('Failed to load elections list:', err);
             });
-
-        loadElectionBtn.addEventListener('click', () => {
-            const url = electionSelector.value;
-            if (!url) return showStatus('Please select an election.', 'error');
-            fetch(url).then(r => r.json()).then(loadElectionData).catch(() => showStatus('Failed to load election.', 'error'));
-        });
         
         // Load custom file
         loadFileBtn.addEventListener('click', () => {
@@ -1598,20 +2069,20 @@ import PageLayout from "@layouts/page.astro";
                 return;
             }
         
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const data = JSON.parse(e.target?.result as string);
-                    loadElectionData(data);
-                } catch (err) {
-                    showStatus('Invalid JSON file. Please check the file format.', 'error');
-                }
-            };
-            reader.onerror = () => {
-                showStatus('Error reading file.', 'error');
-            };
-            reader.readAsText(file);
-        });
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const data = JSON.parse(e.target?.result as string);
+                loadElectionData(data);
+            } catch (err) {
+                showStatus('Invalid JSON file. Please check the file format.', 'error');
+            }
+        };
+        reader.onerror = () => {
+            showStatus('Error reading file.', 'error');
+        };
+        reader.readAsText(file);
+    });
         
         // Allow clicking file input directly
         fileInput.addEventListener('change', () => {
@@ -1623,7 +2094,65 @@ import PageLayout from "@layouts/page.astro";
         // Initialize faction analysis handlers
         initializeFactionAnalysis();
     }
-
+    
+    /**
+     * Populate the election dropdown menu
+     */
+    function populateElectionDropdown() {
+        // Clear existing options except the first one
+        electionSelector.innerHTML = '<option value="">-- Select an election --</option>';
+        
+        // Populate election dropdown
+        senateElections.forEach(election => {
+            const option = document.createElement('option');
+            option.value = election.id;
+            option.textContent = `${election.name} (Term ${election.term})`;
+            electionSelector.appendChild(option);
+        });
+        
+        // Also populate faction analysis dropdown
+        const factionElectionSelector = document.getElementById('faction-election-selector') as HTMLSelectElement;
+        if (factionElectionSelector) {
+            factionElectionSelector.innerHTML = '<option value="">-- Select an election --</option>';
+            senateElections.forEach(election => {
+                const option = document.createElement('option');
+                option.value = election.id;
+                option.textContent = `${election.name} (Term ${election.term})`;
+                factionElectionSelector.appendChild(option);
+            });
+        }
+        
+        // Load selected election
+        loadElectionBtn.addEventListener('click', async () => {
+            const selectedId = electionSelector.value;
+            if (!selectedId) {
+                showStatus('Please select an election first.', 'error');
+                return;
+            }
+            
+            const election = senateElections.find(e => e.id === selectedId);
+            if (!election) {
+                showStatus('Election not found.', 'error');
+                return;
+            }
+            
+            try {
+                showStatus('Loading election data...', 'info');
+                const response = await fetch(election.rcvisUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to load election data: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                loadElectionData(data);
+            } catch (err) {
+                console.error('Error loading election:', err);
+                showStatus('Failed to load election data. The data file may not be available yet.', 'error');
+            }
+        });
+    }
+    
     // =============================================================================
     // FACTION ANALYSIS MODULE
     // =============================================================================
@@ -1637,11 +2166,13 @@ import PageLayout from "@layouts/page.astro";
      * Normalize a name using the nameMatches mapping
      */
     function normalizeName(name: string, nameMatches: { [key: string]: string | null }): string | null {
+        // Check direct match first
         if (nameMatches[name] !== undefined) {
             const match = nameMatches[name];
             if (match === null || match === '__NOT_A_BALLOT__') return null;
             return match;
         }
+        // Return original if no mapping exists
         return name;
     }
     
@@ -1654,6 +2185,7 @@ import PageLayout from "@layouts/page.astro";
         firstPreferenceCounts: Map<string, number>;
     } | null {
         try {
+            // Get candidates list
             let candidates: string[] = data.candidates || [];
             const nameMatches: { [key: string]: string | null } = data.nameMatches || {};
             const ballots: Array<{ voter: string; rankings: string[] }> = data.ballots || [];
@@ -1662,6 +2194,7 @@ import PageLayout from "@layouts/page.astro";
                 throw new Error('No ballots found in data');
             }
             
+            // Process each ballot
             const processedBallots: Array<{ voter: string; rankings: string[] }> = [];
             const firstPreferenceCounts = new Map<string, number>();
             const allCandidates = new Set<string>();
@@ -1672,26 +2205,37 @@ import PageLayout from "@layouts/page.astro";
                 
                 for (const name of ballot.rankings) {
                     const normalized = normalizeName(name, nameMatches);
-                    if (normalized === null) continue;
+                    if (normalized === null) continue; // Skip invalid/non-ballot entries
+                    
+                    // Deduplicate within ballot
                     if (seenCandidates.has(normalized)) continue;
                     seenCandidates.add(normalized);
+                    
                     normalizedRankings.push(normalized);
                     allCandidates.add(normalized);
                 }
                 
                 if (normalizedRankings.length > 0) {
-                    processedBallots.push({ voter: ballot.voter, rankings: normalizedRankings });
+                    processedBallots.push({
+                        voter: ballot.voter,
+                        rankings: normalizedRankings
+                    });
+                    
+                    // Count first preferences
                     const firstPref = normalizedRankings[0];
                     firstPreferenceCounts.set(firstPref, (firstPreferenceCounts.get(firstPref) || 0) + 1);
                 }
             }
             
+            // Use discovered candidates if none provided
             if (candidates.length === 0) {
                 candidates = Array.from(allCandidates);
             } else {
+                // Filter to only candidates that appear in ballots
                 candidates = candidates.filter(c => allCandidates.has(c));
             }
             
+            // Sort candidates by first preference count (descending)
             candidates.sort((a, b) => 
                 (firstPreferenceCounts.get(b) || 0) - (firstPreferenceCounts.get(a) || 0)
             );
@@ -1705,6 +2249,7 @@ import PageLayout from "@layouts/page.astro";
     
     /**
      * Calculate the adjacency/transfer matrix
+     * adjacencyMatrix[A][B] = count of times B appears immediately after A
      */
     function calculateAdjacencyMatrix(
         candidates: string[],
@@ -1718,13 +2263,16 @@ import PageLayout from "@layouts/page.astro";
             for (let i = 0; i < ballot.rankings.length - 1; i++) {
                 const fromCandidate = ballot.rankings[i];
                 const toCandidate = ballot.rankings[i + 1];
+                
                 const fromIdx = candidateIndex.get(fromCandidate);
                 const toIdx = candidateIndex.get(toCandidate);
+                
                 if (fromIdx !== undefined && toIdx !== undefined) {
                     matrix[fromIdx][toIdx]++;
                 }
             }
         }
+        
         return matrix;
     }
     
@@ -1740,7 +2288,8 @@ import PageLayout from "@layouts/page.astro";
     }
     
     /**
-     * Calculate Spearman rank correlation between candidates
+     * Calculate Spearman rank correlation between two candidates
+     * Based on how voters rank them relative to each other
      */
     function calculateRankCorrelation(
         candidates: string[],
@@ -1748,31 +2297,40 @@ import PageLayout from "@layouts/page.astro";
     ): number[][] {
         const n = candidates.length;
         const matrix: number[][] = Array(n).fill(null).map(() => Array(n).fill(0));
+        const candidateIndex = new Map(candidates.map((c, i) => [c, i]));
         
+        // For each pair of candidates, calculate correlation
         for (let i = 0; i < n; i++) {
-            matrix[i][i] = 1;
+            matrix[i][i] = 1; // Self-correlation is 1
+            
             for (let j = i + 1; j < n; j++) {
                 const candidateA = candidates[i];
                 const candidateB = candidates[j];
+                
+                // Collect rank pairs from ballots that rank both candidates
                 const rankPairsA: number[] = [];
                 const rankPairsB: number[] = [];
                 
                 for (const ballot of ballots) {
                     const rankA = ballot.rankings.indexOf(candidateA);
                     const rankB = ballot.rankings.indexOf(candidateB);
+                    
+                    // Only consider ballots that rank both candidates
                     if (rankA !== -1 && rankB !== -1) {
-                        rankPairsA.push(rankA + 1);
+                        rankPairsA.push(rankA + 1); // 1-indexed
                         rankPairsB.push(rankB + 1);
                     }
                 }
                 
+                // Calculate Spearman correlation
                 if (rankPairsA.length >= 2) {
                     const correlation = spearmanCorrelation(rankPairsA, rankPairsB);
                     matrix[i][j] = correlation;
-                    matrix[j][i] = correlation;
+                    matrix[j][i] = correlation; // Symmetric
                 }
             }
         }
+        
         return matrix;
     }
     
@@ -1783,13 +2341,18 @@ import PageLayout from "@layouts/page.astro";
         const n = x.length;
         if (n < 2) return 0;
         
+        // Get ranks
         const rankX = getRanks(x);
         const rankY = getRanks(y);
         
+        // Calculate correlation
         const meanX = rankX.reduce((a, b) => a + b, 0) / n;
         const meanY = rankY.reduce((a, b) => a + b, 0) / n;
         
-        let numerator = 0, denomX = 0, denomY = 0;
+        let numerator = 0;
+        let denomX = 0;
+        let denomY = 0;
+        
         for (let i = 0; i < n; i++) {
             const dx = rankX[i] - meanX;
             const dy = rankY[i] - meanY;
@@ -1799,7 +2362,9 @@ import PageLayout from "@layouts/page.astro";
         }
         
         const denom = Math.sqrt(denomX * denomY);
-        return denom === 0 ? 0 : numerator / denom;
+        if (denom === 0) return 0;
+        
+        return numerator / denom;
     }
     
     /**
@@ -1813,35 +2378,51 @@ import PageLayout from "@layouts/page.astro";
         let i = 0;
         while (i < indexed.length) {
             let j = i;
-            while (j < indexed.length && indexed[j].value === indexed[i].value) j++;
+            // Find ties
+            while (j < indexed.length && indexed[j].value === indexed[i].value) {
+                j++;
+            }
+            // Assign average rank to ties
             const avgRank = (i + j + 1) / 2;
-            for (let k = i; k < j; k++) ranks[indexed[k].index] = avgRank;
+            for (let k = i; k < j; k++) {
+                ranks[indexed[k].index] = avgRank;
+            }
             i = j;
         }
+        
         return ranks;
     }
     
     /**
      * Perform Multi-Dimensional Scaling (MDS) to project dissimilarity matrix to 2D
+     * Uses classical (Torgerson) MDS algorithm
      */
     function performMDS(correlationMatrix: number[][]): Array<{ x: number; y: number }> {
         const n = correlationMatrix.length;
+        
+        // Convert correlation to dissimilarity (1 - correlation, clamped to [0, 2])
         const dissimilarity: number[][] = correlationMatrix.map(row =>
             row.map(v => Math.max(0, Math.min(2, 1 - v)))
         );
+        
+        // Square the dissimilarities
         const D2: number[][] = dissimilarity.map(row => row.map(v => v * v));
         
+        // Double centering
         const rowMeans = D2.map(row => row.reduce((a, b) => a + b, 0) / n);
         const colMeans = Array(n).fill(0);
         let grandMean = 0;
         
         for (let j = 0; j < n; j++) {
-            for (let i = 0; i < n; i++) colMeans[j] += D2[i][j];
+            for (let i = 0; i < n; i++) {
+                colMeans[j] += D2[i][j];
+            }
             colMeans[j] /= n;
             grandMean += colMeans[j];
         }
         grandMean /= n;
         
+        // Calculate B matrix (double-centered)
         const B: number[][] = Array(n).fill(null).map(() => Array(n).fill(0));
         for (let i = 0; i < n; i++) {
             for (let j = 0; j < n; j++) {
@@ -1849,7 +2430,10 @@ import PageLayout from "@layouts/page.astro";
             }
         }
         
-        return powerIterationMDS(B, 2);
+        // Power iteration to find top 2 eigenvectors
+        const coords = powerIterationMDS(B, 2);
+        
+        return coords;
     }
     
     /**
@@ -1859,35 +2443,53 @@ import PageLayout from "@layouts/page.astro";
         const n = B.length;
         const iterations = 100;
         const eigenvectors: number[][] = [];
+        
+        // Copy B for deflation
         const A = B.map(row => [...row]);
         
         for (let dim = 0; dim < k; dim++) {
+            // Random initial vector
             let v = Array(n).fill(0).map(() => Math.random() - 0.5);
             let eigenvalue = 0;
             
             for (let iter = 0; iter < iterations; iter++) {
+                // Multiply A * v
                 const Av = Array(n).fill(0);
                 for (let i = 0; i < n; i++) {
-                    for (let j = 0; j < n; j++) Av[i] += A[i][j] * v[j];
+                    for (let j = 0; j < n; j++) {
+                        Av[i] += A[i][j] * v[j];
+                    }
                 }
+                
+                // Calculate magnitude
                 const mag = Math.sqrt(Av.reduce((sum, x) => sum + x * x, 0));
                 if (mag < 1e-10) break;
+                
                 eigenvalue = mag;
                 v = Av.map(x => x / mag);
             }
             
+            // Scale by sqrt of eigenvalue
             const sqrtEig = Math.sqrt(Math.max(0, eigenvalue));
             eigenvectors.push(v.map(x => x * sqrtEig));
             
+            // Deflate: A = A - eigenvalue * v * v^T
             for (let i = 0; i < n; i++) {
-                for (let j = 0; j < n; j++) A[i][j] -= eigenvalue * v[i] * v[j];
+                for (let j = 0; j < n; j++) {
+                    A[i][j] -= eigenvalue * v[i] * v[j];
+                }
             }
         }
         
+        // Combine into 2D coordinates
         const coords: Array<{ x: number; y: number }> = [];
         for (let i = 0; i < n; i++) {
-            coords.push({ x: eigenvectors[0]?.[i] || 0, y: eigenvectors[1]?.[i] || 0 });
+            coords.push({
+                x: eigenvectors[0]?.[i] || 0,
+                y: eigenvectors[1]?.[i] || 0
+            });
         }
+        
         return coords;
     }
     
@@ -1899,48 +2501,80 @@ import PageLayout from "@layouts/page.astro";
         adjacencyMatrix: number[][],
         correlationMatrix: number[][]
     ) {
-        if (coalitionChartInstance) coalitionChartInstance.dispose();
+        if (coalitionChartInstance) {
+            coalitionChartInstance.dispose();
+        }
         
         const container = document.getElementById('coalition-chart')!;
         coalitionChartInstance = echarts.init(container);
         
-        interface CoalitionPair { pair: string; score: number; coOccurrence: number; correlation: number; }
+        // Calculate coalition scores for each pair
+        interface CoalitionPair {
+            pair: string;
+            score: number;
+            coOccurrence: number;
+            correlation: number;
+        }
+        
         const pairs: CoalitionPair[] = [];
         
         for (let i = 0; i < candidates.length; i++) {
             for (let j = i + 1; j < candidates.length; j++) {
                 const coOccurrence = adjacencyMatrix[i][j] + adjacencyMatrix[j][i];
                 const correlation = correlationMatrix[i][j];
+                
+                // Coalition score: co-occurrence weighted by positive correlation
+                // Only include if they have some positive correlation (potential allies)
                 if (correlation > 0 && coOccurrence > 0) {
+                    const score = coOccurrence * correlation;
                     pairs.push({
                         pair: `${candidates[i]} + ${candidates[j]}`,
-                        score: coOccurrence * correlation,
-                        coOccurrence,
-                        correlation
+                        score: score,
+                        coOccurrence: coOccurrence,
+                        correlation: correlation
                     });
                 }
             }
         }
         
+        // Sort by score descending and take top 20
         pairs.sort((a, b) => b.score - a.score);
         const topPairs = pairs.slice(0, 20);
         
         const option: echarts.EChartsOption = {
-            title: { text: 'Top Coalition Pairs', subtext: 'Candidates who frequently appear together on ballots with high correlation', left: 'center' },
+            title: {
+                text: 'Top Coalition Pairs',
+                subtext: 'Candidates who frequently appear together on ballots with high correlation',
+                left: 'center'
+            },
             tooltip: {
                 trigger: 'axis',
                 axisPointer: { type: 'shadow' },
                 formatter: (params: any) => {
                     const data = params[0];
                     const pair = topPairs[data.dataIndex];
-                    return `<strong>${pair.pair}</strong><br/>Coalition Score: ${pair.score.toFixed(1)}<br/>Co-occurrence: ${pair.coOccurrence} ballots<br/>Correlation: ${pair.correlation.toFixed(3)}`;
+                    return `<strong>${pair.pair}</strong><br/>` +
+                           `Coalition Score: ${pair.score.toFixed(1)}<br/>` +
+                           `Co-occurrence: ${pair.coOccurrence} ballots<br/>` +
+                           `Correlation: ${pair.correlation.toFixed(3)}`;
                 }
             },
-            grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
-            xAxis: { type: 'value', name: 'Coalition Score', nameLocation: 'middle', nameGap: 30 },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'value',
+                name: 'Coalition Score',
+                nameLocation: 'middle',
+                nameGap: 30
+            },
             yAxis: {
                 type: 'category',
                 data: topPairs.map(p => {
+                    // Shorten names for display
                     const [c1, c2] = p.pair.split(' + ');
                     const short1 = c1.length > 12 ? c1.substring(0, 10) + '...' : c1;
                     const short2 = c2.length > 12 ? c2.substring(0, 10) + '...' : c2;
@@ -1953,24 +2587,39 @@ import PageLayout from "@layouts/page.astro";
                 name: 'Coalition Score',
                 type: 'bar',
                 data: topPairs.map(p => p.score),
-                itemStyle: { color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [{ offset: 0, color: '#5470c6' }, { offset: 1, color: '#91cc75' }]) },
-                label: { show: true, position: 'right', formatter: (params: any) => params.value.toFixed(0) }
+                itemStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                        { offset: 0, color: '#5470c6' },
+                        { offset: 1, color: '#91cc75' }
+                    ])
+                },
+                label: {
+                    show: true,
+                    position: 'right',
+                    formatter: (params: any) => params.value.toFixed(0)
+                }
             }]
         };
         
         coalitionChartInstance.setOption(option);
-        window.addEventListener('resize', () => coalitionChartInstance?.resize());
+        
+        window.addEventListener('resize', () => {
+            coalitionChartInstance?.resize();
+        });
     }
     
     /**
      * Create the correlation heatmap visualization
      */
     function createHeatmap(candidates: string[], correlationMatrix: number[][]) {
-        if (heatmapChartInstance) heatmapChartInstance.dispose();
+        if (heatmapChartInstance) {
+            heatmapChartInstance.dispose();
+        }
         
         const container = document.getElementById('heatmap-chart')!;
         heatmapChartInstance = echarts.init(container);
         
+        // Prepare data for heatmap
         const data: Array<[number, number, number]> = [];
         for (let i = 0; i < candidates.length; i++) {
             for (let j = 0; j < candidates.length; j++) {
@@ -1978,10 +2627,17 @@ import PageLayout from "@layouts/page.astro";
             }
         }
         
-        const shortNames = candidates.map(c => c.length > 15 ? c.substring(0, 12) + '...' : c);
+        // Shorten candidate names for display
+        const shortNames = candidates.map(c => 
+            c.length > 15 ? c.substring(0, 12) + '...' : c
+        );
         
         const option: echarts.EChartsOption = {
-            title: { text: 'Candidate Rank Correlation', subtext: 'Based on voter ranking patterns', left: 'center' },
+            title: {
+                text: 'Candidate Rank Correlation',
+                subtext: 'Based on voter ranking patterns',
+                left: 'center'
+            },
             tooltip: {
                 position: 'top',
                 formatter: (params: any) => {
@@ -1989,22 +2645,63 @@ import PageLayout from "@layouts/page.astro";
                     return `${candidates[y]} ↔ ${candidates[x]}<br/>Correlation: ${value.toFixed(3)}`;
                 }
             },
-            grid: { left: '15%', right: '15%', bottom: '20%', top: '15%' },
-            xAxis: { type: 'category', data: shortNames, splitArea: { show: true }, axisLabel: { rotate: 45, interval: 0, fontSize: 10 } },
-            yAxis: { type: 'category', data: shortNames, splitArea: { show: true }, axisLabel: { fontSize: 10 } },
-            visualMap: { min: -1, max: 1, calculable: true, orient: 'horizontal', left: 'center', bottom: '0%', inRange: { color: ['#ef4444', '#fef3c7', '#10b981'] }, text: ['Allies (+1)', 'Rivals (-1)'] },
+            grid: {
+                left: '15%',
+                right: '15%',
+                bottom: '20%',
+                top: '15%'
+            },
+            xAxis: {
+                type: 'category',
+                data: shortNames,
+                splitArea: { show: true },
+                axisLabel: { rotate: 45, interval: 0, fontSize: 10 }
+            },
+            yAxis: {
+                type: 'category',
+                data: shortNames,
+                splitArea: { show: true },
+                axisLabel: { fontSize: 10 }
+            },
+            visualMap: {
+                min: -1,
+                max: 1,
+                calculable: true,
+                orient: 'horizontal',
+                left: 'center',
+                bottom: '0%',
+                inRange: {
+                    color: ['#ef4444', '#fef3c7', '#10b981']
+                },
+                text: ['Allies (+1)', 'Rivals (-1)']
+            },
             series: [{
                 name: 'Correlation',
                 type: 'heatmap',
                 data: data,
-                label: { show: candidates.length <= 8, formatter: (params: any) => params.data[2].toFixed(2) },
-                emphasis: { itemStyle: { shadowBlur: 10, shadowColor: 'rgba(0, 0, 0, 0.5)' } }
+                label: {
+                    show: candidates.length <= 8,
+                    formatter: (params: any) => params.data[2].toFixed(2)
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
             }]
         };
         
         heatmapChartInstance.setOption(option);
-        setTimeout(() => heatmapChartInstance?.resize(), 100);
-        window.addEventListener('resize', () => heatmapChartInstance?.resize());
+        
+        // Force resize after a short delay to ensure proper dimensions
+        setTimeout(() => {
+            heatmapChartInstance?.resize();
+        }, 100);
+        
+        window.addEventListener('resize', () => {
+            heatmapChartInstance?.resize();
+        });
     }
     
     /**
@@ -2015,14 +2712,21 @@ import PageLayout from "@layouts/page.astro";
         mdsCoords: Array<{ x: number; y: number }>,
         firstPreferenceCounts: Map<string, number>
     ) {
-        if (mdsChartInstance) mdsChartInstance.dispose();
+        if (mdsChartInstance) {
+            mdsChartInstance.dispose();
+        }
         
         const container = document.getElementById('mds-chart')!;
         mdsChartInstance = echarts.init(container);
         
-        const colors = ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#48b8d0'];
+        const colors = [
+            '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
+            '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#48b8d0'
+        ];
+        
         const maxFirstPref = Math.max(...Array.from(firstPreferenceCounts.values()));
         
+        // Prepare scatter data
         const scatterData = candidates.map((candidate, i) => {
             const firstPref = firstPreferenceCounts.get(candidate) || 0;
             const size = 20 + (firstPref / maxFirstPref) * 30;
@@ -2031,27 +2735,72 @@ import PageLayout from "@layouts/page.astro";
                 value: [mdsCoords[i].x, mdsCoords[i].y],
                 symbolSize: size,
                 itemStyle: { color: colors[i % colors.length] },
-                label: { show: true, formatter: '{b}', position: 'right' as const, fontSize: 11 }
+                label: {
+                    show: true,
+                    formatter: '{b}',
+                    position: 'right' as const,
+                    fontSize: 11
+                }
             };
         });
         
+        // Calculate axis ranges with padding
         const xVals = mdsCoords.map(c => c.x);
         const yVals = mdsCoords.map(c => c.y);
-        const xMin = Math.min(...xVals), xMax = Math.max(...xVals);
-        const yMin = Math.min(...yVals), yMax = Math.max(...yVals);
-        const xPad = (xMax - xMin) * 0.2 || 1, yPad = (yMax - yMin) * 0.2 || 1;
+        const xMin = Math.min(...xVals);
+        const xMax = Math.max(...xVals);
+        const yMin = Math.min(...yVals);
+        const yMax = Math.max(...yVals);
+        const xPad = (xMax - xMin) * 0.2 || 1;
+        const yPad = (yMax - yMin) * 0.2 || 1;
         
         const option: echarts.EChartsOption = {
-            title: { text: 'Political Distance Map (MDS)', subtext: 'Closer = more similar • Axes are data-derived (no predefined meaning)', left: 'center' },
-            tooltip: { trigger: 'item', formatter: (params: any) => `<strong>${params.name}</strong><br/>1st Preferences: ${firstPreferenceCounts.get(params.name) || 0}` },
-            grid: { left: '10%', right: '20%', bottom: '10%', top: '15%' },
-            xAxis: { type: 'value', min: xMin - xPad, max: xMax + xPad, axisLabel: { show: false }, splitLine: { lineStyle: { type: 'dashed', opacity: 0.3 } } },
-            yAxis: { type: 'value', min: yMin - yPad, max: yMax + yPad, axisLabel: { show: false }, splitLine: { lineStyle: { type: 'dashed', opacity: 0.3 } } },
-            series: [{ type: 'scatter', data: scatterData, emphasis: { scale: 1.5 } }]
+            title: {
+                text: 'Political Distance Map (MDS)',
+                subtext: 'Closer = more similar • Axes are data-derived (no predefined meaning)',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: (params: any) => {
+                    const firstPref = firstPreferenceCounts.get(params.name) || 0;
+                    return `<strong>${params.name}</strong><br/>1st Preferences: ${firstPref}`;
+                }
+            },
+            grid: {
+                left: '10%',
+                right: '20%',
+                bottom: '10%',
+                top: '15%'
+            },
+            xAxis: {
+                type: 'value',
+                min: xMin - xPad,
+                max: xMax + xPad,
+                axisLabel: { show: false },
+                splitLine: { lineStyle: { type: 'dashed', opacity: 0.3 } }
+            },
+            yAxis: {
+                type: 'value',
+                min: yMin - yPad,
+                max: yMax + yPad,
+                axisLabel: { show: false },
+                splitLine: { lineStyle: { type: 'dashed', opacity: 0.3 } }
+            },
+            series: [{
+                type: 'scatter',
+                data: scatterData,
+                emphasis: {
+                    scale: 1.5
+                }
+            }]
         };
         
         mdsChartInstance.setOption(option);
-        window.addEventListener('resize', () => mdsChartInstance?.resize());
+        
+        window.addEventListener('resize', () => {
+            mdsChartInstance?.resize();
+        });
     }
     
     /**
@@ -2059,17 +2808,25 @@ import PageLayout from "@layouts/page.astro";
      */
     function createTransferTable(candidates: string[], probMatrix: number[][]) {
         const container = document.getElementById('transfer-matrix-container')!;
-        const shortNames = candidates.map(c => c.length > 12 ? c.substring(0, 10) + '..' : c);
         
-        let html = '<table class="transfer-table"><thead><tr><th>From \\ To</th>';
-        shortNames.forEach(name => { html += `<th title="${name}">${name}</th>`; });
+        // Shorten names for table headers
+        const shortNames = candidates.map(c => 
+            c.length > 12 ? c.substring(0, 10) + '..' : c
+        );
+        
+        let html = '<table class="transfer-table">';
+        html += '<thead><tr><th>From \\ To</th>';
+        shortNames.forEach(name => {
+            html += `<th title="${name}">${name}</th>`;
+        });
         html += '</tr></thead><tbody>';
         
         probMatrix.forEach((row, i) => {
             html += `<tr><th title="${candidates[i]}">${shortNames[i]}</th>`;
             row.forEach((prob, j) => {
                 const pct = (prob * 100).toFixed(1);
-                const bg = prob > 0.2 ? `rgba(16, 185, 129, ${prob})` : prob > 0.1 ? `rgba(250, 200, 88, ${prob * 2})` : '';
+                const bg = prob > 0.2 ? `rgba(16, 185, 129, ${prob})` : 
+                          prob > 0.1 ? `rgba(250, 200, 88, ${prob * 2})` : '';
                 html += `<td style="background: ${bg};" title="${candidates[i]} → ${candidates[j]}: ${pct}%">${pct}%</td>`;
             });
             html += '</tr>';
@@ -2080,9 +2837,35 @@ import PageLayout from "@layouts/page.astro";
     }
     
     /**
+     * Demo data for faction analysis (uses a subset of real patterns)
+     */
+    const factionDemoData = {
+        candidates: ["Alice", "Bob", "Carol", "Dave", "Eve"],
+        ballots: [
+            { voter: "v1", rankings: ["Alice", "Carol", "Eve"] },
+            { voter: "v2", rankings: ["Alice", "Carol", "Bob"] },
+            { voter: "v3", rankings: ["Alice", "Eve", "Carol"] },
+            { voter: "v4", rankings: ["Bob", "Dave", "Eve"] },
+            { voter: "v5", rankings: ["Bob", "Dave", "Carol"] },
+            { voter: "v6", rankings: ["Bob", "Alice", "Dave"] },
+            { voter: "v7", rankings: ["Carol", "Alice", "Eve"] },
+            { voter: "v8", rankings: ["Carol", "Eve", "Alice"] },
+            { voter: "v9", rankings: ["Dave", "Bob", "Eve"] },
+            { voter: "v10", rankings: ["Dave", "Bob", "Carol"] },
+            { voter: "v11", rankings: ["Eve", "Carol", "Alice"] },
+            { voter: "v12", rankings: ["Eve", "Alice", "Carol"] },
+            { voter: "v13", rankings: ["Alice", "Carol", "Bob", "Dave"] },
+            { voter: "v14", rankings: ["Bob", "Dave", "Alice"] },
+            { voter: "v15", rankings: ["Carol", "Alice", "Eve", "Bob"] },
+        ],
+        nameMatches: {}
+    };
+    
+    /**
      * Initialize faction analysis event handlers
      */
     function initializeFactionAnalysis() {
+        // Get DOM elements
         const factionElectionSelector = document.getElementById('faction-election-selector') as HTMLSelectElement;
         const loadFactionElectionBtn = document.getElementById('load-faction-election-btn') as HTMLButtonElement;
         const factionFileInput = document.getElementById('faction-file') as HTMLInputElement;
@@ -2092,20 +2875,27 @@ import PageLayout from "@layouts/page.astro";
         const factionInstructions = document.getElementById('faction-instructions') as HTMLDivElement;
         
         // Load selected election for faction analysis
-        loadFactionElectionBtn?.addEventListener('click', async () => {
-            const selectedUrl = factionElectionSelector?.value;
-            if (!selectedUrl) {
+        loadFactionElectionBtn.addEventListener('click', async () => {
+            const selectedId = factionElectionSelector.value;
+            if (!selectedId) {
                 showFactionStatus('Please select an election first.', 'error');
                 return;
             }
             
-            // Convert rcvisUrl to fullUrl pattern
-            const fullUrl = selectedUrl.replace('-rcvis.json', '-full.json');
+            const election = senateElections.find(e => e.id === selectedId);
+            if (!election) {
+                showFactionStatus('Election not found.', 'error');
+                return;
+            }
             
             try {
                 showFactionStatus('Loading election data...', 'info');
-                const response = await fetch(fullUrl);
-                if (!response.ok) throw new Error(`Failed to load election data: ${response.statusText}`);
+                const response = await fetch(election.fullUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to load election data: ${response.statusText}`);
+                }
+                
                 const data = await response.json();
                 loadFactionData(data);
             } catch (err) {
@@ -2114,14 +2904,24 @@ import PageLayout from "@layouts/page.astro";
             }
         });
         
+        /**
+         * Show status message for faction analysis
+         */
         function showFactionStatus(message: string, type: 'success' | 'error' | 'info' = 'info') {
-            if (!factionStatusMessage) return;
             factionStatusMessage.textContent = message;
             factionStatusMessage.className = `status-message status-${type}`;
             factionStatusMessage.style.display = 'block';
-            if (type === 'success') setTimeout(() => { factionStatusMessage.style.display = 'none'; }, 3000);
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    factionStatusMessage.style.display = 'none';
+                }, 3000);
+            }
         }
         
+        /**
+         * Main function to load and analyze faction data
+         */
         function loadFactionData(data: any) {
             const processed = processRawBallots(data);
             if (!processed) {
@@ -2137,15 +2937,12 @@ import PageLayout from "@layouts/page.astro";
             }
             
             // Update summary stats
-            const totalBallotsEl = document.getElementById('faction-total-ballots');
-            const candidatesEl = document.getElementById('faction-candidates');
-            const avgRankingsEl = document.getElementById('faction-avg-rankings');
-            
-            if (totalBallotsEl) totalBallotsEl.textContent = String(processedBallots.length);
-            if (candidatesEl) candidatesEl.textContent = String(candidates.length);
+            document.getElementById('faction-total-ballots')!.textContent = String(processedBallots.length);
+            document.getElementById('faction-candidates')!.textContent = String(candidates.length);
             const avgRankings = processedBallots.reduce((sum, b) => sum + b.rankings.length, 0) / processedBallots.length;
-            if (avgRankingsEl) avgRankingsEl.textContent = avgRankings.toFixed(1);
+            document.getElementById('faction-avg-rankings')!.textContent = avgRankings.toFixed(1);
             
+            // Calculate metrics
             showFactionStatus('Calculating transfer matrix...', 'info');
             const adjacencyMatrix = calculateAdjacencyMatrix(candidates, processedBallots);
             const transferProb = calculateTransferProbabilities(adjacencyMatrix);
@@ -2156,15 +2953,18 @@ import PageLayout from "@layouts/page.astro";
             showFactionStatus('Performing MDS projection...', 'info');
             const mdsCoords = performMDS(correlationMatrix);
             
+            // Create visualizations
             showFactionStatus('Rendering visualizations...', 'info');
             createCoalitionChart(candidates, adjacencyMatrix, correlationMatrix);
             createHeatmap(candidates, correlationMatrix);
             createMDSPlot(candidates, mdsCoords, firstPreferenceCounts);
             createTransferTable(candidates, transferProb);
             
-            if (factionResults) factionResults.style.display = 'block';
-            if (factionInstructions) factionInstructions.style.display = 'none';
+            // Show results, hide instructions
+            factionResults.style.display = 'block';
+            factionInstructions.style.display = 'none';
             
+            // Force resize of all charts after container is visible
             setTimeout(() => {
                 heatmapChartInstance?.resize();
                 coalitionChartInstance?.resize();
@@ -2181,14 +2981,19 @@ import PageLayout from "@layouts/page.astro";
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 const targetTab = (tab as HTMLElement).dataset.tab;
+                
+                // Update tab buttons
                 tabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 
+                // Update tab content
                 tabContents.forEach(content => {
                     const contentEl = content as HTMLElement;
                     if (contentEl.id === `tab-${targetTab}`) {
                         contentEl.style.display = 'block';
                         contentEl.classList.add('active');
+                        
+                        // Resize chart when tab becomes visible
                         setTimeout(() => {
                             if (targetTab === 'coalition') coalitionChartInstance?.resize();
                             if (targetTab === 'heatmap') heatmapChartInstance?.resize();
@@ -2204,7 +3009,7 @@ import PageLayout from "@layouts/page.astro";
         
         // File loading
         loadFactionBtn?.addEventListener('click', () => {
-            const file = factionFileInput?.files?.[0];
+            const file = factionFileInput.files?.[0];
             if (!file) {
                 showFactionStatus('Please select a file first.', 'error');
                 return;
@@ -2219,16 +3024,21 @@ import PageLayout from "@layouts/page.astro";
                     showFactionStatus('Invalid JSON file. Please check the file format.', 'error');
                 }
             };
-            reader.onerror = () => showFactionStatus('Error reading file.', 'error');
+            reader.onerror = () => {
+                showFactionStatus('Error reading file.', 'error');
+            };
             reader.readAsText(file);
         });
         
         // Auto-load on file selection
         factionFileInput?.addEventListener('change', () => {
-            if (factionFileInput.files?.length) loadFactionBtn?.click();
+            if (factionFileInput.files?.length) {
+                loadFactionBtn?.click();
+            }
         });
     }
 </script>
+
 <style>
     .import-section {
         padding: 1.5rem;
@@ -2347,7 +3157,7 @@ import PageLayout from "@layouts/page.astro";
         font-size: 0.875rem;
     }
     
-    /* Chart Controls */
+    /* Chart Controls (matching AnimatedBarChart.astro) */
     .chart-controls {
         display: flex;
         flex-wrap: wrap;
@@ -2358,6 +3168,7 @@ import PageLayout from "@layouts/page.astro";
         border: 1px solid #ddd;
         border-top: none;
         border-radius: 0 0 8px 8px;
+        /* Ensure controls receive pointer events and sit above the chart */
         position: relative;
         z-index: 5;
         pointer-events: auto;
@@ -2382,6 +3193,7 @@ import PageLayout from "@layouts/page.astro";
         transition: all 0.2s ease;
     }
 
+    /* Ensure the chart container sits beneath controls so inputs are clickable */
     #echart-container {
         position: relative;
         z-index: 1;
@@ -2466,6 +3278,7 @@ import PageLayout from "@layouts/page.astro";
         background: #ddd;
         border-radius: 4px;
         cursor: pointer;
+        /* Allow touch/pointer interactions to drag the thumb reliably */
         touch-action: pan-y;
     }
 
@@ -2486,6 +3299,14 @@ import PageLayout from "@layouts/page.astro";
         border-radius: 50%;
         cursor: pointer;
         border: none;
+    }
+
+    .speed-select {
+        padding: 0.375rem 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background: #fff;
+        cursor: pointer;
     }
 
     .download-btn {
@@ -2513,7 +3334,7 @@ import PageLayout from "@layouts/page.astro";
         }
 
         .speed-control {
-            min-width: auto;
+            justify-content: center;
         }
 
         .download-btn {
@@ -2522,7 +3343,10 @@ import PageLayout from "@layouts/page.astro";
         }
     }
     
-    /* Faction Analysis Styles */
+    /* =================================================================== */
+    /* FACTION ANALYSIS STYLES */
+    /* =================================================================== */
+    
     .faction-analysis-section {
         margin-top: 2rem;
     }
@@ -2535,6 +3359,7 @@ import PageLayout from "@layouts/page.astro";
         border-radius: 8px;
     }
     
+    /* Tab Navigation */
     .faction-tabs {
         display: flex;
         flex-wrap: wrap;
@@ -2574,6 +3399,7 @@ import PageLayout from "@layouts/page.astro";
         display: block;
     }
     
+    /* Chart Legend */
     .chart-legend {
         display: flex;
         flex-wrap: wrap;
@@ -2599,6 +3425,14 @@ import PageLayout from "@layouts/page.astro";
         border-radius: 50%;
     }
     
+    .legend-line {
+        width: 24px;
+        height: 3px;
+        background: linear-gradient(90deg, #5470c6, #91cc75);
+        border-radius: 2px;
+    }
+    
+    /* Transfer Matrix Table */
     .transfer-table {
         width: 100%;
         border-collapse: collapse;
@@ -2638,6 +3472,7 @@ import PageLayout from "@layouts/page.astro";
         background: #fef3c7;
     }
     
+    /* Details/Summary for raw data */
     .faction-details {
         margin-top: 1.5rem;
         border: 1px solid #d1d5db;
@@ -2662,13 +3497,15 @@ import PageLayout from "@layouts/page.astro";
         padding: 1rem;
     }
     
+    /* Mobile responsiveness for faction section */
     @media (max-width: 768px) {
         .faction-tabs {
             flex-direction: column;
         }
         
         .faction-tab {
-            border-radius: 4px;
+            border-radius: 8px;
+            text-align: center;
         }
         
         .chart-legend {

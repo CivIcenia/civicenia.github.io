@@ -1250,7 +1250,29 @@ import PageLayout from "@layouts/page.astro";
             
             const currentMatch = parsedData.nameMatches.get(foundName);
             
+            // Auto-select best match if not already set
+            if (currentMatch === undefined && suggestions.length > 0 && suggestions[0].score > 0.7) {
+                parsedData.nameMatches.set(foundName, suggestions[0].name);
+                parsedData.learnedCorrelations.set(foundName, suggestions[0].name);
+            }
+            
+            const effectiveMatch = parsedData.nameMatches.get(foundName);
+            
             container.innerHTML = `
+                <div class="match-progress">
+                    Reviewing name ${parsedData.currentNameIndex + 1} of ${parsedData.uniqueNames.length}
+                </div>
+                
+                <div class="govuk-inset-text" style="margin-top: 10px; font-size: 0.85em;">
+                    <strong>Keyboard shortcuts:</strong>
+                    <span style="display: block; margin-top: 5px;">
+                        <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">←</kbd><kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">→</kbd> or <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">Enter</kbd><kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">Shift+Enter</kbd> Navigate • 
+                        <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">1</kbd>-<kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">9</kbd> Quick select • 
+                        <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">N</kbd> Invalid/Not candidate • 
+                        <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">W</kbd> Focus dropdown
+                    </span>
+                </div>
+                
                 <div class="name-match-item">
                     <div class="name-match-header">
                         <span class="found-name">${foundName}</span>
@@ -1260,16 +1282,17 @@ import PageLayout from "@layouts/page.astro";
                     <p class="govuk-body-s">Match this name to an official candidate:</p>
                     
                     <div class="match-options">
-                        ${suggestions.map(s => `
-                            <button class="match-option ${currentMatch === s.name ? 'selected' : ''}" 
+                        ${suggestions.map((s, i) => `
+                            <button class="match-option ${effectiveMatch === s.name ? 'selected' : ''}" 
+                                    data-index="${i + 1}"
                                     onclick="window.selectMatch('${foundName.replace(/'/g, "\\'")}', '${s.name.replace(/'/g, "\\'")}')">
-                                ${s.name}
+                                ${i + 1}. ${s.name} (${Math.round(s.score * 100)}%)
                             </button>
                         `).join('')}
                         
-                        <button class="match-option invalid ${currentMatch === '__NOT_A_BALLOT__' ? 'selected' : ''}"
+                        <button class="match-option invalid ${effectiveMatch === '__NOT_A_BALLOT__' || effectiveMatch === null ? 'selected' : ''}"
                                 onclick="window.selectMatch('${foundName.replace(/'/g, "\\'")}', '__NOT_A_BALLOT__')">
-                            Invalid / Not a Candidate
+                            N. Invalid / Not a Candidate
                         </button>
                     </div>
                     
@@ -1279,17 +1302,17 @@ import PageLayout from "@layouts/page.astro";
                                 onchange="window.selectMatch('${foundName.replace(/'/g, "\\'")}', this.value)">
                             <option value="">-- Select Candidate --</option>
                             ${parsedData.candidates.map(c => `
-                                <option value="${c}" ${currentMatch === c ? 'selected' : ''}>${c}</option>
+                                <option value="${c}" ${effectiveMatch === c ? 'selected' : ''}>${c}</option>
                             `).join('')}
                         </select>
                     </div>
 
                     <div class="match-navigation icenia-button-group">
                         <button class="icenia-btn icenia-btn-secondary match-nav-button" onclick="window.prevName()" ${parsedData.currentNameIndex === 0 ? 'disabled' : ''}>
-                            Previous
+                            ← Previous
                         </button>
                         <button class="icenia-btn match-nav-button" onclick="window.nextName()">
-                            ${parsedData.currentNameIndex === parsedData.uniqueNames.length - 1 ? 'Finish Matching' : 'Next'}
+                            ${parsedData.currentNameIndex === parsedData.uniqueNames.length - 1 ? 'Finish Matching →' : 'Next →'}
                         </button>
                     </div>
                 </div>
@@ -1582,6 +1605,181 @@ import PageLayout from "@layouts/page.astro";
         };
 
         (window as any).calculateResults = calculateResults;
+
+        // Track duplicate voters for keyboard navigation
+        let allDuplicateVoters: Array<{voter: string, ballotIndices: number[]}> = [];
+        let currentDuplicateIndex = 0;
+
+        function navigateDuplicateBallotOption(direction: 'up' | 'down') {
+            if (allDuplicateVoters.length === 0) return;
+            const currentVoter = allDuplicateVoters[currentDuplicateIndex];
+            if (!currentVoter) return;
+            
+            const selectedIdx = parsedData.duplicateSelections.get(currentVoter.voter);
+            const currentPos = selectedIdx !== undefined 
+                ? currentVoter.ballotIndices.indexOf(selectedIdx) 
+                : currentVoter.ballotIndices.length - 1;
+            
+            let newPos = currentPos;
+            if (direction === 'up' && currentPos > 0) newPos--;
+            if (direction === 'down' && currentPos < currentVoter.ballotIndices.length - 1) newPos++;
+            
+            if (newPos !== currentPos) {
+                parsedData.duplicateSelections.set(currentVoter.voter, currentVoter.ballotIndices[newPos]);
+                checkForDuplicates();
+            }
+        }
+
+        // --- Global Keyboard Navigation ---
+        document.addEventListener('keydown', function(e) {
+            // Don't interfere if user is typing in dropdown or another input
+            if (e.target instanceof HTMLSelectElement || e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+                return;
+            }
+            
+            // Don't interfere if user is focused on a button (they might press Enter/Space on it)
+            if (e.target instanceof HTMLButtonElement) {
+                return;
+            }
+            
+            // Handle duplicate voters keyboard navigation
+            const duplicateVoters = document.getElementById('duplicate-voters');
+            if (duplicateVoters && duplicateVoters.style.display === 'block') {
+                if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    navigateDuplicateBallotOption('up');
+                } else if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    navigateDuplicateBallotOption('down');
+                } else if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (currentDuplicateIndex < allDuplicateVoters.length - 1) {
+                        currentDuplicateIndex++;
+                        checkForDuplicates();
+                    } else {
+                        proceedToBallotReview();
+                    }
+                } else if (e.key === 'Enter' && e.shiftKey) {
+                    e.preventDefault();
+                    if (currentDuplicateIndex > 0) {
+                        currentDuplicateIndex--;
+                        checkForDuplicates();
+                    }
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    if (currentDuplicateIndex > 0) {
+                        currentDuplicateIndex--;
+                        checkForDuplicates();
+                    }
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    if (currentDuplicateIndex < allDuplicateVoters.length - 1) {
+                        currentDuplicateIndex++;
+                        checkForDuplicates();
+                    } else {
+                        proceedToBallotReview();
+                    }
+                }
+                return;
+            }
+            
+            // Handle ballot review keyboard navigation
+            const ballotReview = document.getElementById('ballot-review');
+            if (ballotReview && ballotReview.style.display === 'block') {
+                if (e.key === 'ArrowLeft' || (e.key === 'Enter' && e.shiftKey)) {
+                    e.preventDefault();
+                    if (currentBallotIndex > 0) {
+                        currentBallotIndex--;
+                        renderBallotReview();
+                    }
+                } else if (e.key === 'ArrowRight' || e.key === 'Enter') {
+                    e.preventDefault();
+                    if (currentBallotIndex < parsedData.ballots.length - 1) {
+                        currentBallotIndex++;
+                        renderBallotReview();
+                    }
+                }
+                return;
+            }
+            
+            // Handle name matching keyboard navigation
+            const nameMatching = document.getElementById('name-matching');
+            if (!nameMatching || nameMatching.style.display !== 'block') return;
+            
+            // Only navigate if we're not in the confirmation screen
+            if (parsedData.currentNameIndex >= parsedData.uniqueNames.length) return;
+            
+            // 'W' key to focus dropdown
+            if (e.key === 'w' || e.key === 'W') {
+                const dropdown = document.querySelector('.manual-select-wrapper select') as HTMLSelectElement;
+                if (dropdown) {
+                    e.preventDefault();
+                    dropdown.focus();
+                }
+                return;
+            }
+            
+            // Arrow keys for navigation
+            if (e.key === 'ArrowLeft' && parsedData.currentNameIndex > 0) {
+                e.preventDefault();
+                const currentName = parsedData.uniqueNames[parsedData.currentNameIndex];
+                parsedData.reviewedNames.add(currentName);
+                parsedData.currentNameIndex--;
+                renderCurrentName();
+            } else if (e.key === 'ArrowRight' && parsedData.currentNameIndex < parsedData.uniqueNames.length) {
+                e.preventDefault();
+                const currentName = parsedData.uniqueNames[parsedData.currentNameIndex];
+                parsedData.reviewedNames.add(currentName);
+                parsedData.currentNameIndex++;
+                renderCurrentName();
+            }
+            
+            // Enter and Shift+Enter for navigation
+            if (e.key === 'Enter' && !e.shiftKey && parsedData.currentNameIndex < parsedData.uniqueNames.length) {
+                e.preventDefault();
+                const currentName = parsedData.uniqueNames[parsedData.currentNameIndex];
+                parsedData.reviewedNames.add(currentName);
+                parsedData.currentNameIndex++;
+                renderCurrentName();
+            } else if (e.key === 'Enter' && e.shiftKey && parsedData.currentNameIndex > 0) {
+                e.preventDefault();
+                const currentName = parsedData.uniqueNames[parsedData.currentNameIndex];
+                parsedData.reviewedNames.add(currentName);
+                parsedData.currentNameIndex--;
+                renderCurrentName();
+            }
+            
+            // Number keys 1-9 to quickly select match buttons
+            const numMatch = e.key.match(/^[1-9]$/);
+            if (numMatch) {
+                const index = parseInt(e.key) - 1;
+                const matchButtons = document.querySelectorAll<HTMLButtonElement>('.match-option:not(.invalid)');
+                if (matchButtons[index]) {
+                    e.preventDefault();
+                    matchButtons[index].click();
+                }
+            }
+            
+            // 'N' key for "Invalid / Not a Candidate" button
+            if (e.key === 'n' || e.key === 'N') {
+                const invalidBtn = document.querySelector<HTMLButtonElement>('.match-option.invalid');
+                if (invalidBtn) {
+                    e.preventDefault();
+                    invalidBtn.click();
+                }
+            }
+        });
+
+        // --- Keyboard detection for focus-visible ---
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab' || e.key === 'w' || e.key === 'W') {
+                document.body.classList.add('is-keyboard-user');
+            }
+        });
+
+        window.addEventListener('mousedown', function() {
+            document.body.classList.remove('is-keyboard-user');
+        });
 
         // --- Export/Import Logic ---
 

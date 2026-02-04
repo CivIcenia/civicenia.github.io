@@ -32,7 +32,7 @@ export function simplifyVoterName(name: string) {
 }
 
 export function extractVoterName(line: string) {
-    const timestampMatch = line.match(/^(.+?)\s*—\s*(\d{1,2}\/\d{1,2}\/\d{4}|Yesterday at|Today at)/i);
+    const timestampMatch = line.match(/^(.+?)\s*—\s*(\d{1,2}:\d{2}|\d{1,2}\/\d{1,2}\/\d{4}|Yesterday at|Today at)/i);
     if (timestampMatch) return timestampMatch[1].trim();
     const parts = line.split(/\s*—\s*/);
     return parts.length > 0 ? parts[0].trim() : line.trim();
@@ -49,7 +49,7 @@ export function parseDiscordBallots(text: string) {
     let ballotStartLine = 0;
     const voterBallotCounts = new Map<string, number>();
     
-    const isTimestampLine = (line: string) => /—\s*(\d{1,2}\/\d{1,2}\/\d{4}|Yesterday at|Today at)/i.test(line);
+    const isTimestampLine = (line: string) => /—\s*(\d{1,2}:\d{2}|\d{1,2}\/\d{1,2}\/\d{4}|Yesterday at|Today at)/i.test(line);
     const getNextNonEmptyLine = (startIndex: number) => {
         for (let j = startIndex + 1; j < lines.length; j++) {
             const nextLine = lines[j].trim();
