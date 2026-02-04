@@ -128,6 +128,11 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
             </svg>
         </button>
+        <button id="toggle-territories" class="map-control-btn" title="Toggle Territories" aria-pressed="false">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18M3 12h18M3 18h18" />
+            </svg>
+        </button>
         <button id="center-icenia" class="map-control-btn" title="Center on Icenia City">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="8" fill="#3AB3DA" stroke="white" />
@@ -1198,9 +1203,46 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         transform: scale(1.05);
     }
 
+    /* Territories toggle specific styles */
+    #toggle-territories {
+        background: white;
+        color: #444;
+    }
+
+    #toggle-territories.active {
+        background: #62c679; /* green when enabled */
+        color: white;
+        transform: scale(1.05);
+    }
+
+    #toggle-territories svg { stroke: currentColor; }
+    #toggle-territories.active svg { stroke: white; }
+
+    /* Dark mode overrides for territories toggle */
+    .shop-explorer-container.dark-mode #toggle-territories {
+        background: #141423;
+        color: #ddd;
+    }
+
+    .shop-explorer-container.dark-mode #toggle-territories.active {
+        background: #1fbd44;
+        border: 1px solid #2da74a;
+        color: white;
+        transform: scale(1.05);
+    }
+
+    .shop-explorer-container.dark-mode #toggle-territories svg { stroke: currentColor; }
+    .shop-explorer-container.dark-mode #toggle-territories.active svg { stroke: white; }
+
     .map-control-btn.active {
         background: #1C70B8;
         color: white;
+    }
+
+    /* Territories pane fade transition */
+    :global(.territories-pane) {
+        transition: opacity 0.35s cubic-bezier(0.2, 0, 0, 1);
+        opacity: 0;
     }
 
     .zoom-group {
@@ -1898,11 +1940,9 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             crs: L.CRS.Simple,
             minZoom: -5,
             maxZoom: 6,
-            zoomSnap: 0.1,
+            zoomSnap: 1, // Fix mismatch by using integer zoom levels
             attributionControl: false,
             zoomControl: false,
-            preferCanvas: true,
-            wheelPxPerZoomLevel: 120, // Smoother scroll zoom
             bounceAtZoomLimits: false
         });
 
@@ -1939,14 +1979,9 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             map.flyTo(offsetLatLng, zoom, { 
                 duration: 0.6,
                 easeLinearity: 0.25,
-                noMoveStart: true,
                 ...options 
             });
         }
-
-        // Override zoom methods to maintain visual center
-        const originalZoomIn = map.zoomIn.bind(map);
-        const originalZoomOut = map.zoomOut.bind(map);
 
         map.zoomIn = function(delta, options) {
             const visualCenter = getVisualCenter();
@@ -1972,22 +2007,8 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         const localTiles = BASE + 'tiles/terrain/z{z}/{x},{y}.png';
         const primaryTiles = 'https://civmc-map.duckdns.org/tiles/terrain/z{z}/{x},{y}.png';
 
-        // Custom tile layer that rounds zoom to integers
-        const RoundedTileLayer = L.TileLayer.extend({
-            getTileUrl: function(coords) {
-                const data = {
-                    r: L.Browser.retina ? '@2x' : '',
-                    s: this._getSubdomain(coords),
-                    x: coords.x,
-                    y: coords.y,
-                    z: Math.round(coords.z) // Force integer zoom
-                };
-                return L.Util.template(this._url, L.extend(data, this.options));
-            }
-        });
-
-        // Tile loading with rounded zoom levels
-        const tiles = new RoundedTileLayer(localTiles, {
+        // Standard tile loading. Leaflet handles integer zoom levels for tiles automatically.
+        const tiles = L.tileLayer(localTiles, {
             minZoom: -5,
             maxZoom: 6,
             maxNativeZoom: 0,
@@ -1995,8 +2016,8 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             tileSize: 256,
             noWrap: true,
             updateWhenIdle: true,
-            updateWhenZooming: false,
-            keepBuffer: 2
+            updateWhenZooming: true, // Allow updates during zoom for better syncing
+            keepBuffer: 3
         }).addTo(map);
 
         // Fallback to primary server if local tiles fail
@@ -2020,6 +2041,219 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         let isSettingLocation = false;
         let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
         const markerGroup = L.layerGroup().addTo(map);
+        // Territory overlay state and loader
+        let territoryLayer = null;
+        let territoryGeoJson = null;
+        const TERRITORY_URL = 'https://civmc-map.github.io/territories-thejmqn.json';
+
+        function mcCoordToLatLngPair(coord) {
+            // coord expected as [x, z]
+            const x = Number(coord[0]);
+            const z = Number(coord[1]);
+            // For GeoJSON we must return coordinates in [lng, lat] order.
+            // Leaflet's GeoJSON expects [lng, lat] (GeoJSON standard),
+            // while mcToLatLng() returns [lat, lng] for Leaflet marker usage.
+            return [x + 0.5, -(z + 0.5)];
+        }
+
+        function transformGeometryCoords(geom) {
+            if (!geom) return geom;
+            const type = geom.type;
+            if (type === 'Point') {
+                return { type: 'Point', coordinates: mcCoordToLatLngPair(geom.coordinates) };
+            }
+            if (type === 'MultiPoint' || type === 'LineString') {
+                return { type: type, coordinates: geom.coordinates.map(c => mcCoordToLatLngPair(c)) };
+            }
+            if (type === 'MultiLineString' || type === 'Polygon') {
+                return { type: type, coordinates: geom.coordinates.map(ring => ring.map(c => mcCoordToLatLngPair(c))) };
+            }
+            if (type === 'MultiPolygon') {
+                return { type: type, coordinates: geom.coordinates.map(poly => poly.map(ring => ring.map(c => mcCoordToLatLngPair(c)))) };
+            }
+            if (type === 'GeometryCollection') {
+                return { type: type, geometries: geom.geometries.map(g => transformGeometryCoords(g)) };
+            }
+            return geom;
+        }
+
+        function transformGeoJSONCoordinates(obj) {
+            if (!obj) return obj;
+            const out = JSON.parse(JSON.stringify(obj));
+            if (out.type === 'FeatureCollection' && Array.isArray(out.features)) {
+                out.features = out.features.map(f => {
+                    if (f.geometry) f.geometry = transformGeometryCoords(f.geometry);
+                    return f;
+                });
+            } else if (out.type === 'Feature' && out.geometry) {
+                out.geometry = transformGeometryCoords(out.geometry);
+            } else if (out.type && out.coordinates) {
+                out.geometry = transformGeometryCoords(out);
+            }
+            return out;
+        }
+
+        async function loadTerritoriesGeoJSON() {
+            if (territoryGeoJson) return territoryGeoJson;
+            try {
+                const res = await fetch(TERRITORY_URL);
+                if (!res.ok) throw new Error('Failed to fetch territories');
+                const json = await res.json();
+                // Detect if coordinates look like game coords (large integers). If so, transform them.
+                let sampleCoord = null;
+                try {
+                    if (json.type === 'FeatureCollection' && json.features && json.features.length) {
+                        const geom = json.features[0].geometry;
+                        if (geom && geom.coordinates) {
+                            // drill into first numeric coordinate
+                            const coords = JSON.stringify(geom.coordinates);
+                            const nums = coords.match(/-?\d+(?:\.\d+)?/g);
+                            if (nums && nums.length >= 2) sampleCoord = [Number(nums[0]), Number(nums[1])];
+                        }
+                    }
+                } catch (e) { /* ignore */ }
+
+                if (sampleCoord && (Math.abs(sampleCoord[0]) > 100 || Math.abs(sampleCoord[1]) > 100)) {
+                    territoryGeoJson = transformGeoJSONCoordinates(json);
+                } else {
+                    territoryGeoJson = json;
+                }
+                return territoryGeoJson;
+            } catch (e) {
+                console.warn('Could not load territory GeoJSON:', e);
+                throw e;
+            }
+        }
+
+        function ensureTerritoriesPane() {
+            const paneName = 'territoriesPane';
+            if (!map.getPane(paneName)) {
+                const p = map.createPane(paneName);
+                // Place above tiles (tilePane zIndex 200) and below markers (markerPane ~600)
+                // Increase slightly to ensure visibility above tile layer.
+                p.style.zIndex = 450;
+                p.style.pointerEvents = 'none';
+                // Add a stable classname we can target for CSS transitions
+                p.classList.add('territories-pane');
+                // Ensure starting opacity is zero (hidden) so we can fade in
+                p.style.opacity = 0;
+                // Ensure a transition is present on the pane element itself so
+                // opacity changes animate even if component-scoped CSS doesn't apply.
+                p.style.transition = 'opacity 0.35s cubic-bezier(0.2, 0, 0, 1)';
+            }
+            return paneName;
+        }
+
+        function applyTerritoriesLayer(geojson) {
+            try {
+                if (territoryLayer) {
+                    map.removeLayer(territoryLayer);
+                    territoryLayer = null;
+                }
+
+                const pane = ensureTerritoriesPane();
+
+                // Support two territory formats:
+                // 1) Our custom descriptor that contains a `map_image` entry
+                //    with `url` and `bounds` specified in MC coords [[x1,z1],[x2,z2]].
+                // 2) Standard GeoJSON usable by L.geoJSON.
+                if (geojson && Array.isArray(geojson.features) && geojson.features.length && geojson.features[0].map_image && geojson.features[0].map_image.url) {
+                    try {
+                        const mi = geojson.features[0].map_image;
+                        const url = mi.url;
+                        const b = mi.bounds; // [[x1,z1],[x2,z2]]
+                        if (url && Array.isArray(b) && b.length >= 2) {
+                            const p1 = b[0];
+                            const p2 = b[1];
+                            const ll1 = mcToLatLng(p1[0], p1[1]); // [lat, lng]
+                            const ll2 = mcToLatLng(p2[0], p2[1]);
+                            // Leaflet expects bounds as [[southWestLat, southWestLng], [northEastLat, northEastLng]]
+                            const southLat = Math.min(ll1[0], ll2[0]);
+                            const northLat = Math.max(ll1[0], ll2[0]);
+                            const westLng = Math.min(ll1[1], ll2[1]);
+                            const eastLng = Math.max(ll1[1], ll2[1]);
+                            const imageBounds = [[southLat, westLng], [northLat, eastLng]];
+                            territoryLayer = L.imageOverlay(url, imageBounds, { pane: pane, interactive: false, opacity: 0 }).addTo(map);
+                            // Fade in the overlay by increasing the pane opacity (CSS) and image opacity
+                            // Small timeout to ensure element is attached
+                            setTimeout(() => {
+                                try {
+                                    // imageOverlay provides setOpacity
+                                    if (territoryLayer && typeof territoryLayer.setOpacity === 'function') territoryLayer.setOpacity(1);
+                                    const paneEl = map.getPane(pane);
+                                    if (paneEl) paneEl.style.opacity = 1;
+                                } catch (e) {}
+                            }, 20);
+                        }
+                    } catch (e) {
+                        console.warn('Failed to apply map_image overlay', e);
+                    }
+                } else {
+                    // Start with zero opacity styles so we can animate them in
+                    territoryLayer = L.geoJSON(geojson, {
+                        pane: pane,
+                        style: function (feature) {
+                            return {
+                                color: '#1C70B8',
+                                weight: 1,
+                                opacity: 0,
+                                fillColor: '#1C70B8',
+                                fillOpacity: 0
+                            };
+                        }
+                    }).addTo(map);
+                    // Fade in vector layer styles
+                    setTimeout(() => {
+                        try {
+                            if (territoryLayer && territoryLayer.setStyle) {
+                                territoryLayer.setStyle({ opacity: 0.9, fillOpacity: 0.08 });
+                            }
+                            const paneEl = map.getPane(pane);
+                            if (paneEl) paneEl.style.opacity = 1;
+                        } catch (e) {}
+                    }, 20);
+                }
+
+                // Ensure tiles remain at the back and markers stay above territories
+                try { if (tiles && tiles.bringToBack) tiles.bringToBack(); } catch (e) {}
+                try { if (markerGroup && markerGroup.bringToFront) markerGroup.bringToFront(); } catch (e) {}
+            } catch (e) {
+                console.warn('Failed to apply territories layer', e);
+            }
+        }
+
+        async function toggleTerritories(enabled) {
+            const savedKey = 'shop_show_territories';
+            try {
+                if (enabled) {
+                    const geo = await loadTerritoriesGeoJSON();
+                    applyTerritoriesLayer(geo);
+                    localStorage.setItem(savedKey, '1');
+                } else {
+                    if (territoryLayer) {
+                        // Fade out by changing the pane opacity only; don't set
+                        // the layer's own opacity immediately (that hides instantly).
+                        try {
+                            const paneEl = map.getPane('territoriesPane');
+                            if (paneEl) paneEl.style.opacity = 0;
+                        } catch (e) {}
+                        // Wait for transition to finish before removing the layer
+                        setTimeout(() => {
+                            try { if (territoryLayer) map.removeLayer(territoryLayer); } catch (e) {}
+                            territoryLayer = null;
+                        }, 380);
+                    }
+                    localStorage.removeItem(savedKey);
+                }
+            } catch (e) {
+                // On error, reset active state on the toggle button
+                const btn = document.getElementById('toggle-territories');
+                if (btn) {
+                    btn.classList.remove('active');
+                    try { btn.setAttribute('aria-pressed', 'false'); btn.title = 'Show Territories'; } catch (err) {}
+                }
+            }
+        }
         
         let lastExchanges = [];
         let lastQueryLabel = "";
@@ -2063,8 +2297,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
-                .replace(/\"/g, '&quot;')
-                .replace(/'/g, '&#39;');
+                .replace(/\"/g, '&quot;');
         }
 
         function formatItemName(item) {
@@ -2225,8 +2458,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
-                .replace(/\"/g, '&quot;')
-                .replace(/'/g, '&#39;');
+                .replace(/\"/g, '&quot;');
             
             const codes = {
                 '0': 'mc-0', '1': 'mc-1', '2': 'mc-2', '3': 'mc-3',
@@ -2536,6 +2768,8 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 lastExchanges = exchanges;
                 lastQueryLabel = isIceniaOnly ? "Icenia City" : (outputQuery || inputQuery);
                 
+                // Invalidate size once before applying filters and fitting bounds to ensure correct dimensions
+                map.invalidateSize();
                 applyFiltersAndDisplay();
             } catch (error) {
                 console.error('Search failed:', error);
@@ -2825,10 +3059,6 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                                 paddingBottomRight: isMobile ? [20, window.innerHeight * 0.45] : [50, 50],
                                 maxZoom: 0 
                             });
-                            // Ensure tile layer is rendered for the final zoom (fixes tiles/markers mismatch)
-                            map.once('moveend', () => {
-                                try { tiles.redraw(); } catch (e) { /* silent */ }
-                            });
                         }
                         if (activeMarker) {
                             const oldEl = activeMarker.getElement();
@@ -2866,10 +3096,6 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                     paddingBottomRight: isMobile ? [20, window.innerHeight * 0.45] : [50, 50],
                     maxZoom: 0 
                 });
-                // Force tile layer redraw after the animated move completes to keep tiles and DOM markers in sync
-                map.once('moveend', () => {
-                    try { tiles.redraw(); } catch (e) { /* silent */ }
-                });
             }
         }
 
@@ -2891,6 +3117,30 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         sortModeSelect.addEventListener('change', () => applyFiltersAndDisplay());
         allowUnstockedCheckbox.addEventListener('change', () => applyFiltersAndDisplay());
         iceniaOnlyCheckbox.addEventListener('change', () => applyFiltersAndDisplay());
+        // Territories overlay button hookup (map controls)
+        const toggleTerritoriesBtn = document.getElementById('toggle-territories');
+        if (toggleTerritoriesBtn) {
+            toggleTerritoriesBtn.addEventListener('click', (e) => {
+                const enabled = toggleTerritoriesBtn.classList.toggle('active');
+                toggleTerritories(enabled);
+                try {
+                    toggleTerritoriesBtn.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+                    toggleTerritoriesBtn.title = enabled ? 'Hide Territories' : 'Show Territories';
+                } catch (err) {}
+            });
+            // Restore prior setting if present
+            try {
+                const saved = localStorage.getItem('shop_show_territories');
+                if (saved === '1') {
+                    toggleTerritoriesBtn.classList.add('active');
+                    toggleTerritoriesBtn.setAttribute('aria-pressed', 'true');
+                    toggleTerritoriesBtn.title = 'Hide Territories';
+                    toggleTerritories(true);
+                }
+            } catch (e) {
+                // ignore storage errors
+            }
+        }
         
         const toggleOptionsBtn = document.getElementById('toggle-options');
         const advancedOptionsWrapper = document.getElementById('advanced-options-wrapper');

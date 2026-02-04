@@ -1,5 +1,10 @@
 incorporations:
   - change_slugs:
+      - 2026-01-20-modify-constitution-on-civilian-bunker-perms
+    law_slug: third-constitution
+    incorporated_at: 2026-02-04 15:19:00 +08:00
+    incorporated_by: Creepily
+  - change_slugs:
       - 2025-04-27-passing-the-statue-of-territory-amendment-of-april-2025
       - 2025-04-13-passing-the-incorporation-of-sneedland-as-icenian-territory
     law_slug: statute-of-territory
