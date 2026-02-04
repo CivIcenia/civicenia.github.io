@@ -2555,6 +2555,34 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             return { text: `${count}`, isCompacted: false };
         }
 
+            // Determine if an item should be treated as a "compacted" (ci) material
+            // Note: There are two representations observed in data:
+            // 1) Items whose material or lore explicitly mentions "compacted" — their
+            //    `count` field represents the number of compressed units (1ci = 64 normal items).
+            // 2) Items where `count` is a multiple of 64 — these are raw-normal counts
+            //    but displayed as ci for readability. In this case the raw count already
+            //    represents the number of normal items and should NOT be multiplied by 64.
+            function isMaterialOrLoreCompacted(item) {
+                if (!item) return false;
+                let loreText = '';
+                try {
+                    loreText = item.lore ? (Array.isArray(item.lore) ? item.lore.join(' ') : String(item.lore)) : '';
+                } catch (e) { loreText = ''; }
+                const loreCompacted = loreText.toLowerCase().includes('compacted');
+                const matCompacted = (item.material || '').toString().toLowerCase().includes('compacted');
+                return loreCompacted || matCompacted;
+            }
+
+            // Convert an item's reported `count` into the number of "normal" items it represents.
+            // - If material/lore explicitly marks it compacted, each reported unit = 64 normal items.
+            // - Otherwise the reported `count` is assumed to be normal units already.
+            function normalizedCount(item) {
+                if (!item) return 0;
+                const c = Number(item.count) || 0;
+                if (isMaterialOrLoreCompacted(item)) return c * 64;
+                return c;
+            }
+
         const ENCHANTMENTS = [
             "Mending", "Unbreaking", "Efficiency", "Silk Touch", "Fortune",
             "Protection", "Fire Protection", "Blast Protection", "Projectile Protection", "Thorns",
@@ -2863,7 +2891,15 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             // Client-side sorting (Fixes "Sort by doesn't work" issue)
             const sortMode = sortModeSelect.value;
             if (sortMode === 'cheapest') {
-                filtered.sort((a, b) => (a.input.count / a.output.count) - (b.input.count / b.output.count));
+                filtered.sort((a, b) => {
+                    const aIn = normalizedCount(a.input);
+                    const aOut = normalizedCount(a.output);
+                    const bIn = normalizedCount(b.input);
+                    const bOut = normalizedCount(b.output);
+                    const aPrice = (aOut === 0) ? Infinity : (aIn / aOut);
+                    const bPrice = (bOut === 0) ? Infinity : (bIn / bOut);
+                    return aPrice - bPrice;
+                });
             } else if (sortMode === 'latest') {
                 // Prefer `time` from API, fall back to `updatedAt`
                 filtered.sort((a, b) => (b.time || b.updatedAt || 0) - (a.time || a.updatedAt || 0));
