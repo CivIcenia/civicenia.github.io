@@ -245,7 +245,7 @@ import PageLayout from "@layouts/page.astro";
                 
                 <div class="icenia-button-group govuk-!-margin-top-6">
                     <button class="icenia-btn icenia-btn-secondary" id="back-to-name-matching" type="button">
-                        ← Back to Name Matching
+                        ← Back
                     </button>
                     <!-- <button class="icenia-btn" id="calculate-from-review" type="button">
                         Calculate Results →
@@ -1453,8 +1453,10 @@ import PageLayout from "@layouts/page.astro";
         function checkForDuplicates() {
             const voterBallots = new Map<string, number[]>();
             parsedData.ballots.forEach((b, index) => {
-                if (!voterBallots.has(b.voter)) voterBallots.set(b.voter, []);
-                voterBallots.get(b.voter)!.push(index);
+                // Extract base voter name (remove #2, #3, etc suffix)
+                const baseVoter = b.voter.replace(/#\d+$/, '');
+                if (!voterBallots.has(baseVoter)) voterBallots.set(baseVoter, []);
+                voterBallots.get(baseVoter)!.push(index);
             });
             
             const duplicates = Array.from(voterBallots.entries()).filter(([voter, indices]) => indices.length > 1);
@@ -1474,28 +1476,128 @@ import PageLayout from "@layouts/page.astro";
             const container = document.getElementById('duplicate-voters-content');
             if (!container) return;
             
-            container.innerHTML = duplicates.map(([voter, indices]) => `
-                <div class="duplicate-voter-card">
-                    <h3>Voter: ${voter}</h3>
-                    <p class="govuk-body-s">This voter submitted ${indices.length} ballots. Select which one to keep:</p>
-                    ${indices.map((idx, i) => {
+            // Store for keyboard navigation
+            allDuplicateVoters = duplicates.map(([voter, indices]) => ({
+                voter: voter,
+                ballotIndices: indices
+            }));
+            
+            container.innerHTML = duplicates.map(([voter, indices]) => {
+                // Sort ballots by timestamp (newest first)
+                const sortedIndices = [...indices].sort((a, b) => {
+                    const ballotA = parsedData.ballots[a];
+                    const ballotB = parsedData.ballots[b];
+                    const textA = parsedData.originalBallotText.get(ballotA.voter) || '';
+                    const textB = parsedData.originalBallotText.get(ballotB.voter) || '';
+                    const timeA = textA.match(/—\s*(\d{1,2}\/\d{1,2}\/\d{4}\s+\d{1,2}:\d{2}\s+[ap]m)/i)?.[1];
+                    const timeB = textB.match(/—\s*(\d{1,2}\/\d{1,2}\/\d{4}\s+\d{1,2}:\d{2}\s+[ap]m)/i)?.[1];
+                    if (!timeA || !timeB) return 0;
+                    return new Date(timeB).getTime() - new Date(timeA).getTime();
+                });
+                
+                // Default selection: newest ballot with valid rankings
+                if (!parsedData.duplicateSelections.has(voter)) {
+                    let defaultIdx = -1;
+                    for (const idx of sortedIndices) {
                         const ballot = parsedData.ballots[idx];
-                        const isSelected = parsedData.duplicateSelections.get(voter) === idx || (i === indices.length - 1 && !parsedData.duplicateSelections.has(voter));
-                        if (isSelected && !parsedData.duplicateSelections.has(voter)) parsedData.duplicateSelections.set(voter, idx);
+                        const validRankings = ballot.rankings.filter(name => {
+                            const match = parsedData.nameMatches.get(name);
+                            return match && match !== '__NOT_A_BALLOT__';
+                        });
+                        if (validRankings.length > 0) {
+                            defaultIdx = idx;
+                            break;
+                        }
+                    }
+                    if (defaultIdx === -1 && sortedIndices.length > 0) {
+                        defaultIdx = sortedIndices[0];
+                    }
+                    if (defaultIdx !== -1) {
+                        parsedData.duplicateSelections.set(voter, defaultIdx);
+                    }
+                }
+                
+                return `
+                <div class="duplicate-voter-card">
+                    <h3>Voter: ${voter} (${indices.length} ballots found)</h3>
+                    <p class="govuk-body-s">Select which ballot to keep:</p>
+                    ${sortedIndices.map((idx, i) => {
+                        const ballot = parsedData.ballots[idx];
+                        const isSelected = parsedData.duplicateSelections.get(voter) === idx;
+                        const originalText = parsedData.originalBallotText.get(ballot.voter) || '';
+                        // Try multiple timestamp patterns. If only a time is present (e.g. "— 20:35"),
+                        // assume today's date for display.
+                        let timestamp = 'Unknown time';
+                        const fullAmPmMatch = originalText.match(/—\s*(\d{1,2}\/\d{1,2}\/\d{4}\s+\d{1,2}:\d{2}\s*(?:am|pm))/i);
+                        if (fullAmPmMatch) {
+                            timestamp = fullAmPmMatch[1];
+                        } else {
+                            // match date + 24h time (no am/pm)
+                            const full24Match = originalText.match(/—\s*(\d{1,2}\/\d{1,2}\/\d{4}\s+\d{1,2}:\d{2})/i);
+                            if (full24Match) {
+                                const [datePart, timePart] = full24Match[1].split(/\s+/);
+                                const [hh, mm] = timePart.split(':').map(n => parseInt(n, 10));
+                                const hour12 = hh % 12 === 0 ? 12 : hh % 12;
+                                const ampm = hh >= 12 ? 'pm' : 'am';
+                                timestamp = `${datePart} ${hour12}:${String(mm).padStart(2, '0')} ${ampm}`;
+                            } else {
+                                // match time-only, optionally with am/pm
+                                const timeOnlyMatch = originalText.match(/—\s*(\d{1,2}:\d{2})(?:\s*(am|pm))?/i);
+                                if (timeOnlyMatch) {
+                                    const hh = parseInt(timeOnlyMatch[1].split(':')[0], 10);
+                                    const mm = parseInt(timeOnlyMatch[1].split(':')[1], 10);
+                                    const ampmPart = timeOnlyMatch[2];
+                                    const now = new Date();
+                                    const month = now.getMonth() + 1;
+                                    const day = now.getDate();
+                                    const year = now.getFullYear();
+                                    let displayHour = hh;
+                                    let displayAmPm = 'am';
+                                    if (ampmPart) {
+                                        displayAmPm = ampmPart.toLowerCase();
+                                    } else {
+                                        // treat as 24-hour time
+                                        displayAmPm = hh >= 12 ? 'pm' : 'am';
+                                        displayHour = hh % 12 === 0 ? 12 : hh % 12;
+                                    }
+                                    timestamp = `${month}/${day}/${year} ${displayHour}:${String(mm).padStart(2, '0')} ${displayAmPm}`;
+                                }
+                            }
+                        }
+                        
+                        const validRankings = ballot.rankings.filter(name => {
+                            const match = parsedData.nameMatches.get(name);
+                            return match && match !== '__NOT_A_BALLOT__';
+                        });
                         
                         return `
                             <div class="duplicate-ballot-option ${isSelected ? 'selected' : ''}" onclick="window.resolveDuplicate('${voter.replace(/'/g, "\\'")}', ${idx})">
                                 <div class="duplicate-ballot-header">
                                     <span>Ballot #${i + 1}</span>
+                                    <span class="duplicate-ballot-timestamp">${timestamp}</span>
                                 </div>
                                 <div class="duplicate-ballot-rankings">
-                                    ${ballot.rankings.map((r, rIdx) => `<div>${rIdx + 1}. ${r} → ${parsedData.nameMatches.get(r) || '<em>Unmatched</em>'}</div>`).join('')}
+                                    ${ballot.rankings.length === 0 
+                                        ? '<div style="color: #999; font-style: italic;">No rankings found</div>'
+                                        : ballot.rankings.map((r, rIdx) => {
+                                            const match = parsedData.nameMatches.get(r);
+                                            if (match && match !== '__NOT_A_BALLOT__') {
+                                                return `<div style="color: #50fa7b;">${rIdx + 1}. ${r} → ${match}</div>`;
+                                            } else if (match === '__NOT_A_BALLOT__') {
+                                                return `<div style="color: #999;">${rIdx + 1}. ${r} → (removed)</div>`;
+                                            } else {
+                                                return `<div style="color: #ff5555;">${rIdx + 1}. ${r} → (invalid)</div>`;
+                                            }
+                                        }).join('')
+                                    }
+                                    ${validRankings.length > 0 ? `<div style="margin-top: 8px; color: #50fa7b; font-weight: 600;">${validRankings.length} valid ranking${validRankings.length === 1 ? '' : 's'}</div>` : '<div style="margin-top: 8px; color: #ff5555; font-weight: 600;">0 valid rankings</div>'}
                                 </div>
                             </div>
                         `;
                     }).join('')}
                 </div>
-            `).join('');
+            `;
+            }).join('');
         }
 
         function getBallotRankings(voter: string, ballot: {voter: string, rankings: string[]}) {
@@ -1522,9 +1624,33 @@ import PageLayout from "@layouts/page.astro";
             if (allowVoterLine) {
                 try {
                     const simplifiedLine = simplifyVoterName(text || '');
-                    const simplifiedVoter = simplifyVoterName(voter || '');
-                    if (simplifiedLine && simplifiedVoter && simplifiedLine === simplifiedVoter) {
-                        return { type: 'voter' };
+                    // Strip #N suffix from voter name before comparing
+                    const baseVoter = (voter || '').replace(/#\d+$/, '');
+                    const simplifiedVoter = simplifyVoterName(baseVoter);
+                    
+                    // Primary check: Extract canonical voter from original ballot text
+                    const originalText = parsedData.originalBallotText.get(voter) || '';
+                    const firstLine = originalText.split('\n')[0];
+                    const extractedVoter = extractVoterName(firstLine);
+                    const simplifiedExtracted = simplifyVoterName(extractedVoter || '');
+                    
+                    // Exact match or lenient startsWith/contains check
+                    if (simplifiedLine && simplifiedVoter && simplifiedExtracted) {
+                        if (simplifiedLine === simplifiedVoter ||
+                            simplifiedLine === simplifiedExtracted ||
+                            simplifiedLine.startsWith(simplifiedVoter) ||
+                            simplifiedVoter.startsWith(simplifiedLine) ||
+                            simplifiedLine.startsWith(simplifiedExtracted) ||
+                            simplifiedExtracted.startsWith(simplifiedLine)) {
+                            return { type: 'voter' };
+                        }
+                    } else if (simplifiedLine && simplifiedVoter) {
+                        // Fallback lenient check without extracted voter
+                        if (simplifiedLine === simplifiedVoter ||
+                            simplifiedLine.startsWith(simplifiedVoter) ||
+                            simplifiedVoter.startsWith(simplifiedLine)) {
+                            return { type: 'voter' };
+                        }
                     }
                 } catch (e) {}
                 
@@ -1633,7 +1759,8 @@ import PageLayout from "@layouts/page.astro";
 
             // Filter out duplicate ballots if any
             const activeBallots = parsedData.ballots.filter((b, idx) => {
-                const selectedIdx = parsedData.duplicateSelections.get(b.voter);
+                const baseVoter = b.voter.replace(/#\d+$/, '');
+                const selectedIdx = parsedData.duplicateSelections.get(baseVoter);
                 if (selectedIdx !== undefined) return idx === selectedIdx;
                 return true;
             });
@@ -1750,7 +1877,8 @@ import PageLayout from "@layouts/page.astro";
                 
                 // Filter out duplicate ballots
                 const activeBallots = parsedData.ballots.filter((b, idx) => {
-                    const selectedIdx = parsedData.duplicateSelections.get(b.voter);
+                    const baseVoter = b.voter.replace(/#\d+$/, '');
+                    const selectedIdx = parsedData.duplicateSelections.get(baseVoter);
                     if (selectedIdx !== undefined) return idx === selectedIdx;
                     return true;
                 });
@@ -2259,6 +2387,7 @@ import PageLayout from "@layouts/page.astro";
             const electionNameInput = document.getElementById('election-name') as HTMLInputElement;
             if (electionNameInput) electionNameInput.value = '';
             document.getElementById('name-matching')!.style.display = 'none';
+            document.getElementById('duplicate-voters')!.style.display = 'none';
             document.getElementById('ballot-review')!.style.display = 'none';
             document.getElementById('results')!.style.display = 'none';
             document.getElementById('import-section')!.style.display = 'block';
@@ -2332,8 +2461,23 @@ import PageLayout from "@layouts/page.astro";
             document.getElementById('proceed-to-ballot-review')?.addEventListener('click', proceedToBallotReview);
             document.getElementById('back-to-name-matching')?.addEventListener('click', () => {
                 document.getElementById('ballot-review')!.style.display = 'none';
-                document.getElementById('name-matching')!.style.display = 'block';
-                parsedData.currentNameIndex = 0; renderCurrentName();
+                // Check if we have any duplicates to show
+                const hasDuplicates = Array.from(parsedData.duplicateSelections.keys()).length > 0;
+                if (hasDuplicates) {
+                    document.getElementById('duplicate-voters')!.style.display = 'block';
+                    // Re-render duplicates
+                    const voterBallots = new Map<string, number[]>();
+                    parsedData.ballots.forEach((b, index) => {
+                        const baseVoter = b.voter.replace(/#\d+$/, '');
+                        if (!voterBallots.has(baseVoter)) voterBallots.set(baseVoter, []);
+                        voterBallots.get(baseVoter)!.push(index);
+                    });
+                    const duplicates = Array.from(voterBallots.entries()).filter(([voter, indices]) => indices.length > 1);
+                    renderDuplicateVoters(duplicates);
+                } else {
+                    document.getElementById('name-matching')!.style.display = 'block';
+                    parsedData.currentNameIndex = 0; renderCurrentName();
+                }
             });
             document.getElementById('recalculate-results')?.addEventListener('click', () => {
                 const seatsInput = document.getElementById('results-seats') as HTMLInputElement;
