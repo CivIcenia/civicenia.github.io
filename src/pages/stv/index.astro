@@ -310,10 +310,10 @@ import PageLayout from "@layouts/page.astro";
             margin: 20px 0;
             font-family: monospace;
             white-space: pre-wrap;
-            max-height: 400px;
-            overflow-y: auto;
+            max-height: none;
+            overflow: visible;
         }
-        
+
         .stv-winners {
             background: #00703c;
             color: white !important;
@@ -515,6 +515,25 @@ import PageLayout from "@layouts/page.astro";
             margin-right: 4px;
         }
 
+        .match-option.not-ballot.selected,
+        .match-option.not-ballot.selected::before {
+            /* Make not-ballot selected visually similar to invalid selected */
+        }
+
+        .match-option.not-ballot.selected {
+            background: #d4351c !important;
+            color: white !important;
+            border-color: #d4351c !important;
+            font-weight: bold !important;
+            box-shadow: 0 2px 6px rgba(212, 53, 28, 0.3) !important;
+        }
+
+        .match-option.not-ballot.selected::before {
+            content: '✗ ';
+            font-weight: bold;
+            margin-right: 4px;
+        }
+
         .correlation-warning {
             background: #fff3cd;
             border-left: 3px solid #ffc107;
@@ -698,6 +717,7 @@ import PageLayout from "@layouts/page.astro";
             border: 1px solid #ddd;
             font-family: monospace;
             font-size: 0.9em;
+            width: 100%;
         }
 
         .ballot-mapping-row {
@@ -850,6 +870,22 @@ import PageLayout from "@layouts/page.astro";
             width: 100% !important;
         }
 
+        /* Header row styling to position column titles correctly */
+        .ballot-row.ballot-row-header {
+            border-bottom: 2px solid #ddd !important;
+            background: transparent !important;
+        }
+
+        .ballot-row.ballot-row-header .ballot-row-original,
+        .ballot-row.ballot-row-header .ballot-row-structured {
+            padding: 12px 10px !important;
+            align-items: flex-end !important;
+            border-bottom: none !important;
+            min-height: auto !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+
         .ballot-row-original,
         .ballot-row-structured {
             padding: 2px 10px !important;
@@ -864,6 +900,8 @@ import PageLayout from "@layouts/page.astro";
             color: #f8f8f2 !important;
             font-family: 'Courier New', Consolas, monospace !important;
             font-size: 0.85em !important;
+            white-space: pre-wrap !important;
+            overflow-wrap: anywhere !important;
         }
 
         .ballot-row-structured {
@@ -904,7 +942,7 @@ import PageLayout from "@layouts/page.astro";
 
         .ballot-structured {
             background: #ffffff;
-            padding: 15px;
+            padding: 0px;
             border-radius: 6px;
             border: 2px solid #1d70b8;
             min-width: 0 !important; /* Allow to shrink */
@@ -924,36 +962,105 @@ import PageLayout from "@layouts/page.astro";
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 8px;
             padding: 8px;
             background: white;
             border-radius: 4px;
             border: 1px solid #ddd;
             min-height: 44px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
-        .rank-row.modified {
-            border-color: #ffc107;
-            background: #fff3cd;
+        /* Candidate - Green */
+        .rank-row-candidate {
+            background: #e8f5e9 !important;
+            border-color: #c8e6c9 !important;
         }
 
-        .rank-row.spacer {
-            background: #f8f8f8;
-            border: 1px dashed #999;
-            padding: 8px;
-            margin-bottom: 8px;
-            min-height: 44px;
+        .rank-row-candidate .rank-number {
+            background: #00703c;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.95em;
+        }
+
+        /* Duplicate - Yellow/Orange */
+        .rank-row-duplicate {
+            background: #fff3cd !important;
+            border-color: #ffc107 !important;
+        }
+
+        .rank-row-duplicate .rank-number-duplicate {
+            background: #ffc107;
+            color: #000;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.75em;
+        }
+
+        /* Empty Line - Light Gray */
+        .rank-row-empty {
+            background: #f8f8f8 !important;
+            border-color: #e0e0e0 !important;
             opacity: 0.7;
         }
 
-        .rank-row.spacer .rank-number {
-            color: #999;
-        }
-
-        .rank-row.spacer .spacer-label {
+        .rank-row-empty .rank-dropdown {
             color: #999;
             font-style: italic;
-            font-size: 0.85em;
+        }
+
+        /* Voter Header - Blue */
+        .rank-row-voter {
+            background: #e3f2fd !important;
+            border-color: #90caf9 !important;
+        }
+
+        .rank-row-voter .rank-dropdown {
+            color: #1976d2;
+            font-weight: 600;
+        }
+
+        /* Timecode - Purple */
+        .rank-row-timecode {
+            background: #f3e5f5 !important;
+            border-color: #ce93d8 !important;
+        }
+
+        .rank-row-timecode .rank-dropdown {
+            color: #7b1fa2;
+            font-family: monospace;
+        }
+
+        /* Not a Candidate - Red with strikethrough */
+        .rank-row-not-candidate {
+            background: #ffebee !important;
+            border-color: #ef9a9a !important;
+        }
+
+        .rank-row-not-candidate .rank-dropdown {
+            color: #c62828;
+            text-decoration: line-through;
+            font-style: italic;
+        }
+
+        /* Not a Ballot Entry - Pink with strikethrough */
+        .rank-row-not-ballot {
+            background: #fce4ec !important;
+            border-color: #f48fb1 !important;
+        }
+
+        .rank-row-not-ballot .rank-dropdown {
+            color: #880e4f;
+            text-decoration: line-through;
+            font-style: italic;
         }
 
         .rank-number {
@@ -969,6 +1076,7 @@ import PageLayout from "@layouts/page.astro";
             border: 1px solid #b1b4b6;
             border-radius: 4px;
             font-size: 0.9em;
+            width: 100%;
         }
 
         .rank-move-btn {
@@ -1070,6 +1178,9 @@ import PageLayout from "@layouts/page.astro";
         let inputMode: 'simple' | 'discord' = 'simple';
         let currentBallotIndex = 0;
         
+        type StructuredLineType = 'candidate' | 'empty' | 'voter' | 'timecode' | 'not-candidate' | 'not-ballot' | 'duplicate';
+        type StructuredLine = { type: StructuredLineType; value?: string };
+
         let parsedData: {
             candidates: string[];
             ballots: Array<{voter: string, rankings: string[]}>;
@@ -1086,6 +1197,8 @@ import PageLayout from "@layouts/page.astro";
             originalBallotText: Map<string, string>;
             reviewedNames: Set<string>;
             duplicateSelections: Map<string, number>;
+            ballotStructuredLines: Map<string, StructuredLine[]>;
+            ballotManuallyModified: Set<string>;
             roundResults?: any[];
         } = {
             candidates: [],
@@ -1102,7 +1215,9 @@ import PageLayout from "@layouts/page.astro";
             ballotOverrides: new Map(),
             originalBallotText: new Map(),
             reviewedNames: new Set(),
-            duplicateSelections: new Map()
+            duplicateSelections: new Map(),
+            ballotStructuredLines: new Map(),
+            ballotManuallyModified: new Set()
         };
 
         // --- Helper Functions ---
@@ -1222,12 +1337,19 @@ import PageLayout from "@layouts/page.astro";
             }
             
             section.style.display = 'block';
-            tableBody.innerHTML = correlations.map(([pattern, candidate]) => `
+            tableBody.innerHTML = correlations.map(([pattern, candidate]) => {
+                const display = candidate === null
+                    ? '<em style="color: #d4351c;">(Not a candidate)</em>'
+                    : candidate === '__NOT_A_BALLOT__'
+                        ? '<em style="color: #505a5f;">(Not a ballot entry)</em>'
+                        : candidate;
+                return `
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell">${pattern}</td>
-                    <td class="govuk-table__cell">${candidate || '<em>Invalid</em>'}</td>
+                    <td class="govuk-table__cell">${display}</td>
                 </tr>
-            `).join('');
+            `;
+            }).join('');
         }
 
         function renderCurrentName() {
@@ -1267,8 +1389,10 @@ import PageLayout from "@layouts/page.astro";
                     <strong>Keyboard shortcuts:</strong>
                     <span style="display: block; margin-top: 5px;">
                         <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">←</kbd><kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">→</kbd> or <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">Enter</kbd><kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">Shift+Enter</kbd> Navigate • 
-                        <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">1</kbd>-<kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">9</kbd> Quick select • 
-                        <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">N</kbd> Invalid/Not candidate • 
+                        <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">1</kbd>-<kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">9</kbd> Quick select
+                        <br>
+                        <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">N</kbd> Not candidate • 
+                        <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">M</kbd> Not Ballot Entry • 
                         <kbd style="background: #f3f2f1; padding: 2px 6px; border: 1px solid #b1b4b6; border-radius: 3px; font-family: monospace;">W</kbd> Focus dropdown
                     </span>
                 </div>
@@ -1289,10 +1413,15 @@ import PageLayout from "@layouts/page.astro";
                                 ${i + 1}. ${s.name} (${Math.round(s.score * 100)}%)
                             </button>
                         `).join('')}
-                        
-                        <button class="match-option invalid ${effectiveMatch === '__NOT_A_BALLOT__' || effectiveMatch === null ? 'selected' : ''}"
-                                onclick="window.selectMatch('${foundName.replace(/'/g, "\\'")}', '__NOT_A_BALLOT__')">
-                            N. Invalid / Not a Candidate
+
+                        <button data-type="invalid" class="match-option ${effectiveMatch === null ? 'invalid selected' : ''}"
+                            onclick="window.selectMatch('${foundName.replace(/'/g, "\\'")}', '__INVALID__')">
+                            N. Not a Candidate (skip)
+                        </button>
+
+                        <button data-type="not-ballot" class="match-option ${effectiveMatch === '__NOT_A_BALLOT__' ? 'not-ballot selected' : ''}"
+                            onclick="window.selectMatch('${foundName.replace(/'/g, "\\'")}', '__NOT_A_BALLOT__')">
+                            M. Not a Ballot Entry (remove)
                         </button>
                     </div>
                     
@@ -1304,6 +1433,8 @@ import PageLayout from "@layouts/page.astro";
                             ${parsedData.candidates.map(c => `
                                 <option value="${c}" ${effectiveMatch === c ? 'selected' : ''}>${c}</option>
                             `).join('')}
+                            <option value="__INVALID__" ${effectiveMatch === null ? 'selected' : ''}>Not a candidate - skip ranking</option>
+                            <option value="__NOT_A_BALLOT__" ${effectiveMatch === '__NOT_A_BALLOT__' ? 'selected' : ''}>Not a ballot entry - remove</option>
                         </select>
                     </div>
 
@@ -1377,11 +1508,129 @@ import PageLayout from "@layouts/page.astro";
                 .map((c, i) => ({ rank: i + 1, candidate: c }));
         }
 
+        function escapeHtml(text: string) {
+            if (!text) return '';
+            return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function classifyOriginalLine(text: string, voter: string, allowVoterLine: boolean): StructuredLine {
+            if (!text) return { type: 'empty' };
+            const t = text.trim();
+            if (t.length === 0) return { type: 'empty' };
+            
+            // Check if it's the voter header (only if we haven't seen one yet)
+            if (allowVoterLine) {
+                try {
+                    const simplifiedLine = simplifyVoterName(text || '');
+                    const simplifiedVoter = simplifyVoterName(voter || '');
+                    if (simplifiedLine && simplifiedVoter && simplifiedLine === simplifiedVoter) {
+                        return { type: 'voter' };
+                    }
+                } catch (e) {}
+                
+                // If the line looks like a voter header (contains long dash or '—' or ' - ')
+                if (/[\u2013\u2014\-–—]/.test(t) && /[A-Za-z]/.test(t)) return { type: 'voter' };
+            }
+            
+            // If the line contains a date/time pattern, treat as timecode
+            if (/\d{1,2}[:\/]\d{1,2}/.test(t) || /\d{1,4}\/\d{1,4}\/\d{2,4}/.test(t)) return { type: 'timecode' };
+            
+            // Check if it's a candidate from name matching
+            const cleaned = cleanCandidateName(text || '');
+            if (cleaned) {
+                const matched = parsedData.nameMatches.get(cleaned);
+                if (matched && matched !== '__NOT_A_BALLOT__') {
+                    return { type: 'candidate', value: matched };
+                }
+                if (matched === null) {
+                    return { type: 'not-candidate' };
+                }
+                if (matched === '__NOT_A_BALLOT__') {
+                    return { type: 'not-ballot' };
+                }
+            }
+            
+            // If the line contains an @mention or looks like a name, treat as candidate-like
+            if (/^@?\w[\w\s\._-]{0,50}$/.test(t)) return { type: 'not-candidate' };
+            // Fallback to 'other' -> treat as not-candidate
+            return { type: 'not-candidate' };
+        }
+
+        function getOrInitStructuredLines(voter: string): StructuredLine[] {
+            if (parsedData.ballotStructuredLines.has(voter)) {
+                return parsedData.ballotStructuredLines.get(voter)!;
+            }
+            
+            // Initialize from original ballot text
+            const originalText = parsedData.originalBallotText.get(voter) || '';
+            const originalLines = originalText.split('\n');
+            const structured: StructuredLine[] = [];
+            const usedCandidates = new Set<string>();
+            let foundVoterLine = false;
+            
+            for (const line of originalLines) {
+                const classified = classifyOriginalLine(line, voter, !foundVoterLine);
+                
+                // Track if we found a voter line
+                if (classified.type === 'voter') {
+                    foundVoterLine = true;
+                }
+                
+                // Check for duplicates
+                if (classified.type === 'candidate' && classified.value) {
+                    if (usedCandidates.has(classified.value)) {
+                        structured.push({ type: 'duplicate', value: classified.value });
+                    } else {
+                        usedCandidates.add(classified.value);
+                        structured.push(classified);
+                    }
+                } else {
+                    structured.push(classified);
+                }
+            }
+            
+            parsedData.ballotStructuredLines.set(voter, structured);
+            return structured;
+        }
+
+        function getUsedCandidates(structuredLines: StructuredLine[]): Set<string> {
+            const used = new Set<string>();
+            for (const line of structuredLines) {
+                if (line.type === 'candidate' && line.value) {
+                    used.add(line.value);
+                }
+            }
+            return used;
+        }
+
+        function getAvailableCandidates(structuredLines: StructuredLine[], currentIndex: number): string[] {
+            const used = getUsedCandidates(structuredLines);
+            const currentValue = structuredLines[currentIndex]?.value;
+            return parsedData.candidates.filter(c => c === currentValue || !used.has(c));
+        }
+
+        function getStructuredLineLabel(line: StructuredLine): string {
+            switch (line.type) {
+                case 'candidate': return line.value || '(unknown candidate)';
+                case 'duplicate': return `Duplicate: ${line.value || '(unknown)'}`;
+                case 'empty': return '(empty line)';
+                case 'voter': return '(voter header)';
+                case 'timecode': return '(timecode)';
+                case 'not-candidate': return '(not a candidate)';
+                case 'not-ballot': return '(not a ballot entry)';
+                default: return '(unknown)';
+            }
+        }
+
+        function getStructuredLineClass(line: StructuredLine): string {
+            return `rank-row-${line.type}`;
+        }
+
         function renderBallotReview() {
             const container = document.getElementById('ballot-review-content');
             const progressEl = document.getElementById('ballot-review-progress');
             if (!container || !progressEl) return;
-            
+
             // Filter out duplicate ballots if any
             const activeBallots = parsedData.ballots.filter((b, idx) => {
                 const selectedIdx = parsedData.duplicateSelections.get(b.voter);
@@ -1396,55 +1645,83 @@ import PageLayout from "@layouts/page.astro";
 
             const ballot = activeBallots[currentBallotIndex];
             const voter = ballot.voter;
-            
+
             progressEl.textContent = `Ballot ${currentBallotIndex + 1} of ${activeBallots.length}`;
-            
+
             const originalText = parsedData.originalBallotText.get(voter) || ballot.rankings.join('\n');
-            const currentRankings = getBallotRankings(voter, ballot);
+            const originalLines = originalText.split('\n');
+            const structuredLines = getOrInitStructuredLines(voter);
+            const isModified = parsedData.ballotManuallyModified.has(voter);
+
+            // Build 1:1 row mapping
+            let rowsHtml = '';
+            let candidateRank = 0;
+
+            for (let i = 0; i < originalLines.length; i++) {
+                const originalLine = originalLines[i] || '';
+                const structuredLine = structuredLines[i] || { type: 'empty' };
+                const left = escapeHtml(originalLine);
+                
+                // Determine rank number for candidates
+                let rankBadge = '';
+                if (structuredLine.type === 'candidate' && structuredLine.value) {
+                    candidateRank++;
+                    rankBadge = `<span class="rank-number">${candidateRank}.</span>`;
+                } else if (structuredLine.type === 'duplicate') {
+                    rankBadge = `<span class="rank-number-duplicate">Dup</span>`;
+                } else {
+                    rankBadge = `<span class="rank-number">&nbsp;</span>`;
+                }
+
+                // Build dropdown options
+                const availableCandidates = getAvailableCandidates(structuredLines, i);
+                // Determine if there's already a voter header elsewhere (exclude current index)
+                const hasVoterLine = structuredLines.some((l, idx) => l.type === 'voter' && idx !== i);
+                const dropdownOptions = [
+                    ...availableCandidates.map(c => `<option value="candidate:${c}" ${structuredLine.type === 'candidate' && structuredLine.value === c ? 'selected' : ''}>${c}</option>`),
+                    `<option value="empty" ${structuredLine.type === 'empty' ? 'selected' : ''}>[Empty Line]</option>`,
+                    `<option value="voter" ${structuredLine.type === 'voter' ? 'selected' : ''} ${hasVoterLine ? 'disabled' : ''}>[Voter Header]</option>`,
+                    `<option value="timecode" ${structuredLine.type === 'timecode' ? 'selected' : ''}>[Timecode]</option>`,
+                    `<option value="not-candidate" ${structuredLine.type === 'not-candidate' ? 'selected' : ''}>[Not a Candidate]</option>`,
+                    `<option value="not-ballot" ${structuredLine.type === 'not-ballot' ? 'selected' : ''}>[Not a Ballot Entry]</option>`,
+                    `<option value="duplicate" ${structuredLine.type === 'duplicate' ? 'selected' : ''}>[Duplicate Candidate]</option>`
+                ].join('');
+
+                const rightHtml = `
+                    <div class="rank-row ${getStructuredLineClass(structuredLine)}">
+                        ${rankBadge}
+                        <select class="rank-dropdown" onchange="window.updateStructuredLine('${voter.replace(/'/g, "\\'").replace(/"/g, '&quot;')}', ${i}, this.value)">
+                            ${dropdownOptions}
+                        </select>
+                        <button class="rank-move-btn" onclick="window.moveStructuredLine('${voter.replace(/'/g, "\\'").replace(/"/g, '&quot;')}', ${i}, -1)" ${i === 0 ? 'disabled' : ''}>↑</button>
+                        <button class="rank-move-btn" onclick="window.moveStructuredLine('${voter.replace(/'/g, "\\'").replace(/"/g, '&quot;')}', ${i}, 1)" ${i === originalLines.length - 1 ? 'disabled' : ''}>↓</button>
+                    </div>
+                `;
+
+                rowsHtml += `
+                    <div class="ballot-row">
+                        <div class="ballot-row-original">${left}</div>
+                        <div class="ballot-row-structured">${rightHtml}</div>
+                    </div>
+                `;
+            }
 
             container.innerHTML = `
-                <div class="ballot-review-card">
+                <div class="ballot-review-card ${isModified ? 'ballot-modified' : ''}">
                     <div class="ballot-review-header">
                         <span>Voter: ${voter}</span>
-                        ${parsedData.ballotOverrides.has(voter) ? '<span class="modified-badge">Modified</span>' : ''}
+                        ${isModified ? '<span class="modified-badge">Modified</span>' : ''}
                     </div>
                     <div class="ballot-review-body">
-                        <div class="ballot-row">
-                            <div class="ballot-column">
-                                <div class="ballot-column-header">Original Discord Text</div>
-                                <div class="ballot-original-full">${originalText}</div>
-                            </div>
-                            <div class="ballot-column">
-                                <div class="ballot-column-header">Structured Rankings</div>
-                                <div class="ballot-structured">
-                                    <div class="structured-rankings">
-                                        ${currentRankings.map((r, i) => `
-                                            <div class="rank-row">
-                                                <span class="rank-number">${r.rank}.</span>
-                                                <select class="rank-dropdown" onchange="window.updateBallotRanking('${voter.replace(/'/g, "\\'")}', ${i}, this.value)">
-                                                    ${parsedData.candidates.map(c => `<option value="${c}" ${c === r.candidate ? 'selected' : ''}>${c}</option>`).join('')}
-                                                </select>
-                                                <button class="rank-move-btn" onclick="window.moveRanking('${voter.replace(/'/g, "\\'")}', ${i}, -1)" ${i === 0 ? 'disabled' : ''}>↑</button>
-                                                <button class="rank-move-btn" onclick="window.moveRanking('${voter.replace(/'/g, "\\'")}', ${i}, 1)" ${i === currentRankings.length - 1 ? 'disabled' : ''}>↓</button>
-                                                <button class="rank-remove" onclick="window.removeRanking('${voter.replace(/'/g, "\\'")}', ${i})">×</button>
-                                            </div>
-                                        `).join('')}
-                                    </div>
-                                    
-                                    <div class="add-ranking-container">
-                                        <select class="add-ranking-dropdown" id="add-ranking-select">
-                                            <option value="">-- Add Candidate --</option>
-                                            ${parsedData.candidates.filter(c => !currentRankings.find(r => r.candidate === c)).map(c => `<option value="${c}">${c}</option>`).join('')}
-                                        </select>
-                                        <button class="add-ranking" onclick="window.addRanking('${voter.replace(/'/g, "\\'")}')">Add</button>
-                                    </div>
-                                    
-                                    <button class="reset-ballot-btn" onclick="window.resetBallot('${voter.replace(/'/g, "\\'")}')">Reset to Original</button>
-                                </div>
-                            </div>
+                        <div class="ballot-row ballot-row-header">
+                            <div class="ballot-row-original"><div class="ballot-column-header">Original Discord Text</div></div>
+                            <div class="ballot-row-structured"><div class="ballot-column-header">Structured Rankings</div></div>
+                        </div>
+                        ${rowsHtml}
+                        <div style="width:100%; padding: 15px;">
+                            <button class="reset-ballot-btn" onclick="window.resetBallot('${voter.replace(/'/g, "\\'").replace(/"/g, '&quot;')}')">Reset to Auto-Detected</button>
                         </div>
                     </div>
-                    
                     <div class="ballot-nav-buttons icenia-button-group govuk-!-padding-4">
                         <button class="icenia-btn icenia-btn-secondary" onclick="window.prevBallot()" ${currentBallotIndex === 0 ? 'disabled' : ''}>Previous Ballot</button>
                         <button class="icenia-btn" onclick="window.calculateResults()">Calculate Results</button>
@@ -1479,18 +1756,15 @@ import PageLayout from "@layouts/page.astro";
                 });
 
                 const stvBallots = activeBallots.map(b => {
-                    let rankingNumbers: number[] = [];
+                    // Extract candidates from structured lines (in order, excluding duplicates)
+                    const structuredLines = getOrInitStructuredLines(b.voter);
+                    const candidateNames = structuredLines
+                        .filter(line => line.type === 'candidate' && line.value)
+                        .map(line => line.value!);
                     
-                    if (parsedData.ballotOverrides.has(b.voter)) {
-                        const overrides = parsedData.ballotOverrides.get(b.voter)!;
-                        rankingNumbers = overrides.map(o => getCandidateNumber(o.candidate, candidateReferences));
-                    } else {
-                        rankingNumbers = b.rankings.map(r => {
-                            const matchedName = parsedData.nameMatches.get(r);
-                            if (!matchedName || matchedName === '__NOT_A_BALLOT__') return null;
-                            return getCandidateNumber(matchedName, candidateReferences);
-                        }).filter((n): n is number => n !== null && n > 0);
-                    }
+                    const rankingNumbers = candidateNames
+                        .map(name => getCandidateNumber(name, candidateReferences))
+                        .filter((n): n is number => n !== null && n > 0);
                     
                     return new Ballot(b.voter, rankingNumbers, 1, candidateReferences.length);
                 }).filter(b => b.rankingList.length > 0);
@@ -1517,10 +1791,23 @@ import PageLayout from "@layouts/page.astro";
 
         // Expose functions to window for HTML event handlers
         (window as any).selectMatch = (foundName: string, matchedName: string) => {
-            parsedData.nameMatches.set(foundName, matchedName === '' ? null : matchedName);
-            if (matchedName && matchedName !== '__NOT_A_BALLOT__') {
-                parsedData.learnedCorrelations.set(foundName, matchedName);
+            // Normalize selection values:
+            // - '__INVALID__' -> null (not a candidate)
+            // - '__NOT_A_BALLOT__' -> '__NOT_A_BALLOT__' (remove from ballots)
+            // - '' -> null
+            const value = matchedName === '' || matchedName === '__INVALID__' ? null : matchedName === '__NOT_A_BALLOT__' ? '__NOT_A_BALLOT__' : matchedName;
+            parsedData.nameMatches.set(foundName, value as string | null);
+
+            // Store learned correlations using a base pattern key
+            const baseName = foundName.toLowerCase().replace(/^[\d\.\s]+/, '').replace(/[\d\s]+$/, '');
+            if (matchedName === '__INVALID__') {
+                parsedData.learnedCorrelations.set(baseName, null);
+            } else if (matchedName === '__NOT_A_BALLOT__') {
+                parsedData.learnedCorrelations.set(baseName, '__NOT_A_BALLOT__');
+            } else if (matchedName && matchedName !== '') {
+                parsedData.learnedCorrelations.set(baseName, matchedName);
             }
+
             renderCurrentName();
             updateCorrelationTable();
         };
@@ -1542,55 +1829,55 @@ import PageLayout from "@layouts/page.astro";
             checkForDuplicates();
         };
 
-        (window as any).updateBallotRanking = (voter: string, rankIndex: number, newCandidate: string) => {
-            const ballot = parsedData.ballots.find(b => b.voter === voter);
-            if (!ballot) return;
-            const current = [...getBallotRankings(voter, ballot)];
-            current[rankIndex] = { ...current[rankIndex], candidate: newCandidate };
-            parsedData.ballotOverrides.set(voter, current);
-            renderBallotReview();
-        };
-
-        (window as any).moveRanking = (voter: string, rankIndex: number, direction: number) => {
-            const ballot = parsedData.ballots.find(b => b.voter === voter);
-            if (!ballot) return;
-            const current = [...getBallotRankings(voter, ballot)];
-            const targetIndex = rankIndex + direction;
-            if (targetIndex >= 0 && targetIndex < current.length) {
-                const temp = current[rankIndex].candidate;
-                current[rankIndex] = { ...current[rankIndex], candidate: current[targetIndex].candidate };
-                current[targetIndex] = { ...current[targetIndex], candidate: temp };
-                parsedData.ballotOverrides.set(voter, current);
-                renderBallotReview();
-            }
-        };
-
-        (window as any).removeRanking = (voter: string, rankIndex: number) => {
-            const ballot = parsedData.ballots.find(b => b.voter === voter);
-            if (!ballot) return;
-            const current = [...getBallotRankings(voter, ballot)];
-            current.splice(rankIndex, 1);
-            // Re-rank
-            const updated = current.map((r, i) => ({ rank: i + 1, candidate: r.candidate }));
-            parsedData.ballotOverrides.set(voter, updated);
-            renderBallotReview();
-        };
-
-        (window as any).addRanking = (voter: string) => {
-            const select = document.getElementById('add-ranking-select') as HTMLSelectElement;
-            const candidate = select.value;
-            if (!candidate) return;
+        (window as any).updateStructuredLine = (voter: string, lineIndex: number, value: string) => {
+            const structuredLines = getOrInitStructuredLines(voter);
+            if (lineIndex < 0 || lineIndex >= structuredLines.length) return;
             
-            const ballot = parsedData.ballots.find(b => b.voter === voter);
-            if (!ballot) return;
-            const current = [...getBallotRankings(voter, ballot)];
-            current.push({ rank: current.length + 1, candidate });
-            parsedData.ballotOverrides.set(voter, current);
+            parsedData.ballotManuallyModified.add(voter);
+            
+            if (value.startsWith('candidate:')) {
+                const candidateName = value.substring('candidate:'.length);
+                structuredLines[lineIndex] = { type: 'candidate', value: candidateName };
+            } else if (value === 'empty') {
+                structuredLines[lineIndex] = { type: 'empty' };
+            } else if (value === 'voter') {
+                structuredLines[lineIndex] = { type: 'voter' };
+            } else if (value === 'timecode') {
+                structuredLines[lineIndex] = { type: 'timecode' };
+            } else if (value === 'not-candidate') {
+                structuredLines[lineIndex] = { type: 'not-candidate' };
+            } else if (value === 'not-ballot') {
+                structuredLines[lineIndex] = { type: 'not-ballot' };
+            } else if (value === 'duplicate') {
+                structuredLines[lineIndex] = { type: 'duplicate' };
+            }
+            
+            parsedData.ballotStructuredLines.set(voter, structuredLines);
+            renderBallotReview();
+        };
+
+        (window as any).moveStructuredLine = (voter: string, lineIndex: number, direction: number) => {
+            const structuredLines = getOrInitStructuredLines(voter);
+            const originalText = parsedData.originalBallotText.get(voter) || '';
+            const originalLines = originalText.split('\n');
+            
+            const targetIndex = lineIndex + direction;
+            if (targetIndex < 0 || targetIndex >= structuredLines.length) return;
+            
+            parsedData.ballotManuallyModified.add(voter);
+            
+            // Swap structured interpretations (not original lines!)
+            const temp = structuredLines[lineIndex];
+            structuredLines[lineIndex] = structuredLines[targetIndex];
+            structuredLines[targetIndex] = temp;
+            
+            parsedData.ballotStructuredLines.set(voter, structuredLines);
             renderBallotReview();
         };
 
         (window as any).resetBallot = (voter: string) => {
-            parsedData.ballotOverrides.delete(voter);
+            parsedData.ballotStructuredLines.delete(voter);
+            parsedData.ballotManuallyModified.delete(voter);
             renderBallotReview();
         };
 
@@ -1753,19 +2040,31 @@ import PageLayout from "@layouts/page.astro";
             const numMatch = e.key.match(/^[1-9]$/);
             if (numMatch) {
                 const index = parseInt(e.key) - 1;
-                const matchButtons = document.querySelectorAll<HTMLButtonElement>('.match-option:not(.invalid)');
+                // Exclude invalid and not-ballot options from quick-number selects
+                const matchButtons = document.querySelectorAll<HTMLButtonElement>('.match-option:not([data-type="invalid"]):not([data-type="not-ballot"])');
                 if (matchButtons[index]) {
                     e.preventDefault();
                     matchButtons[index].click();
                 }
             }
             
-            // 'N' key for "Invalid / Not a Candidate" button
+            // 'N' key for "Not a Candidate" button
             if (e.key === 'n' || e.key === 'N') {
-                const invalidBtn = document.querySelector<HTMLButtonElement>('.match-option.invalid');
+                const matchOptions = document.querySelectorAll<HTMLButtonElement>('.match-option');
+                const invalidBtn = Array.from(matchOptions).find(btn => (btn.textContent || '').toLowerCase().includes('not a candidate'));
                 if (invalidBtn) {
                     e.preventDefault();
                     invalidBtn.click();
+                }
+            }
+
+            // 'M' key for "Not a Ballot Entry" button
+            if (e.key === 'm' || e.key === 'M') {
+                const matchOptions = document.querySelectorAll<HTMLButtonElement>('.match-option');
+                const notBallotBtn = Array.from(matchOptions).find(btn => (btn.textContent || '').toLowerCase().includes('not a ballot'));
+                if (notBallotBtn) {
+                    e.preventDefault();
+                    notBallotBtn.click();
                 }
             }
         });
@@ -1791,7 +2090,7 @@ import PageLayout from "@layouts/page.astro";
             else if (document.getElementById('results')?.style.display !== 'none') currentSection = 'results';
             
             const exportData = {
-                version: '2.1',
+                version: '3.0',
                 timestamp: new Date().toISOString(),
                 inputMode: inputMode,
                 electionName,
@@ -1807,7 +2106,8 @@ import PageLayout from "@layouts/page.astro";
                 },
                 nameMatches: Object.fromEntries(parsedData.nameMatches),
                 learnedCorrelations: Object.fromEntries(parsedData.learnedCorrelations),
-                ballotOverrides: Object.fromEntries(parsedData.ballotOverrides),
+                ballotStructuredLines: Object.fromEntries(parsedData.ballotStructuredLines),
+                ballotManuallyModified: Array.from(parsedData.ballotManuallyModified),
                 originalBallotText: Object.fromEntries(parsedData.originalBallotText),
                 reviewedNames: Array.from(parsedData.reviewedNames),
                 uniqueNames: parsedData.uniqueNames,
@@ -1908,7 +2208,12 @@ import PageLayout from "@layouts/page.astro";
                     if (importData.nameMatches) {
                         parsedData.nameMatches = new Map(Object.entries(importData.nameMatches).map(([k, v]) => [k, v === 'null' ? null : v as string | null]));
                     }
-                    if (importData.ballotOverrides) parsedData.ballotOverrides = new Map(Object.entries(importData.ballotOverrides).map(([k, v]) => [k, v as any]));
+                    if (importData.ballotStructuredLines) {
+                        parsedData.ballotStructuredLines = new Map(Object.entries(importData.ballotStructuredLines).map(([k, v]) => [k, v as StructuredLine[]]));
+                    }
+                    if (importData.ballotManuallyModified) {
+                        parsedData.ballotManuallyModified = new Set(importData.ballotManuallyModified);
+                    }
                     if (importData.originalBallotText) parsedData.originalBallotText = new Map(Object.entries(importData.originalBallotText).map(([k, v]) => [k, v as string]));
                     if (importData.reviewedNames) parsedData.reviewedNames = new Set(importData.reviewedNames);
                     if (importData.uniqueNames) parsedData.uniqueNames = importData.uniqueNames;
@@ -1948,7 +2253,7 @@ import PageLayout from "@layouts/page.astro";
                 uniqueNames: [], currentNameIndex: 0, learnedCorrelations: new Map(),
                 correlationInfluences: new Map(), hasCorrelationWarning: false, nameCounts: new Map(),
                 ballotOverrides: new Map(), originalBallotText: new Map(), reviewedNames: new Set(),
-                duplicateSelections: new Map()
+                duplicateSelections: new Map(), ballotStructuredLines: new Map(), ballotManuallyModified: new Set()
             };
             localStorage.removeItem('election-name');
             const electionNameInput = document.getElementById('election-name') as HTMLInputElement;
