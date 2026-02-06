@@ -103,13 +103,27 @@ jobs:
           shopt -s globstar nullglob
           pdfs=(public/documents/**/*.pdf)
           tiles=(public/tiles/terrain/**/*.png)
-          # Run git diff quietly for YAML files, news content, PDFs, and tiles
-          if git diff --quiet -- src/data/*.yml src/content/news/ src/content/city-news/ "${pdfs[@]}" "${tiles[@]}"; then
+          # Detect either tracked diffs or untracked (new) files under the relevant paths
+          tracked_changed=0
+          if ! git diff --quiet -- src/data/*.yml src/content/news/ src/content/city-news/ "${pdfs[@]}" "${tiles[@]}"; then
+            tracked_changed=1
+          fi
+
+          untracked_found=0
+          # Look for untracked files under these directories (newly generated .md, PDFs, tiles, etc.)
+          if [ -n "$(git ls-files --others --exclude-standard -- src/content/news/ src/content/city-news/ public/documents public/tiles || true)" ]; then
+            untracked_found=1
+          fi
+
+          if [ $tracked_changed -eq 0 -a $untracked_found -eq 0 ]; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
             echo "No changes detected in data, news, PDFs, or tiles"
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
             echo "Changes detected in data, news, PDFs, or tiles"
+            # Show status for human review: both staged/tracked diffs and untracked files
+            git status --porcelain -- src/data/*.yml src/content/news/ src/content/city-news/ "${pdfs[@]}" "${tiles[@]}" || true
+            git ls-files --others --exclude-standard -- src/content/news/ src/content/city-news/ public/documents public/tiles || true
             git diff --stat -- src/data/*.yml src/content/news/ src/content/city-news/ "${pdfs[@]}" "${tiles[@]}" || true
           fi
 
