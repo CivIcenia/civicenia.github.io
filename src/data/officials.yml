@@ -3,7 +3,7 @@
 # Use https://toolscord.com/ to get Discord profile pictures
 
 # Senate term label (e.g., "September 2025")
-senate_term: "January 2026"
+senate_term: "February 2026"
 
 # President
 president:
@@ -41,25 +41,31 @@ head_of_transportation:
   icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=256"
   discord_id: "477240196564385823"
 
-# Senate Seats - 5 seats
+# Senate Seats - 7 seats
 senators:
   - seat: 1
-    name: "minemaster933"
-    icon: "https://cdn.discordapp.com/embed/avatars/0.png"
-    discord_id: "982344847925051433"
+    name: "Haxx0r"
+    icon: "https://cdn.discordapp.com/avatars/483631570830229505/f5277670ec1b1376dde7dccf1ff66763.webp?size=256"
+    discord_id: "483631570830229505"
   - seat: 2
+    name: "Anvil"
+    icon: "https://cdn.discordapp.com/avatars/164188981293088769/0d209f4d82a63c91f97960d9d6221763.webp?size=256"
+    discord_id: "164188981293088769"
+  - seat: 3
+    name: "CreepilyCreep"
+    icon: "https://cdn.discordapp.com/avatars/452620205064060939/4f6c907988fabe211c61d04cbadb5eb2.webp?size=256"
+    discord_id: "452620205064060939"
+  - seat: 4
     name: "Dr_Bacon_Hair"
     icon: "https://cdn.discordapp.com/avatars/689297659907145831/128236dfe42d62508041d1561306bf68.webp?size=256"
     discord_id: "689297659907145831"
-  - seat: 3
-    name: "Ratat0ing"
-    icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=256"
-    discord_id: "477240196564385823"
-  - seat: 4
-    name: "HsmNewfriend"
-    icon: "https://cdn.discordapp.com/avatars/1080275805277540423/a95d5aeab1df4316903742ae66cb75b2.webp?size=256"
-    discord_id: "1080275805277540423"
   - seat: 5
     name: "CreepilyCreep"
     icon: "https://cdn.discordapp.com/avatars/452620205064060939/4f6c907988fabe211c61d04cbadb5eb2.webp?size=256"
     discord_id: "452620205064060939"
+  - seat: 6
+    name: "CreepilyCreep"
+    icon: "https://cdn.discordapp.com/avatars/452620205064060939/4f6c907988fabe211c61d04cbadb5eb2.webp?size=256"
+  - seat: 7
+    name: "Raeders"
+    icon: "https://cdn.discordapp.com/avatars/921152800401018970/7dcbc1346a16f7daa9ef0ebee7361bc4.webp?size=256"
