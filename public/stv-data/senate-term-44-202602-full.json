@@ -1,0 +1,3104 @@
+{
+  "version": "3.0",
+  "timestamp": "2026-02-05T17:39:31.228Z",
+  "inputMode": "discord",
+  "electionName": "Senate Election February 2026 Term 44",
+  "candidates": [
+    "Josh “alleged terrorist” Hillman",
+    "Detective Luci",
+    "Anti-WeePee BOAR Sovia DrBaconHair",
+    "mushroomstew101",
+    "Hotel Holden, C.E.O",
+    "CreepilyCreep",
+    "Complexii",
+    "mushroom cultist",
+    "Sdorr",
+    "Anvil",
+    "HsmNewfriend",
+    "Gold",
+    "Haxx0r"
+  ],
+  "ballots": [
+    {
+      "voter": "palantircios",
+      "rankings": [
+        "Anvil",
+        "CreepilyCreep",
+        "Hotel Holden, C.E.O",
+        "mushroomstew101",
+        "Sdorr",
+        "Complexii",
+        "Anti-WeePee Warrior BOAR #Sovia"
+      ]
+    },
+    {
+      "voter": "sage",
+      "rankings": [
+        "Josh “alleged terrorist” Hillman",
+        "Anvil",
+        "CreepilyCreep",
+        "Sdorr",
+        "Detective Luci"
+      ]
+    },
+    {
+      "voter": "cervanthes",
+      "rankings": [
+        "Anvil",
+        "Hotel Holden, C.E.O",
+        "CreepilyCreep",
+        "Detective Luci",
+        "mushroomstew101"
+      ]
+    },
+    {
+      "voter": "mikebloomberg",
+      "rankings": [
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "Anvil",
+        "Sdorr",
+        "Haxx0r",
+        "mushroomstew101",
+        "HsmNewfriend"
+      ]
+    },
+    {
+      "voter": "zolofreejaypowell",
+      "rankings": [
+        "This pingslop has to end man"
+      ]
+    },
+    {
+      "voter": "detectiveluci",
+      "rankings": [
+        "Detective Luci",
+        "Josh “alleged terrorist” Hillman",
+        "Anvil",
+        "Complexii",
+        "CreepilyCreep",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "Gold"
+      ]
+    },
+    {
+      "voter": "zolofreejaypowell#2",
+      "rankings": [
+        "Haxx0r",
+        "Sdorr",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "HsmNewfriend",
+        "CreepilyCreep",
+        "mushroomstew101",
+        "Complexii",
+        "Gold"
+      ]
+    },
+    {
+      "voter": "gold",
+      "rankings": [
+        "Gold",
+        "Anvil",
+        "CreepilyCreep",
+        "Detective Luci",
+        "Complexii",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "HsmNewfriend",
+        "Josh “alleged terrorist” Hillman",
+        "Haxx0r",
+        "Hotel Holden, C.E.O",
+        "Sdorr",
+        "mushroomstew101",
+        "mushroom cultist"
+      ]
+    },
+    {
+      "voter": "jammymie",
+      "rankings": [
+        "Haxx0r",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "CreepilyCreep"
+      ]
+    },
+    {
+      "voter": "antiweepeewarriorboarsovia",
+      "rankings": [
+        "Haxx0r",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "HsmNewfriend",
+        "mushroomstew101",
+        "Sdorr",
+        "Gold",
+        "Josh “alleged terrorist” Hillman",
+        "Detective Luci",
+        "Hotel Holden, C.E.O",
+        "CreepilyCreep",
+        "Complexii",
+        "Anvil",
+        "GuggaBugga"
+      ]
+    },
+    {
+      "voter": "hotelholdenceo",
+      "rankings": [
+        "Hotel Holden, C.E.O",
+        "Anvil",
+        "Complexii",
+        "CreepilyCreep",
+        "mushroomstew101",
+        "HsmNewfriend",
+        "Detective Luci",
+        "Josh “alleged terrorist” Hillman",
+        "Sdorr",
+        "Gold",
+        "Haxx0r",
+        "Wait, we can only vote for people with the summaries?"
+      ]
+    },
+    {
+      "voter": "anvil",
+      "rankings": [
+        "Anvil",
+        "Detective Luci",
+        "Hotel Holden, C.E.O",
+        "Gold",
+        "Complexii",
+        "Josh “alleged terrorist” Hillman",
+        "CreepilyCreep",
+        "Anti-WeePee Warrior BOAR #Sovia"
+      ]
+    },
+    {
+      "voter": "juniortide",
+      "rankings": [
+        "Anvil",
+        "Complexii",
+        "Hotel Holden, C.E.O",
+        "CreepilyCreep",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "Detective Luci",
+        "Josh “alleged terrorist” Hillman",
+        "Haxx0r",
+        "Gold",
+        "mushroom cultist",
+        "Sdorr",
+        "HsmNewfriend",
+        "mushroomstew101"
+      ]
+    },
+    {
+      "voter": "taewoop",
+      "rankings": [
+        "Anvil",
+        "Hotel Holden, C.E.O",
+        "Detective Luci",
+        "Josh “alleged terrorist” Hillman",
+        "Sdorr",
+        "HsmNewfriend"
+      ]
+    },
+    {
+      "voter": "eledion",
+      "rankings": [
+        "Haxx0r",
+        "Sdorr",
+        "HsmNewfriend",
+        "Anvil",
+        "CreepilyCreep",
+        "Hotel Holden, C.E.O",
+        "Gold",
+        "Josh “alleged terrorist” Hillman",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "Detective Luci",
+        "mushroomstew101",
+        "Complexii"
+      ]
+    },
+    {
+      "voter": "creepilycreep",
+      "rankings": [
+        "CreepilyCreep",
+        "Josh “alleged terrorist” Hillman",
+        "Anvil",
+        "Haxx0r",
+        "HsmNewfriend",
+        "Gold",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "Complexii",
+        "Sdorr",
+        "Hotel Holden, C.E.O",
+        "Detective Luci",
+        "mushroom cultist",
+        "mushroomstew101"
+      ]
+    },
+    {
+      "voter": "hsmnewfriend",
+      "rankings": [
+        "HsmNewfriend",
+        "CreepilyCreep",
+        "Haxx0r",
+        "Complexii",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "Anvil",
+        "Hotel Holden, C.E.O",
+        "mushroomstew101",
+        "Sdorr",
+        "Gold",
+        "Josh “alleged terrorist” Hillman",
+        "Detective Luci",
+        "mushroom cultist"
+      ]
+    },
+    {
+      "voter": "mushroomstew101",
+      "rankings": [
+        "complexii",
+        "Anvil",
+        "Haxx0r",
+        "hsmnewfriend",
+        ", creepilycreep",
+        "Joshillman",
+        "Mushroomstew101"
+      ]
+    },
+    {
+      "voter": "savster123",
+      "rankings": [
+        "Gold",
+        "Complexii"
+      ]
+    },
+    {
+      "voter": "complexii",
+      "rankings": [
+        "Complexii",
+        "Hotel Holden, C.E.O",
+        "CreepilyCreep",
+        "Anvil",
+        "HsmNewfriend",
+        "Gold",
+        "Haxx0r",
+        "mushroomstew101"
+      ]
+    },
+    {
+      "voter": "kronprinzkaiser",
+      "rankings": [
+        "Haxx0r",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "HsmNewfriend",
+        "Sdorr",
+        "Gold",
+        "Complexii",
+        "CreepilyCreep",
+        "Anvil",
+        "mushroom cultist",
+        "mushroomstew101",
+        "Hotel Holden, C.E.O",
+        "Josh “alleged terrorist” Hillman",
+        "Detective Luci"
+      ]
+    },
+    {
+      "voter": "okiinawa",
+      "rankings": [
+        "Haxx0r",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "HsmNewfriend",
+        "Sdorr",
+        "Gold",
+        "Complexii",
+        "CreepilyCreep",
+        "Anvil",
+        "mushroom cultist",
+        "mushroomstew101",
+        "Hotel Holden, C.E.O",
+        "Josh “alleged terrorist” Hillman",
+        "Detective Luci"
+      ]
+    },
+    {
+      "voter": "alzubloxxer11",
+      "rankings": [
+        "CreepilyCreep",
+        "Gold",
+        "HsmNewfriend",
+        "Josh “alleged terrorist” Hillman",
+        "Haxx0r",
+        "Anvil",
+        "Complexii",
+        "Hotel Holden, C.E.O",
+        "Detective Luci"
+      ]
+    },
+    {
+      "voter": "saker",
+      "rankings": [
+        "Haxx0r⁩",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "HsmNewfriend",
+        "Sdorr",
+        "Gold",
+        "Complexii",
+        "CreepilyCreep",
+        "Anvil",
+        "mushroom cultist",
+        "mushroomstew101",
+        "Hotel Holden, C.E.O",
+        "Josh “alleged terrorist” Hillman",
+        "Detective Luci"
+      ]
+    },
+    {
+      "voter": "sdorr",
+      "rankings": [
+        "HsmNewfriend",
+        "Sdorr",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "Haxx0r",
+        "Gold",
+        "Complexii",
+        "mushroomstew101",
+        "CreepilyCreep",
+        "mushroom cultist",
+        "Anvil",
+        "Hotel Holden, C.E.O",
+        "Detective Luci",
+        "Josh “alleged terrorist” Hillman"
+      ]
+    },
+    {
+      "voter": "haxx0r",
+      "rankings": [
+        "Sdorr",
+        "HsmNewfriend",
+        "CreepilyCreep",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "Gold",
+        "Anvil",
+        "mushroomstew101",
+        "Complexii",
+        "Hotel Holden, C.E.O",
+        "Josh “alleged terrorist” Hillman",
+        "Detective Luci",
+        "mushroom cultist"
+      ]
+    },
+    {
+      "voter": "vedel",
+      "rankings": [
+        "HsmNewfriend",
+        "Sdorr",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "Haxx0r",
+        "Gold",
+        "Complexii",
+        "mushroomstew101",
+        "CreepilyCreep",
+        "mushroom cultist",
+        "Anvil",
+        "Hotel Holden, C.E.O",
+        "Detective Luci",
+        "Josh “alleged terrorist” Hillman"
+      ]
+    },
+    {
+      "voter": "yodabird",
+      "rankings": [
+        "Gold",
+        "CreepilyCreep",
+        "HsmNewfriend",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "Haxx0r",
+        "Anvil",
+        "Complexii",
+        "Josh “alleged terrorist” Hillman",
+        "Sdorr",
+        "Detective Luci",
+        "mushroomstew101",
+        "Hotel Holden, C.E.O",
+        "mushroom cultist"
+      ]
+    },
+    {
+      "voter": "sirluminous_",
+      "rankings": [
+        "Anvil",
+        "Haxx0r",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "Sdorr",
+        "HsmNewfriend",
+        "Zolo #FreeJayPowell",
+        "mushroomstew101",
+        "Josh “alleged terrorist” Hillman",
+        "Hotel Holden, C.E.O"
+      ]
+    },
+    {
+      "voter": "binchymonkey",
+      "rankings": [
+        "Hg_67",
+        "Hg_67",
+        "binchymonkey",
+        "IDF Asset"
+      ]
+    },
+    {
+      "voter": "hg_67",
+      "rankings": [
+        "specificgjumguage"
+      ]
+    },
+    {
+      "voter": "specificgjumguage",
+      "rankings": [
+        "specificgjumguage",
+        "GEQBUS"
+      ]
+    },
+    {
+      "voter": "specificgjumguage#2",
+      "rankings": [
+        "alright im done joking heres my actual votes",
+        "specificgjumguage",
+        "CreepilyCreep",
+        "Anvil",
+        "HsmNewfriend",
+        "Gold",
+        "Haxx0r",
+        "Josh “alleged terrorist” Hillman",
+        "Sdorr",
+        "Hotel Holden, C.E.O",
+        "mushroomstew101"
+      ]
+    },
+    {
+      "voter": "c32shark",
+      "rankings": [
+        "Detective Luci",
+        "Anvil",
+        "Haxx0r",
+        "Complexii"
+      ]
+    },
+    {
+      "voter": "uprisingmax",
+      "rankings": [
+        "Detective Luci"
+      ]
+    },
+    {
+      "voter": "lwvx",
+      "rankings": [
+        "Detective Luci",
+        "Gold",
+        "Anvil",
+        "Josh “alleged terrorist” Hillman",
+        "specificgjumguage",
+        "CreepilyCreep",
+        "Complexii",
+        "HsmNewfriend"
+      ]
+    },
+    {
+      "voter": "agentunique_nullptr",
+      "rankings": [
+        "Anvil",
+        "Detective Luci",
+        "Josh “alleged terrorist” Hillman",
+        "CreepilyCreep",
+        "Hotel Holden, C.E.O",
+        "Complexii"
+      ]
+    },
+    {
+      "voter": "lopsterbisque",
+      "rankings": [
+        "Hotel Holden, C.E.O",
+        "Anvil",
+        "CreepilyCreep",
+        "Complexii",
+        "Gold",
+        "Sdorr",
+        "Josh “alleged terrorist” Hillman",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "Haxx0r",
+        "mushroom cultist",
+        "mushroomstew101",
+        "HsmNewfriend",
+        "Detective Luci"
+      ]
+    },
+    {
+      "voter": "nothingeverhappensdontcorrectme",
+      "rankings": [
+        "CreepilyCreep",
+        "Anvil",
+        "HsmNewfriend",
+        "Gold",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "Hotel Holden, C.E.O",
+        "Haxx0r",
+        "Detective Luci",
+        "Josh “alleged terrorist” Hillman",
+        "Complexii"
+      ]
+    },
+    {
+      "voter": "darkhelmet12e4",
+      "rankings": [
+        "HsmNewfriend",
+        "Sdorr",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "Haxx0r",
+        "Gold",
+        "Complexii",
+        "mushroomstew101",
+        "CreepilyCreep",
+        "mushroom cultist",
+        "Anvil",
+        "Hotel Holden, C.E.O",
+        "Detective Luci",
+        "Josh “alleged terrorist” Hillman"
+      ]
+    },
+    {
+      "voter": "mushroomcultist",
+      "rankings": [
+        "Haxx0r⁩",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "HsmNewfriend",
+        "Sdorr",
+        "Gold",
+        "Complexii",
+        "CreepilyCreep",
+        "Anvil",
+        "mushroom cultist",
+        "mushroomstew101",
+        "Hotel Holden, C.E.O",
+        "Josh “alleged terrorist” Hillman",
+        "Detective Luci"
+      ]
+    },
+    {
+      "voter": "gjum",
+      "rankings": [
+        "CreepilyCreep",
+        "HsmNewfriend",
+        "Anvil",
+        "Gold",
+        "JuniorTide",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "Hotel Holden, C.E.O",
+        "Haxx0r"
+      ]
+    },
+    {
+      "voter": "israelgpt",
+      "rankings": [
+        "Haxx0r",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "Sdorr",
+        "HsmNewfriend",
+        "NothingEverHappens DontCorrectMe",
+        "Okx",
+        "Kingstell",
+        "krclam",
+        "Benburt",
+        "Chief Magistrate",
+        "Dark Helmet12E4",
+        "GuggaBugga"
+      ]
+    },
+    {
+      "voter": "joshallegedterroristhillman",
+      "rankings": [
+        "Josh “alleged terrorist” Hillman",
+        "Detective Luci",
+        "CreepilyCreep",
+        "Anvil",
+        "Complexii",
+        "Gold",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "HsmNewfriend",
+        "Sdorr",
+        "Haxx0r",
+        "mushroomstew101",
+        "Hotel Holden, C.E.O",
+        "mushroom cultist"
+      ]
+    },
+    {
+      "voter": "puxatawneyphil",
+      "rankings": [
+        "Haxx0r⁩",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "HsmNewfriend",
+        "Sdorr",
+        "Gold",
+        "Complexii",
+        "CreepilyCreep",
+        "Anvil",
+        "mushroom cultist",
+        "mushroomstew101",
+        "Hotel Holden, C.E.O",
+        "Josh “alleged terrorist” Hillman",
+        "Detective Luci"
+      ]
+    },
+    {
+      "voter": "entirelyvenom",
+      "rankings": [
+        "Detective Luci"
+      ]
+    },
+    {
+      "voter": "gilian",
+      "rankings": [
+        "Zolo #FreeJayPowell",
+        "Sdorr",
+        "mushroomstew101",
+        "CreepilyCreep",
+        "HsmNewfriend",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "jammy mie"
+      ]
+    },
+    {
+      "voter": "ergeantclithorris666",
+      "rankings": [
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "Anvil",
+        "Sdorr",
+        "Complexii",
+        "Gold",
+        "HsmNewfriend",
+        "Detective Luci",
+        "Haxx0r"
+      ]
+    },
+    {
+      "voter": "wo7f",
+      "rankings": [
+        "CreepilyCreep",
+        "Anvil",
+        "Hotel Holden, C.E.O",
+        "Gold",
+        "HsmNewfriend",
+        "Detective Luci"
+      ]
+    },
+    {
+      "voter": "peterthusk",
+      "rankings": [
+        "CreepilyCreep ⁩",
+        "HsmNewfriend",
+        "Sdorr",
+        "Anti-WeePee Warrior BOAR #Sovia",
+        "Gold",
+        "Anvil",
+        "Haxx0r",
+        "Complexii",
+        "mushroom cultist",
+        "mushroomstew101",
+        "Hotel Holden, C.E.O",
+        "Josh “alleged terrorist” Hillman",
+        "Detective Luci"
+      ]
+    },
+    {
+      "voter": "naglafer",
+      "rankings": [
+        "toasttastesprettygood",
+        "Anvil",
+        "Complexii",
+        "CreepilyCreep"
+      ]
+    }
+  ],
+  "rawDiscordInput": {
+    "candidates": "@Josh “alleged terrorist” Hillman \n@Detective Luci \n@Anti-WeePee BOAR Sovia DrBaconHair\n@mushroomstew101 \n@Hotel Holden, C.E.O \n@CreepilyCreep \n@Complexii \n@mushroom cultist\n@Sdorr \n@Anvil \n@HsmNewfriend\n@Gold \n@Haxx0r ",
+    "ballots": "\nPalantircios\n\n — 04/02/2026 13:19\n@Anvil \n@CreepilyCreep \n@Hotel Holden, C.E.O \n@mushroomstew101 \n@Sdorr \n@Complexii \n@Anti-WeePee Warrior BOAR #Sovia \nsage — 04/02/2026 14:08\n@Josh “alleged terrorist” Hillman\n@Anvil \n@CreepilyCreep \n@Sdorr \n@Detective Luci\nCervanthes\n\n — 04/02/2026 14:10\n@Anvil \n@Hotel Holden, C.E.O \n@CreepilyCreep \n@Detective Luci \n@mushroomstew101\nMike Bloomberg\n\n — 04/02/2026 14:19\n@Anti-WeePee Warrior BOAR #Sovia \n@Anvil \n@Sdorr \n@Haxx0r \n@mushroomstew101\n@HsmNewfriend \nZolo #FreeJayPowell\n\n — 04/02/2026 14:42\nThis pingslop has to end man\nDetective Luci — 04/02/2026 14:47\n@Detective Luci \n@Josh “alleged terrorist” Hillman \n@Anvil\n@Complexii \n@CreepilyCreep \n@Anti-WeePee Warrior BOAR #Sovia\n@Gold \nZolo #FreeJayPowell\n\n — 04/02/2026 14:51\n@Haxx0r \n@Sdorr \n@Anti-WeePee Warrior BOAR #Sovia \n@HsmNewfriend \n@CreepilyCreep \n@mushroomstew101 \n@Complexii \n@Gold\nGold — 04/02/2026 14:51\n@Gold \n@Anvil \n@CreepilyCreep \n@Detective Luci \n@Complexii \n@Anti-WeePee Warrior BOAR #Sovia \n@HsmNewfriend\n\n@Josh “alleged terrorist” Hillman \n@Haxx0r \n@Hotel Holden, C.E.O\n\n@Sdorr \n@mushroomstew101 \n@mushroom cultist\njammy mie\n\n — 04/02/2026 15:00\n@Haxx0r \n@Anti-WeePee Warrior BOAR #Sovia \n@CreepilyCreep\nAnti-WeePee Warrior BOAR #Sovia\n\n — 04/02/2026 15:04\n@Haxx0r \n@Anti-WeePee Warrior BOAR #Sovia \n@HsmNewfriend \n@mushroomstew101 \n@Sdorr \n@Gold \n@Josh “alleged terrorist” Hillman \n@Detective Luci \n@Hotel Holden, C.E.O \n@CreepilyCreep \n@Complexii\n@Anvil\n@GuggaBugga \nHotel Holden, C.E.O\n\n — 04/02/2026 15:09\n@Hotel Holden, C.E.O \n@Anvil \n@Complexii \n@CreepilyCreep \n@mushroomstew101 \n@HsmNewfriend\n@Detective Luci\n@Josh “alleged terrorist” Hillman \n@Sdorr \n@Gold \n@Haxx0r \nWait, we can only vote for people with the summaries?\nAnvil — 04/02/2026 15:16\n@Anvil \n@Detective Luci \n@Hotel Holden, C.E.O \n@Gold \n@Complexii \n@Josh “alleged terrorist” Hillman\n@CreepilyCreep \n@Anti-WeePee Warrior BOAR #Sovia\nJuniorTide\n\n — 04/02/2026 16:55\n@Anvil \n@Complexii \n@Hotel Holden, C.E.O \n@CreepilyCreep \n@Anti-WeePee Warrior BOAR #Sovia \n@Detective Luci \n@Josh “alleged terrorist” Hillman \n@Haxx0r \n@Gold \n@mushroom cultist \n@Sdorr \n@HsmNewfriend \n@mushroomstew101\nTaewoop — 04/02/2026 19:11\n@Anvil \n@Hotel Holden, C.E.O \n@Detective Luci \n@Josh “alleged terrorist” Hillman \n@Sdorr \n@HsmNewfriend\nEledion\n\n — 04/02/2026 20:13\n@Haxx0r\n@Sdorr\n@HsmNewfriend\n@Anvil\n@CreepilyCreep\n@Hotel Holden, C.E.O\n@Gold \n@Josh “alleged terrorist” Hillman \n@Anti-WeePee Warrior BOAR #Sovia \n@Detective Luci\n@mushroomstew101\n@Complexii\nCreepilyCreep — 04/02/2026 20:31\n@CreepilyCreep \n@Josh “alleged terrorist” Hillman\n@Anvil \n@Haxx0r \n@HsmNewfriend \n@Gold \n@Anti-WeePee Warrior BOAR #Sovia \n@Complexii \n@Sdorr \n@Hotel Holden, C.E.O \n@Detective Luci \n@mushroom cultist \n@mushroomstew101\nHsmNewfriend\n\n — 04/02/2026 20:35\n@HsmNewfriend \n@CreepilyCreep \n@Haxx0r \n@Complexii\n@Anti-WeePee Warrior BOAR #Sovia\n@Anvil\n@Hotel Holden, C.E.O \n@mushroomstew101\n@Sdorr \n@Gold\n@Josh “alleged terrorist” Hillman\n@Detective Luci\n@mushroom cultist \nmushroomstew101 — 04/02/2026 21:56\n1.complexii \n2.Anvil\nHaxx0r\n4.hsmnewfriend\n5, creepilycreep \nJoshillman\nMushroomstew101\nSavster123\n\n — 04/02/2026 22:57\n@Gold \n@Complexii\nComplexii — 04/02/2026 23:00\n@Complexii\n@Hotel Holden, C.E.O\n@CreepilyCreep\n@Anvil\n@HsmNewfriend\n@Gold\n@Haxx0r\n@mushroomstew101\n \nKronprinzKaiser — 04/02/2026 23:36\n@Haxx0r \n@Anti-WeePee Warrior BOAR #Sovia \n@HsmNewfriend \n@Sdorr \n@Gold \n@Complexii \n@CreepilyCreep \n@Anvil \n@mushroom cultist \n@mushroomstew101 \n@Hotel Holden, C.E.O \n@Josh “alleged terrorist” Hillman \n@Detective Luci \nOkiinawa — 04/02/2026 23:42\n1@Haxx0r \n2@Anti-WeePee Warrior BOAR #Sovia \n3@HsmNewfriend \n4@Sdorr \n5@Gold \n6@Complexii \n7@CreepilyCreep \n8@Anvil \n9@mushroom cultist \n10@mushroomstew101 \n11@Hotel Holden, C.E.O \n12@Josh “alleged terrorist” Hillman \n13@Detective Luci \nAlzuBloxxer11 — 04/02/2026 23:51\n@CreepilyCreep \n@Gold \n@HsmNewfriend \n@Josh “alleged terrorist” Hillman \n@Haxx0r \n@Anvil \n@Complexii \n@Hotel Holden, C.E.O \n@Detective Luci\n'Saker\n\n — 04/02/2026 23:54\n@Haxx0r⁩\n@Anti-WeePee Warrior BOAR #Sovia \n@HsmNewfriend \n@Sdorr \n@Gold \n@Complexii \n@CreepilyCreep \n@Anvil \n@mushroom cultist \n@mushroomstew101 \n@Hotel Holden, C.E.O \n@Josh “alleged terrorist” Hillman \n@Detective Luci \nSdorr\n\n — Yesterday at 00:02\n@HsmNewfriend \n@Sdorr \n@Anti-WeePee Warrior BOAR #Sovia \n@Haxx0r \n@Gold \n@Complexii \n@mushroomstew101 \n@CreepilyCreep \n@mushroom cultist \n@Anvil \n@Hotel Holden, C.E.O \n@Detective Luci \n@Josh “alleged terrorist” Hillman \nHaxx0r — Yesterday at 00:45\n@Sdorr\n@HsmNewfriend\n@CreepilyCreep\n@Anti-WeePee Warrior BOAR #Sovia\n@Gold\n@Anvil \n@mushroomstew101 \n@Complexii\n@Hotel Holden, C.E.O \n@Josh “alleged terrorist” Hillman \n@Detective Luci \n@mushroom cultist \nVedel — Yesterday at 01:00\n@HsmNewfriend \n@Sdorr \n@Anti-WeePee Warrior BOAR #Sovia \n@Haxx0r \n@Gold \n@Complexii \n@mushroomstew101 \n@CreepilyCreep \n@mushroom cultist \n@Anvil \n@Hotel Holden, C.E.O \n@Detective Luci \n@Josh “alleged terrorist” Hillman \nturbo janny yodabird — Yesterday at 01:04\n@Gold\n@CreepilyCreep\n@HsmNewfriend\n@Anti-WeePee Warrior BOAR #Sovia\n@Haxx0r\n@Anvil\n@Complexii\n@Josh “alleged terrorist” Hillman\n@Sdorr\n@Detective Luci\n@mushroomstew101\n@Hotel Holden, C.E.O\n@mushroom cultist\nsirluminous_\n\n — Yesterday at 01:36\n@Anvil\n@Haxx0r\n@Anti-WeePee Warrior BOAR #Sovia\n@Sdorr\n@HsmNewfriend\n@Zolo #FreeJayPowell\n@mushroomstew101\n@Josh “alleged terrorist” Hillman\n@Hotel Holden, C.E.O\nbinchymonkey\n\n — Yesterday at 02:09\n@Hg_67 (write in)\n@Hg_67 \n@binchymonkey (write in)\n@IDF Asset\nHg_67 — Yesterday at 02:13\n@specificgjumguage (write in)\nspecificgjumguage — Yesterday at 02:15\n@specificgjumguage (write-in)\n@GEQBUS (write-in)\nspecificgjumguage — Yesterday at 02:22\nalright i'm done joking here's my actual votes\n@specificgjumguage (write-in)\n@CreepilyCreep\n@Anvil\n@HsmNewfriend\n@Gold\n@Haxx0r\n@Josh “alleged terrorist” Hillman\n@Sdorr\n@Hotel Holden, C.E.O\n@mushroomstew101\n \nC32shark — Yesterday at 03:28\n@Detective Luci \n@Anvil \n@Haxx0r \n@Complexii\nUprisingMax — Yesterday at 08:25\n@Detective Luci \nLwvx — Yesterday at 08:30\n@Detective Luci \n@Gold \n@Anvil \n@Josh “alleged terrorist” Hillman \n@specificgjumguage \n@CreepilyCreep \n@Complexii \n@HsmNewfriend\nAgent (unique_nullptr) — Yesterday at 08:31\n@Anvil\n@Detective Luci\n@Josh “alleged terrorist” Hillman\n@CreepilyCreep\n@Hotel Holden, C.E.O\n@Complexii\nLopster Bisque — Yesterday at 09:06\n@Hotel Holden, C.E.O \n@Anvil \n@CreepilyCreep \n@Complexii \n@Gold \n@Sdorr \n@Josh “alleged terrorist” Hillman \n@Anti-WeePee Warrior BOAR #Sovia \n@Haxx0r \n@mushroom cultist \n@mushroomstew101 \n@HsmNewfriend \n@Detective Luci\nNothingEverHappens DontCorrectMe — Yesterday at 09:15\n@CreepilyCreep \n@Anvil \n@HsmNewfriend \n@Gold \n@Anti-WeePee Warrior BOAR #Sovia \n@Hotel Holden, C.E.O \n@Haxx0r \n@Detective Luci \n@Josh “alleged terrorist” Hillman \n@Complexii\nDark Helmet12E4\n\n — Yesterday at 09:22\n@HsmNewfriend \n@Sdorr \n@Anti-WeePee Warrior BOAR #Sovia \n@Haxx0r \n@Gold \n@Complexii \n@mushroomstew101 \n@CreepilyCreep \n@mushroom cultist \n@Anvil \n@Hotel Holden, C.E.O \n@Detective Luci \n@Josh “alleged terrorist” Hillman \nmushroom cultist — Yesterday at 09:24\n@Haxx0r⁩\n@Anti-WeePee Warrior BOAR #Sovia \n@HsmNewfriend \n@Sdorr \n@Gold \n@Complexii \n@CreepilyCreep \n@Anvil \n@mushroom cultist \n@mushroomstew101 \n@Hotel Holden, C.E.O \n@Josh “alleged terrorist” Hillman \n@Detective Luci\nGjum — Yesterday at 12:13\n@CreepilyCreep \n@HsmNewfriend \n@Anvil \n@Gold \n@JuniorTide \n@Anti-WeePee Warrior BOAR #Sovia \n@Hotel Holden, C.E.O\n﻿@Haxx0r \n﻿ \nIsraelGPT — Yesterday at 12:35\n@Haxx0r \n@Anti-WeePee Warrior BOAR #Sovia \n@Sdorr \n@HsmNewfriend \n@NothingEverHappens DontCorrectMe \n@Okx \n@Kingstell \n@krclam\n@Benburt \n@Chief Magistrate\n@Dark Helmet12E4 \n@GuggaBugga \nJosh “alleged terrorist” Hillman\n\n — Yesterday at 12:38\n@Josh “alleged terrorist” Hillman \n@Detective Luci \n@CreepilyCreep\n@Anvil \n@Complexii \n@Gold \n@Anti-WeePee Warrior BOAR #Sovia \n@HsmNewfriend \n@Sdorr \n@Haxx0r \n@mushroomstew101 \n@Hotel Holden, C.E.O \n@mushroom cultist\nPuxatawney Phil\n\n — Yesterday at 12:41\n@Haxx0r⁩\n@Anti-WeePee Warrior BOAR #Sovia \n@HsmNewfriend \n@Sdorr \n@Gold \n@Complexii \n@CreepilyCreep \n@Anvil \n@mushroom cultist \n@mushroomstew101 \n@Hotel Holden, C.E.O \n@Josh “alleged terrorist” Hillman \n@Detective Luci\nEntirelyVenom — Yesterday at 12:41\n@Detective Luci\nGilian𝕏 — Yesterday at 12:56\n@Zolo #FreeJayPowell \n@Sdorr \n@mushroomstew101 \n@CreepilyCreep \n@HsmNewfriend \n@Anti-WeePee Warrior BOAR #Sovia \n@jammy mie\nSpeaker 𝕏ergeant ClitHorris666\n\n — Yesterday at 13:04\n@Anti-WeePee Warrior BOAR #Sovia \n@Anvil \n@Sdorr\n@Complexii \n@Gold \n@HsmNewfriend\n@Detective Luci\n@Haxx0r\nWO7F — Yesterday at 13:17\n@CreepilyCreep \n@Anvil \n@Hotel Holden, C.E.O \n@Gold \n@HsmNewfriend \n@Detective Luci\nPeter Thusk\n\n — Yesterday at 13:20\n@CreepilyCreep ⁩\n@HsmNewfriend \n@Sdorr \n@Anti-WeePee Warrior BOAR #Sovia \n@Gold \n@Anvil \n@Haxx0r \n@Complexii \n@mushroom cultist \n@mushroomstew101 \n@Hotel Holden, C.E.O \n@Josh “alleged terrorist” Hillman \n@Detective Luci\nNaglafer — Yesterday at 13:48\n@toasttastesprettygood \n@Anvil \n@Complexii \n@CreepilyCreep",
+    "seats": 7
+  },
+  "nameMatches": {
+    ", creepilycreep": "CreepilyCreep",
+    "Anti-WeePee Warrior BOAR #Sovia": "Anti-WeePee BOAR Sovia DrBaconHair",
+    "Anvil": "Anvil",
+    "Benburt": null,
+    "Chief Magistrate": null,
+    "Complexii": "Complexii",
+    "CreepilyCreep": "CreepilyCreep",
+    "CreepilyCreep ⁩": "CreepilyCreep",
+    "Dark Helmet12E4": null,
+    "Detective Luci": "Detective Luci",
+    "GEQBUS": null,
+    "Gold": "Gold",
+    "GuggaBugga": null,
+    "Haxx0r": "Haxx0r",
+    "Haxx0r⁩": "Haxx0r",
+    "Hg_67": null,
+    "Hotel Holden, C.E.O": "Hotel Holden, C.E.O",
+    "HsmNewfriend": "HsmNewfriend",
+    "IDF Asset": null,
+    "Josh “alleged terrorist” Hillman": "Josh “alleged terrorist” Hillman",
+    "Joshillman": "Josh “alleged terrorist” Hillman",
+    "JuniorTide": null,
+    "Kingstell": null,
+    "Mushroomstew101": "mushroomstew101",
+    "NothingEverHappens DontCorrectMe": null,
+    "Okx": null,
+    "Sdorr": "Sdorr",
+    "This pingslop has to end man": "__NOT_A_BALLOT__",
+    "Wait, we can only vote for people with the summaries?": "__NOT_A_BALLOT__",
+    "Zolo #FreeJayPowell": null,
+    "alright im done joking heres my actual votes": "__NOT_A_BALLOT__",
+    "binchymonkey": null,
+    "complexii": "Complexii",
+    "hsmnewfriend": "HsmNewfriend",
+    "jammy mie": null,
+    "krclam": null,
+    "mushroom cultist": "mushroom cultist",
+    "mushroomstew101": "mushroomstew101",
+    "specificgjumguage": null,
+    "toasttastesprettygood": null
+  },
+  "learnedCorrelations": {
+    ", creepilycreep": "CreepilyCreep",
+    "Anti-WeePee Warrior BOAR #Sovia": "Anti-WeePee BOAR Sovia DrBaconHair",
+    "Anvil": "Anvil",
+    "benburt": null,
+    "chief magistrate": null,
+    "Complexii": "Complexii",
+    "CreepilyCreep": "CreepilyCreep",
+    "CreepilyCreep ⁩": "CreepilyCreep",
+    "dark helmet12e": null,
+    "Detective Luci": "Detective Luci",
+    "geqbus": null,
+    "Gold": "Gold",
+    "guggabugga": null,
+    "Haxx0r": "Haxx0r",
+    "Haxx0r⁩": "Haxx0r",
+    "hg_": null,
+    "Hotel Holden, C.E.O": "Hotel Holden, C.E.O",
+    "HsmNewfriend": "HsmNewfriend",
+    "idf asset": null,
+    "Josh “alleged terrorist” Hillman": "Josh “alleged terrorist” Hillman",
+    "joshillman": "Josh “alleged terrorist” Hillman",
+    "juniortide": null,
+    "kingstell": null,
+    "Mushroomstew101": "mushroomstew101",
+    "nothingeverhappens dontcorrectme": null,
+    "okx": null,
+    "Sdorr": "Sdorr",
+    "this pingslop has to end man": "__NOT_A_BALLOT__",
+    "wait, we can only vote for people with the summaries?": "__NOT_A_BALLOT__",
+    "zolo #freejaypowell": null,
+    "alright im done joking heres my actual votes": "__NOT_A_BALLOT__",
+    "binchymonkey": null,
+    "complexii": "Complexii",
+    "hsmnewfriend": "HsmNewfriend",
+    "jammy mie": null,
+    "krclam": null,
+    "mushroom cultist": "mushroom cultist",
+    "mushroomstew101": "mushroomstew101",
+    "specificgjumguage": null,
+    "toasttastesprettygood": null
+  },
+  "ballotStructuredLines": {
+    "palantircios": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "timecode"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      }
+    ],
+    "sage": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      }
+    ],
+    "cervanthes": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "timecode"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      }
+    ],
+    "mikebloomberg": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "timecode"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      }
+    ],
+    "detectiveluci": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      }
+    ],
+    "zolofreejaypowell#2": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "timecode"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      }
+    ],
+    "gold": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroom cultist"
+      }
+    ],
+    "jammymie": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "timecode"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      }
+    ],
+    "antiweepeewarriorboarsovia": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "timecode"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "not-candidate"
+      }
+    ],
+    "hotelholdenceo": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "timecode"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "not-ballot"
+      }
+    ],
+    "anvil": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      }
+    ],
+    "juniortide": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "timecode"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroom cultist"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      }
+    ],
+    "taewoop": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      }
+    ],
+    "eledion": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "timecode"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      }
+    ],
+    "creepilycreep": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroom cultist"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      }
+    ],
+    "hsmnewfriend": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "timecode"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroom cultist"
+      }
+    ],
+    "mushroomstew101": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      }
+    ],
+    "savster123": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "timecode"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      }
+    ],
+    "complexii": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "empty"
+      }
+    ],
+    "kronprinzkaiser": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroom cultist"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      }
+    ],
+    "okiinawa": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroom cultist"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      }
+    ],
+    "alzubloxxer11": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      }
+    ],
+    "saker": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "timecode"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroom cultist"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      }
+    ],
+    "sdorr": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "timecode"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroom cultist"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      }
+    ],
+    "haxx0r": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroom cultist"
+      }
+    ],
+    "vedel": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroom cultist"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      }
+    ],
+    "yodabird": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroom cultist"
+      }
+    ],
+    "sirluminous_": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "timecode"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "not-candidate"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      }
+    ],
+    "binchymonkey": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "timecode"
+      },
+      {
+        "type": "not-candidate"
+      },
+      {
+        "type": "not-candidate"
+      },
+      {
+        "type": "not-candidate"
+      },
+      {
+        "type": "not-candidate"
+      }
+    ],
+    "hg_67": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "not-candidate"
+      }
+    ],
+    "specificgjumguage#2": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "not-ballot"
+      },
+      {
+        "type": "not-candidate"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "empty"
+      }
+    ],
+    "c32shark": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      }
+    ],
+    "uprisingmax": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      }
+    ],
+    "lwvx": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "not-candidate"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      }
+    ],
+    "agentunique_nullptr": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      }
+    ],
+    "lopsterbisque": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroom cultist"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      }
+    ],
+    "nothingeverhappensdontcorrectme": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      }
+    ],
+    "darkhelmet12e4": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "timecode"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroom cultist"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      }
+    ],
+    "mushroomcultist": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroom cultist"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      }
+    ],
+    "gjum": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "not-candidate"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "empty"
+      }
+    ],
+    "israelgpt": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "not-candidate"
+      },
+      {
+        "type": "not-candidate"
+      },
+      {
+        "type": "not-candidate"
+      },
+      {
+        "type": "not-candidate"
+      },
+      {
+        "type": "not-candidate"
+      },
+      {
+        "type": "not-candidate"
+      },
+      {
+        "type": "not-candidate"
+      },
+      {
+        "type": "not-candidate"
+      }
+    ],
+    "joshallegedterroristhillman": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "timecode"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroom cultist"
+      }
+    ],
+    "puxatawneyphil": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "timecode"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroom cultist"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      }
+    ],
+    "entirelyvenom": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      }
+    ],
+    "gilian": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "not-candidate"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "not-candidate"
+      }
+    ],
+    "ergeantclithorris666": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "timecode"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      }
+    ],
+    "wo7f": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      }
+    ],
+    "peterthusk": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "empty"
+      },
+      {
+        "type": "timecode"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      },
+      {
+        "type": "candidate",
+        "value": "HsmNewfriend"
+      },
+      {
+        "type": "candidate",
+        "value": "Sdorr"
+      },
+      {
+        "type": "candidate",
+        "value": "Anti-WeePee BOAR Sovia DrBaconHair"
+      },
+      {
+        "type": "candidate",
+        "value": "Gold"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Haxx0r"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroom cultist"
+      },
+      {
+        "type": "candidate",
+        "value": "mushroomstew101"
+      },
+      {
+        "type": "candidate",
+        "value": "Hotel Holden, C.E.O"
+      },
+      {
+        "type": "candidate",
+        "value": "Josh “alleged terrorist” Hillman"
+      },
+      {
+        "type": "candidate",
+        "value": "Detective Luci"
+      }
+    ],
+    "naglafer": [
+      {
+        "type": "voter"
+      },
+      {
+        "type": "not-candidate"
+      },
+      {
+        "type": "candidate",
+        "value": "Anvil"
+      },
+      {
+        "type": "candidate",
+        "value": "Complexii"
+      },
+      {
+        "type": "candidate",
+        "value": "CreepilyCreep"
+      }
+    ]
+  },
+  "ballotManuallyModified": [],
+  "originalBallotText": {
+    "palantircios": "Palantircios\n\n — 04/02/2026 13:19\n@Anvil \n@CreepilyCreep \n@Hotel Holden, C.E.O \n@mushroomstew101 \n@Sdorr \n@Complexii \n@Anti-WeePee Warrior BOAR #Sovia ",
+    "sage": "sage — 04/02/2026 14:08\n@Josh “alleged terrorist” Hillman\n@Anvil \n@CreepilyCreep \n@Sdorr \n@Detective Luci",
+    "cervanthes": "Cervanthes\n\n — 04/02/2026 14:10\n@Anvil \n@Hotel Holden, C.E.O \n@CreepilyCreep \n@Detective Luci \n@mushroomstew101",
+    "mikebloomberg": "Mike Bloomberg\n\n — 04/02/2026 14:19\n@Anti-WeePee Warrior BOAR #Sovia \n@Anvil \n@Sdorr \n@Haxx0r \n@mushroomstew101\n@HsmNewfriend ",
+    "zolofreejaypowell": "Zolo #FreeJayPowell\n\n — 04/02/2026 14:42\nThis pingslop has to end man",
+    "detectiveluci": "Detective Luci — 04/02/2026 14:47\n@Detective Luci \n@Josh “alleged terrorist” Hillman \n@Anvil\n@Complexii \n@CreepilyCreep \n@Anti-WeePee Warrior BOAR #Sovia\n@Gold ",
+    "zolofreejaypowell#2": "Zolo #FreeJayPowell\n\n — 04/02/2026 14:51\n@Haxx0r \n@Sdorr \n@Anti-WeePee Warrior BOAR #Sovia \n@HsmNewfriend \n@CreepilyCreep \n@mushroomstew101 \n@Complexii \n@Gold",
+    "gold": "Gold — 04/02/2026 14:51\n@Gold \n@Anvil \n@CreepilyCreep \n@Detective Luci \n@Complexii \n@Anti-WeePee Warrior BOAR #Sovia \n@HsmNewfriend\n\n@Josh “alleged terrorist” Hillman \n@Haxx0r \n@Hotel Holden, C.E.O\n\n@Sdorr \n@mushroomstew101 \n@mushroom cultist",
+    "jammymie": "jammy mie\n\n — 04/02/2026 15:00\n@Haxx0r \n@Anti-WeePee Warrior BOAR #Sovia \n@CreepilyCreep",
+    "antiweepeewarriorboarsovia": "Anti-WeePee Warrior BOAR #Sovia\n\n — 04/02/2026 15:04\n@Haxx0r \n@Anti-WeePee Warrior BOAR #Sovia \n@HsmNewfriend \n@mushroomstew101 \n@Sdorr \n@Gold \n@Josh “alleged terrorist” Hillman \n@Detective Luci \n@Hotel Holden, C.E.O \n@CreepilyCreep \n@Complexii\n@Anvil\n@GuggaBugga ",
+    "hotelholdenceo": "Hotel Holden, C.E.O\n\n — 04/02/2026 15:09\n@Hotel Holden, C.E.O \n@Anvil \n@Complexii \n@CreepilyCreep \n@mushroomstew101 \n@HsmNewfriend\n@Detective Luci\n@Josh “alleged terrorist” Hillman \n@Sdorr \n@Gold \n@Haxx0r \nWait, we can only vote for people with the summaries?",
+    "anvil": "Anvil — 04/02/2026 15:16\n@Anvil \n@Detective Luci \n@Hotel Holden, C.E.O \n@Gold \n@Complexii \n@Josh “alleged terrorist” Hillman\n@CreepilyCreep \n@Anti-WeePee Warrior BOAR #Sovia",
+    "juniortide": "JuniorTide\n\n — 04/02/2026 16:55\n@Anvil \n@Complexii \n@Hotel Holden, C.E.O \n@CreepilyCreep \n@Anti-WeePee Warrior BOAR #Sovia \n@Detective Luci \n@Josh “alleged terrorist” Hillman \n@Haxx0r \n@Gold \n@mushroom cultist \n@Sdorr \n@HsmNewfriend \n@mushroomstew101",
+    "taewoop": "Taewoop — 04/02/2026 19:11\n@Anvil \n@Hotel Holden, C.E.O \n@Detective Luci \n@Josh “alleged terrorist” Hillman \n@Sdorr \n@HsmNewfriend",
+    "eledion": "Eledion\n\n — 04/02/2026 20:13\n@Haxx0r\n@Sdorr\n@HsmNewfriend\n@Anvil\n@CreepilyCreep\n@Hotel Holden, C.E.O\n@Gold \n@Josh “alleged terrorist” Hillman \n@Anti-WeePee Warrior BOAR #Sovia \n@Detective Luci\n@mushroomstew101\n@Complexii",
+    "creepilycreep": "CreepilyCreep — 04/02/2026 20:31\n@CreepilyCreep \n@Josh “alleged terrorist” Hillman\n@Anvil \n@Haxx0r \n@HsmNewfriend \n@Gold \n@Anti-WeePee Warrior BOAR #Sovia \n@Complexii \n@Sdorr \n@Hotel Holden, C.E.O \n@Detective Luci \n@mushroom cultist \n@mushroomstew101",
+    "hsmnewfriend": "HsmNewfriend\n\n — 04/02/2026 20:35\n@HsmNewfriend \n@CreepilyCreep \n@Haxx0r \n@Complexii\n@Anti-WeePee Warrior BOAR #Sovia\n@Anvil\n@Hotel Holden, C.E.O \n@mushroomstew101\n@Sdorr \n@Gold\n@Josh “alleged terrorist” Hillman\n@Detective Luci\n@mushroom cultist ",
+    "mushroomstew101": "mushroomstew101 — 04/02/2026 21:56\n1.complexii \n2.Anvil\nHaxx0r\n4.hsmnewfriend\n5, creepilycreep \nJoshillman\nMushroomstew101",
+    "savster123": "Savster123\n\n — 04/02/2026 22:57\n@Gold \n@Complexii",
+    "complexii": "Complexii — 04/02/2026 23:00\n@Complexii\n@Hotel Holden, C.E.O\n@CreepilyCreep\n@Anvil\n@HsmNewfriend\n@Gold\n@Haxx0r\n@mushroomstew101\n ",
+    "kronprinzkaiser": "KronprinzKaiser — 04/02/2026 23:36\n@Haxx0r \n@Anti-WeePee Warrior BOAR #Sovia \n@HsmNewfriend \n@Sdorr \n@Gold \n@Complexii \n@CreepilyCreep \n@Anvil \n@mushroom cultist \n@mushroomstew101 \n@Hotel Holden, C.E.O \n@Josh “alleged terrorist” Hillman \n@Detective Luci ",
+    "okiinawa": "Okiinawa — 04/02/2026 23:42\n1@Haxx0r \n2@Anti-WeePee Warrior BOAR #Sovia \n3@HsmNewfriend \n4@Sdorr \n5@Gold \n6@Complexii \n7@CreepilyCreep \n8@Anvil \n9@mushroom cultist \n10@mushroomstew101 \n11@Hotel Holden, C.E.O \n12@Josh “alleged terrorist” Hillman \n13@Detective Luci ",
+    "alzubloxxer11": "AlzuBloxxer11 — 04/02/2026 23:51\n@CreepilyCreep \n@Gold \n@HsmNewfriend \n@Josh “alleged terrorist” Hillman \n@Haxx0r \n@Anvil \n@Complexii \n@Hotel Holden, C.E.O \n@Detective Luci",
+    "saker": "'Saker\n\n — 04/02/2026 23:54\n@Haxx0r⁩\n@Anti-WeePee Warrior BOAR #Sovia \n@HsmNewfriend \n@Sdorr \n@Gold \n@Complexii \n@CreepilyCreep \n@Anvil \n@mushroom cultist \n@mushroomstew101 \n@Hotel Holden, C.E.O \n@Josh “alleged terrorist” Hillman \n@Detective Luci ",
+    "sdorr": "Sdorr\n\n — Yesterday at 00:02\n@HsmNewfriend \n@Sdorr \n@Anti-WeePee Warrior BOAR #Sovia \n@Haxx0r \n@Gold \n@Complexii \n@mushroomstew101 \n@CreepilyCreep \n@mushroom cultist \n@Anvil \n@Hotel Holden, C.E.O \n@Detective Luci \n@Josh “alleged terrorist” Hillman ",
+    "haxx0r": "Haxx0r — Yesterday at 00:45\n@Sdorr\n@HsmNewfriend\n@CreepilyCreep\n@Anti-WeePee Warrior BOAR #Sovia\n@Gold\n@Anvil \n@mushroomstew101 \n@Complexii\n@Hotel Holden, C.E.O \n@Josh “alleged terrorist” Hillman \n@Detective Luci \n@mushroom cultist ",
+    "vedel": "Vedel — Yesterday at 01:00\n@HsmNewfriend \n@Sdorr \n@Anti-WeePee Warrior BOAR #Sovia \n@Haxx0r \n@Gold \n@Complexii \n@mushroomstew101 \n@CreepilyCreep \n@mushroom cultist \n@Anvil \n@Hotel Holden, C.E.O \n@Detective Luci \n@Josh “alleged terrorist” Hillman ",
+    "yodabird": "turbo janny yodabird — Yesterday at 01:04\n@Gold\n@CreepilyCreep\n@HsmNewfriend\n@Anti-WeePee Warrior BOAR #Sovia\n@Haxx0r\n@Anvil\n@Complexii\n@Josh “alleged terrorist” Hillman\n@Sdorr\n@Detective Luci\n@mushroomstew101\n@Hotel Holden, C.E.O\n@mushroom cultist",
+    "sirluminous_": "sirluminous_\n\n — Yesterday at 01:36\n@Anvil\n@Haxx0r\n@Anti-WeePee Warrior BOAR #Sovia\n@Sdorr\n@HsmNewfriend\n@Zolo #FreeJayPowell\n@mushroomstew101\n@Josh “alleged terrorist” Hillman\n@Hotel Holden, C.E.O",
+    "binchymonkey": "binchymonkey\n\n — Yesterday at 02:09\n@Hg_67 (write in)\n@Hg_67 \n@binchymonkey (write in)\n@IDF Asset",
+    "hg_67": "Hg_67 — Yesterday at 02:13\n@specificgjumguage (write in)",
+    "specificgjumguage": "specificgjumguage — Yesterday at 02:15\n@specificgjumguage (write-in)\n@GEQBUS (write-in)",
+    "specificgjumguage#2": "specificgjumguage — Yesterday at 02:22\nalright i'm done joking here's my actual votes\n@specificgjumguage (write-in)\n@CreepilyCreep\n@Anvil\n@HsmNewfriend\n@Gold\n@Haxx0r\n@Josh “alleged terrorist” Hillman\n@Sdorr\n@Hotel Holden, C.E.O\n@mushroomstew101\n ",
+    "c32shark": "C32shark — Yesterday at 03:28\n@Detective Luci \n@Anvil \n@Haxx0r \n@Complexii",
+    "uprisingmax": "UprisingMax — Yesterday at 08:25\n@Detective Luci ",
+    "lwvx": "Lwvx — Yesterday at 08:30\n@Detective Luci \n@Gold \n@Anvil \n@Josh “alleged terrorist” Hillman \n@specificgjumguage \n@CreepilyCreep \n@Complexii \n@HsmNewfriend",
+    "agentunique_nullptr": "Agent (unique_nullptr) — Yesterday at 08:31\n@Anvil\n@Detective Luci\n@Josh “alleged terrorist” Hillman\n@CreepilyCreep\n@Hotel Holden, C.E.O\n@Complexii",
+    "lopsterbisque": "Lopster Bisque — Yesterday at 09:06\n@Hotel Holden, C.E.O \n@Anvil \n@CreepilyCreep \n@Complexii \n@Gold \n@Sdorr \n@Josh “alleged terrorist” Hillman \n@Anti-WeePee Warrior BOAR #Sovia \n@Haxx0r \n@mushroom cultist \n@mushroomstew101 \n@HsmNewfriend \n@Detective Luci",
+    "nothingeverhappensdontcorrectme": "NothingEverHappens DontCorrectMe — Yesterday at 09:15\n@CreepilyCreep \n@Anvil \n@HsmNewfriend \n@Gold \n@Anti-WeePee Warrior BOAR #Sovia \n@Hotel Holden, C.E.O \n@Haxx0r \n@Detective Luci \n@Josh “alleged terrorist” Hillman \n@Complexii",
+    "darkhelmet12e4": "Dark Helmet12E4\n\n — Yesterday at 09:22\n@HsmNewfriend \n@Sdorr \n@Anti-WeePee Warrior BOAR #Sovia \n@Haxx0r \n@Gold \n@Complexii \n@mushroomstew101 \n@CreepilyCreep \n@mushroom cultist \n@Anvil \n@Hotel Holden, C.E.O \n@Detective Luci \n@Josh “alleged terrorist” Hillman ",
+    "mushroomcultist": "mushroom cultist — Yesterday at 09:24\n@Haxx0r⁩\n@Anti-WeePee Warrior BOAR #Sovia \n@HsmNewfriend \n@Sdorr \n@Gold \n@Complexii \n@CreepilyCreep \n@Anvil \n@mushroom cultist \n@mushroomstew101 \n@Hotel Holden, C.E.O \n@Josh “alleged terrorist” Hillman \n@Detective Luci",
+    "gjum": "Gjum — Yesterday at 12:13\n@CreepilyCreep \n@HsmNewfriend \n@Anvil \n@Gold \n@JuniorTide \n@Anti-WeePee Warrior BOAR #Sovia \n@Hotel Holden, C.E.O\n﻿@Haxx0r \n﻿ ",
+    "israelgpt": "IsraelGPT — Yesterday at 12:35\n@Haxx0r \n@Anti-WeePee Warrior BOAR #Sovia \n@Sdorr \n@HsmNewfriend \n@NothingEverHappens DontCorrectMe \n@Okx \n@Kingstell \n@krclam\n@Benburt \n@Chief Magistrate\n@Dark Helmet12E4 \n@GuggaBugga ",
+    "joshallegedterroristhillman": "Josh “alleged terrorist” Hillman\n\n — Yesterday at 12:38\n@Josh “alleged terrorist” Hillman \n@Detective Luci \n@CreepilyCreep\n@Anvil \n@Complexii \n@Gold \n@Anti-WeePee Warrior BOAR #Sovia \n@HsmNewfriend \n@Sdorr \n@Haxx0r \n@mushroomstew101 \n@Hotel Holden, C.E.O \n@mushroom cultist",
+    "puxatawneyphil": "Puxatawney Phil\n\n — Yesterday at 12:41\n@Haxx0r⁩\n@Anti-WeePee Warrior BOAR #Sovia \n@HsmNewfriend \n@Sdorr \n@Gold \n@Complexii \n@CreepilyCreep \n@Anvil \n@mushroom cultist \n@mushroomstew101 \n@Hotel Holden, C.E.O \n@Josh “alleged terrorist” Hillman \n@Detective Luci",
+    "entirelyvenom": "EntirelyVenom — Yesterday at 12:41\n@Detective Luci",
+    "gilian": "Gilian𝕏 — Yesterday at 12:56\n@Zolo #FreeJayPowell \n@Sdorr \n@mushroomstew101 \n@CreepilyCreep \n@HsmNewfriend \n@Anti-WeePee Warrior BOAR #Sovia \n@jammy mie",
+    "ergeantclithorris666": "Speaker 𝕏ergeant ClitHorris666\n\n — Yesterday at 13:04\n@Anti-WeePee Warrior BOAR #Sovia \n@Anvil \n@Sdorr\n@Complexii \n@Gold \n@HsmNewfriend\n@Detective Luci\n@Haxx0r",
+    "wo7f": "WO7F — Yesterday at 13:17\n@CreepilyCreep \n@Anvil \n@Hotel Holden, C.E.O \n@Gold \n@HsmNewfriend \n@Detective Luci",
+    "peterthusk": "Peter Thusk\n\n — Yesterday at 13:20\n@CreepilyCreep ⁩\n@HsmNewfriend \n@Sdorr \n@Anti-WeePee Warrior BOAR #Sovia \n@Gold \n@Anvil \n@Haxx0r \n@Complexii \n@mushroom cultist \n@mushroomstew101 \n@Hotel Holden, C.E.O \n@Josh “alleged terrorist” Hillman \n@Detective Luci",
+    "naglafer": "Naglafer — Yesterday at 13:48\n@toasttastesprettygood \n@Anvil \n@Complexii \n@CreepilyCreep"
+  },
+  "reviewedNames": [
+    ", creepilycreep",
+    "Anti-WeePee Warrior BOAR #Sovia",
+    "Anvil",
+    "Benburt",
+    "Chief Magistrate",
+    "Complexii",
+    "CreepilyCreep",
+    "CreepilyCreep ⁩",
+    "Dark Helmet12E4",
+    "Detective Luci",
+    "GEQBUS",
+    "Gold",
+    "GuggaBugga",
+    "Haxx0r",
+    "Haxx0r⁩",
+    "Hg_67",
+    "Hotel Holden, C.E.O",
+    "HsmNewfriend",
+    "IDF Asset",
+    "Josh “alleged terrorist” Hillman",
+    "Joshillman",
+    "JuniorTide",
+    "Kingstell",
+    "Mushroomstew101",
+    "NothingEverHappens DontCorrectMe",
+    "Okx",
+    "Sdorr",
+    "This pingslop has to end man",
+    "Wait, we can only vote for people with the summaries?",
+    "Zolo #FreeJayPowell",
+    "alright im done joking heres my actual votes",
+    "binchymonkey",
+    "complexii",
+    "hsmnewfriend",
+    "jammy mie",
+    "krclam",
+    "mushroom cultist",
+    "mushroomstew101",
+    "specificgjumguage",
+    "toasttastesprettygood"
+  ],
+  "uniqueNames": [
+    ", creepilycreep",
+    "Anti-WeePee Warrior BOAR #Sovia",
+    "Anvil",
+    "Benburt",
+    "Chief Magistrate",
+    "Complexii",
+    "CreepilyCreep",
+    "CreepilyCreep ⁩",
+    "Dark Helmet12E4",
+    "Detective Luci",
+    "GEQBUS",
+    "Gold",
+    "GuggaBugga",
+    "Haxx0r",
+    "Haxx0r⁩",
+    "Hg_67",
+    "Hotel Holden, C.E.O",
+    "HsmNewfriend",
+    "IDF Asset",
+    "Josh “alleged terrorist” Hillman",
+    "Joshillman",
+    "JuniorTide",
+    "Kingstell",
+    "Mushroomstew101",
+    "NothingEverHappens DontCorrectMe",
+    "Okx",
+    "Sdorr",
+    "This pingslop has to end man",
+    "Wait, we can only vote for people with the summaries?",
+    "Zolo #FreeJayPowell",
+    "alright im done joking heres my actual votes",
+    "binchymonkey",
+    "complexii",
+    "hsmnewfriend",
+    "jammy mie",
+    "krclam",
+    "mushroom cultist",
+    "mushroomstew101",
+    "specificgjumguage",
+    "toasttastesprettygood"
+  ],
+  "nameCounts": {
+    "Anvil": 40,
+    "CreepilyCreep": 36,
+    "Hotel Holden, C.E.O": 32,
+    "mushroomstew101": 28,
+    "Sdorr": 30,
+    "Complexii": 33,
+    "Anti-WeePee Warrior BOAR #Sovia": 31,
+    "Josh “alleged terrorist” Hillman": 30,
+    "Detective Luci": 34,
+    "Haxx0r": 29,
+    "HsmNewfriend": 34,
+    "This pingslop has to end man": 1,
+    "Gold": 32,
+    "mushroom cultist": 17,
+    "GuggaBugga": 2,
+    "Wait, we can only vote for people with the summaries?": 1,
+    "complexii": 1,
+    "hsmnewfriend": 1,
+    ", creepilycreep": 1,
+    "Joshillman": 1,
+    "Mushroomstew101": 1,
+    "Haxx0r⁩": 3,
+    "Zolo #FreeJayPowell": 2,
+    "Hg_67": 2,
+    "binchymonkey": 1,
+    "IDF Asset": 1,
+    "specificgjumguage": 4,
+    "GEQBUS": 1,
+    "alright im done joking heres my actual votes": 1,
+    "JuniorTide": 1,
+    "NothingEverHappens DontCorrectMe": 1,
+    "Okx": 1,
+    "Kingstell": 1,
+    "krclam": 1,
+    "Benburt": 1,
+    "Chief Magistrate": 1,
+    "Dark Helmet12E4": 1,
+    "jammy mie": 1,
+    "CreepilyCreep ⁩": 1,
+    "toasttastesprettygood": 1
+  },
+  "currentState": {
+    "section": "results",
+    "currentNameIndex": 40,
+    "currentBallotIndex": 48
+  }
+}
