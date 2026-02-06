@@ -3,7 +3,7 @@ backend:
   name: github
   repo: "CivIcenia/civicenia.github.io"
   branch: "master"
-  base_url: "https://cf-github-proxy.icenia-auth.workers.dev"
+  base_url: "https://civicenia-admin-oauth.creepilyciv.workers.dev"
   open_authoring: true
 publish_mode: editorial_workflow
 local_backend: true

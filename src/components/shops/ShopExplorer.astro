@@ -12,7 +12,10 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     <div class="search-panel">
         <div class="search-header">
             <div class="header-main">
-                <h2 class="govuk-heading-m">Shop Explorer</h2>
+                <div class="header-text">
+                    <h2 class="govuk-heading-m">Shop Explorer</h2>
+                    <p class="search-subtext" id="search-counter">— searches and counting</p>
+                </div>
                 <button id="show-icenia-shops" class="icenia-quick-btn" title="Show all Icenia City shops">
                     <img src={BASE + "assets/images/icenia_logo.svg"} alt="Icenia" width="20" height="20">
                     View Icenia City Shops
@@ -455,11 +458,25 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         align-items: center;
     }
 
+    .header-text {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
     .search-header h2 {
         color: white;
         margin-bottom: 0;
         font-weight: 700;
         font-size: 18px;
+    }
+
+    .search-subtext {
+        color: rgba(255, 255, 255, 0.75);
+        font-size: 11px;
+        margin: 2px 0 0 0;
+        font-weight: 500;
+        letter-spacing: 0.3px;
     }
 
     .icenia-quick-btn {
@@ -2272,6 +2289,159 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
         const cursorCoordsEl = document.getElementById('cursor-coords');
         const pinCoordsEl = document.getElementById('pin-coords');
 
+        // --- Local search counter (per-browser, persisted in localStorage) ---
+        const SEARCH_COUNT_KEY = 'shop_explorer_search_count';
+        const SEARCH_CLIENT_ID_KEY = 'shop_explorer_client_id';
+        const searchCounterEl = document.getElementById('search-counter');
+        let globalCountCache = 0;
+
+        // --- Global search counter (provider abstraction) ---
+        // Provider options: 'countapi', 'counterapi' (self-hosted), 'worker' (Cloudflare Durable Object), 'none'
+        // Set to 'worker' to use the Cloudflare Durable Object implemented in cloudflare-worker/
+        const COUNTER_PROVIDER = 'worker';
+        const COUNTER_NAMESPACE = 'civicenia_github_io';
+        const COUNTER_KEY = 'shop_explorer';
+
+        // Base URLs (editable) - CounterAPI often uses a different host; set COUNTERAPI_BASE if needed
+        const COUNTAPI_BASE = `https://api.countapi.xyz`;
+        const COUNTERAPI_BASE = `https://counterapi.example.com`; // <-- update to your CounterAPI host if required
+
+        function countapi_get_url() { return `${COUNTAPI_BASE}/get/${COUNTER_NAMESPACE}/${COUNTER_KEY}`; }
+        function countapi_hit_url() { return `${COUNTAPI_BASE}/hit/${COUNTER_NAMESPACE}/${COUNTER_KEY}`; }
+
+        function counterapi_get_url() { return `${COUNTERAPI_BASE}/get/${COUNTER_NAMESPACE}/${COUNTER_KEY}`; }
+        function counterapi_hit_url() { return `${COUNTERAPI_BASE}/hit/${COUNTER_NAMESPACE}/${COUNTER_KEY}`; }
+
+        // Cloudflare Worker endpoint (Durable Object). Set to your deployed worker URL.
+        // Deployed at: https://civicenia-shop-counter.creepilyciv.workers.dev
+        const COUNTER_WORKER_BASE = 'https://civicenia-shop-counter.creepilyciv.workers.dev';
+        function worker_get_url() { return (COUNTER_WORKER_BASE || '') + '/api/shop-counter'; }
+        function worker_hit_url() { return (COUNTER_WORKER_BASE || '') + '/api/shop-counter'; }
+
+        function getClientId() {
+            try {
+                let id = localStorage.getItem(SEARCH_CLIENT_ID_KEY);
+                if (id) return id;
+                if (typeof crypto !== 'undefined' && crypto.randomUUID) id = crypto.randomUUID();
+                else id = 'c_' + Math.random().toString(36).slice(2, 10);
+                localStorage.setItem(SEARCH_CLIENT_ID_KEY, id);
+                return id;
+            } catch (e) { return null; }
+        }
+
+        async function fetchGlobalCount() {
+            try {
+                let url;
+                if (COUNTER_PROVIDER === 'countapi') url = countapi_get_url();
+                else if (COUNTER_PROVIDER === 'counterapi') url = counterapi_get_url();
+                else if (COUNTER_PROVIDER === 'worker') url = worker_get_url();
+                else return;
+
+                const res = await fetch(url, {cache: 'no-store'});
+                if (!res.ok) throw new Error('bad');
+                const j = await res.json();
+                if (j && typeof j.value === 'number') {
+                    globalCountCache = j.value;
+                    updateSearchCounterDisplay();
+                }
+            } catch (e) {
+                // ignore failures silently
+            }
+        }
+
+        // incrementGlobalCount now sends a POST to the worker provider with client/session id
+        async function incrementGlobalCount(requestId = null) {
+            try {
+                let url;
+                let method = 'GET';
+                let init = null;
+
+                if (COUNTER_PROVIDER === 'countapi') url = countapi_hit_url();
+                else if (COUNTER_PROVIDER === 'counterapi') url = counterapi_hit_url();
+                else if (COUNTER_PROVIDER === 'worker') {
+                    url = worker_hit_url();
+                    method = 'POST';
+                    const clientId = getClientId();
+                    const body = { clientId };
+                    if (requestId) body.requestId = requestId;
+                    init = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) };
+                } else return;
+
+                const res = await fetch(url, init || { method });
+                if (!res.ok) {
+                    // treat throttles as non-fatal; update display if body provided
+                    try { const j = await res.json(); if (j && typeof j.value === 'number') { globalCountCache = j.value; updateSearchCounterDisplay(); } } catch (e) {}
+                    return;
+                }
+                const j = await res.json();
+                if (j && typeof j.value === 'number') {
+                    globalCountCache = j.value;
+                    updateSearchCounterDisplay();
+                }
+            } catch (e) {
+                // ignore failures silently
+            }
+        }
+
+        // Throttle global hits to at most once per second (debounce/coalesce)
+        let _lastGlobalHit = 0;
+        let _pendingGlobalHitTimer = null;
+        let _pendingRequestId = null;
+        const GLOBAL_HIT_MS = 1000;
+
+        // scheduleGlobalHit now accepts an optional requestId. Multiple calls within
+        // the window are coalesced and the most recent requestId is sent to the worker.
+        function scheduleGlobalHit(requestId = null) {
+            const now = Date.now();
+            const since = now - _lastGlobalHit;
+            // remember latest requestId to send when the hit runs
+            if (requestId) _pendingRequestId = requestId;
+            if (since >= GLOBAL_HIT_MS) {
+                _lastGlobalHit = now;
+                const rid = _pendingRequestId;
+                _pendingRequestId = null;
+                incrementGlobalCount(rid);
+                return;
+            }
+            // schedule a single pending increment to run when allowed
+            if (_pendingGlobalHitTimer) return;
+            const wait = GLOBAL_HIT_MS - since;
+            _pendingGlobalHitTimer = setTimeout(() => {
+                _pendingGlobalHitTimer = null;
+                _lastGlobalHit = Date.now();
+                const rid = _pendingRequestId;
+                _pendingRequestId = null;
+                try { incrementGlobalCount(rid); } catch (e) { /* ignore */ }
+            }, wait);
+        }
+
+        function getSearchCount() {
+            try { return parseInt(localStorage.getItem(SEARCH_COUNT_KEY) || '0', 10) || 0; } catch (e) { return 0; }
+        }
+
+        function setSearchCount(n) {
+            try { localStorage.setItem(SEARCH_COUNT_KEY, String(n)); } catch (e) {}
+            updateSearchCounterDisplay();
+        }
+
+        function incrementSearchCount() {
+            const v = getSearchCount() + 1;
+            setSearchCount(v);
+            return v;
+        }
+
+        function updateSearchCounterDisplay() {
+            if (!searchCounterEl) return;
+            const local = getSearchCount();
+            const combined = globalCountCache + local;
+            searchCounterEl.textContent = `${combined.toLocaleString()} searches and counting`;
+        }
+
+        // initialise counter displays
+        updateSearchCounterDisplay();
+        // fetch global count on load (non-blocking)
+        try { fetchGlobalCount(); } catch (e) {}
+
         const ICENIA_CITY_BOUNDS = {
             minX: -4300,
             maxX: -3500,
@@ -2640,6 +2810,14 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             if (!outputQuery && !inputQuery && !isIceniaOnly) return;
 
             loadingOverlay.classList.remove('hidden');
+            // increment per-browser search counter
+            try { incrementSearchCount(); } catch (e) { /* ignore */ }
+            // schedule global public counter hit (throttled to 1/sec)
+            try {
+                let reqId = null;
+                try { reqId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('r_' + Math.random().toString(36).slice(2,10)); } catch (e) { reqId = 'r_' + Math.random().toString(36).slice(2,10); }
+                scheduleGlobalHit(reqId);
+            } catch (e) { /* ignore */ }
             
             try {
                 const searchParams = {

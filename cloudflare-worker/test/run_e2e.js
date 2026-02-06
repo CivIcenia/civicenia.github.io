@@ -29,7 +29,7 @@ async function makeJWT(payloadObj, secret, expSeconds = 3600) {
 (async () => {
   const SESSION_SECRET = process.env.SESSION_SECRET;
   const GH_TOKEN = process.env.GH_TOKEN;
-  const WORKER = process.env.WORKER_DOMAIN || 'https://cf-github-proxy.icenia-auth.workers.dev';
+  const WORKER = process.env.WORKER_DOMAIN || 'https://civicenia-admin-oauth.creepilyciv.workers.dev';
   const REPO = process.env.REPO || 'creepilycreeper/civicenia.github.io';
 
   if (!SESSION_SECRET || !GH_TOKEN) {

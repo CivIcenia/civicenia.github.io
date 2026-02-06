@@ -2,19 +2,18 @@
 # This file is managed through Decap CMS and synced from City Official Change posts
 # Use https://toolscord.com/ to get Discord profile pictures
 
-# Council term label (e.g., "September 2025")
 council_term: "January 2026"
 
 # Mayor
 mayor:
   name: "Lordchieftain"
-  icon: "https://cdn.discordapp.com/avatars/493690358480502787/dcb877f0bf58802d282874232ae138cf.webp?size=256"
+  icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=2048"
   discord_id: "493690358480502787"
 
 # CTA Commissioner
 cta_commissioner:
   name: "Ratatoing"
-  icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=256"
+  icon: "https://cdn.discordapp.com/avatars/477240196564385823/a776036184ffef248b377080d889a9d8.webp?size=2048"
   discord_id: "477240196564385823"
 
 # Councillor Seats - 5 seats

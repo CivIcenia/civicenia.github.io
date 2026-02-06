@@ -1,0 +1,11 @@
+name = "civicenia-admin-oauth"
+main = "worker.mjs"
+compatibility_date = "2026-02-06"
+
+# Replace with your Cloudflare Account ID (find in dashboard)
+account_id = "32d6ad3c4725cacc38c162cc2a3d19cf"
+
+workers_dev = true
+
+[build]
+command = ""

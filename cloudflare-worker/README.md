@@ -211,7 +211,7 @@ Create [wrangler.toml](cloudflare-worker/wrangler.toml:1) with this content and 
 
 ```toml
 # toml
-name = "cf-github-proxy"
+name = "civicenia-admin-oauth"
 main = "worker.mjs"
 compatibility_date = "2025-01-01"
 
@@ -220,7 +220,7 @@ compatibility_date = "2025-01-01"
 
 Deployment steps
 1. Install Wrangler (Cloudflare CLI) and login: `npm install -g wrangler` then `wrangler login`.
-2. Create the files above in a new folder and run `wrangler publish --name cf-github-proxy`.
+2. Create the files above in a new folder and run `wrangler publish --name civicenia-admin-oauth`.
 3. Add secrets:
    - `wrangler secret put GITHUB_CLIENT_ID`
    - `wrangler secret put GITHUB_CLIENT_SECRET`
@@ -285,7 +285,7 @@ Quick publish now (get workers.dev callback URL)
 
 1) Confirm wrangler config
 - Ensure your Cloudflare account ID is set in [`cloudflare-worker/wrangler.toml`](cloudflare-worker/wrangler.toml:1).
-- Worker name is already set to `cf-github-proxy` in [`cloudflare-worker/wrangler.toml`](cloudflare-worker/wrangler.toml:1).
+- Worker name is already set to `civicenia-admin-oauth` in [`cloudflare-worker/wrangler.toml`](cloudflare-worker/wrangler.toml:1).
 
 2) Install & login (PowerShell)
 ```powershell
@@ -305,7 +305,7 @@ wrangler publish
 Expected output (summary):
 - Building project...
 - Uploading script...
-- Published worker to: https://cf-github-proxy.<subdomain>.workers.dev
+- Published worker to: https://civicenia-admin-oauth.<subdomain>.workers.dev
 
 Notes:
 - Publishing does not require `GITHUB_CLIENT_ID`/`GITHUB_CLIENT_SECRET` to be set. You will get the workers.dev domain immediately.

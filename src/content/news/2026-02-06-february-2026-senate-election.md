@@ -22,10 +22,25 @@ officials:
     role: senator
     action: reelected
     discord_id: "452620205064060939"
+  - name: lucinnefo
+    role: senator
+    action: elected
+    discord_id: "794357163022745602"
+    seat: 4
+  - name: Complexii
+    role: senator
+    action: elected
+    discord_id: "489416445089021952"
+    seat: 5
+  - seat: 6
+    action: reelected
+    name: HsmNewfriend
+    role: senator
+    discord_id: "1080275805277540423"
   - name: Dr_Bacon_Hair
     role: senator
     action: reelected
     discord_id: "689297659907145831"
-    seat: 4
+    seat: 7
 icon: /assets/images/election_stock.png
 ---

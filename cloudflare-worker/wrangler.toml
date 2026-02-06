@@ -1,6 +1,6 @@
-name = "cf-github-proxy"
+name = "civicenia-admin-oauth"
 main = "worker.mjs"
-compatibility_date = "2025-11-17"
+compatibility_date = "2026-02-06"
 
 # Replace with your Cloudflare Account ID (find in dashboard)
 account_id = "32d6ad3c4725cacc38c162cc2a3d19cf"
@@ -14,3 +14,11 @@ command = ""
 # [env.production]
 # route = ""
 # zone_id = ""
+
+ [durable_objects]
+bindings = [
+  { name = "SHOP_COUNTER", class_name = "Counter" }
+]
+[[migrations]]
+tag = "v1"
+new_classes = ["Counter"]
