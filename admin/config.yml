@@ -1,0 +1,1125 @@
+site_url: "https://civicenia.github.io/"
+backend:
+  name: github
+  repo: "CivIcenia/civicenia.github.io"
+  branch: "master"
+  base_url: "https://civicenia-admin-oauth.creepilyciv.workers.dev"
+  open_authoring: true
+publish_mode: editorial_workflow
+local_backend: true
+
+media_folder: "public/uploads/"
+public_folder: "/uploads/"
+
+collections:
+  #######################################################
+  ## Laws
+  #######################################################
+  - label: "Data"
+    name: "data"
+    editor: { preview: false }
+    files:
+      - label: "Laws"
+        name: "laws"
+        file: "src/data/laws.yml"
+        fields:
+          - label: "Laws"
+            label_singular: "Law"
+            name: "entries"
+            widget: "list"
+            default: []
+            summary: "{{name}}"
+            fields:
+              # Identifier
+              - label: "Identifier"
+                name: "slug"
+                widget: "string"
+                required: true
+                pattern: ["^[a-z0-9]+(?:-[a-z0-9]+)*$", "Must be a valid slug! e.g: bill-of-rights"]
+                hint: "This identifies the law and so should reflect the purpose of the law, e.g: bill-of-rights"
+              # Short Title
+              - label: "Short Title"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The shorter name for this law, e.g: Constitution of Icenia"
+              # Long Title (optional)
+              - label: "Full Title"
+                name: "fullname"
+                widget: "string"
+                required: false
+                hint: "The full name of this law, e.g: The Constitution of the Third Republic of Icenia. Leave empty if unnecessary."
+              # Type of law
+              - label: "Category"
+                name: "kind"
+                widget: "select"
+                required: true
+                hint: "The type of law this legislation is classed as."
+                options:
+                  - {label: "Statute / Ordinary Law", value: "statute"}
+                  - {label: "Constitutional Law", value: "constitution"}
+                  - {label: "Statehood Agreement", value: "statehood"}
+                  - {label: "Treaty", value: "treaty"}
+              # Updated Document
+              - label: "Updated Document"
+                name: "masterdoc"
+                widget: "string"
+                required: true
+                hint: "What's the updated document link? It can be a local file such as `/archive/Icenia-City-Charter.pdf` or `/documents/Constitution-of-Icenia.docx`. It can be a Google Doc but make sure it ends in `/preview`. And make sure it's an archived copy owned by Icenia."
+              # Expired?
+              - label: "Expired"
+                name: "hidden"
+                widget: "boolean"
+                default: false
+                hint: "Flip this on if this law has been repealed"
+      - label: "Law Incorporations Log"
+        name: "law-incorporations"
+        file: "src/data/law-incorporations.yml"
+        description: "Track when legislative changes have been incorporated into master documents"
+        fields:
+          - label: "Incorporations"
+            label_singular: "Incorporation"
+            name: "incorporations"
+            widget: "list"
+            default: []
+            add_to_top: true
+            summary: "{{law_slug}} ← {{change_slugs}} (by {{incorporated_by}})"
+            fields:
+              # Change Slugs - now supports multiple
+              - label: "Change Article Slugs"
+                name: "change_slugs"
+                widget: "relation"
+                collection: "lawchanges"
+                search_fields: ["headline", "slug"]
+                value_field: "{{slug}}"
+                display_fields: ["headline"]
+                multiple: true
+                required: true
+                hint: "Select one or more news articles/acts that were incorporated. Search by title."
+              # Law Slug - dynamically loaded from laws data file
+              - label: "Law Identifier"
+                name: "law_slug"
+                widget: "relation"
+                collection: "data"
+                file: "laws"
+                search_fields: ["entries.*.name", "entries.*.fullname", "entries.*.slug"]
+                display_fields: ["entries.*.name"]
+                value_field: "entries.*.slug"
+                required: true
+                hint: "Which law's master document was updated? Search by name."
+              # Incorporated At
+              - label: "Date Incorporated"
+                name: "incorporated_at"
+                widget: "datetime"
+                required: true
+                format: "YYYY-MM-DD HH:mm:00 Z"
+                hint: "When was the master document updated to reflect this change?"
+              # Incorporated By
+              - label: "Incorporated By"
+                name: "incorporated_by"
+                widget: "string"
+                required: true
+                hint: "Your name/username - who updated the master document?"
+              # Notes
+              - label: "Notes"
+                name: "notes"
+                widget: "text"
+                required: false
+                hint: "Optional notes about this incorporation (e.g., what sections were changed)"
+      - label: "City Laws"
+        name: "city-laws"
+        file: "src/data/city-laws.yml"
+        fields:
+          - label: "City Laws"
+            label_singular: "City Law"
+            name: "entries"
+            widget: "list"
+            default: []
+            summary: "{{name}}"
+            fields:
+              # Identifier
+              - label: "Identifier"
+                name: "slug"
+                widget: "string"
+                required: true
+                pattern: ["^[a-z0-9]+(?:-[a-z0-9]+)*$", "Must be a valid slug! e.g: building-code"]
+                hint: "This identifies the city law, e.g: building-code"
+              # Short Title
+              - label: "Short Title"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The shorter name for this law, e.g: Building Code"
+              # Long Title (optional)
+              - label: "Full Title"
+                name: "fullname"
+                widget: "string"
+                required: false
+                hint: "The full name of this law. Leave empty if unnecessary."
+              # Type of law
+              - label: "Category"
+                name: "kind"
+                widget: "select"
+                required: true
+                hint: "The type of city law this is."
+                options:
+                  - {label: "City Charter", value: "charter"}
+                  - {label: "City Ordinance", value: "ordinance"}
+              # Updated Document
+              - label: "Updated Document"
+                name: "masterdoc"
+                widget: "string"
+                required: true
+                hint: "What's the updated document link? It can be a local file such as `/archive/Icenia-City-Charter.pdf` or `/documents/Icenia-City-Charter.docx`. It can be Google Doc but make sure it ends in `/preview`. And make sure it's an archived copy owned by Icenia."
+              # Expired?
+              - label: "Repealed"
+                name: "hidden"
+                widget: "boolean"
+                default: false
+                hint: "Flip this on if this city law has been repealed"
+      - label: "City Law Incorporations Log"
+        name: "city-law-incorporations"
+        file: "src/data/city-law-incorporations.yml"
+        description: "Track when city legislative changes have been incorporated into master documents"
+        fields:
+          - label: "Incorporations"
+            label_singular: "Incorporation"
+            name: "incorporations"
+            widget: "list"
+            default: []
+            add_to_top: true
+            summary: "{{law_slug}} ← {{change_slugs}} (by {{incorporated_by}})"
+            fields:
+              # Change Slugs - now supports multiple
+              - label: "Change Article Slugs"
+                name: "change_slugs"
+                widget: "relation"
+                collection: "citylawchanges"
+                search_fields: ["headline", "slug"]
+                value_field: "{{slug}}"
+                display_fields: ["headline"]
+                multiple: true
+                required: true
+                hint: "Select one or more city ordinance/act articles that were incorporated. Search by title."
+              # City Law Slug - using select widget with explicit options for reliability
+              - label: "City Law Identifier"
+                name: "law_slug"
+                widget: "relation"
+                collection: "data"
+                file: "city-laws"
+                search_fields: ["entries.*.name", "entries.*.fullname", "entries.*.slug"]
+                display_fields: ["entries.*.name"]
+                value_field: "entries.*.slug"
+                required: true
+                hint: "Which city law's master document was updated? Search by name."
+              # Incorporated At
+              - label: "Date Incorporated"
+                name: "incorporated_at"
+                widget: "datetime"
+                required: true
+                format: "YYYY-MM-DD HH:mm:00 Z"
+                hint: "When was the master document updated to reflect this change?"
+              # Incorporated By
+              - label: "Incorporated By"
+                name: "incorporated_by"
+                widget: "string"
+                required: true
+                hint: "Your name/username - who updated the master document?"
+              # Notes
+              - label: "Notes"
+                name: "notes"
+                widget: "text"
+                required: false
+                hint: "Optional notes about this incorporation (e.g., what sections were changed)"
+      - label: "Scraped Items (Republic)"
+        name: "scraped-items"
+        file: "src/data/scraped-items.yml"
+        description: "Review automatically detected items for the Republic. To clear an item once handled, you can either check 'Reviewed' or delete it using the cross icon on the top right of the item (recommended)."
+        fields:
+          - label: "Items"
+            name: "items"
+            widget: "list"
+            summary: "{{title}}"
+            hint: "To clear an item once handled, you can either check 'Reviewed' or delete it using the cross icon on the top right of the item (recommended)."
+            fields:
+              - {label: "ID", name: "id", widget: "string", required: true}
+              - {label: "Title", name: "title", widget: "string", required: true}
+              - {label: "Date", name: "date", widget: "string", required: true}
+              - {label: "Reviewed?", name: "checked", widget: "boolean", default: false}
+              - {label: "URL", name: "url", widget: "string", required: false}
+      - label: "Scraped Items (City)"
+        name: "city-scraped-items"
+        file: "src/data/city-scraped-items.yml"
+        description: "Review automatically detected items for Icenia City. To clear an item once handled, you can either check 'Reviewed' or delete it using the cross icon on the top right of the item (recommended)."
+        fields:
+          - label: "Items"
+            name: "items"
+            widget: "list"
+            summary: "{{title}}"
+            hint: "To clear an item once handled, you can either check 'Reviewed' or delete it using the cross icon on the top right of the item (recommended)."
+            fields:
+              - {label: "ID", name: "id", widget: "string", required: true}
+              - {label: "Title", name: "title", widget: "string", required: true}
+              - {label: "Date", name: "date", widget: "string", required: true}
+              - {label: "Reviewed?", name: "checked", widget: "boolean", default: false}
+              - {label: "URL", name: "url", widget: "string", required: false}
+      - label: "Role Configuration"
+        name: "role-config"
+        file: "src/data/role-config.yml"
+        description: "Configure available city and republic roles, including whether they have multiple seats"
+        fields:
+          - label: "Republic Roles"
+            label_singular: "Republic Role"
+            name: "republic_roles"
+            widget: "list"
+            default: []
+            summary: "{{display_name}} ({{id}}){{#multi_seat}} - {{num_seats}} seats{{/multi_seat}}"
+            fields:
+              - label: "Role ID"
+                name: "id"
+                widget: "string"
+                required: true
+                pattern: ["^[a-z_]+$", "Must be lowercase with underscores only (e.g., secretary_of_defense)"]
+                hint: "Unique identifier for this role (e.g., president, senator, secretary_of_defense)"
+              - label: "Display Name"
+                name: "display_name"
+                widget: "string"
+                required: true
+                hint: "Human-readable name shown on the website (e.g., Secretary of Defense)"
+              - label: "Section"
+                name: "section"
+                widget: "select"
+                required: true
+                default: "executive"
+                options:
+                  - {label: "Executive Branch", value: "executive"}
+                  - {label: "Legislative (Senate)", value: "legislative"}
+                hint: "Which section of the page should this role appear in?"
+              - label: "Has Multiple Seats?"
+                name: "multi_seat"
+                widget: "boolean"
+                default: false
+                hint: "Toggle ON for roles like Senator that have numbered seats (Seat 1, 2, 3...)"
+              - label: "Number of Seats"
+                name: "num_seats"
+                widget: "number"
+                value_type: "int"
+                min: 1
+                max: 20
+                required: false
+                hint: "Only applies if 'Has Multiple Seats' is ON. How many seats does this role have?"
+              - label: "Display Order"
+                name: "order"
+                widget: "number"
+                value_type: "int"
+                min: 1
+                required: true
+                hint: "Controls the order roles appear on the page (lower numbers appear first)"
+          - label: "City Roles"
+            label_singular: "City Role"
+            name: "city_roles"
+            widget: "list"
+            default: []
+            summary: "{{display_name}} ({{id}}){{#multi_seat}} - {{num_seats}} seats{{/multi_seat}}"
+            fields:
+              - label: "Role ID"
+                name: "id"
+                widget: "string"
+                required: true
+                pattern: ["^[a-z_]+$", "Must be lowercase with underscores only (e.g., deputy_mayor)"]
+                hint: "Unique identifier for this role (e.g., mayor, councillor)"
+              - label: "Display Name"
+                name: "display_name"
+                widget: "string"
+                required: true
+                hint: "Human-readable name shown on the website (e.g., Mayor)"
+              - label: "Section"
+                name: "section"
+                widget: "select"
+                required: true
+                default: "executive"
+                options:
+                  - {label: "City Executive", value: "executive"}
+                  - {label: "City Council", value: "council"}
+                hint: "Which section of the page should this role appear in?"
+              - label: "Has Multiple Seats?"
+                name: "multi_seat"
+                widget: "boolean"
+                default: false
+                hint: "Toggle ON for roles like Councillor that have numbered seats (Seat 1, 2, 3...)"
+              - label: "Number of Seats"
+                name: "num_seats"
+                widget: "number"
+                value_type: "int"
+                min: 1
+                max: 20
+                required: false
+                hint: "Only applies if 'Has Multiple Seats' is ON. How many seats does this role have?"
+              - label: "Display Order"
+                name: "order"
+                widget: "number"
+                value_type: "int"
+                min: 1
+                required: true
+                hint: "Controls the order roles appear on the page (lower numbers appear first)"
+      - label: "Government Officials"
+        name: "officials"
+        file: "src/data/officials.yml"
+        fields:
+          - label: "Senate Term"
+            name: "senate_term"
+            widget: "string"
+            required: true
+            hint: "The current Senate term label, e.g: September 2025"
+          # Executive Branch - Fixed Slots
+          - label: "President"
+            name: "president"
+            widget: "object"
+            collapsed: true
+            fields:
+              - label: "Name"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The President's in-game name"
+              - label: "Discord Icon"
+                name: "icon"
+                widget: "string"
+                required: false
+                hint: "Discord avatar URL for the President role. Use https://toolscord.com/"
+          - label: "Secretary of Defense"
+            name: "secretary_of_defense"
+            widget: "object"
+            collapsed: true
+            fields:
+              - label: "Name"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The Secretary's in-game name (leave empty if vacant)"
+              - label: "Discord Icon"
+                name: "icon"
+                widget: "string"
+                required: false
+                hint: "Discord avatar URL for this role. Use https://toolscord.com/"
+          - label: "Secretary of Interior"
+            name: "secretary_of_interior"
+            widget: "object"
+            collapsed: true
+            fields:
+              - label: "Name"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The Secretary's in-game name (leave empty if vacant)"
+              - label: "Discord Icon"
+                name: "icon"
+                widget: "string"
+                required: false
+                hint: "Discord avatar URL for this role. Use https://toolscord.com/"
+          - label: "Secretary of Treasury"
+            name: "secretary_of_treasury"
+            widget: "object"
+            collapsed: true
+            fields:
+              - label: "Name"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The Secretary's in-game name (leave empty if vacant)"
+              - label: "Discord Icon"
+                name: "icon"
+                widget: "string"
+                required: false
+                hint: "Discord avatar URL for this role. Use https://toolscord.com/"
+          # Speaker of Senate - Fixed Slot
+          - label: "Speaker of the Senate"
+            name: "speaker"
+            widget: "object"
+            collapsed: true
+            fields:
+              - label: "Name"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The Speaker's in-game name"
+              - label: "Discord Icon"
+                name: "icon"
+                widget: "string"
+                required: false
+                hint: "Discord avatar URL for the Speaker role. Use https://toolscord.com/"
+          # Senate Seats - Numbered Slots
+          - label: "Senate Seats"
+            label_singular: "Senate Seat"
+            name: "senators"
+            widget: "list"
+            default: []
+            summary: "Seat {{seat}}: {{name}}"
+            fields:
+              - label: "Seat Number"
+                name: "seat"
+                widget: "number"
+                value_type: "int"
+                min: 1
+                max: 10
+                required: true
+                hint: "The seat number (1-10)"
+              - label: "Name"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The Senator's in-game name"
+              - label: "Discord Icon"
+                name: "icon"
+                widget: "string"
+                required: false
+                hint: "Discord avatar URL for this seat. Use https://toolscord.com/"
+      - label: "City Councillors"
+        name: "councillors"
+        file: "src/data/councillors.yml"
+        fields:
+          - label: "Council Term"
+            name: "council_term"
+            widget: "string"
+            required: true
+            hint: "The current Council term label, e.g: 2025 Term"
+          # Mayor - Fixed Slot
+          - label: "Mayor"
+            name: "mayor"
+            widget: "object"
+            collapsed: true
+            fields:
+              - label: "Name"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The Mayor's in-game name"
+              - label: "Discord Icon"
+                name: "icon"
+                widget: "string"
+                required: false
+                hint: "Discord avatar URL for the Mayor role. Use https://toolscord.com/"
+          # Councillor Seats - Numbered Slots
+          - label: "Councillor Seats"
+            label_singular: "Councillor Seat"
+            name: "councillors"
+            widget: "list"
+            default: []
+            summary: "Seat {{seat}}: {{name}}"
+            fields:
+              - label: "Seat Number"
+                name: "seat"
+                widget: "number"
+                value_type: "int"
+                min: 1
+                max: 10
+                required: true
+                hint: "The seat number (1-10)"
+              - label: "Name"
+                name: "name"
+                widget: "string"
+                required: true
+                hint: "The Councillor's in-game name"
+              - label: "Discord Icon"
+                name: "icon"
+                widget: "string"
+                required: false
+                hint: "Discord avatar URL for this seat. Use https://toolscord.com/"
+  #######################################################
+  ## Senate Bills
+  #######################################################
+  - name: "lawchanges"
+    label: "Changes to Legislation"
+    label_singular: "Change to Legislation"
+    description: "We should probably not add new entries manually, unless we are sure they do not exist in #bill-voting for republic and #council-records for city."
+    folder: "src/content/news"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{headline}}"
+    extension: "md"
+    format: "yaml-frontmatter"
+    editor: { preview: false }
+    search: true
+    sortable_fields: ["date"]
+    filter: { field: "changetolaw", value: true }
+    fields:
+      # ChangeToLaw
+      - label: "ChangeToLaw"
+        name: "changetolaw"
+        widget: "hidden"
+        required: true
+        default: true
+      # Layout
+      - label: "Layout"
+        name: "layout"
+        widget: "hidden"
+        required: true
+        default: "@layouts/news/act.astro"
+      # Changing institution
+      - label: "Institution"
+        name: "institution"
+        widget: "select"
+        required: true
+        hint: "Who changed the law?"
+        options:
+          - {label: "Senate", value: "senate"}
+          - {label: "Executive (President, etc)", value: "executive"}
+          - {label: "Referendum", value: "referendum"}
+          - {label: "Signatures of Icenians", value: "icenian-signatures"}
+        default: "senate"
+      # Headline
+      - label: "Title"
+        name: "headline"
+        widget: "string"
+        required: true
+        default: "Passing the "
+        hint: "The headline to show readers, e.g: Passing the Statue of Territory Amendment of April 2025"
+      # Date
+      - label: "When did this change go into effect?"
+        name: "date"
+        widget: "datetime"
+        required: true
+        # https://day.js.org/docs/en/display/format
+        format: "YYYY-MM-DD HH:mm:00 Z"
+        hint: "Typically it's when the President gave assent."
+      # Discord Thread ID
+      - label: "Discord Thread ID"
+        name: "discord_thread_id"
+        widget: "string"
+        required: false
+        hint: "The ID of the Discord thread this legislation was scraped from."
+      # Excerpt
+      - label: "Excerpt"
+        name: "excerpt"
+        widget: "text"
+        required: false
+        default: "Proposed by NAME, Sponsored by NAME."
+        hint: "All other details go in the main content area, as the excerpt is not markdown formatted. Leave empty to infer from content."
+      # Bill Embed
+      - label: "How are you embedding this?"
+        name: "document"
+        widget: "object"
+        required: true
+        fields:
+          - label: "Type"
+            name: "type"
+            widget: "select"
+            options:
+              - {label: "Local File", value: "local-file"}
+              - {label: "Remote File", value: "remote-file"}
+              - {label: "Markdown", value: "markdown"}
+            default: ""
+          - label: "Value"
+            name: "value"
+            widget: "text"
+            required: true
+            hint: "If 'Local File', provide the path (e.g., /archive/bill-of-rights.pdf). If 'Remote File', provide the full URL. If 'Markdown', provide the markdown content. (> is for quotes, - for lists, ``` for code blocks, etc.)"
+      # Changes
+      - label: "Changes to Law"
+        name: "changes"
+        widget: "list"
+        default: []
+        summary: "{{target}} ({{kind}})"
+        fields:
+          - label: "Which Law?"
+            name: "target"
+            widget: "relation"
+            collection: "data"
+            search_fields: ["entries.*.name"]
+            value_field: "entries.*.slug"
+            display_fields: ["entries.*.name"]
+            default: ""
+            hint: "Just start typing and it'll search for that legislation. Click the correct result. The law needs to already exist in the 'Laws' collection."
+          - label: "What is done?"
+            name: "kind"
+            widget: "select"
+            options:
+              - {label: "Enacted", value: "passage"}
+              - {label: "Amended", value: "amendment"}
+              - {label: "Repealed", value: "repeal"}
+            default: ""
+        hint: "What laws does this Bill effect and how? The ordering should reflect what's in the Bill itself."
+      # Content
+      - label: "Content"
+        name: "body"
+        widget: "markdown"
+        required: false
+        default: "[Passed by the MONTH YEAR Senate](discord_com_link_to_senate_logs)"
+        hint: "The Bill proposal message and further details about the passing of legislation can be appended here, don't add the title, nor the contents of the bill."
+      # Icon
+      - label: "Icon"
+        name: "icon"
+        widget: "string"
+        default: "/assets/images/law_stock.jpeg"
+        required: true
+        hint: "The image that will appear beside the headline on the news page (default: /assets/images/law_stock.jpeg)"
+  #######################################################
+  ## Official Changes (Government)
+  ## Note: Elections are now managed through this collection
+  #######################################################
+  - name: "officialchanges"
+    label: "Government Official Changes"
+    label_singular: "Government Official Change"
+    folder: "src/content/news"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{headline}}"
+    identifier_field: "headline"
+    summary: "{{headline}}{{#term}} [Term {{term}}]{{/term}}"
+    extension: "md"
+    format: "yaml-frontmatter"
+    editor: { preview: false }
+    sortable_fields: ["date", "term", "changetype"]
+    view_filters:
+      - label: "Senate Elections"
+        field: changetype
+        pattern: "senate-election"
+      - label: "Senate By-Elections"
+        field: changetype
+        pattern: "senate-byelection"
+      - label: "Secretary Changes"
+        field: changetype
+        pattern: "secretary-change"
+      - label: "Speaker Votes"
+        field: changetype
+        pattern: "speaker-vote"
+      - label: "President Changes"
+        field: changetype
+        pattern: "president-change"
+      - label: "Executive Changes"
+        field: changetype
+        pattern: "executive-change"
+    view_groups:
+      - label: "Type"
+        field: changetype
+      - label: "Year"
+        field: date
+        pattern: \d{4}
+    filter: { field: "officialchange", value: true }
+    fields:
+      # IsOfficialChange
+      - label: "OfficialChange"
+        name: "officialchange"
+        widget: "hidden"
+        required: true
+        default: true
+      # Layout
+      - label: "Layout"
+        name: "layout"
+        widget: "hidden"
+        required: true
+        default: "@layouts/news/official-change.astro"
+      # Type of Change
+      - label: "Type of Change"
+        name: "changetype"
+        widget: "select"
+        required: true
+        hint: "What kind of official change is this?"
+        options:
+          - {label: "Senate Election (Full)", value: "senate-election"}
+          - {label: "Senate By-Election (Certain Seats)", value: "senate-byelection"}
+          - {label: "Change in Secretary", value: "secretary-change"}
+          - {label: "Vote for Speaker of the Senate", value: "speaker-vote"}
+          - {label: "Change in President", value: "president-change"}
+          - {label: "Change in Executive Officials", value: "executive-change"}
+        default: "senate-election"
+      # Headline
+      - label: "Title"
+        name: "headline"
+        widget: "string"
+        required: true
+        hint: "The headline, e.g: November 2025 Senate Election"
+      # Date
+      - label: "When did this change take effect?"
+        name: "date"
+        widget: "datetime"
+        required: true
+        format: "YYYY-MM-DD HH:mm:00 Z"
+      # Term Number
+      - label: "Term Number"
+        name: "term"
+        widget: "number"
+        required: false
+        value_type: "int"
+        min: 1
+        hint: "Optional: The Senate term number (for elections). Check the previous election to increment correctly."
+      # Senate Size
+      - label: "Senate Size"
+        name: "senate_size"
+        widget: "number"
+        required: false
+        value_type: "int"
+        min: 1
+        hint: "Optional: The number of senators in this term. MUST be filled correctly for elections to avoid display issues. Set to 7 for default."
+      # Excerpt
+      - label: "Excerpt"
+        name: "excerpt"
+        widget: "text"
+        required: false
+        hint: "A short summary. Leave empty to infer from content."
+      # Officials Involved
+      - label: "Officials Involved"
+        name: "officials"
+        widget: "list"
+        default: []
+        summary: "{{name}} - {{role}} ({{action}})"
+        fields:
+          - label: "Name"
+            name: "name"
+            widget: "string"
+            required: true
+            hint: "The official's in-game name"
+          - label: "Role"
+            name: "role"
+            widget: "select"
+            required: true
+            options:
+              - {label: "President", value: "president"}
+              - {label: "Secretary of Defense", value: "secretary-of-defense"}
+              - {label: "Secretary of the Interior", value: "secretary-of-interior"}
+              - {label: "Secretary of Treasury", value: "secretary-of-treasury"}
+              - {label: "Speaker of the Senate", value: "speaker"}
+              - {label: "Senator", value: "senator"}
+              - {label: "Head of Transportation", value: "head-of-transportation"}
+          - label: "Action"
+            name: "action"
+            widget: "select"
+            required: true
+            options:
+              - {label: "Elected", value: "elected"}
+              - {label: "Re-elected", value: "reelected"}
+              - {label: "Appointed", value: "appointed"}
+              - {label: "Resigned", value: "resigned"}
+              - {label: "Removed", value: "removed"}
+              - {label: "Succeeded", value: "succeeded"}
+          - label: "Discord User ID"
+            name: "discord_id"
+            widget: "string"
+            required: true
+            hint: "Discord user ID (18-digit number). Avatar will be auto-fetched by running update-avatars script. Get ID by right-clicking user in Discord → Copy User ID (Developer Mode must be enabled)."
+          - label: "Seat Number"
+            name: "seat"
+            widget: "relation"
+            collection: "data"
+            file: "officials"
+            search_fields: ["senators.*.name"]
+            value_field: "senators.*.seat"
+            display_fields: ["Seat", "senators.*.seat", ": ", "senators.*.name"]
+            required: false
+            hint: "For Senators only: which seat?"
+        hint: "List all officials involved in this change. Icons will sync to the officials page."
+      # Content
+      - label: "Content"
+        name: "body"
+        widget: "markdown"
+        required: false
+        hint: "Additional details about the change, election results, etc."
+      # Icon
+      - label: "Icon"
+        name: "icon"
+        widget: "string"
+        default: "/assets/images/election_stock.png"
+        required: true
+        hint: "The image that will appear beside the headline (default: /assets/images/election_stock.png)"
+
+  #######################################################
+  ## City Law Changes
+  #######################################################
+  - name: "citylawchanges"
+    label: "Changes to City Legislation"
+    label_singular: "Change to City Legislation"
+    description: "We should probably not add new entries manually, unless we are sure they do not exist in #bill-voting for republic and #council-records for city."
+    folder: "src/content/city-news"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{headline}}"
+    extension: "md"
+    format: "yaml-frontmatter"
+    editor: { preview: false }
+    sortable_fields: ["date", "term_number", "act_number"]
+    summary: "{{#term_number}}{{term_number}}-{{act_number}} | {{/term_number}}{{headline}}"
+    filter: { field: "changetocitylaw", value: true }
+    view_groups:
+      - label : "Term"
+        field: term_number
+      - label: "Year"
+        field: date
+        pattern: \d{4}
+    fields:
+      # ChangeToCityLaw
+      - label: "ChangeToCityLaw"
+        name: "changetocitylaw"
+        widget: "hidden"
+        required: true
+        default: true
+      # Layout
+      - label: "Layout"
+        name: "layout"
+        widget: "hidden"
+        required: true
+        default: "@layouts/news/city-act.astro"
+      # Changing institution
+      - label: "Institution"
+        name: "institution"
+        widget: "select"
+        required: true
+        hint: "Who changed city law?"
+        options:
+          - {label: "City Council", value: "council"}
+          - {label: "Mayor", value: "mayor"}
+          - {label: "City Referendum", value: "referendum"}
+          - {label: "Federal Government", value: "federal"}
+        default: "council"
+      # Act Numbering
+      - label: "Council Term Number"
+        name: "term_number"
+        widget: "number"
+        required: false
+        value_type: "int"
+        min: 1
+        hint: "The council term number (e.g., 1, 2, 3). This is the first number in the act reference (e.g., '01' in 01-05)."
+      - label: "Act Number"
+        name: "act_number"
+        widget: "number"
+        required: false
+        value_type: "int"
+        min: 1
+        hint: "The sequential act number within this term (e.g., 1, 2, 3). This is the second number in the act reference (e.g., '05' in 01-05). Check previous acts from the same term to determine the next number."
+      # Headline
+      - label: "Title"
+        name: "headline"
+        widget: "string"
+        required: true
+        hint: "The headline to show readers, e.g: Passing the Building Code Amendment of April 2025, Passing the City Flag Act"
+      # Date
+      - label: "When did this change go into effect?"
+        name: "date"
+        widget: "datetime"
+        required: true
+        format: "YYYY-MM-DD HH:mm:00 Z"
+        hint: "Typically when the ordinance was passed by the Council."
+      # Discord Thread ID
+      - label: "Discord Thread ID"
+        name: "discord_thread_id"
+        widget: "string"
+        required: false
+        hint: "The ID of the Discord thread this legislation was scraped from."
+      # Excerpt
+      - label: "Excerpt"
+        name: "excerpt"
+        widget: "text"
+        required: false
+        default: "Proposed by NAME, Sponsored by NAME."
+        hint: "All other details go in the main content area, as the excerpt is not markdown formatted. Leave empty to infer from content."
+      # Document Embed
+      - label: "How are you embedding this?"
+        name: "document"
+        widget: "object"
+        required: true
+        fields:
+          - label: "Type"
+            name: "type"
+            widget: "select"
+            options:
+              - {label: "Local File", value: "local-file"}
+              - {label: "Remote File", value: "remote-file"}
+              - {label: "Markdown", value: "markdown"}
+            default: ""
+          - label: "Value"
+            name: "value"
+            widget: "text"
+            required: true
+            hint: "If 'Local File', provide the path (e.g., /archive/bill-of-rights.pdf). If 'Remote File', provide the full URL. If 'Markdown', provide the markdown content. (> is for quotes, - for lists, ``` for code blocks, etc.)"
+      # Changes
+      - label: "Changes to City Law"
+        name: "changes"
+        widget: "list"
+        default: []
+        summary: "{{target}} ({{kind}})"
+        fields:
+          - label: "Which City Law?"
+            name: "target"
+            widget: "relation"
+            collection: "data"
+            file: "city-laws"
+            search_fields: ["entries.*.name"]
+            value_field: "entries.*.slug"
+            display_fields: ["entries.*.name"]
+            default: ""
+            hint: "Just start typing and it'll search for that legislation. Click the correct result. The law needs to already exist in the 'City Laws' collection."
+          - label: "What is done?"
+            name: "kind"
+            widget: "select"
+            options:
+              - {label: "Enacted", value: "passage"}
+              - {label: "Amended", value: "amendment"}
+              - {label: "Repealed", value: "repeal"}
+            default: ""
+        hint: "What city laws does this ordinance affect and how? The ordering should reflect what's in the ordinance itself."
+      # Content
+      - label: "Content"
+        name: "body"
+        widget: "markdown"
+        required: false
+        default: "[Passed by the MONTH YEAR Council](discord.com/link-to-council-logs)"
+        hint: "The Bill proposal message and further details about the passing of legislation can be appended here, don't add the title, nor the contents of the bill."
+      # Icon
+      - label: "Icon"
+        name: "icon"
+        widget: "string"
+        default: "/assets/images/law_stock.jpeg"
+        required: true
+        hint: "The image that will appear beside the headline (default: /assets/images/law_stock.jpeg)"
+
+  #######################################################
+  ## City Official Changes
+  ## Note: Council Elections are now managed through this collection
+  #######################################################
+  - name: "cityofficialchanges"
+    label: "City Official Changes"
+    label_singular: "City Official Change"
+    folder: "src/content/city-news"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{headline}}"
+    identifier_field: "headline"
+    summary: "{{headline}}{{#term}} [Term {{term}}]{{/term}}"
+    extension: "md"
+    format: "yaml-frontmatter"
+    editor: { preview: false }
+    sortable_fields: ["date", "term", "changetype"]
+    view_filters:
+      - label: "Council Elections"
+        field: changetype
+        pattern: "council-election"
+      - label: "Council By-Elections"
+        field: changetype
+        pattern: "council-byelection"
+      - label: "Mayor Votes"
+        field: changetype
+        pattern: "mayor-vote"
+      - label: "Other Appointments"
+        field: changetype
+        pattern: "other-appointments"
+    view_groups:
+      - label: "Type"
+        field: changetype
+      - label: "Year"
+        field: date
+        pattern: \d{4}
+    filter: { field: "cityofficialchange", value: true }
+    fields:
+      # IsCityOfficialChange
+      - label: "CityOfficialChange"
+        name: "cityofficialchange"
+        widget: "hidden"
+        required: true
+        default: true
+      # Layout
+      - label: "Layout"
+        name: "layout"
+        widget: "hidden"
+        required: true
+        default: "@layouts/news/city-official-change.astro"
+      # Type of Change
+      - label: "Type of Change"
+        name: "changetype"
+        widget: "select"
+        required: true
+        hint: "What kind of city official change is this?"
+        options:
+          - {label: "Council Election (Full)", value: "council-election"}
+          - {label: "Council By-Election (Certain Seats)", value: "council-byelection"}
+          - {label: "Mayor Voting", value: "mayor-vote"}
+          - {label: "Other Appointments", value: "other-appointments"}
+        default: "council-election"
+      # Headline
+      - label: "Title"
+        name: "headline"
+        widget: "string"
+        required: true
+        hint: "The headline, e.g: November 2025 Council Election"
+      # Date
+      - label: "When did this change take effect?"
+        name: "date"
+        widget: "datetime"
+        required: true
+        format: "YYYY-MM-DD HH:mm:00 Z"
+      # Term Number
+      - label: "Term Number"
+        name: "term"
+        widget: "number"
+        required: false
+        value_type: "int"
+        min: 1
+        hint: "Optional: The Council term number (for elections). Check the previous election to increment correctly."
+      # Council Size
+      - label: "Council Size"
+        name: "council_size"
+        widget: "number"
+        required: false
+        value_type: "int"
+        min: 1
+        hint: "Optional: The number of councillors in this term. MUST be filled correctly for elections to avoid display issues. Set to 5 for default."
+      # Excerpt
+      - label: "Excerpt"
+        name: "excerpt"
+        widget: "text"
+        required: false
+        hint: "A short summary. Leave empty to infer from content."
+      # Officials Involved
+      - label: "Officials Involved"
+        name: "officials"
+        widget: "list"
+        default: []
+        summary: "{{name}} - {{role}} ({{action}})"
+        fields:
+          - label: "Name"
+            name: "name"
+            widget: "string"
+            required: true
+            hint: "The official's in-game name"
+          - label: "Role"
+            name: "role"
+            widget: "select"
+            required: true
+            options:
+              - {label: "Mayor", value: "mayor"}
+              - {label: "Councillor", value: "councillor"}
+              - {label: "CTA Commissioner", value: "cta-commissioner"}
+          - label: "Action"
+            name: "action"
+            widget: "select"
+            required: true
+            options:
+              - {label: "Elected", value: "elected"}
+              - {label: "Re-elected", value: "reelected"}
+              - {label: "Appointed", value: "appointed"}
+              - {label: "Resigned", value: "resigned"}
+              - {label: "Removed", value: "removed"}
+              - {label: "Succeeded", value: "succeeded"}
+          - label: "Discord User ID"
+            name: "discord_id"
+            widget: "string"
+            required: true
+            hint: "Discord user ID (18-digit number). Avatar will be auto-fetched by running update-avatars script. Get ID by right-clicking user in Discord → Copy User ID (Developer Mode must be enabled)."
+          - label: "Seat Number"
+            name: "seat"
+            widget: "relation"
+            collection: "data"
+            file: "councillors"
+            search_fields: ["councillors.*.name"]
+            value_field: "councillors.*.seat"
+            display_fields: ["Seat", "councillors.*.seat", ": ", "councillors.*.name"]
+            required: false
+            hint: "For Councillors only: select the seat"
+        hint: "List all officials involved in this change. Icons will sync to the council page."
+      # Content
+      - label: "Content"
+        name: "body"
+        widget: "markdown"
+        required: false
+        hint: "Additional details about the change, election results, etc."
+      # Icon
+      - label: "Icon"
+        name: "icon"
+        widget: "string"
+        default: "/assets/images/election_stock.png"
+        required: true
+        hint: "The image that will appear beside the headline (default: /assets/images/election_stock.png)"
