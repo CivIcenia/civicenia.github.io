@@ -42,5 +42,10 @@ officials:
     action: reelected
     discord_id: "689297659907145831"
     seat: 7
+  - name: Complexii
+    discord_id: "489416445089021952"
+    role: speaker
+    action: appointed
 icon: /assets/images/election_stock.png
 ---
+View the election results at icenia.org/stv/visualize

@@ -1,5 +1,10 @@
 incorporations:
   - change_slugs:
+      - 2026-02-03-safe-highways-act
+    law_slug: federal-executives-act
+    incorporated_at: 2026-02-07 10:23:00 +08:00
+    incorporated_by: Creepily
+  - change_slugs:
       - 2026-01-20-modify-constitution-on-civilian-bunker-perms
     law_slug: third-constitution
     incorporated_at: 2026-02-04 15:19:00 +08:00

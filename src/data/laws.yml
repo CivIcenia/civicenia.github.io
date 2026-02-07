@@ -409,3 +409,8 @@ entries:
     name: Icenia-Micronook Friendship Pact
     kind: treaty
     masterdoc: /archive/Icenia-Micronook-Friendship-Pact.pdf
+  - hidden: false
+    slug: safe-highways-act
+    name: Safe Highways Act
+    kind: statute
+    masterdoc: /documents/Safe-Highways-Act.docx
