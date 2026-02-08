@@ -2871,14 +2871,14 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 // We include the self-hosted worker as the first backup for speed and reliability.
                 const PROXIES = [
                     { name: 'Direct API', url: TARGET_URL },
-                    { name: 'AllOrigins (Raw)', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(TARGET_URL) },
-                    { name: 'YaCDN', url: 'https://yacdn.org/proxy/' + TARGET_URL },
-                    { name: 'HTMLDriven', url: 'https://cors-anywhere.htmldriven.com/?url=' + TARGET_URL },
-                    { name: 'CodeTabs', url: 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(TARGET_URL) },
-                    { name: 'CORSProxy.io', url: 'https://corsproxy.io/?' + encodeURIComponent(TARGET_URL) },
-                    { name: 'ThingProxy', url: 'https://thingproxy.freeboard.io/fetch/' + TARGET_URL },
-                    { name: 'AllOrigins (JSON)', url: 'https://api.allorigins.win/get?url=' + encodeURIComponent(TARGET_URL) },
-                    { name: 'CORS Bridged', url: 'https://cors.bridged.cc/' + TARGET_URL }
+                    // { name: 'AllOrigins (Raw)', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(TARGET_URL) },
+                    // { name: 'YaCDN', url: 'https://yacdn.org/proxy/' + TARGET_URL },
+                    // { name: 'HTMLDriven', url: 'https://cors-anywhere.htmldriven.com/?url=' + TARGET_URL },
+                    // { name: 'CodeTabs', url: 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(TARGET_URL) },
+                    // { name: 'CORSProxy.io', url: 'https://corsproxy.io/?' + encodeURIComponent(TARGET_URL) },
+                    // { name: 'ThingProxy', url: 'https://thingproxy.freeboard.io/fetch/' + TARGET_URL },
+                    // { name: 'AllOrigins (JSON)', url: 'https://api.allorigins.win/get?url=' + encodeURIComponent(TARGET_URL) },
+                    // { name: 'CORS Bridged', url: 'https://cors.bridged.cc/' + TARGET_URL }
                 ];
                 
                 async function tryFetch(proxy, attemptIndex) {
