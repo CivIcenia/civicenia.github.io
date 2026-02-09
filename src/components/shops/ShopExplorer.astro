@@ -1900,13 +1900,12 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     window.getItemIconUrl = function(material) {
         if (!material) return '';
         let mat = material.toLowerCase().replace(/ /g, '_').replace(/minecraft:/, '');
-        // Ensure material is safe for use in URLs (encode any unexpected characters)
-        const safeMat = encodeURIComponent(mat);
-        
         // Use mappings from window.ITEM_MAPPINGS if available (runtime lookup)
         if (window.ITEM_MAPPINGS && window.ITEM_MAPPINGS[mat]) {
             mat = window.ITEM_MAPPINGS[mat];
         }
+        // Ensure material is safe for use in URLs (encode any unexpected characters)
+        const safeMat = encodeURIComponent(mat);
 
         return `https://mc.nerothe.com/img/${MC_VERSION}/minecraft_${safeMat}.png`;
     };
@@ -1917,12 +1916,11 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
     window.getFallbackIconUrl = function(material) {
         if (!material) return '';
         let mat = material.toLowerCase().replace(/ /g, '_').replace(/minecraft:/, '');
-        const safeMat = encodeURIComponent(mat);
-        
         // Use mappings from window.ITEM_MAPPINGS if available (runtime lookup)
         if (window.ITEM_MAPPINGS && window.ITEM_MAPPINGS[mat]) {
             mat = window.ITEM_MAPPINGS[mat];
         }
+        const safeMat = encodeURIComponent(mat);
 
         if (ICON_OVERRIDES[mat]) {
             return `https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/${MC_VERSION}/${ICON_OVERRIDES[mat]}`;
@@ -2826,8 +2824,95 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                     sortMode: isIceniaOnly ? 'closest' : sortModeSelect.value
                 };
 
-                // Search Bypass Logic: If searching for custom items known to be barrels or player heads, search for the base material
+                // Search Bypass Logic: Map well-known custom items (e.g. brews, barrels, heads, essence)
+                // to their base materials before querying Tradex. This is intentionally local
+                // and maintainable: add new brew tokens to BREW_TOKENS below as needed.
                 let apiOutputQuery = outputQuery;
+                let apiInputQuery = inputQuery;
+
+                // Normalizer: lower-case, replace non-alphanum with underscore, trim extra underscores
+                function normalizeForMatch(s) {
+                    if (!s) return '';
+                    return String(s).toLowerCase()
+                        .replace(/[^a-z0-9]+/g, '_')
+                        .replace(/^_+|_+$/g, '');
+                }
+
+                // Local list of known brewery/custom potion tokens. Keep these normalized.
+                // Add new custom potion names here (normalized form: lowercase, non-alphanum -> _)
+                const BREW_TOKENS = [
+                    // Common brews & drinks
+                    'wheatbeer','the_simple_life','pale_ale','pale_lager','pilsner','cider','amber_ale','white_ale','super_bock',
+                    'white_wine','red_wine','albarino','alvarinho_portugues','pinot','sauvignnon_blanc','chianti','cabernet','merlot','grenache',
+                    'champagne','riesling','rose','whiskey','scotch','white_whiskey','corn_whiskey','japanese_whiskey','sake','soju',
+                    'vodka','wheat_vodka','melon_schnapps','irish_cream','kefir','kombucha','absinthe','applejack','basi','borovicka',
+                    'brandy','cachaca','chicha','tea','black_tea','chamomile_tea','earl_grey','green_tea','milo','gin','pigeon_gin',
+                    'mead','metaxa','rum','tequila','tomboy_tequila','amaretto','vermouth','dandelion_liquor','sam_amogus_pale_pilsen',
+                    'marzen','brown_ale','stout','dark_lager','chardonnay','celebration','bourbon_whiskey','bifrost_vodka','cherry_liqueur',
+                    'ginjinha','orange_liqueur','sarsaparilla','ginger_beer','lemonade','coca_soda','leninade','limoncello','creme_de_menthe',
+                    'chocolate_milk','energy_drink','espresso','americano','latte','mocha','iced_tea','iced_coffee','hot_coco','olive_oil',
+                    'beetroot_vodka','melon_iced_tea','mango_schnapps','papaya_schnapps','vegetable_smoothie','pumpkin_spice_latte','chocolate_apple_cider',
+                    'cannonball_rum','frog_grog','dr_pvper','cough_syrup','the_gay_agenda','tonic','witchs_tongue','tombstone','bloodweiser',
+                    'de_coffin_ated_curse','phantom','eggnog','advocaat','love_potion','vegetable_soup','ratatouille','laksa','minestrone','pho',
+                    'chicken_noodle_soup','dumpling_soup','corn_chowder','goulash','tonkatsu_ramen','borscht','balti_gosht','rice_porridge',
+                    'cranberry_pie','fish_soup','poached_salmon','marmite','mais_con_hielo','mediterranean_medly','halloween_candy','cheese',
+                    'easter_bread','candied_carrots','dyed_eggs','deviled_eggs','carrot_cake','valentines_chocolate','dark_chocolate','martini',
+                    'hunters_digestif','tropical_cocktail','raider_fuel','redcoat_rum','spicy_juice','zombie','5_o_block_somewhere','lean','bubble_tea',
+                    'genderfluid_gin','trans_rights_are_human_rights','bees_knees','cherry_spritz','luck_of_the_irish','pan_galactic_gargle_blaster',
+
+                    // Drug / stimulant brews (for educational purposes)
+                    'cyanide','cannabis','meth','blue_meth','heroin','oestrogen','caffeine','ivermectin','dmt','xanax','steroids','testosterone','vicodin',
+                    'fent','cocaine','speed','nad','epinephrine','nitroglycerin','firefoam',
+
+                    // Nation-specific and community/player brews
+                    'icenian_pale_ale','dalgon_pale','pacem_pilsner','augustan_cider','wolken_white_ale','southshire_stout','septembrian_summer_breeze',
+                    'commonwealth_chardonnay','cortesian_chianti','cabernet_sovian','lusitan_wine','fempire_sparkling_rose','nara_pufferfish_wine',
+                    'cctt_pumpkin_wine','dirt_wine','pavian_wiskey','fembourbon','griffin_gold_whiskey','nara_no_uisuki','gensokyo_no_ginjo_sake',
+                    'venne_vodka','winterbourne_wheat_vodka','estalian_schnapps','southshire_cream_liquer','kubucha','yoahpple','jaegermaester',
+                    'shaken_southsire_sunset','pacem_proper','icenian_icebreaker','civmarket_chowder','margaritaville_margarita','vault_breaker','nuclear_milk',
+                    'amboise_red_wine','atlas_corp_cuban','irish_whiskey','imperian_whiskey','warmian_nitro','shiroyama_sake','ixi','imperian_carrot_juice',
+                    'angmar_vodka','pine_grove_elixer','ayran','eldorian_grand_wine','q_barran_hist_sap','q_barran_phlegmwine','rust_and_rot','spruce_raki',
+                    'minty_blue_juice','baile_deep','blue_star','piwo_tesc_mole','new_callisto_coppertop','erynorian_root_beer','sorian_hjemmebrent',
+                    'groveheart_potato_wine','griffin_steak_co_liquid_lunch','grenada_club_dark_rum','salerno_shandy','brunsvik_bread_soup','shawarma',
+                    'wellington_cherry_liquor','imperial_stout','hello_kitty_hurricane','the_white_raven','suramirian_star_gazer','melen','bedfordian_mead',
+                    'syndicates_spirit','workers_stout','bankers_dust','wyepoint_moonshine','northfortian_vodka','proletarian_strength','starch_cola',
+                    'mulled_melonade','snake_oil','lord_marzenpan','soundtechs_soundcheck','wingzeros_wingman','ahris_touhou_twister','maxoplopys_beer_garden',
+                    'diet_colas_rum_and_cola','icekeepers_icepick','programmerdans_power_coffee','ttk2s_closing_speech','infras_code_injection','rourke750s_vermouth_reviver',
+                    'tealnerds_sneaker_schnapps','erocs_top_of_the_rock','reddevils_devilish_wine','xfiers_firesnap','orinnaris_amaretto','awoos_git_reset_hard_head',
+                    'gjums_grape_juice_on_ice','notruepunkin_spiced_mead','kingtells_royal_absinthe','gamer_gwua_bathwater','okxs_oxeye_oxkick','leos_orange_creamsicle',
+                    'coltons_love_martini','golden_pick_stout','katz_catnip_kaffee_6','astros_pill','jeremys_slippy_sloppy_screwdriver','trizzzxs_worcestershire_sauce',
+                    'strawbeary_dreams','pisco_sour',
+
+                    // Food brews (restore saturation) - from Brewery wiki "List of Discoverable Brews" (Food Brews)
+                    'vegetable_soup','ratatouille','laksa','minestrone','pho','chicken_noodle_soup','dumpling_soup','corn_chowder','goulash','tonkatsu_ramen','borscht',
+                    'balti_gosht','rice_porridge','cranberry_pie','fish_soup','poached_salmon','marmite','mais_con_hielo','mediterranean_medly','halloween_candy','cheese','easter_bread',
+                    'candied_carrots','dyed_eggs','deviled_eggs','carrot_cake','valentines_chocolate','dark_chocolate'
+                ];
+
+                // If the user's query matches any known brew token, search for the base potion
+                const outNorm = normalizeForMatch(outputQuery);
+                if (outNorm) {
+                    for (const t of BREW_TOKENS) {
+                        if (!t) continue;
+                        if (outNorm.includes(t)) {
+                            apiOutputQuery = 'potion';
+                            break;
+                        }
+                    }
+                }
+
+                const inNorm = normalizeForMatch(inputQuery);
+                if (inNorm) {
+                    for (const t of BREW_TOKENS) {
+                        if (!t) continue;
+                        if (inNorm.includes(t)) {
+                            apiInputQuery = 'potion';
+                            break;
+                        }
+                    }
+                }
+
+                // Preserve existing special-case mappings for barrels, player heads and essences
                 const lowerOutputQuery = outputQuery.toLowerCase();
                 if (lowerOutputQuery.includes('repair kit') || lowerOutputQuery.includes('dropbox') || lowerOutputQuery.includes('compactor') || lowerOutputQuery.includes('smelter')) {
                     apiOutputQuery = 'barrel';
@@ -2837,7 +2922,6 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                     apiOutputQuery = 'eye_of_ender';
                 }
 
-                let apiInputQuery = inputQuery;
                 const lowerInputQuery = inputQuery.toLowerCase();
                 if (lowerInputQuery.includes('repair kit') || lowerInputQuery.includes('dropbox') || lowerInputQuery.includes('compactor') || lowerInputQuery.includes('smelter')) {
                     apiInputQuery = 'barrel';
