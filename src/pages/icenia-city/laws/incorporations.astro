@@ -4,8 +4,11 @@ import { CityLaws, CityLawIncorporations } from "../../../lib/city-laws";
 import { CityActs } from "../../../lib/city-acts";
 import { Strings } from "@helpers";
 import { getActChangeColours } from "@comptime";
+import { ScrapedItems } from "../../../lib/scraped-items";
 
 const BASE = import.meta.env.BASE_URL ?? "/";
+
+const pendingScrapedCount = ScrapedItems.getPendingCityCount();
 
 // Get all city laws and their pending changes
 const laws = await CityLaws.getCityLaws();
@@ -41,6 +44,30 @@ const sortedIncorporations = [...incorporations].sort((a, b) =>
 const lawsBySlug = new Map(laws.map(l => [l.slug, l]));
 ---
 <style>
+    .scraped-tracker {
+        background: #fef7f3;
+        border-left: 6px solid #f47738;
+        padding: 15px 20px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .scraped-tracker-text {
+        margin: 0;
+    }
+
+    .scraped-count-badge {
+        background: #f47738;
+        color: white;
+        padding: 2px 10px;
+        border-radius: 15px;
+        font-weight: bold;
+    }
+
     .pending-section {
         background: #fef7f3;
         border-left: 6px solid #f47738;
@@ -266,6 +293,16 @@ const lawsBySlug = new Map(laws.map(l => [l.slug, l]));
             incorporation and maintains a log of completed updates.
         </p>
     </div>
+
+    {pendingScrapedCount > 0 && (
+        <div class="scraped-tracker">
+            <p class="scraped-tracker-text govuk-body">
+                <span class="scraped-count-badge">{pendingScrapedCount}</span>
+                {pendingScrapedCount === 1 ? " item has" : " items have"} been scraped and {pendingScrapedCount === 1 ? "is" : "are"} awaiting review.
+            </p>
+            <a href={BASE + "icenia-city/news/scraped/"} class="govuk-link">View Scraped Items →</a>
+        </div>
+    )}
 
     <!-- How To Guide -->
     <details class="govuk-details" style="margin-bottom: 30px;">

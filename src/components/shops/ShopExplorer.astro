@@ -2894,7 +2894,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 if (outNorm) {
                     for (const t of BREW_TOKENS) {
                         if (!t) continue;
-                        if (outNorm.includes(t)) {
+                        if (outNorm === t) {
                             apiOutputQuery = 'potion';
                             break;
                         }
@@ -2905,7 +2905,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                 if (inNorm) {
                     for (const t of BREW_TOKENS) {
                         if (!t) continue;
-                        if (inNorm.includes(t)) {
+                        if (inNorm === t) {
                             apiInputQuery = 'potion';
                             break;
                         }

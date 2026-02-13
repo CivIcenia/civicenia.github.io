@@ -10,10 +10,16 @@ import { getActChangeColours } from "@comptime";
 // There's probably some weird Astro shenanigans going on
 import { Laws as AllLaws, LawIncorporations } from "../lib/laws";
 import { Acts } from "../lib/acts";
+import { ScrapedItems } from "../lib/scraped-items";
 const laws = await AllLaws.getLaws();
 
 const allActs = await Acts.getActs();
-const recentActs = allActs.filter(act => act.data.changes.length > 0).slice(0, 5);
+// Type guard: ensure the act has a `changes` array before treating it as an Act
+function isActWithChanges(act: any): act is { data: Acts.Act } {
+    return act && act.data && Array.isArray((act.data as any).changes);
+}
+
+const recentActs = allActs.filter(isActWithChanges).filter(act => (act.data as Acts.Act).changes.length > 0).slice(0, 5);
 
 const currentLaws = laws.filter((law) => law.hidden !== true);
 const expiredLaws = laws.filter((law) => law.hidden === true);
@@ -24,6 +30,8 @@ for (const law of currentLaws) {
     const pending = await AllLaws.getPendingChanges(law);
     pendingCount += pending.length;
 }
+
+const pendingScrapedCount = ScrapedItems.getPendingRepublicCount();
 
 const BASE = import.meta.env.BASE_URL ?? "/";
 ---
@@ -108,6 +116,31 @@ const BASE = import.meta.env.BASE_URL ?? "/";
         border-radius: 15px;
         font-weight: bold;
     }
+
+    .scraped-tracker {
+        background: #fef7f3;
+        border-left: 6px solid #f47738;
+        padding: 15px 20px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .scraped-tracker-text {
+        margin: 0;
+    }
+
+    .scraped-count-badge {
+        background: #f47738;
+        color: white;
+        padding: 2px 10px;
+        border-radius: 15px;
+        font-weight: bold;
+    }
+
 </style>
 
 <PageLayout chin={false} title="Republic Laws - Republic of Icenia" description="The Constitution, statutes, and treaties of the Republic of Icenia.">
@@ -116,6 +149,17 @@ const BASE = import.meta.env.BASE_URL ?? "/";
         <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Republic Laws</h1>
         <p class="govuk-body-l">The Constitution, statutes, and treaties of the Republic of Icenia.</p>
     </div>
+
+    <!-- Scraped Items Tracker -->
+    {pendingScrapedCount > 0 && (
+        <div class="scraped-tracker">
+            <p class="scraped-tracker-text govuk-body">
+                <span class="scraped-count-badge">{pendingScrapedCount}</span>
+                {pendingScrapedCount === 1 ? " item has" : " items have"} been scraped and {pendingScrapedCount === 1 ? "is" : "are"} awaiting review.
+            </p>
+            <a href={BASE + "news/scraped/"} class="govuk-link">View Scraped Items →</a>
+        </div>
+    )}
 
     <!-- Pending Incorporations Banner -->
     {pendingCount > 0 && (

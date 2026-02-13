@@ -3,6 +3,7 @@ import PageLayout from "@layouts/page.astro";
 import CityCard from "@components/laws/city-card.astro";
 import { CityLaws } from "../../lib/city-laws";
 import { CityActs } from "../../lib/city-acts";
+import { ScrapedItems } from "../../lib/scraped-items";
 import { Strings } from "@helpers";
 import { getActChangeColours } from "@comptime";
 
@@ -27,6 +28,8 @@ for (const law of currentLaws) {
     const pending = await CityLaws.getPendingChanges(law);
     totalPending += pending.length;
 }
+
+const pendingScrapedCount = ScrapedItems.getPendingCityCount();
 ---
 <style>
     .pending-banner {
@@ -35,6 +38,31 @@ for (const law of currentLaws) {
         padding: 15px 20px;
         margin-bottom: 30px;
     }
+
+    .scraped-tracker {
+        background: #fef7f3;
+        border-left: 6px solid #f47738;
+        padding: 15px 20px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .scraped-tracker-text {
+        margin: 0;
+    }
+
+    .scraped-count-badge {
+        background: #f47738;
+        color: white;
+        padding: 2px 10px;
+        border-radius: 15px;
+        font-weight: bold;
+    }
+
 </style>
 
 <PageLayout chin={false} title="City Laws - Icenia City" description="View the charter, ordinances, and regulations governing Icenia City.">
@@ -43,6 +71,17 @@ for (const law of currentLaws) {
         <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Icenia City Laws</h1>
         <p class="govuk-body-l">The charter, ordinances, and regulations governing the capital city.</p>
     </div>
+
+    <!-- Scraped Items Tracker -->
+    {pendingScrapedCount > 0 && (
+        <div class="scraped-tracker">
+            <p class="scraped-tracker-text govuk-body">
+                <span class="scraped-count-badge">{pendingScrapedCount}</span>
+                {pendingScrapedCount === 1 ? " item has" : " items have"} been scraped and {pendingScrapedCount === 1 ? "is" : "are"} awaiting review.
+            </p>
+            <a href={BASE + "icenia-city/news/scraped/"} class="govuk-link">View Scraped Items →</a>
+        </div>
+    )}
 
     <!-- Pending Incorporations Banner -->
     {totalPending > 0 && (
