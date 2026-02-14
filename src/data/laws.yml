@@ -414,3 +414,10 @@ entries:
     name: Safe Highways Act
     kind: statute
     masterdoc: /documents/Safe-Highways-Act.docx
+  - hidden: false
+    slug: icenia-salerno-framework-for-joint-cooperation
+    fullname: Framework for Joint Cooperation Between the Third Republic of Icenia
+      and the Kingdom of Salerno
+    name: Icenia-Salerno Framework for Joint Cooperation
+    kind: treaty
+    masterdoc: /archive/Framework for Joint Cooperation.pdf
