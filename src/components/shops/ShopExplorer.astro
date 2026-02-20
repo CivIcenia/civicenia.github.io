@@ -2715,11 +2715,10 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             if (loreCompacted) {
                 return { text: `${count}ci`, isCompacted: true };
             }
-            
-            if (count > 0 && count % 64 === 0) {
-                return { text: `${count / 64}ci`, isCompacted: true };
-            }
-            
+            // Do NOT treat raw counts that are multiples of 64 as "ci" unless the
+            // item is explicitly marked as compacted in its material or lore.
+            // This preserves the distinction between "5 stacks = 320" and
+            // "5ci = 5 compacted items".
             return { text: `${count}`, isCompacted: false };
         }
 
