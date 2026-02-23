@@ -1840,6 +1840,8 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             top: auto;
             left: 10px;
             bottom: 10px;
+            border-radius: 16px 16px 0 0 !important;
+            top: auto !important;
         }
         
         .map-extra-controls {
@@ -2703,6 +2705,37 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             return `${months}mo ago`;
         }
 
+        function compactMultiplier(item) {
+            if (!item) return 1;
+            
+            // If not explicitly marked as compacted, no multiplier
+            let loreText = '';
+            if (item && item.lore) {
+                loreText = Array.isArray(item.lore) ? item.lore.join(' ') : String(item.lore);
+            }
+            
+            const loreCompacted = (loreText.toLowerCase().includes('compacted')) ||
+                                 (item && item.material && item.material.toLowerCase().includes('compacted'));
+            
+            if (!loreCompacted) return 1;
+            
+            // Varying multipliers based on item type
+            const mat = (item.material || '').toString();
+            if (item.bookAuthor != null) return 8;
+            if (item.potionName != null) return 8;
+            if (mat === "Ender Pearl") return 8;
+            if (mat === "Bow") return 8;
+            if (mat.endsWith(" Pickaxe")) return 8;
+            if (mat.endsWith(" Axe")) return 8;
+            if (mat.endsWith(" Shovel")) return 8;
+            if (mat.endsWith(" Helmet")) return 8;
+            if (mat.endsWith(" Chestplate")) return 8;
+            if (mat.endsWith(" Leggings")) return 8;
+            if (mat.endsWith(" Boots")) return 8;
+            if (mat.endsWith("Egg")) return 16;
+            return 64;
+        }
+
         function formatCount(count, item) {
             let loreText = '';
             if (item && item.lore) {
@@ -2741,13 +2774,13 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             }
 
             // Convert an item's reported `count` into the number of "normal" items it represents.
-            // - If material/lore explicitly marks it compacted, each reported unit = 64 normal items.
+            // - If material/lore explicitly marks it compacted, each reported unit = multiplier (8/16/64) normal items.
             // - Otherwise the reported `count` is assumed to be normal units already.
             function normalizedCount(item) {
                 if (!item) return 0;
                 const c = Number(item.count) || 0;
-                if (isMaterialOrLoreCompacted(item)) return c * 64;
-                return c;
+                const multiplier = compactMultiplier(item);
+                return c * multiplier;
             }
 
         const ENCHANTMENTS = [
