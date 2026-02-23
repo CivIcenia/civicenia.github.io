@@ -1,0 +1,322 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><title>Icenia City</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Welcome to Icenia City, the capital of the Republic of Icenia."><meta name="keywords" content=""><link rel="canonical" href="https://civicenia.github.io/icenia-city/"><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/assets/css/sanitize-13.0.0.css"><link rel="stylesheet" href="/assets/css/govuk-frontend-4.3.1.min.css"><link rel="stylesheet" href="/assets/css/icenia-theme.css"><script src="/assets/js/govuk-frontend-4.3.1.min.js"></script><link rel="stylesheet" href="/astro/index.BYxJR2SJ.css"></head> <body data-base="/" data-header-height-desktop="56" data-header-height-mobile="44"> <a class="govuk-skip-link" href="#main-content">Skip to main content</a> <script>document.body.className = ((document.body.className) ? document.body.className + " js-enabled" : "js-enabled");</script> <!-- Custom Header bar with logo --> <header class="icenia-header" role="banner"> <div class="icenia-header__container"> <div class="icenia-header__logo"> <a href="/" class="icenia-header__link"> <img src="/assets/images/icenia_logo.svg" class="icenia-header__logo-img" alt=""> <span>Icenia</span> </a> </div> <button class="icenia-menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false"> <span class="icenia-menu-toggle__icon"> <span></span> <span></span> <span></span> </span> </button> </div> </header> <!-- Slide-out menu (for mobile/narrow screens) --> <div class="icenia-menu-overlay" id="menuOverlay"></div> <nav class="icenia-slide-menu" id="slideMenu" aria-label="Mobile navigation"> <div class="icenia-slide-menu__header"> <span class="icenia-slide-menu__title">Menu</span> <button class="icenia-slide-menu__close" id="menuClose" aria-label="Close menu">&times;</button> </div> <ul class="icenia-slide-menu__nav"> <li class="icenia-slide-menu__item"> <span class="icenia-slide-menu__link has-children" data-toggle="submenu"> Government </span> <ul class="icenia-slide-menu__submenu"> <div class="icenia-slide-menu__submenu-inner"> <li> <a href="/" target="_self"> Home </a> </li><li> <a href="/government/officials/" target="_self"> Officials </a> </li><li> <a href="/news/" target="_self"> News </a> </li><li> <a href="/laws/" target="_self"> Legislation </a> </li> </div> </ul> </li><li class="icenia-slide-menu__item"> <span class="icenia-slide-menu__link has-children" data-toggle="submenu"> Explore Icenia </span> <ul class="icenia-slide-menu__submenu"> <div class="icenia-slide-menu__submenu-inner"> <li> <a href="/union/" target="_self"> The Republic </a> </li><li> <a href="https://map.civinfo.net/#url=https://civicenia.github.io/government/borders.json" target="_blank"> CivMap </a> </li> </div> </ul> </li><li class="icenia-slide-menu__item"> <span class="icenia-slide-menu__link has-children" data-toggle="submenu"> Icenia City </span> <ul class="icenia-slide-menu__submenu"> <div class="icenia-slide-menu__submenu-inner"> <li> <a href="/icenia-city/" target="_self"> Home </a> </li><li> <a href="/icenia-city/council/" target="_self"> City Council </a> </li><li> <a href="/icenia-city/news/" target="_self"> City News </a> </li><li> <a href="/icenia-city/laws/" target="_self"> City Laws </a> </li><li> <a href="/icenia-city/shops/" target="_self"> Shops </a> </li> </div> </ul> </li><li class="icenia-slide-menu__item"> <span class="icenia-slide-menu__link has-children" data-toggle="submenu"> Join Us </span> <ul class="icenia-slide-menu__submenu"> <div class="icenia-slide-menu__submenu-inner"> <li> <a href="/guide/" target="_self"> New Player Guide </a> </li><li> <a href="https://discord.gg/dfwSjCjRN5" target="_blank"> Discord </a> </li> </div> </ul> </li><li class="icenia-slide-menu__item"> <span class="icenia-slide-menu__link has-children" data-toggle="submenu"> Utilities </span> <ul class="icenia-slide-menu__submenu"> <div class="icenia-slide-menu__submenu-inner"> <li> <a href="/shops/" target="_self"> Shop Explorer </a> </li><li> <a href="/stv/" target="_self"> Icenian STV </a> </li><li> <a href="/stv/visualize/" target="_self"> STV Visualization </a> </li><li> <a href="/admin/index.html" target="_self"> Admin Panel </a> </li> </div> </ul> </li> </ul> </nav> <!-- Separate Navigation Bar (for desktop/wide screens) --> <nav class="icenia-navbar" aria-label="Main navigation"> <div class="icenia-navbar__container govuk-width-container"> <ul class="icenia-navbar__list" id="navigation"> <li class="icenia-navbar__item"> <span class="icenia-navbar__link has-dropdown"> Government </span> <ul class="icenia-navbar__dropdown"> <li> <a href="/" target="_self"> Home </a> </li><li> <a href="/government/officials/" target="_self"> Officials </a> </li><li> <a href="/news/" target="_self"> News </a> </li><li> <a href="/laws/" target="_self"> Legislation </a> </li> </ul> </li><li class="icenia-navbar__item"> <span class="icenia-navbar__link has-dropdown"> Explore Icenia </span> <ul class="icenia-navbar__dropdown"> <li> <a href="/union/" target="_self"> The Republic </a> </li><li> <a href="https://map.civinfo.net/#url=https://civicenia.github.io/government/borders.json" target="_blank"> CivMap </a> </li> </ul> </li><li class="icenia-navbar__item"> <span class="icenia-navbar__link has-dropdown"> Icenia City </span> <ul class="icenia-navbar__dropdown"> <li> <a href="/icenia-city/" target="_self"> Home </a> </li><li> <a href="/icenia-city/council/" target="_self"> City Council </a> </li><li> <a href="/icenia-city/news/" target="_self"> City News </a> </li><li> <a href="/icenia-city/laws/" target="_self"> City Laws </a> </li><li> <a href="/icenia-city/shops/" target="_self"> Shops </a> </li> </ul> </li><li class="icenia-navbar__item"> <span class="icenia-navbar__link has-dropdown"> Join Us </span> <ul class="icenia-navbar__dropdown"> <li> <a href="/guide/" target="_self"> New Player Guide </a> </li><li> <a href="https://discord.gg/dfwSjCjRN5" target="_blank"> Discord </a> </li> </ul> </li><li class="icenia-navbar__item"> <span class="icenia-navbar__link has-dropdown"> Utilities </span> <ul class="icenia-navbar__dropdown"> <li> <a href="/shops/" target="_self"> Shop Explorer </a> </li><li> <a href="/stv/" target="_self"> Icenian STV </a> </li><li> <a href="/stv/visualize/" target="_self"> STV Visualization </a> </li><li> <a href="/admin/index.html" target="_self"> Admin Panel </a> </li> </ul> </li> </ul> </div> </nav>   <section class="city-hero" data-astro-cid-gt7lljkp> <div class="city-hero-overlay" data-astro-cid-gt7lljkp></div> <div class="city-hero-content" data-astro-cid-gt7lljkp> <h1 data-astro-cid-gt7lljkp>Icenia City</h1> <p class="city-hero-subtitle" data-astro-cid-gt7lljkp>Heart of the Republic</p> <div class="city-hero-actions" data-astro-cid-gt7lljkp> <a href="/guide/" class="icenia-btn" data-astro-cid-gt7lljkp>New Player Guide</a> <a href="https://discord.gg/dfwSjCjRN5" target="_blank" class="icenia-btn icenia-btn-secondary icenia-btn-tertiary" style="text-decoration: none;" data-astro-cid-gt7lljkp>Join Discord</a> </div> </div> <div class="icenia-scroll-hint" data-astro-cid-gt7lljkp> <span data-astro-cid-gt7lljkp>Scroll to explore</span> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-gt7lljkp> <path d="M12 5v14M5 12l7 7 7-7" data-astro-cid-gt7lljkp></path> </svg> </div> </section> <div class="govuk-width-container" data-astro-cid-gt7lljkp> <main class="govuk-main-wrapper" data-astro-cid-gt7lljkp> <!-- Redesigned About Section --> <section class="city-about-section" data-astro-cid-gt7lljkp> <div class="city-about-header" data-astro-cid-gt7lljkp> <h2 class="govuk-heading-l" data-astro-cid-gt7lljkp>Welcome to the Capital</h2> <p class="govuk-body-l city-about-lead" data-astro-cid-gt7lljkp>
+Where government, commerce, and community converge in the heart of the Republic.
+</p> </div> <div class="city-about-grid" data-astro-cid-gt7lljkp> <div class="city-about-feature" data-astro-cid-gt7lljkp> <div class="city-about-feature-icon" data-astro-cid-gt7lljkp>🏛️</div> <h3 data-astro-cid-gt7lljkp>Seat of Power</h3> <p data-astro-cid-gt7lljkp>Home to the Senate, Presidential offices, and the administrative heart of the Republic.</p> </div> <div class="city-about-feature" data-astro-cid-gt7lljkp> <div class="city-about-feature-icon" data-astro-cid-gt7lljkp>💰</div> <h3 data-astro-cid-gt7lljkp>Trade Hub</h3> <p data-astro-cid-gt7lljkp>The Enron Exchange and bustling markets make this the commercial center of the -,- quadrant.</p> </div> <div class="city-about-feature" data-astro-cid-gt7lljkp> <div class="city-about-feature-icon" data-astro-cid-gt7lljkp>🚂</div> <h3 data-astro-cid-gt7lljkp>Connected</h3> <p data-astro-cid-gt7lljkp>International rail links and well-planned infrastructure connect you to the world.</p> </div> <div class="city-about-feature" data-astro-cid-gt7lljkp> <div class="city-about-feature-icon" data-astro-cid-gt7lljkp>🏠</div> <h3 data-astro-cid-gt7lljkp>Welcoming</h3> <p data-astro-cid-gt7lljkp>Whether trading, building, or exploring — Icenia City has a place for everyone.</p> </div> </div> <div class="city-about-image-showcase" data-astro-cid-gt7lljkp> <img src="/assets/images/city_skyline_north.png" alt="Icenia City skyline looking north" data-astro-cid-gt7lljkp> </div> </section> <!-- Services Grid --> <section class="city-services-section" data-astro-cid-gt7lljkp> <h2 class="govuk-heading-l icenia-section-title" data-astro-cid-gt7lljkp>City Services</h2> <p class="govuk-body-l icenia-section-intro" data-astro-cid-gt7lljkp>
+Everything you need to know about living in and visiting Icenia City.
+</p> <div class="icenia-services-grid" data-astro-cid-gt7lljkp> <a href="/icenia-city/news/" class="icenia-service-card" data-astro-cid-gt7lljkp> <div class="icenia-service-icon" data-astro-cid-gt7lljkp>📰</div> <h3 class="icenia-service-title" data-astro-cid-gt7lljkp>City News</h3> <p class="icenia-service-desc" data-astro-cid-gt7lljkp>
+Latest updates, council records, and city announcements.
+</p> <span class="icenia-service-link" data-astro-cid-gt7lljkp>View News →</span> </a> <a href="/icenia-city/laws/" class="icenia-service-card" data-astro-cid-gt7lljkp> <div class="icenia-service-icon" data-astro-cid-gt7lljkp>📜</div> <h3 class="icenia-service-title" data-astro-cid-gt7lljkp>City Laws</h3> <p class="icenia-service-desc" data-astro-cid-gt7lljkp>
+View the city charter, ordinances, and regulations governing Icenia City.
+</p> <span class="icenia-service-link" data-astro-cid-gt7lljkp>View Laws →</span> </a> <a href="/icenia-city/council/" class="icenia-service-card" data-astro-cid-gt7lljkp> <div class="icenia-service-icon" data-astro-cid-gt7lljkp>🏛️</div> <h3 class="icenia-service-title" data-astro-cid-gt7lljkp>City Council</h3> <p class="icenia-service-desc" data-astro-cid-gt7lljkp>
+Meet the elected officials who govern and represent city residents.
+</p> <span class="icenia-service-link" data-astro-cid-gt7lljkp>View Council →</span> </a> <a href="/icenia-city/shops/" class="icenia-service-card" data-astro-cid-gt7lljkp> <div class="icenia-service-icon" data-astro-cid-gt7lljkp>🏪</div> <h3 class="icenia-service-title" data-astro-cid-gt7lljkp>Shops & Markets</h3> <p class="icenia-service-desc" data-astro-cid-gt7lljkp>
+Browse our commercial district, featuring the renowned Enron Exchange.
+</p> <span class="icenia-service-link" data-astro-cid-gt7lljkp>View Shops →</span> </a> <a href="https://map.civinfo.net/#url=https://civicenia.github.io/government/borders.json" target="_blank" class="icenia-service-card" data-astro-cid-gt7lljkp> <div class="icenia-service-icon" data-astro-cid-gt7lljkp>🗺️</div> <h3 class="icenia-service-title" data-astro-cid-gt7lljkp>City Map</h3> <p class="icenia-service-desc" data-astro-cid-gt7lljkp>
+Explore Icenia City and the surrounding region on the CivMC map.
+</p> <span class="icenia-service-link" data-astro-cid-gt7lljkp>Open Map →</span> </a> </div> </section> <!-- Featured Locations --> <section class="city-locations-section" data-astro-cid-gt7lljkp> <h2 class="govuk-heading-l icenia-section-title" data-astro-cid-gt7lljkp>Notable Locations</h2> <p class="govuk-body-l icenia-section-intro" data-astro-cid-gt7lljkp>
+Discover the landmarks that define Icenia City.
+</p> <div class="city-locations-grid" data-astro-cid-gt7lljkp> <div class="city-location-card city-location-featured" data-astro-cid-gt7lljkp> <div class="city-location-image" style="background-image: url('/assets/images/city_monument.png')" data-astro-cid-gt7lljkp></div> <div class="city-location-content" data-astro-cid-gt7lljkp> <h3 data-astro-cid-gt7lljkp>Government District</h3> <p data-astro-cid-gt7lljkp>
+The seat of the Senate and home to national monuments. While many key government buildings are here, the judiciary and some other offices are located elsewhere in the city.
+</p> </div> </div> <div class="city-location-card city-location-featured" data-astro-cid-gt7lljkp> <div class="city-location-image" style="background-image: url('/assets/images/enron.png')" data-astro-cid-gt7lljkp></div> <div class="city-location-content" data-astro-cid-gt7lljkp> <h3 data-astro-cid-gt7lljkp>Enron Exchange</h3> <p data-astro-cid-gt7lljkp>
+The premier marketplace of the -,- quadrant. Discover a growing currency exchange, top-tier shops, and the region’s most advanced ore processing facilities.
+</p> </div> </div> <div class="city-location-card city-location-featured" data-astro-cid-gt7lljkp> <div class="city-location-image" style="background-image: url('/assets/images/jah_park.png')" data-astro-cid-gt7lljkp></div> <div class="city-location-content" data-astro-cid-gt7lljkp> <h3 data-astro-cid-gt7lljkp>Jah Park</h3> <p data-astro-cid-gt7lljkp>
+A tranquil green oasis at the heart of Icenia City, Jah Park is surrounded by the rail station, markets, factories, businesses, and apartments—offering a peaceful retreat amid the city’s vibrant activity.
+</p> </div> </div> <div class="city-location-card city-location-featured" data-astro-cid-gt7lljkp> <div class="city-location-image" style="background-image: url('/assets/images/central_station.png')" data-astro-cid-gt7lljkp></div> <div class="city-location-content" data-astro-cid-gt7lljkp> <h3 data-astro-cid-gt7lljkp>Central Station</h3> <p data-astro-cid-gt7lljkp>
+Connected to the international rail network with easy access to all states of the Republic and beyond.
+</p> </div> </div> </div> </section> <!-- Call to Action --> <section class="icenia-cta-section" data-astro-cid-gt7lljkp> <div class="icenia-cta-content" data-astro-cid-gt7lljkp> <h2 class="govuk-heading-l" data-astro-cid-gt7lljkp>Ready to Join Us?</h2> <p class="govuk-body-l" data-astro-cid-gt7lljkp>
+Whether you're a new player looking for a home or an experienced builder 
+                        seeking new opportunities, Icenia City has a place for you.
+</p> <div class="icenia-cta-actions" data-astro-cid-gt7lljkp> <a href="/guide/" class="icenia-btn" data-astro-cid-gt7lljkp>Read the Guide</a> <a href="https://discord.gg/dfwSjCjRN5" target="_blank" class="icenia-btn icenia-btn-secondary" data-astro-cid-gt7lljkp>Join Our Discord</a> </div> </div> </section> </main> </div>  <script>GOVUKFrontend.initAll()</script> <script>
+            (function(){
+                const BASE = (document.body && document.body.dataset && document.body.dataset.base) ? document.body.dataset.base : "/";
+                if(!BASE) return;
+                try {
+                    document.querySelectorAll('img[src^="/"], a[href^="/"]')
+                        .forEach((el) => {
+                            ["src","href"].forEach((attr) => {
+                                if(!el.hasAttribute(attr)) return;
+                                const val = el.getAttribute(attr);
+                                if(!val || !val.startsWith('/')) return;
+                                if(val.startsWith(BASE)) return; // already rewritten
+                                el.setAttribute(attr, BASE + val.replace(/^\//, ''));
+                            });
+                        });
+                } catch (e) {
+                    // noop
+                }
+            })();
+        </script> <script>
+            (function(){
+                // For each dropdown item, measure both the link and dropdown menu width
+                // and set both to the larger of the two
+                const dropdownItems = document.querySelectorAll('.icenia-navbar__item');
+
+                function normalize(p){ return p ? p.replace(/\/+$/, '/') : '/'; }
+
+                dropdownItems.forEach(item => {
+                    const menu = item.querySelector('.icenia-navbar__dropdown');
+                    const parentLink = item.querySelector('.icenia-navbar__link');
+                    if (!menu || !parentLink) return;
+
+                    // Make menu measurable without affecting layout
+                    const origMenuStyles = {
+                        position: menu.style.position || '',
+                        visibility: menu.style.visibility || '',
+                        display: menu.style.display || '',
+                        clipPath: menu.style.clipPath || '',
+                        width: menu.style.width || '',
+                        minWidth: menu.style.minWidth || ''
+                    };
+                    
+                    menu.style.position = 'absolute';
+                    menu.style.visibility = 'hidden';
+                    menu.style.display = 'block';
+                    menu.style.clipPath = 'none';
+                    menu.style.width = 'auto';
+                    menu.style.minWidth = '0';
+
+                    // Measure the widest item inside the dropdown menu
+                    let maxDropdownWidth = 0;
+                    const links = menu.querySelectorAll('a');
+                    links.forEach(a => {
+                        // Temporarily ensure auto width for measurement
+                        const origWidth = a.style.width;
+                        a.style.width = 'auto';
+                        const w = a.scrollWidth;
+                        a.style.width = origWidth;
+                        if (w > maxDropdownWidth) maxDropdownWidth = w;
+                    });
+                    
+                    // Also check menu's natural width
+                    const menuNaturalWidth = menu.scrollWidth || 0;
+                    maxDropdownWidth = Math.max(maxDropdownWidth, menuNaturalWidth);
+
+                    // Measure the parent link's natural width
+                    const origLinkStyles = {
+                        width: parentLink.style.width || '',
+                        minWidth: parentLink.style.minWidth || ''
+                    };
+                    parentLink.style.width = 'auto';
+                    parentLink.style.minWidth = '0';
+                    
+                    // Force reflow
+                    void parentLink.offsetWidth;
+                    
+                    const linkNaturalWidth = parentLink.scrollWidth || 0;
+
+                    // Determine the final width (the larger of the two)
+                    const finalWidth = Math.max(maxDropdownWidth, linkNaturalWidth);
+
+                    // Apply the same width to both elements
+                    parentLink.style.width = finalWidth + 'px';
+                    parentLink.style.minWidth = finalWidth + 'px';
+                    menu.style.width = finalWidth + 'px';
+                    menu.style.minWidth = '0'; // No minimum width on dropdown
+                   
+                    // Restore other menu styles
+                    menu.style.position = origMenuStyles.position;
+                    menu.style.visibility = origMenuStyles.visibility;
+                    menu.style.display = origMenuStyles.display;
+                    menu.style.clipPath = origMenuStyles.clipPath;
+                });
+
+                // Active-state detection (mark dropdown and matching child link)
+                // Note: Only mark child dropdown links active on an exact path match
+                // to avoid highlighting the index/parent child when a deeper route is active.
+                const currentPathRaw = window.location.pathname || '/';
+                const currentPath = normalize(currentPathRaw);
+
+                dropdownItems.forEach(item => {
+                    const menuLinks = item.querySelectorAll('.icenia-navbar__dropdown a');
+                    let hasActiveChild = false;
+
+                    menuLinks.forEach(link => {
+                        const href = link.getAttribute('href');
+                        if (!href) return;
+                        
+                        // Skip external links (different origin) - they should never be marked active
+                        try {
+                            const linkUrl = new URL(href, window.location.origin);
+                            if (linkUrl.origin !== window.location.origin) return;
+                        } catch (e) {
+                            // If URL parsing fails, skip this link
+                            return;
+                        }
+                        
+                        let linkPath;
+                        try { linkPath = new URL(href, window.location.origin).pathname; } catch (e) { linkPath = href; }
+                        const normLink = normalize(linkPath);
+
+                        // Mark child link active only on exact match (avoid prefix matches like
+                        // '/icenia-city/' matching '/icenia-city/laws/')
+                        if (normLink === currentPath) {
+                            link.classList.add('active');
+                            hasActiveChild = true;
+                        }
+                    });
+
+                    const toggle = item.querySelector('.icenia-navbar__link');
+                    // Keep existing behavior for marking the parent item active when the current
+                    // path is within that section (so the parent nav shows the active section)
+                    if (toggle && toggle.getAttribute('href')) {
+                        try {
+                            const tPath = new URL(toggle.getAttribute('href'), window.location.origin).pathname.replace(/\/+$/, '/');
+                            if (tPath !== '/' && currentPath.startsWith(tPath)) hasActiveChild = true;
+                        } catch (e) {
+                            // ignore
+                        }
+                    }
+
+                    if (hasActiveChild) item.classList.add('active');
+                });
+            })();
+        </script> <script>
+            // Responsive navbar: horizontal navbar OR slide-out menu
+            (function(){
+                const navList = document.querySelector('.icenia-navbar__list');
+                const navbar = document.querySelector('.icenia-navbar');
+                const navContainer = document.querySelector('.icenia-navbar__container');
+                const menuToggle = document.getElementById('menuToggle');
+                const menuClose = document.getElementById('menuClose');
+                const slideMenu = document.getElementById('slideMenu');
+                const menuOverlay = document.getElementById('menuOverlay');
+                
+                if (!navList || !menuToggle || !slideMenu || !navbar) return;
+                
+                // Measure the total width needed for horizontal navbar
+                function measureHorizontalWidth() {
+                    let total = 0;
+                    const items = navList.querySelectorAll('.icenia-navbar__item');
+                    items.forEach(item => {
+                        const link = item.querySelector('.icenia-navbar__link');
+                        if (link) {
+                            // Get computed styles to account for padding
+                            const style = window.getComputedStyle(link);
+                            const paddingLeft = parseFloat(style.paddingLeft) || 0;
+                            const paddingRight = parseFloat(style.paddingRight) || 0;
+                            // Use scrollWidth for the content width, which includes padding
+                            total += link.scrollWidth;
+                        }
+                    });
+                    return total;
+                }
+                
+                // Get the actual available width in the navbar container
+                function getAvailableWidth() {
+                    if (!navContainer) return window.innerWidth;
+                    
+                    const style = window.getComputedStyle(navContainer);
+                    const paddingLeft = parseFloat(style.paddingLeft) || 0;
+                    const paddingRight = parseFloat(style.paddingRight) || 0;
+                    
+                    // The container has max-width: 960px, so we need to consider that
+                    const maxWidth = 960;
+                    const screenWidth = window.innerWidth;
+                    
+                    // Calculate container width (min of screen width and max-width)
+                    let containerWidth = Math.min(screenWidth, maxWidth);
+                    
+                    // Subtract padding
+                    return containerWidth - paddingLeft - paddingRight;
+                }
+                
+                // Check if horizontal navbar fits
+                function checkNavbarFit() {
+                    // Temporarily ensure navbar is visible for measurement
+                    const wasMenuMode = document.body.classList.contains('menu-mode');
+                    const wasMenuOpen = slideMenu.classList.contains('is-open');
+                    
+                    // Remove menu mode temporarily to measure navbar
+                    document.body.classList.remove('menu-mode');
+                    
+                    // Force reflow to ensure styles are applied
+                    void navList.offsetWidth;
+                    
+                    // Wait a tiny bit for styles to settle, then measure
+                    const horizontalWidth = measureHorizontalWidth();
+                    const availableWidth = getAvailableWidth();
+                    
+                    
+                    // Small tolerance to avoid edge-case flickering
+                    const tolerance = 10;
+                    
+                    const needsMenuMode = horizontalWidth > availableWidth - tolerance;
+                    
+                    // Debug logging (can be removed in production)
+                    // console.log('Horizontal width:', horizontalWidth, 'Available:', availableWidth, 'Needs menu:', needsMenuMode);
+                    
+                    if (needsMenuMode) {
+                        document.body.classList.add('menu-mode');
+                    } else {
+                        document.body.classList.remove('menu-mode');
+                        // Also close the menu if it was open
+                        closeMenu();
+                    }
+                }
+                
+                // Open slide menu
+                function openMenu() {
+                    slideMenu.classList.add('is-open');
+                    menuOverlay.classList.add('is-visible');
+                    menuToggle.classList.add('is-active');
+                    menuToggle.setAttribute('aria-expanded', 'true');
+                    document.body.classList.add('menu-open');
+                }
+                
+                // Close slide menu
+                function closeMenu() {
+                    slideMenu.classList.remove('is-open');
+                    menuOverlay.classList.remove('is-visible');
+                    menuToggle.classList.remove('is-active');
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                    document.body.classList.remove('menu-open');
+                }
+                
+                // Toggle slide menu
+                function toggleMenu() {
+                    if (slideMenu.classList.contains('is-open')) {
+                        closeMenu();
+                    } else {
+                        openMenu();
+                    }
+                }
+                
+                // Event listeners for menu toggle
+                menuToggle.addEventListener('click', toggleMenu);
+                menuClose.addEventListener('click', closeMenu);
+                menuOverlay.addEventListener('click', closeMenu);
+                
+                // Handle submenu toggles in slide menu
+                const submenuToggles = document.querySelectorAll('.icenia-slide-menu__link.has-children');
+                submenuToggles.forEach(toggle => {
+                    toggle.addEventListener('click', function() {
+                        const submenu = this.nextElementSibling;
+                        if (submenu && submenu.classList.contains('icenia-slide-menu__submenu')) {
+                            this.classList.toggle('is-expanded');
+                            submenu.classList.toggle('is-open');
+                        }
+                    });
+                });
+                
+                // Close menu on escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && slideMenu.classList.contains('is-open')) {
+                        closeMenu();
+                        menuToggle.focus();
+                    }
+                });
+                
+                // Run on load (with a small delay to ensure styles are loaded)
+                // Use requestAnimationFrame to ensure DOM is fully rendered
+                requestAnimationFrame(function() {
+                    requestAnimationFrame(function() {
+                        checkNavbarFit();
+                    });
+                });
+                
+                let resizeTimeout;
+                window.addEventListener('resize', function() {
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(checkNavbarFit, 100);
+                });
+            })();
+        </script> </body> </html> 

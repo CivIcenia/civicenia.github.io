@@ -1,0 +1,374 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><title>Icenian STV Calculator</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="This calculator implements Single Transferable Vote (STV) as used in Icenian elections."><meta name="keywords" content=""><link rel="canonical" href="https://civicenia.github.io/stv/"><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/assets/css/sanitize-13.0.0.css"><link rel="stylesheet" href="/assets/css/govuk-frontend-4.3.1.min.css"><link rel="stylesheet" href="/assets/css/icenia-theme.css"><script src="/assets/js/govuk-frontend-4.3.1.min.js"></script><link rel="stylesheet" href="/astro/index.C1YI9ykT.css"><script type="module" src="/astro/hoisted.Bzt6GtQ-.js"></script></head> <body data-base="/" data-header-height-desktop="56" data-header-height-mobile="44"> <a class="govuk-skip-link" href="#main-content">Skip to main content</a> <script>document.body.className = ((document.body.className) ? document.body.className + " js-enabled" : "js-enabled");</script> <!-- Custom Header bar with logo --> <header class="icenia-header" role="banner"> <div class="icenia-header__container"> <div class="icenia-header__logo"> <a href="/" class="icenia-header__link"> <img src="/assets/images/icenia_logo.svg" class="icenia-header__logo-img" alt=""> <span>Icenia</span> </a> </div> <button class="icenia-menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false"> <span class="icenia-menu-toggle__icon"> <span></span> <span></span> <span></span> </span> </button> </div> </header> <!-- Slide-out menu (for mobile/narrow screens) --> <div class="icenia-menu-overlay" id="menuOverlay"></div> <nav class="icenia-slide-menu" id="slideMenu" aria-label="Mobile navigation"> <div class="icenia-slide-menu__header"> <span class="icenia-slide-menu__title">Menu</span> <button class="icenia-slide-menu__close" id="menuClose" aria-label="Close menu">&times;</button> </div> <ul class="icenia-slide-menu__nav"> <li class="icenia-slide-menu__item"> <span class="icenia-slide-menu__link has-children" data-toggle="submenu"> Government </span> <ul class="icenia-slide-menu__submenu"> <div class="icenia-slide-menu__submenu-inner"> <li> <a href="/" target="_self"> Home </a> </li><li> <a href="/government/officials/" target="_self"> Officials </a> </li><li> <a href="/news/" target="_self"> News </a> </li><li> <a href="/laws/" target="_self"> Legislation </a> </li> </div> </ul> </li><li class="icenia-slide-menu__item"> <span class="icenia-slide-menu__link has-children" data-toggle="submenu"> Explore Icenia </span> <ul class="icenia-slide-menu__submenu"> <div class="icenia-slide-menu__submenu-inner"> <li> <a href="/union/" target="_self"> The Republic </a> </li><li> <a href="https://map.civinfo.net/#url=https://civicenia.github.io/government/borders.json" target="_blank"> CivMap </a> </li> </div> </ul> </li><li class="icenia-slide-menu__item"> <span class="icenia-slide-menu__link has-children" data-toggle="submenu"> Icenia City </span> <ul class="icenia-slide-menu__submenu"> <div class="icenia-slide-menu__submenu-inner"> <li> <a href="/icenia-city/" target="_self"> Home </a> </li><li> <a href="/icenia-city/council/" target="_self"> City Council </a> </li><li> <a href="/icenia-city/news/" target="_self"> City News </a> </li><li> <a href="/icenia-city/laws/" target="_self"> City Laws </a> </li><li> <a href="/icenia-city/shops/" target="_self"> Shops </a> </li> </div> </ul> </li><li class="icenia-slide-menu__item"> <span class="icenia-slide-menu__link has-children" data-toggle="submenu"> Join Us </span> <ul class="icenia-slide-menu__submenu"> <div class="icenia-slide-menu__submenu-inner"> <li> <a href="/guide/" target="_self"> New Player Guide </a> </li><li> <a href="https://discord.gg/dfwSjCjRN5" target="_blank"> Discord </a> </li> </div> </ul> </li><li class="icenia-slide-menu__item"> <span class="icenia-slide-menu__link has-children" data-toggle="submenu"> Utilities </span> <ul class="icenia-slide-menu__submenu"> <div class="icenia-slide-menu__submenu-inner"> <li> <a href="/shops/" target="_self"> Shop Explorer </a> </li><li> <a href="/stv/" target="_self"> Icenian STV </a> </li><li> <a href="/stv/visualize/" target="_self"> STV Visualization </a> </li><li> <a href="/admin/index.html" target="_self"> Admin Panel </a> </li> </div> </ul> </li> </ul> </nav> <!-- Separate Navigation Bar (for desktop/wide screens) --> <nav class="icenia-navbar" aria-label="Main navigation"> <div class="icenia-navbar__container govuk-width-container"> <ul class="icenia-navbar__list" id="navigation"> <li class="icenia-navbar__item"> <span class="icenia-navbar__link has-dropdown"> Government </span> <ul class="icenia-navbar__dropdown"> <li> <a href="/" target="_self"> Home </a> </li><li> <a href="/government/officials/" target="_self"> Officials </a> </li><li> <a href="/news/" target="_self"> News </a> </li><li> <a href="/laws/" target="_self"> Legislation </a> </li> </ul> </li><li class="icenia-navbar__item"> <span class="icenia-navbar__link has-dropdown"> Explore Icenia </span> <ul class="icenia-navbar__dropdown"> <li> <a href="/union/" target="_self"> The Republic </a> </li><li> <a href="https://map.civinfo.net/#url=https://civicenia.github.io/government/borders.json" target="_blank"> CivMap </a> </li> </ul> </li><li class="icenia-navbar__item"> <span class="icenia-navbar__link has-dropdown"> Icenia City </span> <ul class="icenia-navbar__dropdown"> <li> <a href="/icenia-city/" target="_self"> Home </a> </li><li> <a href="/icenia-city/council/" target="_self"> City Council </a> </li><li> <a href="/icenia-city/news/" target="_self"> City News </a> </li><li> <a href="/icenia-city/laws/" target="_self"> City Laws </a> </li><li> <a href="/icenia-city/shops/" target="_self"> Shops </a> </li> </ul> </li><li class="icenia-navbar__item"> <span class="icenia-navbar__link has-dropdown"> Join Us </span> <ul class="icenia-navbar__dropdown"> <li> <a href="/guide/" target="_self"> New Player Guide </a> </li><li> <a href="https://discord.gg/dfwSjCjRN5" target="_blank"> Discord </a> </li> </ul> </li><li class="icenia-navbar__item"> <span class="icenia-navbar__link has-dropdown"> Utilities </span> <ul class="icenia-navbar__dropdown"> <li> <a href="/shops/" target="_self"> Shop Explorer </a> </li><li> <a href="/stv/" target="_self"> Icenian STV </a> </li><li> <a href="/stv/visualize/" target="_self"> STV Visualization </a> </li><li> <a href="/admin/index.html" target="_self"> Admin Panel </a> </li> </ul> </li> </ul> </div> </nav>  <div class="govuk-width-container"> <style>main.govuk-main-wrapper { padding-top: 0 !important; }</style> <main class="govuk-main-wrapper govuk-body" id="main-content" role="main">   <div class="page-header"> <h1 class="govuk-heading-xl" style="margin-bottom: 10px;">Icenian STV Calculator</h1> <p class="govuk-body-l">This calculator implements Single Transferable Vote (STV) as used in Icenian elections.</p> </div> <div class="govuk-width-container"> <main class="govuk-main-wrapper govuk-body" id="main-content"> <!-- Mode Selection --> <div class="mode-selection govuk-form-group"> <fieldset class="govuk-fieldset"> <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+Input Mode
+</legend> <div class="govuk-radios govuk-radios--inline"> <div class="govuk-radios__item"> <input class="govuk-radios__input" id="mode-simple" name="input-mode" type="radio" value="simple" checked> <label class="govuk-label govuk-radios__label" for="mode-simple">
+Simple Format
+</label> </div> <div class="govuk-radios__item"> <input class="govuk-radios__input" id="mode-discord" name="input-mode" type="radio" value="discord"> <label class="govuk-label govuk-radios__label" for="mode-discord">
+Discord Paste
+</label> </div> </div> </fieldset> <!-- Import Election --> <div class="govuk-!-margin-top-6" id="import-section"> <h2 class="govuk-heading-s">Or Import Previous Election</h2> <p class="govuk-body-s">Load a previously exported election file to resume your work.</p> <input type="file" id="import-file-input" accept=".json" style="display: none;"> <div class="icenia-button-group"> <button class="icenia-btn icenia-btn-secondary" id="import-election-button" type="button">
+Import Election File
+</button> <button class="icenia-btn icenia-btn-warning" id="clear-session-start" type="button">
+Clear Session
+</button> </div> </div> </div> <!-- Simple Mode (original interface) --> <div id="simple-mode" class="stv-calculator"> <div class="govuk-form-group"> <label class="govuk-label govuk-label--s" for="candidates">
+Candidates (one per line)
+</label> <textarea class="icenia-textarea" id="candidates" rows="8" placeholder="Enter candidate names, one per line"></textarea> </div> <div class="govuk-form-group"> <label class="govuk-label govuk-label--s" for="seats">
+Number of Seats to Fill
+</label> <input class="icenia-input govuk-input--width-5" id="seats" type="number" value="5" min="1"> </div> <div class="govuk-form-group"> <label class="govuk-label govuk-label--s" for="ballots">
+Ballots (one per line, format: "voter: cand1, cand2, cand3")
+</label> <textarea class="icenia-textarea" id="ballots" rows="15" placeholder="recycler: Ratat0ing, Dr_Bacon_hair, hsmnewfriend
+alzubloxxer11: Dr_Bacon_hair, hsmnewfriend, Ratat0ing"></textarea> </div> <button class="icenia-btn" id="calculate" type="button">
+Calculate Results
+</button> <button class="icenia-btn icenia-btn-secondary" id="loadExample" type="button">
+Load Example Data
+</button> </div> <!-- Discord Mode --> <div id="discord-mode" class="stv-calculator" style="display: none;"> <div class="govuk-form-group"> <label class="govuk-label govuk-label--s" for="discord-candidates">
+Official Candidates (paste from Discord, one per line)
+</label> <div class="govuk-hint">
+Include @mentions or plain names. Example: @Mayor Ratat0ing or DinoCompactor
+</div> <textarea class="icenia-textarea" id="discord-candidates" rows="10" placeholder="@DinoCompactor
+@IsraelGPT
+@CreepilyCreep
+@Dr Bacon Hair(real)"></textarea> </div> <div class="govuk-form-group"> <label class="govuk-label govuk-label--s" for="discord-seats">
+Number of Seats to Fill
+</label> <input class="icenia-input govuk-input--width-5" id="discord-seats" type="number" value="5" min="1"> </div> <div class="govuk-form-group"> <label class="govuk-label govuk-label--s" for="discord-ballots">
+Raw Discord Ballot Data (paste entire voting channel)
+</label> <div class="govuk-hint">
+Copy and paste the entire Discord channel content including usernames, timestamps, and votes
+</div> <textarea class="icenia-textarea" id="discord-ballots" rows="20" placeholder="Ex-Councilor TheRecycler — 03/01/2026 06:12
+Ratat0ing
+Dr Bacon Hair
+HsmNewfriend"></textarea> </div> <button class="icenia-btn" id="parse-discord" type="button">
+Parse Discord Data
+</button> </div> <!-- Name Matching Interface --> <div id="name-matching" style="display: none;"> <div class="icenia-button-group govuk-!-margin-bottom-6"> <button class="icenia-btn icenia-btn-secondary" id="export-election" type="button">
+Export Election
+</button> <button class="icenia-btn icenia-btn-warning" id="clear-session" type="button">
+Clear Session
+</button> </div> <h2 class="govuk-heading-m">Review Candidate Name Matches</h2> <p class="govuk-body">
+The following names were found in ballots. Please confirm matches or mark as invalid.
+</p> <!-- Correlation Table --> <div id="correlation-table-section" style="display: none;" class="govuk-!-margin-bottom-6"> <details class="govuk-details"> <summary class="govuk-details__summary"> <span class="govuk-details__summary-text">
+View Learned Name Correlations (<span id="correlation-count">0</span>)
+</span> </summary> <div class="govuk-details__text"> <p class="govuk-body-s">These name patterns have been learned during this session:</p> <table class="govuk-table"> <thead class="govuk-table__head"> <tr class="govuk-table__row"> <th scope="col" class="govuk-table__header">Voter Name Pattern</th> <th scope="col" class="govuk-table__header">Matched Candidate</th> </tr> </thead> <tbody class="govuk-table__body" id="correlation-table-body"></tbody> </table> </div> </details> </div> <div id="name-match-list"></div> <div class="icenia-button-group govuk-!-margin-top-6"> <button class="icenia-btn icenia-btn-secondary" id="back-to-discord" type="button">
+← Back to Edit
+</button> <!-- <button class="icenia-btn" id="confirm-matches" type="button">
+                        Review Ballots →
+                    </button> --> </div> </div> <!-- Duplicate Voter Resolution Interface --> <div id="duplicate-voters" style="display: none;"> <h2 class="govuk-heading-m">Resolve Duplicate Voters</h2> <p class="govuk-body">
+Some voters submitted multiple ballots. Please select which ballot to use for each voter.
+</p> <div id="duplicate-voters-content"></div> <div class="icenia-button-group govuk-!-margin-top-6"> <button class="icenia-btn icenia-btn-secondary" id="back-to-name-matching-from-duplicates" type="button">
+← Back to Name Matching
+</button> <button class="icenia-btn" id="proceed-to-ballot-review" type="button">
+Proceed to Ballot Review →
+</button> </div> </div> <!-- Ballot Review Interface --> <div id="ballot-review" style="display: none;"> <div class="icenia-button-group govuk-!-margin-bottom-6"> <button class="icenia-btn icenia-btn-secondary" id="export-election-review" type="button">
+Export Election
+</button> <button class="icenia-btn icenia-btn-warning" id="clear-session-review" type="button">
+Clear Session
+</button> </div> <h2 class="govuk-heading-m">Review Ballots</h2> <p class="govuk-body">
+Review each voter's ballot with the name mappings applied. You can edit mappings using the dropdowns.
+</p> <div id="ballot-review-progress" class="match-progress"></div> <div id="ballot-review-content"></div> <div class="icenia-button-group govuk-!-margin-top-6"> <button class="icenia-btn icenia-btn-secondary" id="back-to-name-matching" type="button">
+← Back
+</button> <!-- <button class="icenia-btn" id="calculate-from-review" type="button">
+                        Calculate Results →
+                    </button> --> </div> </div> <div id="results" style="display: none;"> <h2 class="govuk-heading-m">Results</h2> <div class="govuk-form-group" style="max-width: 480px; margin-bottom: 20px;"> <label class="govuk-label" for="election-name">
+Election name (for exports)
+</label> <div class="govuk-hint">Used in exported file names and RCVis metadata.</div> <input class="govuk-input" id="election-name" name="election-name" type="text" placeholder="e.g. 2026-01 Senate Election"> </div> <div class="govuk-form-group" style="max-width: 300px; margin-bottom: 20px;"> <label class="govuk-label" for="results-seats">
+Number of winners
+</label> <input class="govuk-input" id="results-seats" name="results-seats" type="number" min="1" value="5" style="width: 100px;"> <button class="icenia-btn" id="recalculate-results" type="button" style="margin-left: 10px;">
+Recalculate
+</button> </div> <div id="log" class="stv-log"></div> <div id="winners" class="stv-winners"></div> <div class="icenia-button-group govuk-!-margin-top-6"> <button class="icenia-btn" id="export-results" type="button">
+Export Election
+</button> <button class="icenia-btn" id="export-rcvis" type="button">
+Export for RCVis
+</button> <button class="icenia-btn icenia-btn-secondary" id="return-to-start" type="button">
+Return to Start (Remember to Export!)
+</button> </div> </div> </main></div>    </main> </div>  <script>GOVUKFrontend.initAll()</script> <script>
+            (function(){
+                const BASE = (document.body && document.body.dataset && document.body.dataset.base) ? document.body.dataset.base : "/";
+                if(!BASE) return;
+                try {
+                    document.querySelectorAll('img[src^="/"], a[href^="/"]')
+                        .forEach((el) => {
+                            ["src","href"].forEach((attr) => {
+                                if(!el.hasAttribute(attr)) return;
+                                const val = el.getAttribute(attr);
+                                if(!val || !val.startsWith('/')) return;
+                                if(val.startsWith(BASE)) return; // already rewritten
+                                el.setAttribute(attr, BASE + val.replace(/^\//, ''));
+                            });
+                        });
+                } catch (e) {
+                    // noop
+                }
+            })();
+        </script> <script>
+            (function(){
+                // For each dropdown item, measure both the link and dropdown menu width
+                // and set both to the larger of the two
+                const dropdownItems = document.querySelectorAll('.icenia-navbar__item');
+
+                function normalize(p){ return p ? p.replace(/\/+$/, '/') : '/'; }
+
+                dropdownItems.forEach(item => {
+                    const menu = item.querySelector('.icenia-navbar__dropdown');
+                    const parentLink = item.querySelector('.icenia-navbar__link');
+                    if (!menu || !parentLink) return;
+
+                    // Make menu measurable without affecting layout
+                    const origMenuStyles = {
+                        position: menu.style.position || '',
+                        visibility: menu.style.visibility || '',
+                        display: menu.style.display || '',
+                        clipPath: menu.style.clipPath || '',
+                        width: menu.style.width || '',
+                        minWidth: menu.style.minWidth || ''
+                    };
+                    
+                    menu.style.position = 'absolute';
+                    menu.style.visibility = 'hidden';
+                    menu.style.display = 'block';
+                    menu.style.clipPath = 'none';
+                    menu.style.width = 'auto';
+                    menu.style.minWidth = '0';
+
+                    // Measure the widest item inside the dropdown menu
+                    let maxDropdownWidth = 0;
+                    const links = menu.querySelectorAll('a');
+                    links.forEach(a => {
+                        // Temporarily ensure auto width for measurement
+                        const origWidth = a.style.width;
+                        a.style.width = 'auto';
+                        const w = a.scrollWidth;
+                        a.style.width = origWidth;
+                        if (w > maxDropdownWidth) maxDropdownWidth = w;
+                    });
+                    
+                    // Also check menu's natural width
+                    const menuNaturalWidth = menu.scrollWidth || 0;
+                    maxDropdownWidth = Math.max(maxDropdownWidth, menuNaturalWidth);
+
+                    // Measure the parent link's natural width
+                    const origLinkStyles = {
+                        width: parentLink.style.width || '',
+                        minWidth: parentLink.style.minWidth || ''
+                    };
+                    parentLink.style.width = 'auto';
+                    parentLink.style.minWidth = '0';
+                    
+                    // Force reflow
+                    void parentLink.offsetWidth;
+                    
+                    const linkNaturalWidth = parentLink.scrollWidth || 0;
+
+                    // Determine the final width (the larger of the two)
+                    const finalWidth = Math.max(maxDropdownWidth, linkNaturalWidth);
+
+                    // Apply the same width to both elements
+                    parentLink.style.width = finalWidth + 'px';
+                    parentLink.style.minWidth = finalWidth + 'px';
+                    menu.style.width = finalWidth + 'px';
+                    menu.style.minWidth = '0'; // No minimum width on dropdown
+                   
+                    // Restore other menu styles
+                    menu.style.position = origMenuStyles.position;
+                    menu.style.visibility = origMenuStyles.visibility;
+                    menu.style.display = origMenuStyles.display;
+                    menu.style.clipPath = origMenuStyles.clipPath;
+                });
+
+                // Active-state detection (mark dropdown and matching child link)
+                // Note: Only mark child dropdown links active on an exact path match
+                // to avoid highlighting the index/parent child when a deeper route is active.
+                const currentPathRaw = window.location.pathname || '/';
+                const currentPath = normalize(currentPathRaw);
+
+                dropdownItems.forEach(item => {
+                    const menuLinks = item.querySelectorAll('.icenia-navbar__dropdown a');
+                    let hasActiveChild = false;
+
+                    menuLinks.forEach(link => {
+                        const href = link.getAttribute('href');
+                        if (!href) return;
+                        
+                        // Skip external links (different origin) - they should never be marked active
+                        try {
+                            const linkUrl = new URL(href, window.location.origin);
+                            if (linkUrl.origin !== window.location.origin) return;
+                        } catch (e) {
+                            // If URL parsing fails, skip this link
+                            return;
+                        }
+                        
+                        let linkPath;
+                        try { linkPath = new URL(href, window.location.origin).pathname; } catch (e) { linkPath = href; }
+                        const normLink = normalize(linkPath);
+
+                        // Mark child link active only on exact match (avoid prefix matches like
+                        // '/icenia-city/' matching '/icenia-city/laws/')
+                        if (normLink === currentPath) {
+                            link.classList.add('active');
+                            hasActiveChild = true;
+                        }
+                    });
+
+                    const toggle = item.querySelector('.icenia-navbar__link');
+                    // Keep existing behavior for marking the parent item active when the current
+                    // path is within that section (so the parent nav shows the active section)
+                    if (toggle && toggle.getAttribute('href')) {
+                        try {
+                            const tPath = new URL(toggle.getAttribute('href'), window.location.origin).pathname.replace(/\/+$/, '/');
+                            if (tPath !== '/' && currentPath.startsWith(tPath)) hasActiveChild = true;
+                        } catch (e) {
+                            // ignore
+                        }
+                    }
+
+                    if (hasActiveChild) item.classList.add('active');
+                });
+            })();
+        </script> <script>
+            // Responsive navbar: horizontal navbar OR slide-out menu
+            (function(){
+                const navList = document.querySelector('.icenia-navbar__list');
+                const navbar = document.querySelector('.icenia-navbar');
+                const navContainer = document.querySelector('.icenia-navbar__container');
+                const menuToggle = document.getElementById('menuToggle');
+                const menuClose = document.getElementById('menuClose');
+                const slideMenu = document.getElementById('slideMenu');
+                const menuOverlay = document.getElementById('menuOverlay');
+                
+                if (!navList || !menuToggle || !slideMenu || !navbar) return;
+                
+                // Measure the total width needed for horizontal navbar
+                function measureHorizontalWidth() {
+                    let total = 0;
+                    const items = navList.querySelectorAll('.icenia-navbar__item');
+                    items.forEach(item => {
+                        const link = item.querySelector('.icenia-navbar__link');
+                        if (link) {
+                            // Get computed styles to account for padding
+                            const style = window.getComputedStyle(link);
+                            const paddingLeft = parseFloat(style.paddingLeft) || 0;
+                            const paddingRight = parseFloat(style.paddingRight) || 0;
+                            // Use scrollWidth for the content width, which includes padding
+                            total += link.scrollWidth;
+                        }
+                    });
+                    return total;
+                }
+                
+                // Get the actual available width in the navbar container
+                function getAvailableWidth() {
+                    if (!navContainer) return window.innerWidth;
+                    
+                    const style = window.getComputedStyle(navContainer);
+                    const paddingLeft = parseFloat(style.paddingLeft) || 0;
+                    const paddingRight = parseFloat(style.paddingRight) || 0;
+                    
+                    // The container has max-width: 960px, so we need to consider that
+                    const maxWidth = 960;
+                    const screenWidth = window.innerWidth;
+                    
+                    // Calculate container width (min of screen width and max-width)
+                    let containerWidth = Math.min(screenWidth, maxWidth);
+                    
+                    // Subtract padding
+                    return containerWidth - paddingLeft - paddingRight;
+                }
+                
+                // Check if horizontal navbar fits
+                function checkNavbarFit() {
+                    // Temporarily ensure navbar is visible for measurement
+                    const wasMenuMode = document.body.classList.contains('menu-mode');
+                    const wasMenuOpen = slideMenu.classList.contains('is-open');
+                    
+                    // Remove menu mode temporarily to measure navbar
+                    document.body.classList.remove('menu-mode');
+                    
+                    // Force reflow to ensure styles are applied
+                    void navList.offsetWidth;
+                    
+                    // Wait a tiny bit for styles to settle, then measure
+                    const horizontalWidth = measureHorizontalWidth();
+                    const availableWidth = getAvailableWidth();
+                    
+                    
+                    // Small tolerance to avoid edge-case flickering
+                    const tolerance = 10;
+                    
+                    const needsMenuMode = horizontalWidth > availableWidth - tolerance;
+                    
+                    // Debug logging (can be removed in production)
+                    // console.log('Horizontal width:', horizontalWidth, 'Available:', availableWidth, 'Needs menu:', needsMenuMode);
+                    
+                    if (needsMenuMode) {
+                        document.body.classList.add('menu-mode');
+                    } else {
+                        document.body.classList.remove('menu-mode');
+                        // Also close the menu if it was open
+                        closeMenu();
+                    }
+                }
+                
+                // Open slide menu
+                function openMenu() {
+                    slideMenu.classList.add('is-open');
+                    menuOverlay.classList.add('is-visible');
+                    menuToggle.classList.add('is-active');
+                    menuToggle.setAttribute('aria-expanded', 'true');
+                    document.body.classList.add('menu-open');
+                }
+                
+                // Close slide menu
+                function closeMenu() {
+                    slideMenu.classList.remove('is-open');
+                    menuOverlay.classList.remove('is-visible');
+                    menuToggle.classList.remove('is-active');
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                    document.body.classList.remove('menu-open');
+                }
+                
+                // Toggle slide menu
+                function toggleMenu() {
+                    if (slideMenu.classList.contains('is-open')) {
+                        closeMenu();
+                    } else {
+                        openMenu();
+                    }
+                }
+                
+                // Event listeners for menu toggle
+                menuToggle.addEventListener('click', toggleMenu);
+                menuClose.addEventListener('click', closeMenu);
+                menuOverlay.addEventListener('click', closeMenu);
+                
+                // Handle submenu toggles in slide menu
+                const submenuToggles = document.querySelectorAll('.icenia-slide-menu__link.has-children');
+                submenuToggles.forEach(toggle => {
+                    toggle.addEventListener('click', function() {
+                        const submenu = this.nextElementSibling;
+                        if (submenu && submenu.classList.contains('icenia-slide-menu__submenu')) {
+                            this.classList.toggle('is-expanded');
+                            submenu.classList.toggle('is-open');
+                        }
+                    });
+                });
+                
+                // Close menu on escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && slideMenu.classList.contains('is-open')) {
+                        closeMenu();
+                        menuToggle.focus();
+                    }
+                });
+                
+                // Run on load (with a small delay to ensure styles are loaded)
+                // Use requestAnimationFrame to ensure DOM is fully rendered
+                requestAnimationFrame(function() {
+                    requestAnimationFrame(function() {
+                        checkNavbarFit();
+                    });
+                });
+                
+                let resizeTimeout;
+                window.addEventListener('resize', function() {
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(checkNavbarFit, 100);
+                });
+            })();
+        </script> </body> </html>

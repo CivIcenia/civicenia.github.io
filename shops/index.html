@@ -1,0 +1,2187 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><title>Shop Explorer - Republic of Icenia</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Search for shop chests and item prices across Icenia and the CivMC server."><meta name="keywords" content=""><link rel="canonical" href="https://civicenia.github.io/shops/"><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/assets/css/sanitize-13.0.0.css"><link rel="stylesheet" href="/assets/css/govuk-frontend-4.3.1.min.css"><link rel="stylesheet" href="/assets/css/icenia-theme.css"><script src="/assets/js/govuk-frontend-4.3.1.min.js"></script><link rel="stylesheet" href="/astro/shops._HcOkVq7.css"><script type="module" src="/astro/hoisted.BdpDw26L.js"></script></head> <body data-base="/" data-header-height-desktop="56" data-header-height-mobile="44"> <a class="govuk-skip-link" href="#main-content">Skip to main content</a> <script>document.body.className = ((document.body.className) ? document.body.className + " js-enabled" : "js-enabled");</script> <!-- Custom Header bar with logo --> <header class="icenia-header" role="banner"> <div class="icenia-header__container"> <div class="icenia-header__logo"> <a href="/" class="icenia-header__link"> <img src="/assets/images/icenia_logo.svg" class="icenia-header__logo-img" alt=""> <span>Icenia</span> </a> </div> <button class="icenia-menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false"> <span class="icenia-menu-toggle__icon"> <span></span> <span></span> <span></span> </span> </button> </div> </header> <!-- Slide-out menu (for mobile/narrow screens) --> <div class="icenia-menu-overlay" id="menuOverlay"></div> <nav class="icenia-slide-menu" id="slideMenu" aria-label="Mobile navigation"> <div class="icenia-slide-menu__header"> <span class="icenia-slide-menu__title">Menu</span> <button class="icenia-slide-menu__close" id="menuClose" aria-label="Close menu">&times;</button> </div> <ul class="icenia-slide-menu__nav"> <li class="icenia-slide-menu__item"> <span class="icenia-slide-menu__link has-children" data-toggle="submenu"> Government </span> <ul class="icenia-slide-menu__submenu"> <div class="icenia-slide-menu__submenu-inner"> <li> <a href="/" target="_self"> Home </a> </li><li> <a href="/government/officials/" target="_self"> Officials </a> </li><li> <a href="/news/" target="_self"> News </a> </li><li> <a href="/laws/" target="_self"> Legislation </a> </li> </div> </ul> </li><li class="icenia-slide-menu__item"> <span class="icenia-slide-menu__link has-children" data-toggle="submenu"> Explore Icenia </span> <ul class="icenia-slide-menu__submenu"> <div class="icenia-slide-menu__submenu-inner"> <li> <a href="/union/" target="_self"> The Republic </a> </li><li> <a href="https://map.civinfo.net/#url=https://civicenia.github.io/government/borders.json" target="_blank"> CivMap </a> </li> </div> </ul> </li><li class="icenia-slide-menu__item"> <span class="icenia-slide-menu__link has-children" data-toggle="submenu"> Icenia City </span> <ul class="icenia-slide-menu__submenu"> <div class="icenia-slide-menu__submenu-inner"> <li> <a href="/icenia-city/" target="_self"> Home </a> </li><li> <a href="/icenia-city/council/" target="_self"> City Council </a> </li><li> <a href="/icenia-city/news/" target="_self"> City News </a> </li><li> <a href="/icenia-city/laws/" target="_self"> City Laws </a> </li><li> <a href="/icenia-city/shops/" target="_self"> Shops </a> </li> </div> </ul> </li><li class="icenia-slide-menu__item"> <span class="icenia-slide-menu__link has-children" data-toggle="submenu"> Join Us </span> <ul class="icenia-slide-menu__submenu"> <div class="icenia-slide-menu__submenu-inner"> <li> <a href="/guide/" target="_self"> New Player Guide </a> </li><li> <a href="https://discord.gg/dfwSjCjRN5" target="_blank"> Discord </a> </li> </div> </ul> </li><li class="icenia-slide-menu__item"> <span class="icenia-slide-menu__link has-children" data-toggle="submenu"> Utilities </span> <ul class="icenia-slide-menu__submenu"> <div class="icenia-slide-menu__submenu-inner"> <li> <a href="/shops/" target="_self"> Shop Explorer </a> </li><li> <a href="/stv/" target="_self"> Icenian STV </a> </li><li> <a href="/stv/visualize/" target="_self"> STV Visualization </a> </li><li> <a href="/admin/index.html" target="_self"> Admin Panel </a> </li> </div> </ul> </li> </ul> </nav> <!-- Separate Navigation Bar (for desktop/wide screens) --> <nav class="icenia-navbar" aria-label="Main navigation"> <div class="icenia-navbar__container govuk-width-container"> <ul class="icenia-navbar__list" id="navigation"> <li class="icenia-navbar__item"> <span class="icenia-navbar__link has-dropdown"> Government </span> <ul class="icenia-navbar__dropdown"> <li> <a href="/" target="_self"> Home </a> </li><li> <a href="/government/officials/" target="_self"> Officials </a> </li><li> <a href="/news/" target="_self"> News </a> </li><li> <a href="/laws/" target="_self"> Legislation </a> </li> </ul> </li><li class="icenia-navbar__item"> <span class="icenia-navbar__link has-dropdown"> Explore Icenia </span> <ul class="icenia-navbar__dropdown"> <li> <a href="/union/" target="_self"> The Republic </a> </li><li> <a href="https://map.civinfo.net/#url=https://civicenia.github.io/government/borders.json" target="_blank"> CivMap </a> </li> </ul> </li><li class="icenia-navbar__item"> <span class="icenia-navbar__link has-dropdown"> Icenia City </span> <ul class="icenia-navbar__dropdown"> <li> <a href="/icenia-city/" target="_self"> Home </a> </li><li> <a href="/icenia-city/council/" target="_self"> City Council </a> </li><li> <a href="/icenia-city/news/" target="_self"> City News </a> </li><li> <a href="/icenia-city/laws/" target="_self"> City Laws </a> </li><li> <a href="/icenia-city/shops/" target="_self"> Shops </a> </li> </ul> </li><li class="icenia-navbar__item"> <span class="icenia-navbar__link has-dropdown"> Join Us </span> <ul class="icenia-navbar__dropdown"> <li> <a href="/guide/" target="_self"> New Player Guide </a> </li><li> <a href="https://discord.gg/dfwSjCjRN5" target="_blank"> Discord </a> </li> </ul> </li><li class="icenia-navbar__item"> <span class="icenia-navbar__link has-dropdown"> Utilities </span> <ul class="icenia-navbar__dropdown"> <li> <a href="/shops/" target="_self"> Shop Explorer </a> </li><li> <a href="/stv/" target="_self"> Icenian STV </a> </li><li> <a href="/stv/visualize/" target="_self"> STV Visualization </a> </li><li> <a href="/admin/index.html" target="_self"> Admin Panel </a> </li> </ul> </li> </ul> </div> </nav>  <main id="main-content" role="main"> <div class="shop-explorer-container" data-astro-cid-6grdu62i> <!-- Search Overlay --> <div class="search-panel" data-astro-cid-6grdu62i> <div class="search-header" data-astro-cid-6grdu62i> <div class="header-main" data-astro-cid-6grdu62i> <div class="header-text" data-astro-cid-6grdu62i> <h2 class="govuk-heading-m" data-astro-cid-6grdu62i>Shop Explorer</h2> <p class="search-subtext" id="search-counter" data-astro-cid-6grdu62i>— searches and counting</p> </div> <button id="show-icenia-shops" class="icenia-quick-btn" title="Show all Icenia City shops" data-astro-cid-6grdu62i> <img src="/assets/images/icenia_logo.svg" alt="Icenia" width="20" height="20" data-astro-cid-6grdu62i>
+View Icenia City Shops
+</button> </div> </div> <div class="search-controls" data-astro-cid-6grdu62i> <div class="search-main-row" data-astro-cid-6grdu62i> <div class="search-input-wrapper" data-astro-cid-6grdu62i> <input class="govuk-input" id="item-search" name="item-search" type="text" placeholder="I want to buy (e.g. diamond)" data-astro-cid-6grdu62i> <button id="toggle-options" class="options-toggle-btn" title="Toggle Search Options" data-astro-cid-6grdu62i> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-6grdu62i> <path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6" data-astro-cid-6grdu62i></path> </svg> </button> <button id="search-button" class="search-submit-btn" type="button" data-astro-cid-6grdu62i> <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" data-astro-cid-6grdu62i> <path d="M19 19L14.65 14.65M17 9C17 13.4183 13.4183 17 9 17C4.58172 17 1 13.4183 1 9C1 4.58172 4.58172 1 9 1C13.4183 1 17 4.58172 17 9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-6grdu62i></path> </svg> </button> </div> </div> <div id="advanced-options-wrapper" class="advanced-options-wrapper scroll-container" data-astro-cid-6grdu62i> <div id="advanced-options" class="advanced-grid" data-astro-cid-6grdu62i> <div class="govuk-form-group" data-astro-cid-6grdu62i> <label class="govuk-label govuk-label--s" for="input-search" data-astro-cid-6grdu62i>I want to pay with</label> <input class="govuk-input govuk-input--small" id="input-search" name="input-search" type="text" placeholder="e.g. iron" data-astro-cid-6grdu62i> </div> <div class="govuk-form-group" data-astro-cid-6grdu62i> <label class="govuk-label govuk-label--s" for="sort-mode" data-astro-cid-6grdu62i>Sort</label> <select class="govuk-select" id="sort-mode" name="sort-mode" data-astro-cid-6grdu62i> <option value="closest" data-astro-cid-6grdu62i>Closest</option> <option value="cheapest" selected data-astro-cid-6grdu62i>Cheapest</option> <option value="latest" data-astro-cid-6grdu62i>Latest</option> <option value="stock" data-astro-cid-6grdu62i>In Stock</option> </select> </div> <div class="govuk-form-group" data-astro-cid-6grdu62i> <label class="govuk-label govuk-label--s" for="updated-after" data-astro-cid-6grdu62i>Last Updated Within</label> <select class="govuk-select" id="updated-after" name="updated-after" data-astro-cid-6grdu62i> <option value="0" data-astro-cid-6grdu62i>Anytime</option> <option value="604800000" selected data-astro-cid-6grdu62i>7d</option> <option value="2592000000" data-astro-cid-6grdu62i>30d</option> </select> </div> <div class="enchantment-filter-container" style="grid-column: span 2;" data-astro-cid-6grdu62i> <label class="govuk-label govuk-label--s" data-astro-cid-6grdu62i>Enchantment Filters</label> <div id="enchantment-filters-list" class="enchant-filters-list" data-astro-cid-6grdu62i> <!-- Rows added via JS --> </div> <button type="button" id="add-enchant-filter" class="add-enchant-btn" data-astro-cid-6grdu62i> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" data-astro-cid-6grdu62i> <line x1="12" y1="5" x2="12" y2="19" data-astro-cid-6grdu62i></line><line x1="5" y1="12" x2="19" y2="12" data-astro-cid-6grdu62i></line> </svg>
+Add Enchantment
+</button> </div> <div class="govuk-checkboxes govuk-checkboxes--small side-by-side" data-astro-cid-6grdu62i> <div class="govuk-checkboxes__item" data-astro-cid-6grdu62i> <input class="govuk-checkboxes__input" id="allow-unstocked" name="allow-unstocked" type="checkbox" data-astro-cid-6grdu62i> <label class="govuk-label govuk-checkboxes__label" for="allow-unstocked" data-astro-cid-6grdu62i>Unstocked</label> </div> <div class="govuk-checkboxes__item" data-astro-cid-6grdu62i> <input class="govuk-checkboxes__input" id="icenia-only" name="icenia-only" type="checkbox" data-astro-cid-6grdu62i> <label class="govuk-label govuk-checkboxes__label" for="icenia-only" data-astro-cid-6grdu62i>Icenia Only</label> </div> </div> </div> <div class="scroll-indicator" id="advanced-scroll-indicator" data-astro-cid-6grdu62i> <div class="scroll-track" data-astro-cid-6grdu62i> <div class="scroll-thumb" data-astro-cid-6grdu62i></div> </div> </div> </div> </div> <div id="loading-overlay" class="loading-overlay hidden" data-astro-cid-6grdu62i> <div class="spinner" data-astro-cid-6grdu62i></div> <p class="govuk-body-s" data-astro-cid-6grdu62i>Searching Tradex...</p> </div> <!-- Results Container --> <div class="results-scroll-wrapper scroll-container" data-astro-cid-6grdu62i> <div id="results-container" class="results-container" data-astro-cid-6grdu62i> <div class="results-placeholder" data-astro-cid-6grdu62i> <p class="govuk-body-s" data-astro-cid-6grdu62i>Enter an item name above to search shops across the world.</p> </div> </div> <div class="scroll-indicator" id="results-scroll-indicator" data-astro-cid-6grdu62i> <div class="scroll-track" data-astro-cid-6grdu62i> <div class="scroll-thumb" data-astro-cid-6grdu62i></div> </div> </div> </div> </div> <!-- Item Tooltip --> <div id="item-tooltip" class="item-tooltip hidden" data-astro-cid-6grdu62i></div> <!-- Map Controls --> <div class="map-extra-controls" data-astro-cid-6grdu62i> <button id="dark-mode-toggle" class="map-control-btn" title="Toggle Dark Mode" data-astro-cid-6grdu62i> <svg class="sun-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-6grdu62i> <circle cx="12" cy="12" r="5" data-astro-cid-6grdu62i></circle><line x1="12" y1="1" x2="12" y2="3" data-astro-cid-6grdu62i></line><line x1="12" y1="21" x2="12" y2="23" data-astro-cid-6grdu62i></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" data-astro-cid-6grdu62i></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" data-astro-cid-6grdu62i></line><line x1="1" y1="12" x2="3" y2="12" data-astro-cid-6grdu62i></line><line x1="21" y1="12" x2="23" y2="12" data-astro-cid-6grdu62i></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" data-astro-cid-6grdu62i></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" data-astro-cid-6grdu62i></line> </svg> <svg class="moon-icon hidden" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-6grdu62i> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" data-astro-cid-6grdu62i></path> </svg> </button> <button id="toggle-territories" class="map-control-btn" title="Toggle Territories" aria-pressed="false" data-astro-cid-6grdu62i> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-6grdu62i> <path d="M3 6h18M3 12h18M3 18h18" data-astro-cid-6grdu62i></path> </svg> </button> <button id="center-icenia" class="map-control-btn" title="Center on Icenia City" data-astro-cid-6grdu62i> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-6grdu62i> <circle cx="12" cy="12" r="8" fill="#3AB3DA" stroke="white" data-astro-cid-6grdu62i></circle> </svg> </button> <button id="set-location" class="map-control-btn" title="Set My Location (Click on map)" data-astro-cid-6grdu62i> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-6grdu62i> <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" data-astro-cid-6grdu62i></path> <circle cx="12" cy="10" r="3" data-astro-cid-6grdu62i></circle> </svg> </button> <div class="zoom-group" data-astro-cid-6grdu62i> <button id="zoom-in" class="map-control-btn" title="Zoom In" data-astro-cid-6grdu62i> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-6grdu62i> <line x1="12" y1="5" x2="12" y2="19" data-astro-cid-6grdu62i></line><line x1="5" y1="12" x2="19" y2="12" data-astro-cid-6grdu62i></line> </svg> </button> <button id="zoom-out" class="map-control-btn" title="Zoom Out" data-astro-cid-6grdu62i> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-6grdu62i> <line x1="5" y1="12" x2="19" y2="12" data-astro-cid-6grdu62i></line> </svg> </button> </div> </div> <!-- Map Container --> <div id="shop-map" class="shop-map" data-astro-cid-6grdu62i></div> <!-- Map Info & Attribution --> <div class="map-info-container" data-astro-cid-6grdu62i> <div id="info-panel" class="info-panel hidden scroll-container" data-astro-cid-6grdu62i> <div class="info-content" id="info-content" data-astro-cid-6grdu62i> <div class="info-section" data-astro-cid-6grdu62i> <h5 data-astro-cid-6grdu62i>Controls</h5> <p data-astro-cid-6grdu62i>🖱️ Scroll to zoom</p> <p data-astro-cid-6grdu62i>🖐️ Drag to pan</p> <p data-astro-cid-6grdu62i>📍 Click markers for details</p> </div> <div class="info-cta-box" data-astro-cid-6grdu62i> <a href="https://modrinth.com/mod/tradex" target="_blank" class="modrinth-cta" data-astro-cid-6grdu62i> <div class="cta-title" data-astro-cid-6grdu62i>🚀 Install Tradex Mod</div> <div class="cta-desc" data-astro-cid-6grdu62i>Help keep the map updated! <br data-astro-cid-6grdu62i> Shopkeepers & Travellers wanted <br data-astro-cid-6grdu62i> for data logging.</div> </a> </div> <div class="info-section" data-astro-cid-6grdu62i> <h5 data-astro-cid-6grdu62i>Credits</h5> <p data-astro-cid-6grdu62i>Backend: <a href="https://github.com/gjum/tradex" target="_blank" data-astro-cid-6grdu62i>Tradex</a></p> <p data-astro-cid-6grdu62i>Map: <a href="https://map.civinfo.net" target="_blank" data-astro-cid-6grdu62i>CivInfo</a></p> <p data-astro-cid-6grdu62i>Thanks Gjum for making Tradex and Civinfo.net! ❤️</p> </div> <div class="info-section" data-astro-cid-6grdu62i> <h5 data-astro-cid-6grdu62i>Donations</h5> <div class="donation-item" data-astro-cid-6grdu62i> <span data-astro-cid-6grdu62i>Creepily</span> <code class="sortcode" data-astro-cid-6grdu62i>HS-9363</code> </div> <div class="donation-item" data-astro-cid-6grdu62i> <span data-astro-cid-6grdu62i>Gjum</span> <code class="sortcode" data-astro-cid-6grdu62i>HS-3134</code> </div> <div class="donation-item" data-astro-cid-6grdu62i> <span data-astro-cid-6grdu62i>Icenia City</span> <code class="sortcode" data-astro-cid-6grdu62i>HS-1901</code> </div> </div> </div> <div class="scroll-indicator" id="info-scroll-indicator" data-astro-cid-6grdu62i> <div class="scroll-track" data-astro-cid-6grdu62i> <div class="scroll-thumb" data-astro-cid-6grdu62i></div> </div> </div> </div> <div class="map-controls-row" data-astro-cid-6grdu62i> <button id="info-toggle" class="map-control-btn info-btn" title="Map Info & Credits" data-astro-cid-6grdu62i> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-6grdu62i> <circle cx="12" cy="12" r="10" data-astro-cid-6grdu62i></circle> <line x1="12" y1="16" x2="12" y2="12" data-astro-cid-6grdu62i></line> <line x1="12" y1="8" x2="12.01" y2="8" data-astro-cid-6grdu62i></line> </svg> </button> <div class="coords-panel" title="Map cursor and pin coordinates" data-astro-cid-6grdu62i> <div class="coords-item" data-astro-cid-6grdu62i> <div class="label" data-astro-cid-6grdu62i>Cursor</div> <div id="cursor-coords" class="value" data-astro-cid-6grdu62i>—</div> </div> <div class="coords-item" data-astro-cid-6grdu62i> <div class="label" data-astro-cid-6grdu62i>Pin</div> <div id="pin-coords" class="value" data-astro-cid-6grdu62i>—</div> </div> </div> </div> </div> </div> <!-- Leaflet CSS --> <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">  <!-- Leaflet JS -->  <script>(function(){const BASE = "/";
+const ITEM_MAPPINGS = {"acacia_boat_with_chest":"acacia_chest_boat","bamboo_raft_with_chest":"bamboo_chest_raft","birch_boat_with_chest":"birch_chest_boat","block_of_amethyst":"amethyst_block","block_of_bamboo":"bamboo_block","block_of_coal":"coal_block","block_of_copper":"copper_block","block_of_diamond":"diamond_block","block_of_emerald":"emerald_block","block_of_gold":"gold_block","block_of_iron":"iron_block","block_of_lapis_lazuli":"lapis_block","block_of_netherite":"netherite_block","block_of_quartz":"quartz_block","block_of_raw_copper":"raw_copper_block","block_of_raw_gold":"raw_gold_block","block_of_raw_iron":"raw_iron_block","block_of_redstone":"redstone_block","block_of_resin":"resin_block","block_of_stripped_bamboo":"stripped_bamboo_block","bolt_armor_trim":"bolt_armor_trim_smithing_template","book_and_quill":"writable_book","bottle_o'_enchanting":"experience_bottle","bucket_of_axolotl":"axolotl_bucket","bucket_of_cod":"cod_bucket","bucket_of_pufferfish":"pufferfish_bucket","bucket_of_salmon":"salmon_bucket","bucket_of_tadpole":"tadpole_bucket","bucket_of_tropical_fish":"tropical_fish_bucket","cherry_boat_with_chest":"cherry_chest_boat","coast_armor_trim":"coast_armor_trim_smithing_template","creeper_charge_banner_pattern":"creeper_banner_pattern","dark_oak_boat_with_chest":"dark_oak_chest_boat","deepslate_lapis_lazuli_ore":"deepslate_lapis_ore","disc_fragment":"disc_fragment_5","dragon's_breath":"dragon_breath","dune_armor_trim":"dune_armor_trim_smithing_template","empty_map":"map","eye_armor_trim":"eye_armor_trim_smithing_template","eye_of_ender":"ender_eye","flow_armor_trim":"flow_armor_trim_smithing_template","flower_charge_banner_pattern":"flower_banner_pattern","hay_bale":"hay_block","host_armor_trim":"host_armor_trim_smithing_template","jack_o'lantern":"jack_o_lantern","jigsaw_block":"jigsaw","jungle_boat_with_chest":"jungle_chest_boat","lapis_lazuli_ore":"lapis_ore","leather_cap":"leather_helmet","leather_pants":"leather_leggings","leather_tunic":"leather_chestplate","mangrove_boat_with_chest":"mangrove_chest_boat","map":"filled_map","minecart_with_chest":"chest_minecart","minecart_with_command_block":"command_block_minecart","minecart_with_furnace":"furnace_minecart","minecart_with_hopper":"hopper_minecart","minecart_with_tnt":"tnt_minecart","monster_spawner":"spawner","music_disc":"music_disc_tears","nether_quartz":"quartz","netherite_upgrade":"netherite_upgrade_smithing_template","oak_boat_with_chest":"oak_chest_boat","pale_oak_boat_with_chest":"pale_oak_chest_boat","rabbit's_foot":"rabbit_foot","raiser_armor_trim":"raiser_armor_trim_smithing_template","raw_beef":"beef","raw_chicken":"chicken","raw_cod":"cod","raw_mutton":"mutton","raw_porkchop":"porkchop","raw_rabbit":"rabbit","raw_salmon":"salmon","redstone_comparator":"comparator","redstone_dust":"redstone","redstone_repeater":"repeater","rib_armor_trim":"rib_armor_trim_smithing_template","sentry_armor_trim":"sentry_armor_trim_smithing_template","shaper_armor_trim":"shaper_armor_trim_smithing_template","silence_armor_trim":"silence_armor_trim_smithing_template","skull_charge_banner_pattern":"skull_banner_pattern","slimeball":"slime_ball","smooth_quartz_block":"smooth_quartz","snout_armor_trim":"snout_armor_trim_smithing_template","snout_banner_pattern":"piglin_banner_pattern","spire_armor_trim":"spire_armor_trim_smithing_template","spruce_boat_with_chest":"spruce_chest_boat","steak":"cooked_beef","thing_banner_pattern":"mojang_banner_pattern","tide_armor_trim":"tide_armor_trim_smithing_template","turtle_shell":"turtle_helmet","vex_armor_trim":"vex_armor_trim_smithing_template","vines":"vine","ward_armor_trim":"ward_armor_trim_smithing_template","waxed_block_of_copper":"waxed_copper_block","wayfinder_armor_trim":"wayfinder_armor_trim_smithing_template","wild_armor_trim":"wild_armor_trim_smithing_template"};
+
+
+    // --- Configuration ---
+    const MC_VERSION = '1.21.8';
+
+    /**
+     * Item Mapping System
+     * Use this to map Tradex material IDs to specific filenames on mc.nerothe.com
+     */
+    // Make ITEM_MAPPINGS available globally for icon URL functions
+    window.ITEM_MAPPINGS = ITEM_MAPPINGS;
+
+    /**
+     * Legacy Fallback Overrides
+     * Used for PrismarineJS assets when Nerothe fails
+     */
+    const ICON_OVERRIDES = {
+        'barrel': 'blocks/barrel_side.png',
+        'reinforced_deepslate': 'blocks/reinforced_deepslate_top.png',
+        'beehive': 'blocks/beehive_front.png',
+        'bee_nest': 'blocks/bee_nest_front.png',
+        'blast_furnace': 'blocks/blast_furnace_front.png',
+        'furnace': 'blocks/furnace_front.png',
+        'smoker': 'blocks/smoker_front.png',
+        'dispenser': 'blocks/dispenser_front.png',
+        'dropper': 'blocks/dropper_front.png',
+        'observer': 'blocks/observer_front.png',
+        'crafter': 'blocks/crafter_top.png'
+    };
+
+    /**
+     * Get Primary Icon URL (Nerothe)
+     */
+    window.getItemIconUrl = function(material) {
+        if (!material) return '';
+        let mat = material.toLowerCase().replace(/ /g, '_').replace(/minecraft:/, '');
+        // Use mappings from window.ITEM_MAPPINGS if available (runtime lookup)
+        if (window.ITEM_MAPPINGS && window.ITEM_MAPPINGS[mat]) {
+            mat = window.ITEM_MAPPINGS[mat];
+        }
+        // Ensure material is safe for use in URLs (encode any unexpected characters)
+        const safeMat = encodeURIComponent(mat);
+
+        return `https://mc.nerothe.com/img/${MC_VERSION}/minecraft_${safeMat}.png`;
+    };
+
+    /**
+     * Get Fallback Icon URL (PrismarineJS)
+     */
+    window.getFallbackIconUrl = function(material) {
+        if (!material) return '';
+        let mat = material.toLowerCase().replace(/ /g, '_').replace(/minecraft:/, '');
+        // Use mappings from window.ITEM_MAPPINGS if available (runtime lookup)
+        if (window.ITEM_MAPPINGS && window.ITEM_MAPPINGS[mat]) {
+            mat = window.ITEM_MAPPINGS[mat];
+        }
+        const safeMat = encodeURIComponent(mat);
+
+        if (ICON_OVERRIDES[mat]) {
+            return `https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/${MC_VERSION}/${ICON_OVERRIDES[mat]}`;
+        }
+        return `https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/${MC_VERSION}/items/${safeMat}.png`;
+    };
+
+    // Generic onerror handler for item images to avoid embedding dynamic values into inline JS
+    window.handleItemImageError = function() {
+        try {
+            if (!this.dataset) return;
+            const mat = this.dataset.material || '';
+            if (!this.dataset.triedFallback) {
+                this.dataset.triedFallback = 'true';
+                this.src = window.getFallbackIconUrl(mat);
+                return;
+            }
+            if (!this.dataset.triedBlock) {
+                this.dataset.triedBlock = 'true';
+                this.src = this.src.replace('/items/', '/blocks/');
+                return;
+            }
+            this.style.opacity = '0';
+        } catch (e) {
+            // silent
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- Map Initialization ---
+        const map = L.map('shop-map', {
+            crs: L.CRS.Simple,
+            minZoom: -5,
+            maxZoom: 6,
+            zoomSnap: 1, // Fix mismatch by using integer zoom levels
+            attributionControl: false,
+            zoomControl: false,
+            bounceAtZoomLimits: false
+        });
+
+        const ICENIA_CITY_COORDS = [4380, -3850]; 
+
+        function getVisualCenter() {
+            // Get the current visual center by reversing the offset
+            const isMobile = window.innerWidth <= 768;
+            const currentCenter = map.getCenter();
+            const currentZoom = map.getZoom();
+            const point = map.project(currentCenter, currentZoom);
+            let visualPoint;
+            if (isMobile) {
+                // Reverse the mobile offset
+                visualPoint = point.subtract([0, window.innerHeight * 0.14]);
+            } else {
+                // Reverse the desktop offset
+                visualPoint = point.add([190, 0]);
+            }
+            return map.unproject(visualPoint, currentZoom);
+        }
+
+        function flyToWithOffset(latlng, zoom, options = {}) {
+            const isMobile = window.innerWidth <= 768;
+            const point = map.project(latlng, zoom);
+            let offsetPoint;
+            if (isMobile) {
+                offsetPoint = point.add([0, window.innerHeight * 0.14]);
+            } else {
+                // Shift map right by 190px to center visually (accounting for search panel)
+                offsetPoint = point.subtract([190, 0]);
+            }
+            const offsetLatLng = map.unproject(offsetPoint, zoom);
+            map.flyTo(offsetLatLng, zoom, { 
+                duration: 0.6,
+                easeLinearity: 0.25,
+                ...options 
+            });
+        }
+
+        map.zoomIn = function(delta, options) {
+            const visualCenter = getVisualCenter();
+            const zoom = map.getZoom() + (delta || 1);
+            flyToWithOffset(visualCenter, zoom, options);
+            return this;
+        };
+
+        map.zoomOut = function(delta, options) {
+            const visualCenter = getVisualCenter();
+            const zoom = map.getZoom() - (delta || 1);
+            flyToWithOffset(visualCenter, zoom, options);
+            return this;
+        };
+
+        const initialPoint = map.project(ICENIA_CITY_COORDS, 0);
+        const isMobileInitial = window.innerWidth <= 768;
+        const initialOffsetPoint = isMobileInitial 
+            ? initialPoint.add([0, window.innerHeight * 0.14]) 
+            : initialPoint.subtract([190, 0]);
+        map.setView(map.unproject(initialOffsetPoint, 0), 0);
+
+        const localTiles = BASE + 'tiles/terrain/z{z}/{x},{y}.png';
+        const primaryTiles = 'https://civmc-map.duckdns.org/tiles/terrain/z{z}/{x},{y}.png';
+
+        // Standard tile loading. Leaflet handles integer zoom levels for tiles automatically.
+        const tiles = L.tileLayer(localTiles, {
+            minZoom: -5,
+            maxZoom: 6,
+            maxNativeZoom: 0,
+            minNativeZoom: -5,
+            tileSize: 256,
+            noWrap: true,
+            updateWhenIdle: true,
+            updateWhenZooming: true, // Allow updates during zoom for better syncing
+            keepBuffer: 3
+        }).addTo(map);
+
+        // Fallback to primary server if local tiles fail
+        tiles.on('tileerror', function(error) {
+            if (this._url === localTiles) {
+                console.log('Local tiles not found, trying primary server...');
+                this.setUrl(primaryTiles);
+            }
+        });
+
+        // --- Configuration ---
+        // Change this value to adjust how close the map zooms when clicking a result (higher = closer)
+        const DEFAULT_CLICK_ZOOM = 3;
+
+        // --- State ---
+        let markers = [];
+        let userLocation = null;
+        let userMarker = null;
+        let activeMarker = null;
+        let activeCard = null;
+        let isSettingLocation = false;
+        let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const markerGroup = L.layerGroup().addTo(map);
+        // Territory overlay state and loader
+        let territoryLayer = null;
+        let territoryGeoJson = null;
+        const TERRITORY_URL = 'https://civmc-map.github.io/territories-thejmqn.json';
+
+        function mcCoordToLatLngPair(coord) {
+            // coord expected as [x, z]
+            const x = Number(coord[0]);
+            const z = Number(coord[1]);
+            // For GeoJSON we must return coordinates in [lng, lat] order.
+            // Leaflet's GeoJSON expects [lng, lat] (GeoJSON standard),
+            // while mcToLatLng() returns [lat, lng] for Leaflet marker usage.
+            return [x + 0.5, -(z + 0.5)];
+        }
+
+        function transformGeometryCoords(geom) {
+            if (!geom) return geom;
+            const type = geom.type;
+            if (type === 'Point') {
+                return { type: 'Point', coordinates: mcCoordToLatLngPair(geom.coordinates) };
+            }
+            if (type === 'MultiPoint' || type === 'LineString') {
+                return { type: type, coordinates: geom.coordinates.map(c => mcCoordToLatLngPair(c)) };
+            }
+            if (type === 'MultiLineString' || type === 'Polygon') {
+                return { type: type, coordinates: geom.coordinates.map(ring => ring.map(c => mcCoordToLatLngPair(c))) };
+            }
+            if (type === 'MultiPolygon') {
+                return { type: type, coordinates: geom.coordinates.map(poly => poly.map(ring => ring.map(c => mcCoordToLatLngPair(c)))) };
+            }
+            if (type === 'GeometryCollection') {
+                return { type: type, geometries: geom.geometries.map(g => transformGeometryCoords(g)) };
+            }
+            return geom;
+        }
+
+        function transformGeoJSONCoordinates(obj) {
+            if (!obj) return obj;
+            const out = JSON.parse(JSON.stringify(obj));
+            if (out.type === 'FeatureCollection' && Array.isArray(out.features)) {
+                out.features = out.features.map(f => {
+                    if (f.geometry) f.geometry = transformGeometryCoords(f.geometry);
+                    return f;
+                });
+            } else if (out.type === 'Feature' && out.geometry) {
+                out.geometry = transformGeometryCoords(out.geometry);
+            } else if (out.type && out.coordinates) {
+                out.geometry = transformGeometryCoords(out);
+            }
+            return out;
+        }
+
+        async function loadTerritoriesGeoJSON() {
+            if (territoryGeoJson) return territoryGeoJson;
+            try {
+                const res = await fetch(TERRITORY_URL);
+                if (!res.ok) throw new Error('Failed to fetch territories');
+                const json = await res.json();
+                // Detect if coordinates look like game coords (large integers). If so, transform them.
+                let sampleCoord = null;
+                try {
+                    if (json.type === 'FeatureCollection' && json.features && json.features.length) {
+                        const geom = json.features[0].geometry;
+                        if (geom && geom.coordinates) {
+                            // drill into first numeric coordinate
+                            const coords = JSON.stringify(geom.coordinates);
+                            const nums = coords.match(/-?\d+(?:\.\d+)?/g);
+                            if (nums && nums.length >= 2) sampleCoord = [Number(nums[0]), Number(nums[1])];
+                        }
+                    }
+                } catch (e) { /* ignore */ }
+
+                if (sampleCoord && (Math.abs(sampleCoord[0]) > 100 || Math.abs(sampleCoord[1]) > 100)) {
+                    territoryGeoJson = transformGeoJSONCoordinates(json);
+                } else {
+                    territoryGeoJson = json;
+                }
+                return territoryGeoJson;
+            } catch (e) {
+                console.warn('Could not load territory GeoJSON:', e);
+                throw e;
+            }
+        }
+
+        function ensureTerritoriesPane() {
+            const paneName = 'territoriesPane';
+            if (!map.getPane(paneName)) {
+                const p = map.createPane(paneName);
+                // Place above tiles (tilePane zIndex 200) and below markers (markerPane ~600)
+                // Increase slightly to ensure visibility above tile layer.
+                p.style.zIndex = 450;
+                p.style.pointerEvents = 'none';
+                // Add a stable classname we can target for CSS transitions
+                p.classList.add('territories-pane');
+                // Ensure starting opacity is zero (hidden) so we can fade in
+                p.style.opacity = 0;
+                // Ensure a transition is present on the pane element itself so
+                // opacity changes animate even if component-scoped CSS doesn't apply.
+                p.style.transition = 'opacity 0.35s cubic-bezier(0.2, 0, 0, 1)';
+            }
+            return paneName;
+        }
+
+        function applyTerritoriesLayer(geojson) {
+            try {
+                if (territoryLayer) {
+                    map.removeLayer(territoryLayer);
+                    territoryLayer = null;
+                }
+
+                const pane = ensureTerritoriesPane();
+
+                // Support two territory formats:
+                // 1) Our custom descriptor that contains a `map_image` entry
+                //    with `url` and `bounds` specified in MC coords [[x1,z1],[x2,z2]].
+                // 2) Standard GeoJSON usable by L.geoJSON.
+                if (geojson && Array.isArray(geojson.features) && geojson.features.length && geojson.features[0].map_image && geojson.features[0].map_image.url) {
+                    try {
+                        const mi = geojson.features[0].map_image;
+                        const url = mi.url;
+                        const b = mi.bounds; // [[x1,z1],[x2,z2]]
+                        if (url && Array.isArray(b) && b.length >= 2) {
+                            const p1 = b[0];
+                            const p2 = b[1];
+                            const ll1 = mcToLatLng(p1[0], p1[1]); // [lat, lng]
+                            const ll2 = mcToLatLng(p2[0], p2[1]);
+                            // Leaflet expects bounds as [[southWestLat, southWestLng], [northEastLat, northEastLng]]
+                            const southLat = Math.min(ll1[0], ll2[0]);
+                            const northLat = Math.max(ll1[0], ll2[0]);
+                            const westLng = Math.min(ll1[1], ll2[1]);
+                            const eastLng = Math.max(ll1[1], ll2[1]);
+                            const imageBounds = [[southLat, westLng], [northLat, eastLng]];
+                            territoryLayer = L.imageOverlay(url, imageBounds, { pane: pane, interactive: false, opacity: 0 }).addTo(map);
+                            // Fade in the overlay by increasing the pane opacity (CSS) and image opacity
+                            // Small timeout to ensure element is attached
+                            setTimeout(() => {
+                                try {
+                                    // imageOverlay provides setOpacity
+                                    if (territoryLayer && typeof territoryLayer.setOpacity === 'function') territoryLayer.setOpacity(1);
+                                    const paneEl = map.getPane(pane);
+                                    if (paneEl) paneEl.style.opacity = 1;
+                                } catch (e) {}
+                            }, 20);
+                        }
+                    } catch (e) {
+                        console.warn('Failed to apply map_image overlay', e);
+                    }
+                } else {
+                    // Start with zero opacity styles so we can animate them in
+                    territoryLayer = L.geoJSON(geojson, {
+                        pane: pane,
+                        style: function (feature) {
+                            return {
+                                color: '#1C70B8',
+                                weight: 1,
+                                opacity: 0,
+                                fillColor: '#1C70B8',
+                                fillOpacity: 0
+                            };
+                        }
+                    }).addTo(map);
+                    // Fade in vector layer styles
+                    setTimeout(() => {
+                        try {
+                            if (territoryLayer && territoryLayer.setStyle) {
+                                territoryLayer.setStyle({ opacity: 0.9, fillOpacity: 0.08 });
+                            }
+                            const paneEl = map.getPane(pane);
+                            if (paneEl) paneEl.style.opacity = 1;
+                        } catch (e) {}
+                    }, 20);
+                }
+
+                // Ensure tiles remain at the back and markers stay above territories
+                try { if (tiles && tiles.bringToBack) tiles.bringToBack(); } catch (e) {}
+                try { if (markerGroup && markerGroup.bringToFront) markerGroup.bringToFront(); } catch (e) {}
+            } catch (e) {
+                console.warn('Failed to apply territories layer', e);
+            }
+        }
+
+        async function toggleTerritories(enabled) {
+            const savedKey = 'shop_show_territories';
+            try {
+                if (enabled) {
+                    const geo = await loadTerritoriesGeoJSON();
+                    applyTerritoriesLayer(geo);
+                    localStorage.setItem(savedKey, '1');
+                } else {
+                    if (territoryLayer) {
+                        // Fade out by changing the pane opacity only; don't set
+                        // the layer's own opacity immediately (that hides instantly).
+                        try {
+                            const paneEl = map.getPane('territoriesPane');
+                            if (paneEl) paneEl.style.opacity = 0;
+                        } catch (e) {}
+                        // Wait for transition to finish before removing the layer
+                        setTimeout(() => {
+                            try { if (territoryLayer) map.removeLayer(territoryLayer); } catch (e) {}
+                            territoryLayer = null;
+                        }, 380);
+                    }
+                    localStorage.removeItem(savedKey);
+                }
+            } catch (e) {
+                // On error, reset active state on the toggle button
+                const btn = document.getElementById('toggle-territories');
+                if (btn) {
+                    btn.classList.remove('active');
+                    try { btn.setAttribute('aria-pressed', 'false'); btn.title = 'Show Territories'; } catch (err) {}
+                }
+            }
+        }
+        
+        let lastExchanges = [];
+        let lastQueryLabel = "";
+
+        // --- UI Elements ---
+        const searchInput = document.getElementById('item-search');
+        const searchButton = document.getElementById('search-button');
+        const sortModeSelect = document.getElementById('sort-mode');
+        const allowUnstockedCheckbox = document.getElementById('allow-unstocked');
+        const iceniaOnlyCheckbox = document.getElementById('icenia-only');
+        const resultsContainer = document.getElementById('results-container');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const centerIceniaBtn = document.getElementById('center-icenia');
+        const setLocationBtn = document.getElementById('set-location');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const cursorCoordsEl = document.getElementById('cursor-coords');
+        const pinCoordsEl = document.getElementById('pin-coords');
+
+        // --- Local search counter (per-browser, persisted in localStorage) ---
+        const SEARCH_COUNT_KEY = 'shop_explorer_search_count';
+        const SEARCH_CLIENT_ID_KEY = 'shop_explorer_client_id';
+        const searchCounterEl = document.getElementById('search-counter');
+        let globalCountCache = 0;
+
+        // --- Global search counter (provider abstraction) ---
+        // Provider options: 'countapi', 'counterapi' (self-hosted), 'worker' (Cloudflare Durable Object), 'none'
+        // Set to 'worker' to use the Cloudflare Durable Object implemented in cloudflare-worker/
+        const COUNTER_PROVIDER = 'worker';
+        const COUNTER_NAMESPACE = 'civicenia_github_io';
+        const COUNTER_KEY = 'shop_explorer';
+
+        // Base URLs (editable) - CounterAPI often uses a different host; set COUNTERAPI_BASE if needed
+        const COUNTAPI_BASE = `https://api.countapi.xyz`;
+        const COUNTERAPI_BASE = `https://counterapi.example.com`; // <-- update to your CounterAPI host if required
+
+        function countapi_get_url() { return `${COUNTAPI_BASE}/get/${COUNTER_NAMESPACE}/${COUNTER_KEY}`; }
+        function countapi_hit_url() { return `${COUNTAPI_BASE}/hit/${COUNTER_NAMESPACE}/${COUNTER_KEY}`; }
+
+        function counterapi_get_url() { return `${COUNTERAPI_BASE}/get/${COUNTER_NAMESPACE}/${COUNTER_KEY}`; }
+        function counterapi_hit_url() { return `${COUNTERAPI_BASE}/hit/${COUNTER_NAMESPACE}/${COUNTER_KEY}`; }
+
+        // Cloudflare Worker endpoint (Durable Object). Set to your deployed worker URL.
+        // Deployed at: https://civicenia-shop-counter.creepilyciv.workers.dev
+        const COUNTER_WORKER_BASE = 'https://civicenia-shop-counter.creepilyciv.workers.dev';
+        function worker_get_url() { return (COUNTER_WORKER_BASE || '') + '/api/shop-counter'; }
+        function worker_hit_url() { return (COUNTER_WORKER_BASE || '') + '/api/shop-counter'; }
+
+        function getClientId() {
+            try {
+                let id = localStorage.getItem(SEARCH_CLIENT_ID_KEY);
+                if (id) return id;
+                if (typeof crypto !== 'undefined' && crypto.randomUUID) id = crypto.randomUUID();
+                else id = 'c_' + Math.random().toString(36).slice(2, 10);
+                localStorage.setItem(SEARCH_CLIENT_ID_KEY, id);
+                return id;
+            } catch (e) { return null; }
+        }
+
+        async function fetchGlobalCount() {
+            try {
+                let url;
+                if (COUNTER_PROVIDER === 'countapi') url = countapi_get_url();
+                else if (COUNTER_PROVIDER === 'counterapi') url = counterapi_get_url();
+                else if (COUNTER_PROVIDER === 'worker') url = worker_get_url();
+                else return;
+
+                const res = await fetch(url, {cache: 'no-store'});
+                if (!res.ok) throw new Error('bad');
+                const j = await res.json();
+                if (j && typeof j.value === 'number') {
+                    globalCountCache = j.value;
+                    updateSearchCounterDisplay();
+                }
+            } catch (e) {
+                // ignore failures silently
+            }
+        }
+
+        // incrementGlobalCount now sends a POST to the worker provider with client/session id
+        async function incrementGlobalCount(requestId = null) {
+            try {
+                let url;
+                let method = 'GET';
+                let init = null;
+
+                if (COUNTER_PROVIDER === 'countapi') url = countapi_hit_url();
+                else if (COUNTER_PROVIDER === 'counterapi') url = counterapi_hit_url();
+                else if (COUNTER_PROVIDER === 'worker') {
+                    url = worker_hit_url();
+                    method = 'POST';
+                    const clientId = getClientId();
+                    const body = { clientId };
+                    if (requestId) body.requestId = requestId;
+                    init = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) };
+                } else return;
+
+                const res = await fetch(url, init || { method });
+                if (!res.ok) {
+                    // treat throttles as non-fatal; update display if body provided
+                    try { const j = await res.json(); if (j && typeof j.value === 'number') { globalCountCache = j.value; updateSearchCounterDisplay(); } } catch (e) {}
+                    return;
+                }
+                const j = await res.json();
+                if (j && typeof j.value === 'number') {
+                    globalCountCache = j.value;
+                    updateSearchCounterDisplay();
+                }
+            } catch (e) {
+                // ignore failures silently
+            }
+        }
+
+        // Throttle global hits to at most once per second (debounce/coalesce)
+        let _lastGlobalHit = 0;
+        let _pendingGlobalHitTimer = null;
+        let _pendingRequestId = null;
+        const GLOBAL_HIT_MS = 1000;
+
+        // scheduleGlobalHit now accepts an optional requestId. Multiple calls within
+        // the window are coalesced and the most recent requestId is sent to the worker.
+        function scheduleGlobalHit(requestId = null) {
+            const now = Date.now();
+            const since = now - _lastGlobalHit;
+            // remember latest requestId to send when the hit runs
+            if (requestId) _pendingRequestId = requestId;
+            if (since >= GLOBAL_HIT_MS) {
+                _lastGlobalHit = now;
+                const rid = _pendingRequestId;
+                _pendingRequestId = null;
+                incrementGlobalCount(rid);
+                return;
+            }
+            // schedule a single pending increment to run when allowed
+            if (_pendingGlobalHitTimer) return;
+            const wait = GLOBAL_HIT_MS - since;
+            _pendingGlobalHitTimer = setTimeout(() => {
+                _pendingGlobalHitTimer = null;
+                _lastGlobalHit = Date.now();
+                const rid = _pendingRequestId;
+                _pendingRequestId = null;
+                try { incrementGlobalCount(rid); } catch (e) { /* ignore */ }
+            }, wait);
+        }
+
+        function getSearchCount() {
+            try { return parseInt(localStorage.getItem(SEARCH_COUNT_KEY) || '0', 10) || 0; } catch (e) { return 0; }
+        }
+
+        function setSearchCount(n) {
+            try { localStorage.setItem(SEARCH_COUNT_KEY, String(n)); } catch (e) {}
+            updateSearchCounterDisplay();
+        }
+
+        function incrementSearchCount() {
+            const v = getSearchCount() + 1;
+            setSearchCount(v);
+            return v;
+        }
+
+        function updateSearchCounterDisplay() {
+            if (!searchCounterEl) return;
+            const local = getSearchCount();
+            const combined = globalCountCache + local;
+            searchCounterEl.textContent = `${combined.toLocaleString()} searches and counting`;
+        }
+
+        // initialise counter displays
+        updateSearchCounterDisplay();
+        // fetch global count on load (non-blocking)
+        try { fetchGlobalCount(); } catch (e) {}
+
+        const ICENIA_CITY_BOUNDS = {
+            minX: -4300,
+            maxX: -3500,
+            minZ: -4900,
+            maxZ: -3900
+        };
+
+        function mcToLatLng(x, z) {
+            // Center on the block by adding 0.5
+            return [-(z + 0.5), x + 0.5];
+        }
+
+        function prettyMaterialName(material) {
+            if (!material) return '';
+            const base = material.toLowerCase().replace(/minecraft:/, '').replace(/_/g, ' ');
+            return base.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+
+        // Escape HTML but preserve Minecraft section sign (§) and formatting codes
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\"/g, '&quot;');
+        }
+
+        function formatItemName(item) {
+            const pretty = prettyMaterialName(item.material || '');
+            if (item.customName) {
+                // Strip Minecraft color codes for the display name
+                const cleanCustom = item.customName.replace(/§[0-9a-fk-or]/g, '');
+                const safeCustom = escapeHtml(cleanCustom);
+                return `${safeCustom} (${pretty})`;
+            }
+            return pretty;
+        }
+
+        function formatLoreText(item) {
+            // Build tooltip text using Minecraft formatting codes (§)
+            if (!item) return '';
+            const lines = [];
+
+            // Helper: pretty name from material id
+            const baseName = prettyMaterialName(item.material || '');
+
+            // Detect compacted (same heuristic as formatCount)
+            const loreText = item && item.lore ? (Array.isArray(item.lore) ? item.lore.join(' ') : String(item.lore)) : '';
+            const loreCompacted = (loreText.toLowerCase().includes('compacted')) ||
+                                  (item && item.material && item.material.toLowerCase().includes('compacted'));
+
+            // 1) Title: custom name (italic) or base name (not italic) — both in aqua (§b)
+            if (item.customName) {
+                // Escape any HTML in custom names while preserving § codes
+                lines.push(`§b§o${escapeHtml(item.customName)}`);
+            } else if (baseName) {
+                lines.push(`§b${baseName}`);
+            }
+
+            // 2) Compacted indicator (dark purple §5, italic)
+            // 6) Lore with the lore's own formatting.
+            // If lore contains "Compacted Item" make that line §5§o,
+            // other lore lines keep their formatting if present, otherwise render as gold (§6).
+            if (item.lore) {
+                const loreLines = Array.isArray(item.lore) ? item.lore : [String(item.lore)];
+                loreLines.forEach(l => {
+                    if (!l) return;
+                        const plain = String(l).trim();
+                    if (/compacted item/i.test(plain)) {
+                        // Force the compacted indicator styling
+                        lines.push(`§5§oCompacted Item`);
+                    } else {
+                        // If the lore line already includes Minecraft formatting codes, preserve it.
+                            if (/§[0-9a-fk-or]/i.test(plain)) {
+                                // Preserve provided formatting codes but escape stray HTML
+                                lines.push( plain.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') );
+                            } else {
+                                // Otherwise render as gold normal text (escape HTML)
+                                lines.push(`§6${escapeHtml(plain)}`);
+                            }
+                    }
+                });
+            }
+
+            // 3) Repair level: Only show for items that appear to have durability (tools/armor)
+            const isDurable = (() => {
+                if (!item) return false;
+                // Explicit durability fields from API
+                if (item.maxDurability || item.durability || item.repairable) return true;
+                // Fallback heuristic based on material name
+                const mat = (item.material || '').toString().toLowerCase();
+                const durableKeywords = [
+                    'helmet','chestplate','leggings','boots',
+                    'sword','pickaxe','axe','shovel','hoe',
+                    'trident','bow','crossbow','shield','elytra',
+                    'fishing_rod','shears','flint_and_steel'
+                ];
+                return durableKeywords.some(k => mat.includes(k));
+            })();
+            const repairVal = isDurable ? (item.repairLevel ?? item.repair) : undefined;
+            if (repairVal !== undefined && repairVal !== null) {
+                lines.push(`§b${repairVal} levels to repair`);
+            }
+
+            // 4) Enchantments in gray (§7) — aggregate enchants from various sources
+            const collectEnchants = (sources) => {
+                const out = [];
+                for (const src of sources) {
+                    const map = item[src];
+                    if (!map) continue;
+                    for (const [k, v] of Object.entries(map)) {
+                        let name = k.toString().toLowerCase();
+                        if (name.startsWith('minecraft:')) name = name.slice('minecraft:'.length);
+                        name = name.replace(/_/g, ' ');
+                        name = name.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                        out.push(`${name} ${v}`);
+                    }
+                }
+                return out;
+            };
+            const enchList = collectEnchants(['enchants', 'storedEnchants', 'requiredEnchants']);
+            if (enchList.length > 0) {
+                for (const ench of enchList) { // Special case: if the enchant has only 1 possible level, show as EnchantName instead of EnchantName 1
+                    const singleLevelEnchants = ['Aqua Affinity', 'Channeling', 'Curse of Binding', 'Curse of Vanishing', 'Flame', 'Infinity', 'Mending', 'Multishot', 'Silk Touch'];
+                
+                    lines.push(`§7${singleLevelEnchants.includes(ench.replace(' 1', '')) ? ench.replace(' 1', '') : ench}`);
+                }
+                // lines.push(`§7${enchList.join(', ')}`);
+            }
+
+            // 5) Condition in white (§f)
+            if (item.condition !== undefined && item.condition !== null) {
+                lines.push(`§fCondition: ${item.condition}`);
+            }
+
+            // 7) Blank line separator
+            lines.push('');
+
+            // 8) Other information: unlisted/forbidden/excluded enchants — only for enchantable items
+            const isEnchantable = (() => {
+                if (!item) return false;
+                // Primary rule: enchantable if item appears durable (tools/armor/weapons)
+                if (isDurable) return true;
+                // Fallback: treat as enchantable only if the enchant maps/arrays are present and non-empty
+                const hasEnchants = (obj) => {
+                    if (!obj) return false;
+                    if (Array.isArray(obj)) return obj.length > 0;
+                    if (typeof obj === 'object') return Object.keys(obj).length > 0;
+                    return false;
+                };
+                if (hasEnchants(item.enchants) || hasEnchants(item.storedEnchants) || hasEnchants(item.requiredEnchants)) return true;
+                return false;
+            })();
+
+            if (isEnchantable) {
+                if (item.unlistedEnchantsAllowed === false) {
+                    lines.push(`§7Unlisted Enchants: §cForbidden`);
+                } else if (item.unlistedEnchantsAllowed === true) {
+                    lines.push(`§7Unlisted Enchants: §aAllowed`);
+                }
+
+                // 9) Excluded enchants summary (if present), show in gray with red bullets
+                if (item.excludedEnchants && item.excludedEnchants.length > 0) {
+                    const ex = item.excludedEnchants.map(e => {
+                        let n = e.toString().replace('minecraft:', '').replace(/_/g, ' ');
+                        n = n.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                        return `§c- ${n}`;
+                    }).join('\n');
+                    lines.push(`§7Excluded Enchants:`);
+                    lines.push(ex);
+                }
+            }
+
+            return lines.join('\n').trim();
+        }
+
+        function renderMinecraftText(text) {
+            if (!text) return '';
+            // Escape raw text to prevent HTML injection when this function's output
+            // is assigned to innerHTML. We preserve § codes and newlines; other
+            // special characters are escaped here.
+            text = String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\"/g, '&quot;');
+            
+            const codes = {
+                '0': 'mc-0', '1': 'mc-1', '2': 'mc-2', '3': 'mc-3',
+                '4': 'mc-4', '5': 'mc-5', '6': 'mc-6', '7': 'mc-7',
+                '8': 'mc-8', '9': 'mc-9', 'a': 'mc-a', 'b': 'mc-b',
+                'c': 'mc-c', 'd': 'mc-d', 'e': 'mc-e', 'f': 'mc-f',
+                'l': 'mc-l', 'm': 'mc-m', 'n': 'mc-n', 'o': 'mc-o',
+                'k': 'mc-k', 'r': 'mc-r'
+            };
+
+            let html = '';
+            let currentClasses = new Set();
+            let i = 0;
+
+            while (i < text.length) {
+                if (text[i] === '§' && i + 1 < text.length) {
+                    const code = text[i + 1].toLowerCase();
+                    if (codes[code]) {
+                        if (code === 'r') {
+                            currentClasses.clear();
+                        } else if (['l', 'm', 'n', 'o', 'k'].includes(code)) {
+                            currentClasses.add(codes[code]);
+                        } else {
+                            // In Minecraft, color codes reset all formatting codes
+                            currentClasses.forEach(cls => {
+                                if (['mc-l', 'mc-m', 'mc-n', 'mc-o', 'mc-k'].includes(cls)) {
+                                    currentClasses.delete(cls);
+                                }
+                            });
+                            // Also remove any previous color
+                            currentClasses.forEach(cls => {
+                                if (cls.startsWith('mc-') && !['l', 'm', 'n', 'o', 'k', 'r'].includes(cls.slice(3))) {
+                                    currentClasses.delete(cls);
+                                }
+                            });
+                            currentClasses.add(codes[code]);
+                        }
+                        i += 2;
+                        continue;
+                    }
+                }
+
+                if (text[i] === '\n') {
+                    html += '<br>';
+                } else {
+                    const char = text[i];
+                    if (currentClasses.size > 0) {
+                        // For obfuscated text, we replace the character with a random one
+                        if (currentClasses.has('mc-k')) {
+                            html += `<span class="${Array.from(currentClasses).join(' ')}">?</span>`;
+                        } else {
+                                html += `<span class="${Array.from(currentClasses).join(' ')}">${char}</span>`;
+                        }
+                    } else {
+                            html += char;
+                    }
+                }
+                i++;
+            }
+            return html;
+        }
+
+        function formatTimeAgo(ms) {
+            const seconds = Math.floor(ms / 1000);
+            if (seconds < 60) return `${seconds}s ago`;
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return `${minutes}m ago`;
+            const hours = Math.floor(minutes / 60);
+            if (hours < 48) return `${hours}h ago`;
+            // Show days with one decimal place (e.g. "2.7d ago")
+            const daysFloat = ms / (1000 * 60 * 60 * 24);
+            if (daysFloat < 30) return `${daysFloat.toFixed(1)}d ago`;
+            const months = Math.floor(daysFloat / 30);
+            return `${months}mo ago`;
+        }
+
+        function compactMultiplier(item) {
+            if (!item) return 1;
+            
+            // If not explicitly marked as compacted, no multiplier
+            let loreText = '';
+            if (item && item.lore) {
+                loreText = Array.isArray(item.lore) ? item.lore.join(' ') : String(item.lore);
+            }
+            
+            const loreCompacted = (loreText.toLowerCase().includes('compacted')) ||
+                                 (item && item.material && item.material.toLowerCase().includes('compacted'));
+            
+            if (!loreCompacted) return 1;
+            
+            // Varying multipliers based on item type
+            const mat = (item.material || '').toString();
+            if (item.bookAuthor != null) return 8;
+            if (item.potionName != null) return 8;
+            if (mat === "Ender Pearl") return 8;
+            if (mat === "Bow") return 8;
+            if (mat.endsWith(" Pickaxe")) return 8;
+            if (mat.endsWith(" Axe")) return 8;
+            if (mat.endsWith(" Shovel")) return 8;
+            if (mat.endsWith(" Helmet")) return 8;
+            if (mat.endsWith(" Chestplate")) return 8;
+            if (mat.endsWith(" Leggings")) return 8;
+            if (mat.endsWith(" Boots")) return 8;
+            if (mat.endsWith("Egg")) return 16;
+            return 64;
+        }
+
+        function formatCount(count, item) {
+            let loreText = '';
+            if (item && item.lore) {
+                loreText = Array.isArray(item.lore) ? item.lore.join(' ') : String(item.lore);
+            }
+            
+            const loreCompacted = (loreText.toLowerCase().includes('compacted')) ||
+                                 (item && item.material && item.material.toLowerCase().includes('compacted'));
+            
+            if (loreCompacted) {
+                return { text: `${count}ci`, isCompacted: true };
+            }
+            // Do NOT treat raw counts that are multiples of 64 as "ci" unless the
+            // item is explicitly marked as compacted in its material or lore.
+            // This preserves the distinction between "5 stacks = 320" and
+            // "5ci = 5 compacted items".
+            return { text: `${count}`, isCompacted: false };
+        }
+
+            // Determine if an item should be treated as a "compacted" (ci) material
+            // Note: There are two representations observed in data:
+            // 1) Items whose material or lore explicitly mentions "compacted" — their
+            //    `count` field represents the number of compressed units (1ci = 64 normal items).
+            // 2) Items where `count` is a multiple of 64 — these are raw-normal counts
+            //    but displayed as ci for readability. In this case the raw count already
+            //    represents the number of normal items and should NOT be multiplied by 64.
+            function isMaterialOrLoreCompacted(item) {
+                if (!item) return false;
+                let loreText = '';
+                try {
+                    loreText = item.lore ? (Array.isArray(item.lore) ? item.lore.join(' ') : String(item.lore)) : '';
+                } catch (e) { loreText = ''; }
+                const loreCompacted = loreText.toLowerCase().includes('compacted');
+                const matCompacted = (item.material || '').toString().toLowerCase().includes('compacted');
+                return loreCompacted || matCompacted;
+            }
+
+            // Convert an item's reported `count` into the number of "normal" items it represents.
+            // - If material/lore explicitly marks it compacted, each reported unit = multiplier (8/16/64) normal items.
+            // - Otherwise the reported `count` is assumed to be normal units already.
+            function normalizedCount(item) {
+                if (!item) return 0;
+                const c = Number(item.count) || 0;
+                const multiplier = compactMultiplier(item);
+                return c * multiplier;
+            }
+
+        const ENCHANTMENTS = [
+            "Mending", "Unbreaking", "Efficiency", "Silk Touch", "Fortune",
+            "Protection", "Fire Protection", "Blast Protection", "Projectile Protection", "Thorns",
+            "Respiration", "Aqua Affinity", "Swift Sneak", "Depth Strider", "Feather Falling", "Frost Walker", "Soul Speed",
+            "Smite", "Bane of Arthropods", "Knockback", "Fire Aspect", "Looting", "Sharpness", "Sweeping Edge", 
+            "Channeling", "Riptide", "Impaling", "Loyalty",
+            "Power", "Punch", "Flame", "Infinity", 
+            "Luck of the Sea", "Lure",
+            "Curse of Vanishing", "Curse of Binding"
+        ].sort();
+
+        function createEnchantFilterRow() {
+            const row = document.createElement('div');
+            row.className = 'enchant-filter-row';
+            
+            let options = '<option value="">Any Enchantment</option>';
+            ENCHANTMENTS.forEach(e => {
+                options += `<option value="${e.toLowerCase().replace(/ /g, '_')}">${e}</option>`;
+            });
+
+            row.innerHTML = `
+                <select class="govuk-select enchant-name-select">
+                    ${options}
+                </select>
+                <input class="govuk-input enchant-level-input" type="number" placeholder="Lvl" min="1" max="10">
+                <button type="button" class="remove-enchant-btn" title="Remove filter">×</button>
+            `;
+
+            row.querySelector('.enchant-name-select').addEventListener('change', () => applyFiltersAndDisplay());
+            row.querySelector('.enchant-level-input').addEventListener('input', () => applyFiltersAndDisplay());
+            row.querySelector('.remove-enchant-btn').addEventListener('click', () => {
+                row.remove();
+                applyFiltersAndDisplay();
+            });
+
+            return row;
+        }
+
+        document.getElementById('add-enchant-filter').addEventListener('click', () => {
+            document.getElementById('enchantment-filters-list').appendChild(createEnchantFilterRow());
+        });
+
+        async function performSearch(isIceniaOnly = false) {
+            const outputQuery = searchInput.value.trim();
+            const inputQuery = document.getElementById('input-search').value.trim();
+            const updatedAfterSelect = document.getElementById('updated-after');
+            
+            // If isIceniaOnly is true (from button), we force the checkbox and fetch
+            if (isIceniaOnly) {
+                iceniaOnlyCheckbox.checked = true;
+            }
+            
+            const limit = isIceniaOnly ? 1000 : 100;
+            
+            if (!outputQuery && !inputQuery && !isIceniaOnly) return;
+
+            loadingOverlay.classList.remove('hidden');
+            // increment per-browser search counter
+            try { incrementSearchCount(); } catch (e) { /* ignore */ }
+            // schedule global public counter hit (throttled to 1/sec)
+            try {
+                let reqId = null;
+                try { reqId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('r_' + Math.random().toString(36).slice(2,10)); } catch (e) { reqId = 'r_' + Math.random().toString(36).slice(2,10); }
+                scheduleGlobalHit(reqId);
+            } catch (e) { /* ignore */ }
+            
+            try {
+                const searchParams = {
+                    limit: limit,
+                    allowUnstocked: isIceniaOnly ? true : allowUnstockedCheckbox.checked,
+                    sortMode: isIceniaOnly ? 'closest' : sortModeSelect.value
+                };
+
+                // Search Bypass Logic: Map well-known custom items (e.g. brews, barrels, heads, essence)
+                // to their base materials before querying Tradex. This is intentionally local
+                // and maintainable: add new brew tokens to BREW_TOKENS below as needed.
+                let apiOutputQuery = outputQuery;
+                let apiInputQuery = inputQuery;
+
+                // Normalizer: lower-case, replace non-alphanum with underscore, trim extra underscores
+                function normalizeForMatch(s) {
+                    if (!s) return '';
+                    return String(s).toLowerCase()
+                        .replace(/[^a-z0-9]+/g, '_')
+                        .replace(/^_+|_+$/g, '');
+                }
+
+                // Local list of known brewery/custom potion tokens. Keep these normalized.
+                // Add new custom potion names here (normalized form: lowercase, non-alphanum -> _)
+                const BREW_TOKENS = [
+                    // Common brews & drinks
+                    'wheatbeer','the_simple_life','pale_ale','pale_lager','pilsner','cider','amber_ale','white_ale','super_bock',
+                    'white_wine','red_wine','albarino','alvarinho_portugues','pinot','sauvignnon_blanc','chianti','cabernet','merlot','grenache',
+                    'champagne','riesling','rose','whiskey','scotch','white_whiskey','corn_whiskey','japanese_whiskey','sake','soju',
+                    'vodka','wheat_vodka','melon_schnapps','irish_cream','kefir','kombucha','absinthe','applejack','basi','borovicka',
+                    'brandy','cachaca','chicha','tea','black_tea','chamomile_tea','earl_grey','green_tea','milo','gin','pigeon_gin',
+                    'mead','metaxa','rum','tequila','tomboy_tequila','amaretto','vermouth','dandelion_liquor','sam_amogus_pale_pilsen',
+                    'marzen','brown_ale','stout','dark_lager','chardonnay','celebration','bourbon_whiskey','bifrost_vodka','cherry_liqueur',
+                    'ginjinha','orange_liqueur','sarsaparilla','ginger_beer','lemonade','coca_soda','leninade','limoncello','creme_de_menthe',
+                    'chocolate_milk','energy_drink','espresso','americano','latte','mocha','iced_tea','iced_coffee','hot_coco','olive_oil',
+                    'beetroot_vodka','melon_iced_tea','mango_schnapps','papaya_schnapps','vegetable_smoothie','pumpkin_spice_latte','chocolate_apple_cider',
+                    'cannonball_rum','frog_grog','dr_pvper','cough_syrup','the_gay_agenda','tonic','witchs_tongue','tombstone','bloodweiser',
+                    'de_coffin_ated_curse','phantom','eggnog','advocaat','love_potion','vegetable_soup','ratatouille','laksa','minestrone','pho',
+                    'chicken_noodle_soup','dumpling_soup','corn_chowder','goulash','tonkatsu_ramen','borscht','balti_gosht','rice_porridge',
+                    'cranberry_pie','fish_soup','poached_salmon','marmite','mais_con_hielo','mediterranean_medly','halloween_candy','cheese',
+                    'easter_bread','candied_carrots','dyed_eggs','deviled_eggs','carrot_cake','valentines_chocolate','dark_chocolate','martini',
+                    'hunters_digestif','tropical_cocktail','raider_fuel','redcoat_rum','spicy_juice','zombie','5_o_block_somewhere','lean','bubble_tea',
+                    'genderfluid_gin','trans_rights_are_human_rights','bees_knees','cherry_spritz','luck_of_the_irish','pan_galactic_gargle_blaster',
+
+                    // Drug / stimulant brews (for educational purposes)
+                    'cyanide','cannabis','meth','blue_meth','heroin','oestrogen','caffeine','ivermectin','dmt','xanax','steroids','testosterone','vicodin',
+                    'fent','cocaine','speed','nad','epinephrine','nitroglycerin','firefoam',
+
+                    // Nation-specific and community/player brews
+                    'icenian_pale_ale','dalgon_pale','pacem_pilsner','augustan_cider','wolken_white_ale','southshire_stout','septembrian_summer_breeze',
+                    'commonwealth_chardonnay','cortesian_chianti','cabernet_sovian','lusitan_wine','fempire_sparkling_rose','nara_pufferfish_wine',
+                    'cctt_pumpkin_wine','dirt_wine','pavian_wiskey','fembourbon','griffin_gold_whiskey','nara_no_uisuki','gensokyo_no_ginjo_sake',
+                    'venne_vodka','winterbourne_wheat_vodka','estalian_schnapps','southshire_cream_liquer','kubucha','yoahpple','jaegermaester',
+                    'shaken_southsire_sunset','pacem_proper','icenian_icebreaker','civmarket_chowder','margaritaville_margarita','vault_breaker','nuclear_milk',
+                    'amboise_red_wine','atlas_corp_cuban','irish_whiskey','imperian_whiskey','warmian_nitro','shiroyama_sake','ixi','imperian_carrot_juice',
+                    'angmar_vodka','pine_grove_elixer','ayran','eldorian_grand_wine','q_barran_hist_sap','q_barran_phlegmwine','rust_and_rot','spruce_raki',
+                    'minty_blue_juice','baile_deep','blue_star','piwo_tesc_mole','new_callisto_coppertop','erynorian_root_beer','sorian_hjemmebrent',
+                    'groveheart_potato_wine','griffin_steak_co_liquid_lunch','grenada_club_dark_rum','salerno_shandy','brunsvik_bread_soup','shawarma',
+                    'wellington_cherry_liquor','imperial_stout','hello_kitty_hurricane','the_white_raven','suramirian_star_gazer','melen','bedfordian_mead',
+                    'syndicates_spirit','workers_stout','bankers_dust','wyepoint_moonshine','northfortian_vodka','proletarian_strength','starch_cola',
+                    'mulled_melonade','snake_oil','lord_marzenpan','soundtechs_soundcheck','wingzeros_wingman','ahris_touhou_twister','maxoplopys_beer_garden',
+                    'diet_colas_rum_and_cola','icekeepers_icepick','programmerdans_power_coffee','ttk2s_closing_speech','infras_code_injection','rourke750s_vermouth_reviver',
+                    'tealnerds_sneaker_schnapps','erocs_top_of_the_rock','reddevils_devilish_wine','xfiers_firesnap','orinnaris_amaretto','awoos_git_reset_hard_head',
+                    'gjums_grape_juice_on_ice','notruepunkin_spiced_mead','kingtells_royal_absinthe','gamer_gwua_bathwater','okxs_oxeye_oxkick','leos_orange_creamsicle',
+                    'coltons_love_martini','golden_pick_stout','katz_catnip_kaffee_6','astros_pill','jeremys_slippy_sloppy_screwdriver','trizzzxs_worcestershire_sauce',
+                    'strawbeary_dreams','pisco_sour',
+
+                    // Food brews (restore saturation) - from Brewery wiki "List of Discoverable Brews" (Food Brews)
+                    'vegetable_soup','                          ','laksa','minestrone','pho','chicken_noodle_soup','dumpling_soup','corn_chowder','goulash','tonkatsu_ramen','borscht',
+                    'balti_gosht','rice_porridge','cranberry_pie','fish_soup','poached_salmon','marmite','mais_con_hielo','mediterranean_medly','halloween_candy','cheese','easter_bread',
+                    'candied_carrots','dyed_eggs','deviled_eggs','carrot_cake','valentines_chocolate','dark_chocolate'
+                ];
+
+                // If the user's query matches any known brew token, search for the base potion
+                const outNorm = normalizeForMatch(outputQuery);
+                if (outNorm) {
+                    for (const t of BREW_TOKENS) {
+                        if (!t) continue;
+                        if (outNorm === t) {
+                            apiOutputQuery = 'potion';
+                            break;
+                        }
+                    }
+                }
+
+                const inNorm = normalizeForMatch(inputQuery);
+                if (inNorm) {
+                    for (const t of BREW_TOKENS) {
+                        if (!t) continue;
+                        if (inNorm === t) {
+                            apiInputQuery = 'potion';
+                            break;
+                        }
+                    }
+                }
+
+                // Preserve existing special-case mappings for barrels, player heads and essences
+                const lowerOutputQuery = outputQuery.toLowerCase();
+                if (lowerOutputQuery.includes('repair kit') || lowerOutputQuery.includes('dropbox') || lowerOutputQuery.includes('compactor') || lowerOutputQuery.includes('smelter')) {
+                    apiOutputQuery = 'barrel';
+                } else if (lowerOutputQuery.includes('head')) {
+                    apiOutputQuery = 'player_head';
+                } else if (lowerOutputQuery.includes('essence')) {
+                    apiOutputQuery = 'eye_of_ender';
+                }
+
+                const lowerInputQuery = inputQuery.toLowerCase();
+                if (lowerInputQuery.includes('repair kit') || lowerInputQuery.includes('dropbox') || lowerInputQuery.includes('compactor') || lowerInputQuery.includes('smelter')) {
+                    apiInputQuery = 'barrel';
+                } else if (lowerInputQuery.includes('head')) {
+                    apiInputQuery = 'player_head';
+                } else if (lowerInputQuery.includes('essence')) {
+                    apiInputQuery = 'eye_of_ender';
+                }
+
+                if (apiOutputQuery) searchParams.output = apiOutputQuery;
+                if (apiInputQuery) searchParams.input = apiInputQuery;
+                
+                const updatedAfterMs = parseInt(updatedAfterSelect.value);
+                if (updatedAfterMs > 0) {
+                    searchParams.updatedAfter = Date.now() - updatedAfterMs;
+                }
+
+                if (sortModeSelect.value === 'closest' || isIceniaOnly) {
+                    const pos = userLocation || { x: -3900, z: -4400 };
+                    searchParams.pos = {
+                        x: Math.round(pos.x),
+                        y: 64,
+                        z: Math.round(pos.z),
+                        world: "overworld"
+                    };
+                }
+
+                const TARGET_URL = 'https://api.tradex.civinfo.net/exchanges/search';
+                
+                // List of proxies to try in order. 
+                // We include the self-hosted worker as the first backup for speed and reliability.
+                const PROXIES = [
+                    { name: 'Direct API', url: TARGET_URL },
+                    // { name: 'AllOrigins (Raw)', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(TARGET_URL) },
+                    // { name: 'YaCDN', url: 'https://yacdn.org/proxy/' + TARGET_URL },
+                    // { name: 'HTMLDriven', url: 'https://cors-anywhere.htmldriven.com/?url=' + TARGET_URL },
+                    // { name: 'CodeTabs', url: 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(TARGET_URL) },
+                    // { name: 'CORSProxy.io', url: 'https://corsproxy.io/?' + encodeURIComponent(TARGET_URL) },
+                    // { name: 'ThingProxy', url: 'https://thingproxy.freeboard.io/fetch/' + TARGET_URL },
+                    // { name: 'AllOrigins (JSON)', url: 'https://api.allorigins.win/get?url=' + encodeURIComponent(TARGET_URL) },
+                    // { name: 'CORS Bridged', url: 'https://cors.bridged.cc/' + TARGET_URL }
+                ];
+                
+                async function tryFetch(proxy, attemptIndex) {
+                    console.log(`Attempting search via ${proxy.name}...`);
+                    const isAllOriginsJson = proxy.url.includes('allorigins.win/get');
+                    
+                    const controller = new AbortController();
+                    // Use shorter timeout for first few attempts to speed up fallback, 
+                    // but keep 8s for later ones as Tradex can be slow.
+                    const timeoutMs = attemptIndex < 2 ? 5000 : 8000;
+                    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+                    try {
+                        const res = await fetch(proxy.url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(searchParams),
+                            signal: controller.signal
+                        });
+                        
+                        clearTimeout(timeoutId);
+                        
+                        if (!res.ok) throw new Error(`${proxy.name} returned status ${res.status}`);
+                        
+                        const text = await res.text();
+                        
+                        try {
+                            let json = JSON.parse(text);
+                            // AllOrigins /get wraps the response in a JSON object with a 'contents' field
+                            if (isAllOriginsJson && json.contents) {
+                                json = JSON.parse(json.contents);
+                            }
+                            
+                            if (json && (json.exchanges || Array.isArray(json))) {
+                                return json;
+                            }
+                            throw new Error('Invalid JSON structure');
+                        } catch (e) {
+                            throw new Error(`${proxy.name} response was not valid JSON`);
+                        }
+                    } catch (e) {
+                        clearTimeout(timeoutId);
+                        throw e;
+                    }
+                }
+
+                let data = null;
+                let lastError = null;
+
+                for (let i = 0; i < PROXIES.length; i++) {
+                    const proxy = PROXIES[i];
+                    try {
+                        data = await tryFetch(proxy, i);
+                        if (data) break;
+                    } catch (e) {
+                        console.warn(`${proxy.name} failed:`, e.message);
+                        lastError = e;
+                        continue; // Try next proxy
+                    }
+                }
+
+                if (!data) {
+                    console.error('All search methods failed');
+                    throw new Error(lastError ? `Search failed: ${lastError.message}` : 'Search failed. All proxies are currently unavailable.');
+                }
+                let exchanges = data.exchanges || [];
+
+                // Client-side filtering for better accuracy (Fixes "golden carrot" issue and supports custom names/lore)
+                // Uses a multi-word match: all words in the query must appear in the item's metadata
+                if (outputQuery) {
+                    const words = outputQuery.toLowerCase().split(/\s+/).filter(w => w.length > 0);
+                    exchanges = exchanges.filter(ex => {
+                        const material = (ex.output.material || '').toLowerCase().replace(/_/g, ' ');
+                        const customName = (ex.output.customName || '').toLowerCase();
+                        const lore = (Array.isArray(ex.output.lore) ? ex.output.lore.join(' ') : String(ex.output.lore || '')).toLowerCase();
+                        const combined = `${material} ${customName} ${lore}`;
+                        
+                        return words.every(word => combined.includes(word));
+                    });
+                }
+                if (inputQuery) {
+                    const words = inputQuery.toLowerCase().split(/\s+/).filter(w => w.length > 0);
+                    exchanges = exchanges.filter(ex => {
+                        const material = (ex.input.material || '').toLowerCase().replace(/_/g, ' ');
+                        const customName = (ex.input.customName || '').toLowerCase();
+                        const lore = (Array.isArray(ex.input.lore) ? ex.input.lore.join(' ') : String(ex.input.lore || '')).toLowerCase();
+                        const combined = `${material} ${customName} ${lore}`;
+                        
+                        return words.every(word => combined.includes(word));
+                    });
+                }
+
+                lastExchanges = exchanges;
+                lastQueryLabel = isIceniaOnly ? "Icenia City" : (outputQuery || inputQuery);
+                
+                // Invalidate size once before applying filters and fitting bounds to ensure correct dimensions
+                map.invalidateSize();
+                applyFiltersAndDisplay();
+            } catch (error) {
+                console.error('Search failed:', error);
+                resultsContainer.innerHTML = `<div class="results-placeholder"><p class="govuk-body-s" style="color: #d4351c;">Error fetching data from Tradex. Please try again.<br><small>${escapeHtml(error.message)}</small></p></div>`;
+            } finally {
+                loadingOverlay.classList.add('hidden');
+            }
+        }
+
+        function selectMarker(marker) {
+            // Remove ping and reset z-index from previous marker
+            if (activeMarker) {
+                const oldEl = activeMarker.getElement();
+                if (oldEl) {
+                    oldEl.classList.remove('ping-animation');
+                    activeMarker.setZIndexOffset(0);
+                }
+            }
+            
+            activeMarker = marker;
+            const el = marker.getElement();
+            if (el) {
+                el.classList.remove('ping-animation');
+                void el.offsetWidth; // trigger reflow
+                el.classList.add('ping-animation');
+                marker.setZIndexOffset(1000); // Bring to front
+            }
+        }
+
+        function applyFiltersAndDisplay() {
+            if (lastExchanges.length === 0 && !lastQueryLabel) return;
+            const iceniaOnly = iceniaOnlyCheckbox.checked;
+            let filtered = [...lastExchanges];
+            
+            // Enchantment filters
+            const enchantRows = document.querySelectorAll('.enchant-filter-row');
+            const activeFilters = [];
+            enchantRows.forEach(row => {
+                const name = row.querySelector('.enchant-name-select').value;
+                const levelStr = row.querySelector('.enchant-level-input').value;
+                const level = levelStr ? (parseInt(levelStr) || 0) : 0;
+                if (name) {
+                    activeFilters.push({ name, level });
+                }
+            });
+
+            if (activeFilters.length > 0) {
+                // Helper: robustly find enchant level in various maps (case-insensitive, fuzzy)
+                const getEnchantLevel = (item, enchantName) => {
+                    if (!item) return 0;
+                    const enchantNorm = enchantName.replace(/_/g, ' ').toString().toLowerCase();
+                    const sources = ['enchants', 'requiredEnchants', 'storedEnchants'];
+                    for (const src of sources) {
+                        const map = item[src];
+                        if (!map) continue;
+                        for (const [k, val] of Object.entries(map)) {
+                            if (!k) continue;
+                            let keyNorm = k.toString().toLowerCase();
+                            if (keyNorm.startsWith('minecraft:')) keyNorm = keyNorm.slice('minecraft:'.length);
+                            keyNorm = keyNorm.replace(/_/g, ' ');
+                            // Exact match
+                            if (keyNorm === enchantNorm) return Number(val) || 0;
+                            // Fuzzy: matches like "fortune" in "fortune 3" or keys with minor formatting differences
+                            if (keyNorm.includes(enchantNorm) || enchantNorm.includes(keyNorm)) return Number(val) || 0;
+                        }
+                    }
+                    return 0;
+                };
+
+                filtered = filtered.filter(ex => {
+                    return activeFilters.every(filter => {
+                        const itemLevel = getEnchantLevel(ex.output, filter.name);
+                        // If no level specified (0), match any item that has the enchant at any level
+                        if (filter.level === 0) {
+                            return itemLevel > 0;
+                        }
+                        return itemLevel >= filter.level;
+                    });
+                });
+            }
+
+            if (iceniaOnly) {
+                filtered = filtered.filter(ex => 
+                    ex.pos.x >= ICENIA_CITY_BOUNDS.minX && 
+                    ex.pos.x <= ICENIA_CITY_BOUNDS.maxX && 
+                    ex.pos.z >= ICENIA_CITY_BOUNDS.minZ && 
+                    ex.pos.z <= ICENIA_CITY_BOUNDS.maxZ
+                );
+            }
+            
+            // Client-side sorting (Fixes "Sort by doesn't work" issue)
+            const sortMode = sortModeSelect.value;
+            if (sortMode === 'cheapest') {
+                filtered.sort((a, b) => {
+                    const aIn = normalizedCount(a.input);
+                    const aOut = normalizedCount(a.output);
+                    const bIn = normalizedCount(b.input);
+                    const bOut = normalizedCount(b.output);
+                    const aPrice = (aOut === 0) ? Infinity : (aIn / aOut);
+                    const bPrice = (bOut === 0) ? Infinity : (bIn / bOut);
+                    return aPrice - bPrice;
+                });
+            } else if (sortMode === 'latest') {
+                // Prefer `time` from API, fall back to `updatedAt`
+                filtered.sort((a, b) => (b.time || b.updatedAt || 0) - (a.time || a.updatedAt || 0));
+            } else if (sortMode === 'stock') {
+                filtered.sort((a, b) => b.stock - a.stock);
+            } else if (sortMode === 'closest') {
+                const pos = userLocation || { x: -3870, z: -4400 };
+                const dist = (p) => Math.sqrt(Math.pow(p.x - pos.x, 2) + Math.pow(p.z - pos.z, 2));
+                filtered.sort((a, b) => dist(a.pos) - dist(b.pos));
+            }
+
+            displayResults(filtered, lastQueryLabel);
+        }
+
+        function displayResults(exchanges, queryLabel) {
+            markerGroup.clearLayers();
+            markers = [];
+            activeMarker = null;
+            activeCard = null;
+
+            if (!exchanges || exchanges.length === 0) {
+                const updatedAfter = document.getElementById('updated-after').value;
+                const allowUnstocked = allowUnstockedCheckbox.checked;
+                
+                let warning = `<div class="results-placeholder no-results">
+                    <div class="warning-icon">⚠️</div>
+                    <p class="govuk-body-s"><strong>No shops found for "${escapeHtml(queryLabel)}"</strong></p>
+                    <ul class="govuk-list govuk-list--bullet govuk-body-s">
+                        ${!allowUnstocked ? '<li>Try enabling <strong>"Unstocked"</strong> in options</li>' : ''}
+                        ${updatedAfter !== '0' ? '<li>Try setting <strong>"Time"</strong> to "Anytime"</li>' : ''}
+                        <li>Check for typos in the item name</li>
+                    </ul>
+                </div>`;
+                resultsContainer.innerHTML = warning;
+                return;
+            }
+
+            const grouped = {};
+            exchanges.forEach(ex => {
+                const key = `${ex.pos.x},${ex.pos.y},${ex.pos.z}`;
+                if (!grouped[key]) grouped[key] = [];
+                grouped[key].push(ex);
+            });
+
+            Object.entries(grouped).forEach(([key, locExchanges]) => {
+                const first = locExchanges[0];
+                const latLng = mcToLatLng(first.pos.x, first.pos.z);
+                
+                const marker = L.marker(latLng, {
+                    icon: L.divIcon({
+                        className: 'shop-pointer-marker',
+                        html: '<div class="pointer-inner"></div>',
+                        iconSize: [32, 32],
+                        iconAnchor: [16, 32],
+                        popupAnchor: [0, -35]
+                    })
+                }).addTo(markerGroup);
+                
+                let popupContent = `<div class="shop-popup">
+                    <h3>Shop at ${first.pos.x}, ${first.pos.z}</h3>
+                    <div class="exchanges-list">`;
+                
+                locExchanges.forEach(ex => {
+                    const inputFmt = formatCount(ex.input.count, ex.input);
+                    const outputFmt = formatCount(ex.output.count, ex.output);
+                    
+                    const inputLore = formatLoreText(ex.input);
+                    const outputLore = formatLoreText(ex.output);
+
+                    popupContent += `
+                        <div class="exchange-row">
+                            <div class="exchange-item-bundle">
+                                <div class="item-icon-bg small" ${inputLore ? `data-lore="${inputLore.replace(/"/g, '&quot;')}"` : ''}>
+                                    <img class="popup-item-icon" src="${getItemIconUrl(ex.input.material)}" data-material="${escapeHtml(ex.input.material)}" onerror="handleItemImageError.call(this)">
+                                </div>
+                                <span class="exchange-price">
+                                    <span class="count ${inputFmt.isCompacted ? 'compacted' : ''}">${inputFmt.text}</span>
+                                    <span class="name">${formatItemName(ex.input)}</span>
+                                </span>
+                            </div>
+                            <span class="exchange-arrow">→</span>
+                            <div class="exchange-item-bundle output">
+                                <span class="exchange-output">
+                                    <span class="count ${outputFmt.isCompacted ? 'compacted' : ''}">${outputFmt.text}</span>
+                                    <span class="name">${formatItemName(ex.output)}</span>
+                                </span>
+                                <div class="item-icon-bg small" ${outputLore ? `data-lore="${outputLore.replace(/"/g, '&quot;')}"` : ''}>
+                                    <img class="popup-item-icon" src="${getItemIconUrl(ex.output.material)}" data-material="${escapeHtml(ex.output.material)}" onerror="handleItemImageError.call(this)">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                popupContent += `</div></div>`;
+                marker.bindPopup(popupContent);
+                marker.on('click', () => {
+                    const latLng = mcToLatLng(first.pos.x, first.pos.z);
+                    flyToWithOffset(latLng, DEFAULT_CLICK_ZOOM);
+                    selectMarker(marker);
+                });
+                markers.push({ key, marker, exchanges: locExchanges });
+            });
+
+            resultsContainer.innerHTML = '';
+            const fragment = document.createDocumentFragment();
+            exchanges.forEach((ex, index) => {
+                const card = document.createElement('div');
+                card.className = 'shop-result-card';
+                card.style.animationDelay = `${index * 0.04}s`;
+                
+                const stockClass = ex.stock > 64 ? 'stock-high' : (ex.stock > 0 ? 'stock-low' : 'stock-none');
+                const stockText = ex.stock > 0 ? `Stock: ${ex.stock}` : 'Out of Stock';
+                const outputName = formatItemName(ex.output);
+                const inputName = formatItemName(ex.input);
+                const inputFmt = formatCount(ex.input.count, ex.input);
+                const outputFmt = formatCount(ex.output.count, ex.output);
+                
+                const inputLore = formatLoreText(ex.input);
+                const outputLore = formatLoreText(ex.output);
+
+                // Robust freshness logic — accept multiple timestamp fields and numeric strings
+                const now = Date.now();
+                const rawTs = (ex.time ?? ex.updatedAt ?? ex.timeMillis ?? ex.timestamp ?? null);
+                let updatedAt = null;
+                if (rawTs !== null && rawTs !== undefined) {
+                    const n = Number(rawTs);
+                    if (Number.isFinite(n) && n > 0) updatedAt = n;
+                }
+                const hasUpdated = updatedAt !== null;
+                const ageMs = hasUpdated ? (now - updatedAt) : Infinity;
+                const ageDays = hasUpdated ? (ageMs / (1000 * 60 * 60 * 24)) : Infinity;
+
+                let freshnessClass = 'fresh-red';
+                let freshnessText = 'Old';
+                if (!hasUpdated) {
+                    freshnessClass = 'fresh-red';
+                    freshnessText = 'Unknown';
+                } else if (ageMs < 0) {
+                    // Future timestamps — treat as very recent
+                    freshnessClass = 'fresh-green';
+                    freshnessText = 'Recent';
+                } else if (ageDays < 7) {
+                    freshnessClass = 'fresh-green';
+                    freshnessText = 'Recent';
+                } else if (ageDays < 30) {
+                    freshnessClass = 'fresh-yellow';
+                    freshnessText = '30d';
+                }
+
+                // Human-readable hover title: relative time + full timestamp when available
+                const freshnessTitle = hasUpdated
+                    ? `${formatTimeAgo(Math.abs(ageMs))} — ${new Date(updatedAt).toLocaleString()}`
+                    : 'Last updated: Unknown';
+
+                card.innerHTML = `
+                    <div class="trade-display">
+                        <div class="item-stack">
+                            <div class="item-icon-bg" ${inputLore ? `data-lore="${inputLore.replace(/"/g, '&quot;')}"` : ''}>
+                                <img class="item-icon" src="${getItemIconUrl(ex.input.material)}" data-material="${escapeHtml(ex.input.material)}" onerror="handleItemImageError.call(this)" alt="">
+                                <span class="stack-count ${inputFmt.isCompacted ? 'compacted' : ''}">${inputFmt.text}</span>
+                            </div>
+                            <span class="item-label">${inputName}</span>
+                        </div>
+                        <div class="trade-arrow">→</div>
+                        <div class="item-stack">
+                            <div class="item-icon-bg" ${outputLore ? `data-lore="${outputLore.replace(/"/g, '&quot;')}"` : ''}>
+                                <img class="item-icon" src="${getItemIconUrl(ex.output.material)}" data-material="${escapeHtml(ex.output.material)}" onerror="handleItemImageError.call(this)" alt="">
+                                <span class="stack-count ${outputFmt.isCompacted ? 'compacted' : ''}">${outputFmt.text}</span>
+                            </div>
+                            <span class="item-label">${outputName}</span>
+                        </div>
+                    </div>
+                    <div class="result-meta">
+                        <div style="display: flex; gap: 4px; align-items: center;">
+                            <span class="stock-badge ${stockClass}">${stockText}</span>
+                            <span class="freshness-badge ${freshnessClass}" title="${freshnessTitle}">${freshnessText}</span>
+                        </div>
+                        <span class="coords-label">📍 ${ex.pos.x}, ${ex.pos.z}</span>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => {
+                    const latLng = mcToLatLng(ex.pos.x, ex.pos.z);
+                    
+                    if (activeCard === card) {
+                        // Second click: Zoom out
+                        if (markers.length > 0) {
+                            const bounds = L.featureGroup(markers.map(m => m.marker)).getBounds();
+                            const isMobile = window.innerWidth <= 768;
+                            map.fitBounds(bounds, { 
+                                paddingTopLeft: isMobile ? [20, 20] : [420, 50],
+                                paddingBottomRight: isMobile ? [20, window.innerHeight * 0.45] : [50, 50],
+                                maxZoom: 0 
+                            });
+                        }
+                        if (activeMarker) {
+                            const oldEl = activeMarker.getElement();
+                            if (oldEl) oldEl.classList.remove('ping-animation');
+                            activeMarker.setZIndexOffset(0);
+                            activeMarker.closePopup();
+                        }
+                        card.classList.remove('active');
+                        activeCard = null;
+                        activeMarker = null;
+                        return;
+                    }
+
+                    flyToWithOffset(latLng, DEFAULT_CLICK_ZOOM);
+                    
+                    const markerObj = markers.find(m => m.key === `${ex.pos.x},${ex.pos.y},${ex.pos.z}`);
+                    if (markerObj) {
+                        markerObj.marker.openPopup();
+                        selectMarker(markerObj.marker);
+                    }
+                    
+                    if (activeCard) activeCard.classList.remove('active');
+                    card.classList.add('active');
+                    activeCard = card;
+                });
+                fragment.appendChild(card);
+            });
+            resultsContainer.appendChild(fragment);
+
+            if (markers.length > 0) {
+                const bounds = L.featureGroup(markers.map(m => m.marker)).getBounds();
+                const isMobile = window.innerWidth <= 768;
+                map.fitBounds(bounds, { 
+                    paddingTopLeft: isMobile ? [20, 20] : [420, 50],
+                    paddingBottomRight: isMobile ? [20, window.innerHeight * 0.45] : [50, 50],
+                    maxZoom: 0 
+                });
+            }
+        }
+
+        searchButton.addEventListener('click', () => performSearch(false));
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch(false);
+        });
+
+        searchInput.addEventListener('input', () => {
+            searchInput.placeholder = "I want to buy (e.g. diamond)";
+        });
+        
+        document.getElementById('show-icenia-shops').addEventListener('click', () => {
+            searchInput.value = ''; 
+            searchInput.placeholder = "Showing all Icenia City shops...";
+            performSearch(true);
+        });
+
+        sortModeSelect.addEventListener('change', () => applyFiltersAndDisplay());
+        allowUnstockedCheckbox.addEventListener('change', () => applyFiltersAndDisplay());
+        iceniaOnlyCheckbox.addEventListener('change', () => applyFiltersAndDisplay());
+        // Territories overlay button hookup (map controls)
+        const toggleTerritoriesBtn = document.getElementById('toggle-territories');
+        if (toggleTerritoriesBtn) {
+            toggleTerritoriesBtn.addEventListener('click', (e) => {
+                const enabled = toggleTerritoriesBtn.classList.toggle('active');
+                toggleTerritories(enabled);
+                try {
+                    toggleTerritoriesBtn.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+                    toggleTerritoriesBtn.title = enabled ? 'Hide Territories' : 'Show Territories';
+                } catch (err) {}
+            });
+            // Restore prior setting if present
+            try {
+                const saved = localStorage.getItem('shop_show_territories');
+                if (saved === '1') {
+                    toggleTerritoriesBtn.classList.add('active');
+                    toggleTerritoriesBtn.setAttribute('aria-pressed', 'true');
+                    toggleTerritoriesBtn.title = 'Hide Territories';
+                    toggleTerritories(true);
+                }
+            } catch (e) {
+                // ignore storage errors
+            }
+        }
+        
+        const toggleOptionsBtn = document.getElementById('toggle-options');
+        const advancedOptionsWrapper = document.getElementById('advanced-options-wrapper');
+        const advancedOptionsGrid = document.getElementById('advanced-options');
+
+        // Initial state: Open on PC, Closed on Mobile
+        if (window.innerWidth <= 768) {
+            advancedOptionsWrapper.classList.add('collapsed');
+            toggleOptionsBtn.classList.remove('active');
+        } else {
+            toggleOptionsBtn.classList.add('active');
+        }
+
+        toggleOptionsBtn.addEventListener('click', () => {
+            advancedOptionsWrapper.classList.toggle('collapsed');
+            toggleOptionsBtn.classList.toggle('active');
+            // Update scroll indicator when toggled
+            setTimeout(updateAdvancedScroll, 450);
+        });
+
+        // --- Custom Scroll Indicator Logic ---
+        function setupScrollIndicator(scrollEl, indicatorEl) {
+            if (!scrollEl || !indicatorEl) return;
+            
+            const scrollThumb = indicatorEl.querySelector('.scroll-thumb');
+            let hideTimeout;
+            
+            // Use passive listener for better scroll performance
+            const scrollOptions = { passive: true };
+            
+            function updateScrollIndicator() {
+                const { scrollTop, scrollHeight, clientHeight } = scrollEl;
+                const scrollableHeight = scrollHeight - clientHeight;
+                
+                // Hide indicator if no scrolling needed
+                if (scrollableHeight <= 0) {
+                    indicatorEl.style.display = 'none';
+                    return;
+                }
+                indicatorEl.style.display = 'block';
+                
+                // Calculate thumb position (0 to 70% to leave room for thumb height)
+                const scrollPercent = scrollTop / scrollableHeight;
+                const thumbTop = scrollPercent * 70;
+                scrollThumb.style.top = thumbTop + '%';
+                
+                // Add/remove at-bottom class to stop glow animation
+                if (scrollPercent > 0.98) {
+                    indicatorEl.classList.add('at-bottom');
+                } else {
+                    indicatorEl.classList.remove('at-bottom');
+                }
+                
+                // Show indicator briefly when scrolling
+                indicatorEl.classList.add('visible');
+                
+                // Don't hide if it's the info panel
+                if (scrollEl.id !== 'info-content') {
+                    clearTimeout(hideTimeout);
+                    hideTimeout = setTimeout(() => {
+                        indicatorEl.classList.remove('visible');
+                    }, 1500);
+                } else {
+                    // For info panel, keep it visible if scrollable
+                    indicatorEl.classList.add('visible');
+                    // Force opacity for info panel indicator
+                    indicatorEl.style.opacity = '1';
+                }
+            }
+            
+            scrollEl.addEventListener('scroll', updateScrollIndicator, scrollOptions);
+            
+            // Initial check
+            updateScrollIndicator();
+            
+            return updateScrollIndicator;
+        }
+
+        const updateResultsScroll = setupScrollIndicator(
+            document.getElementById('results-container'),
+            document.getElementById('results-scroll-indicator')
+        );
+
+        const updateAdvancedScroll = setupScrollIndicator(
+            document.getElementById('advanced-options'),
+            document.getElementById('advanced-scroll-indicator')
+        );
+
+        const updateInfoScroll = setupScrollIndicator(
+            document.getElementById('info-content'),
+            document.getElementById('info-scroll-indicator')
+        );
+
+        // Update indicators when content changes
+        const resultsObserver = new MutationObserver(() => {
+            setTimeout(updateResultsScroll, 100);
+        });
+        resultsObserver.observe(document.getElementById('results-container'), { childList: true, subtree: true });
+
+        const advancedObserver = new MutationObserver(() => {
+            setTimeout(updateAdvancedScroll, 100);
+        });
+        advancedObserver.observe(document.getElementById('advanced-options'), { childList: true, subtree: true });
+
+        const infoObserver = new MutationObserver(() => {
+            setTimeout(updateInfoScroll, 100);
+        });
+        infoObserver.observe(document.getElementById('info-content'), { childList: true, subtree: true });
+
+        // Update all scroll indicators on window resize
+        window.addEventListener('resize', () => {
+            updateResultsScroll();
+            updateAdvancedScroll();
+            updateInfoScroll();
+        });
+
+        centerIceniaBtn.addEventListener('click', () => flyToWithOffset(ICENIA_CITY_COORDS, 0));
+
+        setLocationBtn.addEventListener('click', () => {
+            isSettingLocation = !isSettingLocation;
+            setLocationBtn.classList.toggle('active', isSettingLocation);
+            document.getElementById('shop-map').style.cursor = isSettingLocation ? 'crosshair' : '';
+        });
+
+        function updateDarkMode() {
+            const container = document.querySelector('.shop-explorer-container');
+            const sunIcon = darkModeToggle.querySelector('.sun-icon');
+            const moonIcon = darkModeToggle.querySelector('.moon-icon');
+            if (isDarkMode) {
+                container.classList.add('dark-mode');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            } else {
+                container.classList.remove('dark-mode');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            }
+        }
+
+        darkModeToggle.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            updateDarkMode();
+        });
+
+        updateDarkMode();
+
+        // Initialize pin display
+        if (pinCoordsEl) pinCoordsEl.textContent = '—';
+
+        // Update cursor coordinates as the user moves over the map
+        if (map && cursorCoordsEl) {
+            map.on('mousemove', (e) => {
+                try {
+                    const x = Math.round(e.latlng.lng);
+                    const z = Math.round(-e.latlng.lat);
+                    cursorCoordsEl.textContent = `${x}, ${z}`;
+                } catch (err) {
+                    // ignore
+                }
+            });
+        }
+
+        // --- Tooltip Logic ---
+        const tooltip = document.getElementById('item-tooltip');
+        let tooltipTimeout;
+
+        function showTooltip(e, text) {
+            if (!text) return;
+            tooltip.innerHTML = renderMinecraftText(text);
+            tooltip.classList.remove('hidden');
+            updateTooltipPos(e);
+        }
+
+        function hideTooltip() {
+            tooltip.classList.add('hidden');
+        }
+
+        function updateTooltipPos(e) {
+            const x = e.clientX + 15;
+            const y = e.clientY + 15;
+            
+            // Keep on screen
+            const width = tooltip.offsetWidth;
+            const height = tooltip.offsetHeight;
+            
+            let finalX = x;
+            let finalY = y;
+            
+            if (x + width > window.innerWidth) finalX = e.clientX - width - 15;
+            if (y + height > window.innerHeight) finalY = e.clientY - height - 15;
+            
+            tooltip.style.left = finalX + 'px';
+            tooltip.style.top = finalY + 'px';
+        }
+
+        document.addEventListener('mouseover', (e) => {
+            const target = e.target.closest('[data-lore]');
+            if (target) {
+                showTooltip(e, target.dataset.lore);
+            }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!tooltip.classList.contains('hidden')) {
+                updateTooltipPos(e);
+            }
+        });
+
+        document.addEventListener('mouseout', (e) => {
+            const target = e.target.closest('[data-lore]');
+            if (target) {
+                hideTooltip();
+            }
+        });
+
+        // Mobile support: toggle on click
+        document.addEventListener('click', (e) => {
+            const target = e.target.closest('[data-lore]');
+            if (target && window.innerWidth <= 768) {
+                if (tooltip.classList.contains('hidden')) {
+                    showTooltip(e, target.dataset.lore);
+                    // Auto hide after 3s on mobile
+                    clearTimeout(tooltipTimeout);
+                    tooltipTimeout = setTimeout(hideTooltip, 3000);
+                } else {
+                    hideTooltip();
+                }
+            } else if (!target) {
+                hideTooltip();
+            }
+        });
+
+        const infoToggle = document.getElementById('info-toggle');
+        const infoPanel = document.getElementById('info-panel');
+
+        // PC: Toggled ON by default, Mobile: Toggled OFF
+        if (window.innerWidth > 768) {
+            infoPanel.classList.remove('hidden');
+        }
+
+        infoToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            infoPanel.classList.toggle('hidden');
+            if (!infoPanel.classList.contains('hidden')) {
+                setTimeout(updateInfoScroll, 100);
+            }
+        });
+
+        // Close panel when clicking elsewhere on the map
+        // But do not close when the user is currently placing a location pin
+        map.on('click', () => {
+            if (isSettingLocation) return;
+            infoPanel.classList.add('hidden');
+        });
+
+        document.getElementById('zoom-in').addEventListener('click', () => map.zoomIn());
+        document.getElementById('zoom-out').addEventListener('click', () => map.zoomOut());
+
+        map.on('click', (e) => {
+            if (isSettingLocation) {
+                const x = Math.round(e.latlng.lng);
+                const z = Math.round(-e.latlng.lat);
+                userLocation = { x, z };
+                if (userMarker) map.removeLayer(userMarker);
+                userMarker = L.marker(e.latlng, {
+                    icon: L.divIcon({
+                        className: 'user-location-radar',
+                        html: '<div class="radar-ring"></div><div class="radar-dot"></div>',
+                        iconSize: [0, 0],
+                        iconAnchor: [0, 0]
+                    })
+                }).addTo(map);
+                isSettingLocation = false;
+                setLocationBtn.classList.remove('active');
+                document.getElementById('shop-map').style.cursor = '';
+                // Update pin readout but do NOT trigger a search
+                sortModeSelect.value = 'closest';
+                if (pinCoordsEl) pinCoordsEl.textContent = `${x}, ${z}`;
+            }
+        });
+    });
+})();</script> </main>  <script>GOVUKFrontend.initAll()</script> <script>
+            (function(){
+                const BASE = (document.body && document.body.dataset && document.body.dataset.base) ? document.body.dataset.base : "/";
+                if(!BASE) return;
+                try {
+                    document.querySelectorAll('img[src^="/"], a[href^="/"]')
+                        .forEach((el) => {
+                            ["src","href"].forEach((attr) => {
+                                if(!el.hasAttribute(attr)) return;
+                                const val = el.getAttribute(attr);
+                                if(!val || !val.startsWith('/')) return;
+                                if(val.startsWith(BASE)) return; // already rewritten
+                                el.setAttribute(attr, BASE + val.replace(/^\//, ''));
+                            });
+                        });
+                } catch (e) {
+                    // noop
+                }
+            })();
+        </script> <script>
+            (function(){
+                // For each dropdown item, measure both the link and dropdown menu width
+                // and set both to the larger of the two
+                const dropdownItems = document.querySelectorAll('.icenia-navbar__item');
+
+                function normalize(p){ return p ? p.replace(/\/+$/, '/') : '/'; }
+
+                dropdownItems.forEach(item => {
+                    const menu = item.querySelector('.icenia-navbar__dropdown');
+                    const parentLink = item.querySelector('.icenia-navbar__link');
+                    if (!menu || !parentLink) return;
+
+                    // Make menu measurable without affecting layout
+                    const origMenuStyles = {
+                        position: menu.style.position || '',
+                        visibility: menu.style.visibility || '',
+                        display: menu.style.display || '',
+                        clipPath: menu.style.clipPath || '',
+                        width: menu.style.width || '',
+                        minWidth: menu.style.minWidth || ''
+                    };
+                    
+                    menu.style.position = 'absolute';
+                    menu.style.visibility = 'hidden';
+                    menu.style.display = 'block';
+                    menu.style.clipPath = 'none';
+                    menu.style.width = 'auto';
+                    menu.style.minWidth = '0';
+
+                    // Measure the widest item inside the dropdown menu
+                    let maxDropdownWidth = 0;
+                    const links = menu.querySelectorAll('a');
+                    links.forEach(a => {
+                        // Temporarily ensure auto width for measurement
+                        const origWidth = a.style.width;
+                        a.style.width = 'auto';
+                        const w = a.scrollWidth;
+                        a.style.width = origWidth;
+                        if (w > maxDropdownWidth) maxDropdownWidth = w;
+                    });
+                    
+                    // Also check menu's natural width
+                    const menuNaturalWidth = menu.scrollWidth || 0;
+                    maxDropdownWidth = Math.max(maxDropdownWidth, menuNaturalWidth);
+
+                    // Measure the parent link's natural width
+                    const origLinkStyles = {
+                        width: parentLink.style.width || '',
+                        minWidth: parentLink.style.minWidth || ''
+                    };
+                    parentLink.style.width = 'auto';
+                    parentLink.style.minWidth = '0';
+                    
+                    // Force reflow
+                    void parentLink.offsetWidth;
+                    
+                    const linkNaturalWidth = parentLink.scrollWidth || 0;
+
+                    // Determine the final width (the larger of the two)
+                    const finalWidth = Math.max(maxDropdownWidth, linkNaturalWidth);
+
+                    // Apply the same width to both elements
+                    parentLink.style.width = finalWidth + 'px';
+                    parentLink.style.minWidth = finalWidth + 'px';
+                    menu.style.width = finalWidth + 'px';
+                    menu.style.minWidth = '0'; // No minimum width on dropdown
+                   
+                    // Restore other menu styles
+                    menu.style.position = origMenuStyles.position;
+                    menu.style.visibility = origMenuStyles.visibility;
+                    menu.style.display = origMenuStyles.display;
+                    menu.style.clipPath = origMenuStyles.clipPath;
+                });
+
+                // Active-state detection (mark dropdown and matching child link)
+                // Note: Only mark child dropdown links active on an exact path match
+                // to avoid highlighting the index/parent child when a deeper route is active.
+                const currentPathRaw = window.location.pathname || '/';
+                const currentPath = normalize(currentPathRaw);
+
+                dropdownItems.forEach(item => {
+                    const menuLinks = item.querySelectorAll('.icenia-navbar__dropdown a');
+                    let hasActiveChild = false;
+
+                    menuLinks.forEach(link => {
+                        const href = link.getAttribute('href');
+                        if (!href) return;
+                        
+                        // Skip external links (different origin) - they should never be marked active
+                        try {
+                            const linkUrl = new URL(href, window.location.origin);
+                            if (linkUrl.origin !== window.location.origin) return;
+                        } catch (e) {
+                            // If URL parsing fails, skip this link
+                            return;
+                        }
+                        
+                        let linkPath;
+                        try { linkPath = new URL(href, window.location.origin).pathname; } catch (e) { linkPath = href; }
+                        const normLink = normalize(linkPath);
+
+                        // Mark child link active only on exact match (avoid prefix matches like
+                        // '/icenia-city/' matching '/icenia-city/laws/')
+                        if (normLink === currentPath) {
+                            link.classList.add('active');
+                            hasActiveChild = true;
+                        }
+                    });
+
+                    const toggle = item.querySelector('.icenia-navbar__link');
+                    // Keep existing behavior for marking the parent item active when the current
+                    // path is within that section (so the parent nav shows the active section)
+                    if (toggle && toggle.getAttribute('href')) {
+                        try {
+                            const tPath = new URL(toggle.getAttribute('href'), window.location.origin).pathname.replace(/\/+$/, '/');
+                            if (tPath !== '/' && currentPath.startsWith(tPath)) hasActiveChild = true;
+                        } catch (e) {
+                            // ignore
+                        }
+                    }
+
+                    if (hasActiveChild) item.classList.add('active');
+                });
+            })();
+        </script> <script>
+            // Responsive navbar: horizontal navbar OR slide-out menu
+            (function(){
+                const navList = document.querySelector('.icenia-navbar__list');
+                const navbar = document.querySelector('.icenia-navbar');
+                const navContainer = document.querySelector('.icenia-navbar__container');
+                const menuToggle = document.getElementById('menuToggle');
+                const menuClose = document.getElementById('menuClose');
+                const slideMenu = document.getElementById('slideMenu');
+                const menuOverlay = document.getElementById('menuOverlay');
+                
+                if (!navList || !menuToggle || !slideMenu || !navbar) return;
+                
+                // Measure the total width needed for horizontal navbar
+                function measureHorizontalWidth() {
+                    let total = 0;
+                    const items = navList.querySelectorAll('.icenia-navbar__item');
+                    items.forEach(item => {
+                        const link = item.querySelector('.icenia-navbar__link');
+                        if (link) {
+                            // Get computed styles to account for padding
+                            const style = window.getComputedStyle(link);
+                            const paddingLeft = parseFloat(style.paddingLeft) || 0;
+                            const paddingRight = parseFloat(style.paddingRight) || 0;
+                            // Use scrollWidth for the content width, which includes padding
+                            total += link.scrollWidth;
+                        }
+                    });
+                    return total;
+                }
+                
+                // Get the actual available width in the navbar container
+                function getAvailableWidth() {
+                    if (!navContainer) return window.innerWidth;
+                    
+                    const style = window.getComputedStyle(navContainer);
+                    const paddingLeft = parseFloat(style.paddingLeft) || 0;
+                    const paddingRight = parseFloat(style.paddingRight) || 0;
+                    
+                    // The container has max-width: 960px, so we need to consider that
+                    const maxWidth = 960;
+                    const screenWidth = window.innerWidth;
+                    
+                    // Calculate container width (min of screen width and max-width)
+                    let containerWidth = Math.min(screenWidth, maxWidth);
+                    
+                    // Subtract padding
+                    return containerWidth - paddingLeft - paddingRight;
+                }
+                
+                // Check if horizontal navbar fits
+                function checkNavbarFit() {
+                    // Temporarily ensure navbar is visible for measurement
+                    const wasMenuMode = document.body.classList.contains('menu-mode');
+                    const wasMenuOpen = slideMenu.classList.contains('is-open');
+                    
+                    // Remove menu mode temporarily to measure navbar
+                    document.body.classList.remove('menu-mode');
+                    
+                    // Force reflow to ensure styles are applied
+                    void navList.offsetWidth;
+                    
+                    // Wait a tiny bit for styles to settle, then measure
+                    const horizontalWidth = measureHorizontalWidth();
+                    const availableWidth = getAvailableWidth();
+                    
+                    
+                    // Small tolerance to avoid edge-case flickering
+                    const tolerance = 10;
+                    
+                    const needsMenuMode = horizontalWidth > availableWidth - tolerance;
+                    
+                    // Debug logging (can be removed in production)
+                    // console.log('Horizontal width:', horizontalWidth, 'Available:', availableWidth, 'Needs menu:', needsMenuMode);
+                    
+                    if (needsMenuMode) {
+                        document.body.classList.add('menu-mode');
+                    } else {
+                        document.body.classList.remove('menu-mode');
+                        // Also close the menu if it was open
+                        closeMenu();
+                    }
+                }
+                
+                // Open slide menu
+                function openMenu() {
+                    slideMenu.classList.add('is-open');
+                    menuOverlay.classList.add('is-visible');
+                    menuToggle.classList.add('is-active');
+                    menuToggle.setAttribute('aria-expanded', 'true');
+                    document.body.classList.add('menu-open');
+                }
+                
+                // Close slide menu
+                function closeMenu() {
+                    slideMenu.classList.remove('is-open');
+                    menuOverlay.classList.remove('is-visible');
+                    menuToggle.classList.remove('is-active');
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                    document.body.classList.remove('menu-open');
+                }
+                
+                // Toggle slide menu
+                function toggleMenu() {
+                    if (slideMenu.classList.contains('is-open')) {
+                        closeMenu();
+                    } else {
+                        openMenu();
+                    }
+                }
+                
+                // Event listeners for menu toggle
+                menuToggle.addEventListener('click', toggleMenu);
+                menuClose.addEventListener('click', closeMenu);
+                menuOverlay.addEventListener('click', closeMenu);
+                
+                // Handle submenu toggles in slide menu
+                const submenuToggles = document.querySelectorAll('.icenia-slide-menu__link.has-children');
+                submenuToggles.forEach(toggle => {
+                    toggle.addEventListener('click', function() {
+                        const submenu = this.nextElementSibling;
+                        if (submenu && submenu.classList.contains('icenia-slide-menu__submenu')) {
+                            this.classList.toggle('is-expanded');
+                            submenu.classList.toggle('is-open');
+                        }
+                    });
+                });
+                
+                // Close menu on escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && slideMenu.classList.contains('is-open')) {
+                        closeMenu();
+                        menuToggle.focus();
+                    }
+                });
+                
+                // Run on load (with a small delay to ensure styles are loaded)
+                // Use requestAnimationFrame to ensure DOM is fully rendered
+                requestAnimationFrame(function() {
+                    requestAnimationFrame(function() {
+                        checkNavbarFit();
+                    });
+                });
+                
+                let resizeTimeout;
+                window.addEventListener('resize', function() {
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(checkNavbarFit, 100);
+                });
+            })();
+        </script> </body> </html> 

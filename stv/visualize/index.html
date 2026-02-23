@@ -1,0 +1,365 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><title>STV Results Visualization</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Animated visualization of Single Transferable Vote election results round by round."><meta name="keywords" content=""><link rel="canonical" href="https://civicenia.github.io/stv/visualize/"><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/assets/css/sanitize-13.0.0.css"><link rel="stylesheet" href="/assets/css/govuk-frontend-4.3.1.min.css"><link rel="stylesheet" href="/assets/css/icenia-theme.css"><script src="/assets/js/govuk-frontend-4.3.1.min.js"></script><link rel="stylesheet" href="/astro/visualize.BkFFOvi8.css"><script type="module" src="/astro/hoisted.Dvg86OM3.js"></script></head> <body data-base="/" data-header-height-desktop="56" data-header-height-mobile="44"> <a class="govuk-skip-link" href="#main-content">Skip to main content</a> <script>document.body.className = ((document.body.className) ? document.body.className + " js-enabled" : "js-enabled");</script> <!-- Custom Header bar with logo --> <header class="icenia-header" role="banner"> <div class="icenia-header__container"> <div class="icenia-header__logo"> <a href="/" class="icenia-header__link"> <img src="/assets/images/icenia_logo.svg" class="icenia-header__logo-img" alt=""> <span>Icenia</span> </a> </div> <button class="icenia-menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false"> <span class="icenia-menu-toggle__icon"> <span></span> <span></span> <span></span> </span> </button> </div> </header> <!-- Slide-out menu (for mobile/narrow screens) --> <div class="icenia-menu-overlay" id="menuOverlay"></div> <nav class="icenia-slide-menu" id="slideMenu" aria-label="Mobile navigation"> <div class="icenia-slide-menu__header"> <span class="icenia-slide-menu__title">Menu</span> <button class="icenia-slide-menu__close" id="menuClose" aria-label="Close menu">&times;</button> </div> <ul class="icenia-slide-menu__nav"> <li class="icenia-slide-menu__item"> <span class="icenia-slide-menu__link has-children" data-toggle="submenu"> Government </span> <ul class="icenia-slide-menu__submenu"> <div class="icenia-slide-menu__submenu-inner"> <li> <a href="/" target="_self"> Home </a> </li><li> <a href="/government/officials/" target="_self"> Officials </a> </li><li> <a href="/news/" target="_self"> News </a> </li><li> <a href="/laws/" target="_self"> Legislation </a> </li> </div> </ul> </li><li class="icenia-slide-menu__item"> <span class="icenia-slide-menu__link has-children" data-toggle="submenu"> Explore Icenia </span> <ul class="icenia-slide-menu__submenu"> <div class="icenia-slide-menu__submenu-inner"> <li> <a href="/union/" target="_self"> The Republic </a> </li><li> <a href="https://map.civinfo.net/#url=https://civicenia.github.io/government/borders.json" target="_blank"> CivMap </a> </li> </div> </ul> </li><li class="icenia-slide-menu__item"> <span class="icenia-slide-menu__link has-children" data-toggle="submenu"> Icenia City </span> <ul class="icenia-slide-menu__submenu"> <div class="icenia-slide-menu__submenu-inner"> <li> <a href="/icenia-city/" target="_self"> Home </a> </li><li> <a href="/icenia-city/council/" target="_self"> City Council </a> </li><li> <a href="/icenia-city/news/" target="_self"> City News </a> </li><li> <a href="/icenia-city/laws/" target="_self"> City Laws </a> </li><li> <a href="/icenia-city/shops/" target="_self"> Shops </a> </li> </div> </ul> </li><li class="icenia-slide-menu__item"> <span class="icenia-slide-menu__link has-children" data-toggle="submenu"> Join Us </span> <ul class="icenia-slide-menu__submenu"> <div class="icenia-slide-menu__submenu-inner"> <li> <a href="/guide/" target="_self"> New Player Guide </a> </li><li> <a href="https://discord.gg/dfwSjCjRN5" target="_blank"> Discord </a> </li> </div> </ul> </li><li class="icenia-slide-menu__item"> <span class="icenia-slide-menu__link has-children" data-toggle="submenu"> Utilities </span> <ul class="icenia-slide-menu__submenu"> <div class="icenia-slide-menu__submenu-inner"> <li> <a href="/shops/" target="_self"> Shop Explorer </a> </li><li> <a href="/stv/" target="_self"> Icenian STV </a> </li><li> <a href="/stv/visualize/" target="_self"> STV Visualization </a> </li><li> <a href="/admin/index.html" target="_self"> Admin Panel </a> </li> </div> </ul> </li> </ul> </nav> <!-- Separate Navigation Bar (for desktop/wide screens) --> <nav class="icenia-navbar" aria-label="Main navigation"> <div class="icenia-navbar__container govuk-width-container"> <ul class="icenia-navbar__list" id="navigation"> <li class="icenia-navbar__item"> <span class="icenia-navbar__link has-dropdown"> Government </span> <ul class="icenia-navbar__dropdown"> <li> <a href="/" target="_self"> Home </a> </li><li> <a href="/government/officials/" target="_self"> Officials </a> </li><li> <a href="/news/" target="_self"> News </a> </li><li> <a href="/laws/" target="_self"> Legislation </a> </li> </ul> </li><li class="icenia-navbar__item"> <span class="icenia-navbar__link has-dropdown"> Explore Icenia </span> <ul class="icenia-navbar__dropdown"> <li> <a href="/union/" target="_self"> The Republic </a> </li><li> <a href="https://map.civinfo.net/#url=https://civicenia.github.io/government/borders.json" target="_blank"> CivMap </a> </li> </ul> </li><li class="icenia-navbar__item"> <span class="icenia-navbar__link has-dropdown"> Icenia City </span> <ul class="icenia-navbar__dropdown"> <li> <a href="/icenia-city/" target="_self"> Home </a> </li><li> <a href="/icenia-city/council/" target="_self"> City Council </a> </li><li> <a href="/icenia-city/news/" target="_self"> City News </a> </li><li> <a href="/icenia-city/laws/" target="_self"> City Laws </a> </li><li> <a href="/icenia-city/shops/" target="_self"> Shops </a> </li> </ul> </li><li class="icenia-navbar__item"> <span class="icenia-navbar__link has-dropdown"> Join Us </span> <ul class="icenia-navbar__dropdown"> <li> <a href="/guide/" target="_self"> New Player Guide </a> </li><li> <a href="https://discord.gg/dfwSjCjRN5" target="_blank"> Discord </a> </li> </ul> </li><li class="icenia-navbar__item"> <span class="icenia-navbar__link has-dropdown"> Utilities </span> <ul class="icenia-navbar__dropdown"> <li> <a href="/shops/" target="_self"> Shop Explorer </a> </li><li> <a href="/stv/" target="_self"> Icenian STV </a> </li><li> <a href="/stv/visualize/" target="_self"> STV Visualization </a> </li><li> <a href="/admin/index.html" target="_self"> Admin Panel </a> </li> </ul> </li> </ul> </div> </nav>  <div class="govuk-width-container"> <style>main.govuk-main-wrapper { padding-top: 0 !important; }</style> <main class="govuk-main-wrapper govuk-body" id="main-content" role="main">   <div class="page-header" data-astro-cid-jhtvqvvi> <h1 class="govuk-heading-xl" style="margin-bottom: 10px;" data-astro-cid-jhtvqvvi>STV Results Visualization</h1> <p class="govuk-body-l" data-astro-cid-jhtvqvvi>View animated round-by-round results of STV elections.</p> </div> <div class="govuk-width-container" data-astro-cid-jhtvqvvi> <main class="govuk-main-wrapper govuk-body" id="main-content" data-astro-cid-jhtvqvvi> <!-- Import Section --> <div class="import-section govuk-form-group" data-astro-cid-jhtvqvvi> <h2 class="govuk-heading-m" data-astro-cid-jhtvqvvi>Load Election Data</h2> <p class="govuk-body" data-astro-cid-jhtvqvvi>Select a previous Icenian senate election or import a custom RCVis-format JSON file from the <a href="/stv" data-astro-cid-jhtvqvvi>STV Calculator</a>.</p> <div class="govuk-form-group" data-astro-cid-jhtvqvvi> <label class="govuk-label govuk-label--s" for="election-selector" data-astro-cid-jhtvqvvi>
+Previous Senate Elections
+</label> <select id="election-selector" class="govuk-select" style="width: 100%; max-width: 400px;" data-astro-cid-jhtvqvvi> <option value="" data-astro-cid-jhtvqvvi>-- Select an election --</option> </select> <button type="button" id="load-election-btn" class="icenia-btn" style="margin-top: 0.5rem;" data-astro-cid-jhtvqvvi>
+Load Selected Election
+</button> </div> <div class="govuk-form-group" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #ddd;" data-astro-cid-jhtvqvvi> <label class="govuk-label govuk-label--s" for="election-file" data-astro-cid-jhtvqvvi>
+Or upload custom election file (.json)
+</label> <input type="file" id="election-file" accept=".json" class="govuk-file-upload" data-astro-cid-jhtvqvvi> <button type="button" id="load-file-btn" class="icenia-btn" style="margin-top: 0.5rem;" data-astro-cid-jhtvqvvi>
+Load Custom File
+</button> </div> <!-- Error/Status Messages --> <div id="status-message" class="status-message" style="display: none;" data-astro-cid-jhtvqvvi></div> </div> <!-- Election Info --> <div id="election-info" class="election-info" style="display: none;" data-astro-cid-jhtvqvvi> <h2 class="govuk-heading-m" data-astro-cid-jhtvqvvi>Election Details</h2> <dl class="govuk-summary-list govuk-summary-list--no-border" data-astro-cid-jhtvqvvi> <div class="govuk-summary-list__row" data-astro-cid-jhtvqvvi> <dt class="govuk-summary-list__key" data-astro-cid-jhtvqvvi>Contest</dt> <dd class="govuk-summary-list__value" id="info-contest" data-astro-cid-jhtvqvvi>-</dd> </div> <div class="govuk-summary-list__row" data-astro-cid-jhtvqvvi> <dt class="govuk-summary-list__key" data-astro-cid-jhtvqvvi>Date</dt> <dd class="govuk-summary-list__value" id="info-date" data-astro-cid-jhtvqvvi>-</dd> </div> <div class="govuk-summary-list__row" data-astro-cid-jhtvqvvi> <dt class="govuk-summary-list__key" data-astro-cid-jhtvqvvi>Quota</dt> <dd class="govuk-summary-list__value" id="info-quota" data-astro-cid-jhtvqvvi>-</dd> </div> <div class="govuk-summary-list__row" data-astro-cid-jhtvqvvi> <dt class="govuk-summary-list__key" data-astro-cid-jhtvqvvi>Rounds</dt> <dd class="govuk-summary-list__value" id="info-rounds" data-astro-cid-jhtvqvvi>-</dd> </div> <div class="govuk-summary-list__row" data-astro-cid-jhtvqvvi> <dt class="govuk-summary-list__key" data-astro-cid-jhtvqvvi>Candidates</dt> <dd class="govuk-summary-list__value" id="info-candidates" data-astro-cid-jhtvqvvi>-</dd> </div> </dl> </div> <!-- Chart Container (populated dynamically) --> <div id="chart-wrapper" style="display: none;" data-astro-cid-jhtvqvvi> <h2 class="govuk-heading-m" data-astro-cid-jhtvqvvi>Round-by-Round Results</h2> <div id="dynamic-chart-container" data-astro-cid-jhtvqvvi></div> <!-- Sankey Diagram --> <div id="sankey-wrapper" style="display: none;" data-astro-cid-jhtvqvvi> <h2 class="govuk-heading-m" data-astro-cid-jhtvqvvi>Vote Transfer Flow</h2> <p class="govuk-body" data-astro-cid-jhtvqvvi>This diagram shows how votes moved between candidates across rounds.</p> <div id="dynamic-sankey-container" data-astro-cid-jhtvqvvi></div> </div> <!-- Results Summary --> <div id="results-summary" class="results-summary" style="display: none;" data-astro-cid-jhtvqvvi> <h3 class="govuk-heading-s" data-astro-cid-jhtvqvvi>Election Outcomes</h3> <div id="outcomes-list" data-astro-cid-jhtvqvvi></div> </div> </div> <!-- Instructions when no data loaded --> <div id="instructions" class="instructions-panel" data-astro-cid-jhtvqvvi> <h3 class="govuk-heading-s" data-astro-cid-jhtvqvvi>How to Use</h3> <ol class="govuk-list govuk-list--number" data-astro-cid-jhtvqvvi> <li data-astro-cid-jhtvqvvi>Select a previous Icenian senate election from the dropdown menu above, or</li> <li data-astro-cid-jhtvqvvi>Go to the <a href="/stv" data-astro-cid-jhtvqvvi>STV Calculator</a> to run your own election.</li> <li data-astro-cid-jhtvqvvi>Click "Export for RCVis" to download the results JSON file.</li> <li data-astro-cid-jhtvqvvi>Return here and upload that file to see the animated visualization.</li> </ol> <h3 class="govuk-heading-s" data-astro-cid-jhtvqvvi>Expected File Format</h3> <p class="govuk-body" data-astro-cid-jhtvqvvi>The visualization expects RCVis-compatible JSON with this structure:</p> <pre class="code-block" data-astro-cid-jhtvqvvi><code data-astro-cid-jhtvqvvi>{
+  &quot;config&quot;: {
+    &quot;contest&quot;: &quot;Election Name&quot;,
+    &quot;date&quot;: &quot;2025-01-09&quot;,
+    &quot;threshold&quot;: &quot;5.000&quot;
+  },
+  &quot;results&quot;: [
+    {
+      &quot;round&quot;: 1,
+      &quot;tally&quot;: {
+        &quot;Alice&quot;: &quot;10.000&quot;,
+        &quot;Bob&quot;: &quot;8.000&quot;,
+        &quot;Carol&quot;: &quot;6.000&quot;
+      },
+      &quot;tallyResults&quot;: [...]
+    }
+  ]
+}</code></pre> </div> <!-- =================================================================== --> <!-- FACTION ANALYSIS SECTION --> <!-- =================================================================== --> <div class="faction-analysis-section" data-astro-cid-jhtvqvvi> <h2 class="govuk-heading-l" style="margin-top: 3rem; border-top: 2px solid #ccc; padding-top: 2rem;" data-astro-cid-jhtvqvvi>
+🗳️ Faction & Similarity Analysis
+</h2> <p class="govuk-body-l" data-astro-cid-jhtvqvvi>
+Analyze political factions and candidate similarities based on raw ballot data. 
+                    This reveals which candidates share voter bases and how votes would flow between them.
+</p> <!-- Faction Import Section --> <div class="import-section govuk-form-group" data-astro-cid-jhtvqvvi> <h3 class="govuk-heading-m" data-astro-cid-jhtvqvvi>Load Raw Election Data</h3> <p class="govuk-body" data-astro-cid-jhtvqvvi>Import the raw STV election JSON file (with ballots) from the <a href="/stv" data-astro-cid-jhtvqvvi>STV Calculator</a>.</p> <div class="govuk-form-group" data-astro-cid-jhtvqvvi> <label class="govuk-label govuk-label--s" for="faction-election-selector" data-astro-cid-jhtvqvvi>
+Previous Senate Elections
+</label> <select id="faction-election-selector" class="govuk-select" style="width: 100%; max-width: 400px;" data-astro-cid-jhtvqvvi> <option value="" data-astro-cid-jhtvqvvi>-- Select an election --</option> </select> <button type="button" id="load-faction-election-btn" class="icenia-btn" style="margin-top: 0.5rem;" data-astro-cid-jhtvqvvi>
+Load Selected Election
+</button> </div> <div class="govuk-form-group" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #ddd;" data-astro-cid-jhtvqvvi> <label class="govuk-label govuk-label--s" for="faction-file" data-astro-cid-jhtvqvvi>
+Or upload custom election file (.json with ballots)
+</label> <input type="file" id="faction-file" accept=".json" class="govuk-file-upload" data-astro-cid-jhtvqvvi> <button type="button" id="load-faction-btn" class="icenia-btn" style="margin-top: 0.5rem;" data-astro-cid-jhtvqvvi>
+Analyze Custom File
+</button> </div> <!-- Error/Status Messages --> <div id="faction-status-message" class="status-message" style="display: none;" data-astro-cid-jhtvqvvi></div> </div> <!-- Faction Analysis Results (hidden until data loaded) --> <div id="faction-results" style="display: none;" data-astro-cid-jhtvqvvi> <!-- Election Summary --> <div class="faction-summary" data-astro-cid-jhtvqvvi> <h3 class="govuk-heading-s" data-astro-cid-jhtvqvvi>Data Summary</h3> <dl class="govuk-summary-list govuk-summary-list--no-border" data-astro-cid-jhtvqvvi> <div class="govuk-summary-list__row" data-astro-cid-jhtvqvvi> <dt class="govuk-summary-list__key" data-astro-cid-jhtvqvvi>Total Ballots</dt> <dd class="govuk-summary-list__value" id="faction-total-ballots" data-astro-cid-jhtvqvvi>-</dd> </div> <div class="govuk-summary-list__row" data-astro-cid-jhtvqvvi> <dt class="govuk-summary-list__key" data-astro-cid-jhtvqvvi>Candidates Analyzed</dt> <dd class="govuk-summary-list__value" id="faction-candidates" data-astro-cid-jhtvqvvi>-</dd> </div> <div class="govuk-summary-list__row" data-astro-cid-jhtvqvvi> <dt class="govuk-summary-list__key" data-astro-cid-jhtvqvvi>Avg Rankings per Ballot</dt> <dd class="govuk-summary-list__value" id="faction-avg-rankings" data-astro-cid-jhtvqvvi>-</dd> </div> </dl> </div> <!-- Tab Navigation --> <div class="faction-tabs" data-astro-cid-jhtvqvvi> <button type="button" class="faction-tab active" data-tab="heatmap" data-astro-cid-jhtvqvvi>
+🔥 Similarity Heatmap
+</button> <button type="button" class="faction-tab" data-tab="coalition" data-astro-cid-jhtvqvvi>
+🤝 Coalition Strength
+</button> <button type="button" class="faction-tab" data-tab="mds" data-astro-cid-jhtvqvvi>
+🗺️ Political Map
+</button> </div> <!-- Heatmap Tab --> <div id="tab-heatmap" class="faction-tab-content active" data-astro-cid-jhtvqvvi> <h3 class="govuk-heading-s" data-astro-cid-jhtvqvvi>Candidate Correlation Heatmap</h3> <p class="govuk-body" data-astro-cid-jhtvqvvi>
+Shows how similar candidates' voter bases are using rank correlation.
+<strong style="color: #10b981;" data-astro-cid-jhtvqvvi>Green</strong> = voters rank both similarly (allies).
+<strong style="color: #ef4444;" data-astro-cid-jhtvqvvi>Red</strong> = opposing voter bases (rivals).
+</p> <div id="heatmap-chart" style="height: 600px; width: 100%; border: 1px solid #ddd; border-radius: 8px; background: #fff;" data-astro-cid-jhtvqvvi></div> </div> <!-- Coalition Strength Tab --> <div id="tab-coalition" class="faction-tab-content" data-astro-cid-jhtvqvvi> <h3 class="govuk-heading-s" data-astro-cid-jhtvqvvi>Coalition Strength Analysis</h3> <p class="govuk-body" data-astro-cid-jhtvqvvi>
+Shows how often candidate pairs appear together on ballots and their average ranking proximity.
+<strong data-astro-cid-jhtvqvvi>Higher bars</strong> = stronger coalition potential.
+                            Pairs with high co-occurrence and close rankings indicate natural allies.
+</p> <div id="coalition-chart" style="height: 600px; width: 100%; border: 1px solid #ddd; border-radius: 8px; background: #fff;" data-astro-cid-jhtvqvvi></div> <div class="chart-legend" data-astro-cid-jhtvqvvi> <span class="legend-item" data-astro-cid-jhtvqvvi><span class="legend-dot" style="background: #5470c6;" data-astro-cid-jhtvqvvi></span> Bar height = Coalition score (co-occurrence × ranking proximity)</span> </div> </div> <!-- MDS Map Tab --> <div id="tab-mds" class="faction-tab-content" style="display: none;" data-astro-cid-jhtvqvvi> <h3 class="govuk-heading-s" data-astro-cid-jhtvqvvi>Political Distance Map</h3> <p class="govuk-body" data-astro-cid-jhtvqvvi>
+A 2D projection where <strong data-astro-cid-jhtvqvvi>distance = dissimilarity</strong>.
+                            Candidates close together share voters. Candidates far apart have distinct bases.
+                            The axes have no predefined meaning (like "left/right") — they emerge from the data itself.
+</p> <div id="mds-chart" style="height: 600px; width: 100%; border: 1px solid #ddd; border-radius: 8px; background: #fff;" data-astro-cid-jhtvqvvi></div> </div> <!-- Raw Data Table --> <details class="faction-details" data-astro-cid-jhtvqvvi> <summary class="govuk-details__summary" data-astro-cid-jhtvqvvi> <span class="govuk-details__summary-text" data-astro-cid-jhtvqvvi>View Transfer Probability Matrix</span> </summary> <div class="govuk-details__text" data-astro-cid-jhtvqvvi> <p class="govuk-body" data-astro-cid-jhtvqvvi>
+This table shows the probability that a vote for candidate A will transfer to candidate B 
+                                (i.e., B is ranked immediately after A). Read rows as "If you voted for [row], there's X% chance your next choice is [column]."
+</p> <div id="transfer-matrix-container" style="overflow-x: auto;" data-astro-cid-jhtvqvvi></div> </div> </details> </div> <!-- Instructions for Faction Analysis --> <div id="faction-instructions" class="instructions-panel" style="margin-top: 1rem;" data-astro-cid-jhtvqvvi> <h3 class="govuk-heading-s" data-astro-cid-jhtvqvvi>About This Analysis</h3> <p class="govuk-body" data-astro-cid-jhtvqvvi>
+This tool analyzes raw ballot data to reveal political factions and candidate relationships.
+                        Unlike the RCVis visualization above (which shows round-by-round results), this analysis 
+                        examines the underlying voter preferences directly.
+</p> <h4 class="govuk-heading-xs" data-astro-cid-jhtvqvvi>What You'll Learn:</h4> <ul class="govuk-list govuk-list--bullet" data-astro-cid-jhtvqvvi> <li data-astro-cid-jhtvqvvi><strong data-astro-cid-jhtvqvvi>Vote Transfer Network:</strong> Who are natural coalition partners?</li> <li data-astro-cid-jhtvqvvi><strong data-astro-cid-jhtvqvvi>Similarity Heatmap:</strong> Which candidates have overlapping or opposing voter bases?</li> <li data-astro-cid-jhtvqvvi><strong data-astro-cid-jhtvqvvi>Political Map:</strong> Where do candidates sit in "political space"?</li> </ul> <h4 class="govuk-heading-xs" data-astro-cid-jhtvqvvi>Required File Format:</h4> <p class="govuk-body" data-astro-cid-jhtvqvvi>This requires the raw STV election JSON with ballot data:</p> <pre class="code-block" data-astro-cid-jhtvqvvi><code data-astro-cid-jhtvqvvi>{
+  &quot;candidates&quot;: [&quot;Alice&quot;, &quot;Bob&quot;, &quot;Carol&quot;],
+  &quot;ballots&quot;: [
+    { &quot;voter&quot;: &quot;voter1&quot;, &quot;rankings&quot;: [&quot;Alice&quot;, &quot;Carol&quot;, &quot;Bob&quot;] },
+    { &quot;voter&quot;: &quot;voter2&quot;, &quot;rankings&quot;: [&quot;Bob&quot;, &quot;Alice&quot;] }
+  ],
+  &quot;nameMatches&quot;: { ... }  // Optional: for name normalization
+}</code></pre> </div> </div> </main> </div>  </main> </div>  <script>GOVUKFrontend.initAll()</script> <script>
+            (function(){
+                const BASE = (document.body && document.body.dataset && document.body.dataset.base) ? document.body.dataset.base : "/";
+                if(!BASE) return;
+                try {
+                    document.querySelectorAll('img[src^="/"], a[href^="/"]')
+                        .forEach((el) => {
+                            ["src","href"].forEach((attr) => {
+                                if(!el.hasAttribute(attr)) return;
+                                const val = el.getAttribute(attr);
+                                if(!val || !val.startsWith('/')) return;
+                                if(val.startsWith(BASE)) return; // already rewritten
+                                el.setAttribute(attr, BASE + val.replace(/^\//, ''));
+                            });
+                        });
+                } catch (e) {
+                    // noop
+                }
+            })();
+        </script> <script>
+            (function(){
+                // For each dropdown item, measure both the link and dropdown menu width
+                // and set both to the larger of the two
+                const dropdownItems = document.querySelectorAll('.icenia-navbar__item');
+
+                function normalize(p){ return p ? p.replace(/\/+$/, '/') : '/'; }
+
+                dropdownItems.forEach(item => {
+                    const menu = item.querySelector('.icenia-navbar__dropdown');
+                    const parentLink = item.querySelector('.icenia-navbar__link');
+                    if (!menu || !parentLink) return;
+
+                    // Make menu measurable without affecting layout
+                    const origMenuStyles = {
+                        position: menu.style.position || '',
+                        visibility: menu.style.visibility || '',
+                        display: menu.style.display || '',
+                        clipPath: menu.style.clipPath || '',
+                        width: menu.style.width || '',
+                        minWidth: menu.style.minWidth || ''
+                    };
+                    
+                    menu.style.position = 'absolute';
+                    menu.style.visibility = 'hidden';
+                    menu.style.display = 'block';
+                    menu.style.clipPath = 'none';
+                    menu.style.width = 'auto';
+                    menu.style.minWidth = '0';
+
+                    // Measure the widest item inside the dropdown menu
+                    let maxDropdownWidth = 0;
+                    const links = menu.querySelectorAll('a');
+                    links.forEach(a => {
+                        // Temporarily ensure auto width for measurement
+                        const origWidth = a.style.width;
+                        a.style.width = 'auto';
+                        const w = a.scrollWidth;
+                        a.style.width = origWidth;
+                        if (w > maxDropdownWidth) maxDropdownWidth = w;
+                    });
+                    
+                    // Also check menu's natural width
+                    const menuNaturalWidth = menu.scrollWidth || 0;
+                    maxDropdownWidth = Math.max(maxDropdownWidth, menuNaturalWidth);
+
+                    // Measure the parent link's natural width
+                    const origLinkStyles = {
+                        width: parentLink.style.width || '',
+                        minWidth: parentLink.style.minWidth || ''
+                    };
+                    parentLink.style.width = 'auto';
+                    parentLink.style.minWidth = '0';
+                    
+                    // Force reflow
+                    void parentLink.offsetWidth;
+                    
+                    const linkNaturalWidth = parentLink.scrollWidth || 0;
+
+                    // Determine the final width (the larger of the two)
+                    const finalWidth = Math.max(maxDropdownWidth, linkNaturalWidth);
+
+                    // Apply the same width to both elements
+                    parentLink.style.width = finalWidth + 'px';
+                    parentLink.style.minWidth = finalWidth + 'px';
+                    menu.style.width = finalWidth + 'px';
+                    menu.style.minWidth = '0'; // No minimum width on dropdown
+                   
+                    // Restore other menu styles
+                    menu.style.position = origMenuStyles.position;
+                    menu.style.visibility = origMenuStyles.visibility;
+                    menu.style.display = origMenuStyles.display;
+                    menu.style.clipPath = origMenuStyles.clipPath;
+                });
+
+                // Active-state detection (mark dropdown and matching child link)
+                // Note: Only mark child dropdown links active on an exact path match
+                // to avoid highlighting the index/parent child when a deeper route is active.
+                const currentPathRaw = window.location.pathname || '/';
+                const currentPath = normalize(currentPathRaw);
+
+                dropdownItems.forEach(item => {
+                    const menuLinks = item.querySelectorAll('.icenia-navbar__dropdown a');
+                    let hasActiveChild = false;
+
+                    menuLinks.forEach(link => {
+                        const href = link.getAttribute('href');
+                        if (!href) return;
+                        
+                        // Skip external links (different origin) - they should never be marked active
+                        try {
+                            const linkUrl = new URL(href, window.location.origin);
+                            if (linkUrl.origin !== window.location.origin) return;
+                        } catch (e) {
+                            // If URL parsing fails, skip this link
+                            return;
+                        }
+                        
+                        let linkPath;
+                        try { linkPath = new URL(href, window.location.origin).pathname; } catch (e) { linkPath = href; }
+                        const normLink = normalize(linkPath);
+
+                        // Mark child link active only on exact match (avoid prefix matches like
+                        // '/icenia-city/' matching '/icenia-city/laws/')
+                        if (normLink === currentPath) {
+                            link.classList.add('active');
+                            hasActiveChild = true;
+                        }
+                    });
+
+                    const toggle = item.querySelector('.icenia-navbar__link');
+                    // Keep existing behavior for marking the parent item active when the current
+                    // path is within that section (so the parent nav shows the active section)
+                    if (toggle && toggle.getAttribute('href')) {
+                        try {
+                            const tPath = new URL(toggle.getAttribute('href'), window.location.origin).pathname.replace(/\/+$/, '/');
+                            if (tPath !== '/' && currentPath.startsWith(tPath)) hasActiveChild = true;
+                        } catch (e) {
+                            // ignore
+                        }
+                    }
+
+                    if (hasActiveChild) item.classList.add('active');
+                });
+            })();
+        </script> <script>
+            // Responsive navbar: horizontal navbar OR slide-out menu
+            (function(){
+                const navList = document.querySelector('.icenia-navbar__list');
+                const navbar = document.querySelector('.icenia-navbar');
+                const navContainer = document.querySelector('.icenia-navbar__container');
+                const menuToggle = document.getElementById('menuToggle');
+                const menuClose = document.getElementById('menuClose');
+                const slideMenu = document.getElementById('slideMenu');
+                const menuOverlay = document.getElementById('menuOverlay');
+                
+                if (!navList || !menuToggle || !slideMenu || !navbar) return;
+                
+                // Measure the total width needed for horizontal navbar
+                function measureHorizontalWidth() {
+                    let total = 0;
+                    const items = navList.querySelectorAll('.icenia-navbar__item');
+                    items.forEach(item => {
+                        const link = item.querySelector('.icenia-navbar__link');
+                        if (link) {
+                            // Get computed styles to account for padding
+                            const style = window.getComputedStyle(link);
+                            const paddingLeft = parseFloat(style.paddingLeft) || 0;
+                            const paddingRight = parseFloat(style.paddingRight) || 0;
+                            // Use scrollWidth for the content width, which includes padding
+                            total += link.scrollWidth;
+                        }
+                    });
+                    return total;
+                }
+                
+                // Get the actual available width in the navbar container
+                function getAvailableWidth() {
+                    if (!navContainer) return window.innerWidth;
+                    
+                    const style = window.getComputedStyle(navContainer);
+                    const paddingLeft = parseFloat(style.paddingLeft) || 0;
+                    const paddingRight = parseFloat(style.paddingRight) || 0;
+                    
+                    // The container has max-width: 960px, so we need to consider that
+                    const maxWidth = 960;
+                    const screenWidth = window.innerWidth;
+                    
+                    // Calculate container width (min of screen width and max-width)
+                    let containerWidth = Math.min(screenWidth, maxWidth);
+                    
+                    // Subtract padding
+                    return containerWidth - paddingLeft - paddingRight;
+                }
+                
+                // Check if horizontal navbar fits
+                function checkNavbarFit() {
+                    // Temporarily ensure navbar is visible for measurement
+                    const wasMenuMode = document.body.classList.contains('menu-mode');
+                    const wasMenuOpen = slideMenu.classList.contains('is-open');
+                    
+                    // Remove menu mode temporarily to measure navbar
+                    document.body.classList.remove('menu-mode');
+                    
+                    // Force reflow to ensure styles are applied
+                    void navList.offsetWidth;
+                    
+                    // Wait a tiny bit for styles to settle, then measure
+                    const horizontalWidth = measureHorizontalWidth();
+                    const availableWidth = getAvailableWidth();
+                    
+                    
+                    // Small tolerance to avoid edge-case flickering
+                    const tolerance = 10;
+                    
+                    const needsMenuMode = horizontalWidth > availableWidth - tolerance;
+                    
+                    // Debug logging (can be removed in production)
+                    // console.log('Horizontal width:', horizontalWidth, 'Available:', availableWidth, 'Needs menu:', needsMenuMode);
+                    
+                    if (needsMenuMode) {
+                        document.body.classList.add('menu-mode');
+                    } else {
+                        document.body.classList.remove('menu-mode');
+                        // Also close the menu if it was open
+                        closeMenu();
+                    }
+                }
+                
+                // Open slide menu
+                function openMenu() {
+                    slideMenu.classList.add('is-open');
+                    menuOverlay.classList.add('is-visible');
+                    menuToggle.classList.add('is-active');
+                    menuToggle.setAttribute('aria-expanded', 'true');
+                    document.body.classList.add('menu-open');
+                }
+                
+                // Close slide menu
+                function closeMenu() {
+                    slideMenu.classList.remove('is-open');
+                    menuOverlay.classList.remove('is-visible');
+                    menuToggle.classList.remove('is-active');
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                    document.body.classList.remove('menu-open');
+                }
+                
+                // Toggle slide menu
+                function toggleMenu() {
+                    if (slideMenu.classList.contains('is-open')) {
+                        closeMenu();
+                    } else {
+                        openMenu();
+                    }
+                }
+                
+                // Event listeners for menu toggle
+                menuToggle.addEventListener('click', toggleMenu);
+                menuClose.addEventListener('click', closeMenu);
+                menuOverlay.addEventListener('click', closeMenu);
+                
+                // Handle submenu toggles in slide menu
+                const submenuToggles = document.querySelectorAll('.icenia-slide-menu__link.has-children');
+                submenuToggles.forEach(toggle => {
+                    toggle.addEventListener('click', function() {
+                        const submenu = this.nextElementSibling;
+                        if (submenu && submenu.classList.contains('icenia-slide-menu__submenu')) {
+                            this.classList.toggle('is-expanded');
+                            submenu.classList.toggle('is-open');
+                        }
+                    });
+                });
+                
+                // Close menu on escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && slideMenu.classList.contains('is-open')) {
+                        closeMenu();
+                        menuToggle.focus();
+                    }
+                });
+                
+                // Run on load (with a small delay to ensure styles are loaded)
+                // Use requestAnimationFrame to ensure DOM is fully rendered
+                requestAnimationFrame(function() {
+                    requestAnimationFrame(function() {
+                        checkNavbarFit();
+                    });
+                });
+                
+                let resizeTimeout;
+                window.addEventListener('resize', function() {
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(checkNavbarFit, 100);
+                });
+            })();
+        </script> </body> </html>  

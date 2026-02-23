@@ -1,0 +1,20 @@
+[
+  {
+    "id": "2026-01-january",
+    "name": "January 2026",
+    "date": "2026-01-07",
+    "term": 43,
+    "rcvisUrl": "/stv-data/senate-term-43-202601-rcvis.json",
+    "fullUrl": "/stv-data/senate-term-43-202601-full.json",
+    "type": "local"
+  },
+  {
+    "id": "2026-02-february",
+    "name": "February 2026",
+    "date": "2026-02-05",
+    "term": 44,
+    "rcvisUrl": "/stv-data/senate-term-44-202602-rcvis.json",
+    "fullUrl": "/stv-data/senate-term-44-202602-full.json",
+    "type": "local"
+  }
+]
