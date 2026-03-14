@@ -1868,13 +1868,13 @@ import PageLayout from "@layouts/page.astro";
             const logEl = document.getElementById('log');
             const winnersEl = document.getElementById('winners');
             if (!logEl || !winnersEl) return;
-            
+
             logEl.innerHTML = '';
             winnersEl.innerHTML = 'Calculating...';
-            
+
             try {
                 const candidateReferences = parsedData.candidates;
-                
+
                 // Filter out duplicate ballots
                 const activeBallots = parsedData.ballots.filter((b, idx) => {
                     const baseVoter = b.voter.replace(/#\d+$/, '');
@@ -1884,16 +1884,24 @@ import PageLayout from "@layouts/page.astro";
                 });
 
                 const stvBallots = activeBallots.map(b => {
-                    // Extract candidates from structured lines (in order, excluding duplicates)
-                    const structuredLines = getOrInitStructuredLines(b.voter);
-                    const candidateNames = structuredLines
-                        .filter(line => line.type === 'candidate' && line.value)
-                        .map(line => line.value!);
-                    
+                    let candidateNames: string[] = [];
+
+                    // Check if this is simple mode (no originalBallotText) or discord mode
+                    if (parsedData.originalBallotText.size === 0 && b.rankings && b.rankings.length > 0) {
+                        // Simple mode: use rankings directly from ballot
+                        candidateNames = b.rankings;
+                    } else {
+                        // Discord mode: Extract candidates from structured lines
+                        const structuredLines = getOrInitStructuredLines(b.voter);
+                        candidateNames = structuredLines
+                            .filter(line => line.type === 'candidate' && line.value)
+                            .map(line => line.value!);
+                    }
+
                     const rankingNumbers = candidateNames
                         .map(name => getCandidateNumber(name, candidateReferences))
                         .filter((n): n is number => n !== null && n > 0);
-                    
+
                     return new Ballot(b.voter, rankingNumbers, 1, candidateReferences.length);
                 }).filter(b => b.rankingList.length > 0);
 
@@ -1908,7 +1916,11 @@ import PageLayout from "@layouts/page.astro";
                 
                 winnersEl.innerHTML = `<strong>The winners are:</strong> ${winners.join(', ')}`;
                 logEl.innerHTML = logs.join('');
-                
+
+                // Hide all input sections and show results
+                document.getElementById('simple-mode')!.style.display = 'none';
+                document.getElementById('discord-mode')!.style.display = 'none';
+                document.getElementById('name-matching')!.style.display = 'none';
                 document.getElementById('ballot-review')!.style.display = 'none';
                 document.getElementById('duplicate-voters')!.style.display = 'none';
                 document.getElementById('results')!.style.display = 'block';
@@ -2407,6 +2419,11 @@ import PageLayout from "@layouts/page.astro";
                 radio.addEventListener('change', function(this: HTMLInputElement) {
                     inputMode = this.value as 'simple' | 'discord';
                     localStorage.setItem('input-mode', this.value);
+                    // Hide all intermediate/result sections and show selected input mode
+                    document.getElementById('name-matching')!.style.display = 'none';
+                    document.getElementById('duplicate-voters')!.style.display = 'none';
+                    document.getElementById('ballot-review')!.style.display = 'none';
+                    document.getElementById('results')!.style.display = 'none';
                     document.getElementById('simple-mode')!.style.display = inputMode === 'simple' ? 'block' : 'none';
                     document.getElementById('discord-mode')!.style.display = inputMode === 'discord' ? 'block' : 'none';
                 });
