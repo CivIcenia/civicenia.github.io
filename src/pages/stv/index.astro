@@ -1888,8 +1888,10 @@ import PageLayout from "@layouts/page.astro";
 
                     // Check if this is simple mode (no originalBallotText) or discord mode
                     if (parsedData.originalBallotText.size === 0 && b.rankings && b.rankings.length > 0) {
-                        // Simple mode: use rankings directly from ballot
-                        candidateNames = b.rankings;
+                        // Simple mode: apply nameMatches to rankings, then use the mapped names
+                        candidateNames = b.rankings
+                            .map(r => parsedData.nameMatches.get(r))
+                            .filter((r): r is string => !!r && r !== '__NOT_A_BALLOT__');
                     } else {
                         // Discord mode: Extract candidates from structured lines
                         const structuredLines = getOrInitStructuredLines(b.voter);
