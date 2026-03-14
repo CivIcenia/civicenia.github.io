@@ -31,3 +31,27 @@ items:
     title: Modify Constitution on civilian bunker perms
     date: '2026-01-20'
     checked: false
+  - id: '1480666996357070960'
+    title: Kingstell Territory Ban
+    date: '2026-03-09'
+    checked: false
+  - id: '1480607641569857659'
+    title: CDM - +,+ NAPs
+    date: '2026-03-09'
+    checked: false
+  - id: '1480315925269057758'
+    title: Selene - Icenia Friendship Pact
+    date: '2026-03-08'
+    checked: false
+  - id: '1478669039160000512'
+    title: Mercutio County Charter
+    date: '2026-03-04'
+    checked: false
+  - id: '1468223786263253055'
+    title: Safe Highways Act
+    date: '2026-02-03'
+    checked: false
+  - id: '1466736404477509632'
+    title: CDM-TE Partnership Treaty
+    date: '2026-01-30'
+    checked: false
