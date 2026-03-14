@@ -28,6 +28,7 @@
         "@types/d3": "^7.4.3",
         "@types/dateformat": "^5.0.2",
         "astro": "^4.11.5",
+        "clipboardy": "^5.3.1",
         "d3": "^7.9.0",
         "dateformat": "^5.0.3",
         "decap-server": "^3.0.4",
