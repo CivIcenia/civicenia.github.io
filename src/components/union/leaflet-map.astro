@@ -735,20 +735,15 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
                 console.error('Invalid polygon data:', polygon);
                 return [];
             }
-            
-            // Debug: log first few coords to understand format
-            // console.log('Converting polygon, first elem:', polygon[0], 'isMultiRing:', isMultiRing(polygon));
-            
+
             if (isMultiRing(polygon)) {
                 // Multi-ring polygon (with holes): convert each ring
                 // Returns format: [[[lat,lng]...], [[lat,lng]...], ...]
                 const result = polygon.map(ring => convertRing(ring));
-                // console.log('Multi-ring result structure:', result.length, 'rings');
                 return result;
             } else {
                 // Single ring: return as simple polygon format [[lat,lng], [lat,lng], ...]
                 const result = convertRing(polygon);
-                // console.log('Single-ring result, points:', result.length);
                 return result;
             }
         }
@@ -813,7 +808,7 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
         // Add territory polygons from subregions
         territories.forEach(territory => {
             if (!territory.subregions || territory.subregions.length === 0) return;
-            
+
             // Filter to non-cutout subregions for main territory display
             const mainSubregions = territory.subregions.filter(sr => !sr.isCutout);
             if (mainSubregions.length === 0) return;
@@ -836,14 +831,30 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
                         fillOpacity: 0.35,
                         className: 'territory-layer'
                     });
-                    
-                    // Add tooltip with subregion name directly to each polygon
+
+                    // CRITICAL: Add tooltip and event handlers BEFORE adding to group/map
+                    // This ensures events are properly attached
                     poly.bindTooltip(sr.name, {
                         permanent: false,
                         direction: 'center',
                         className: 'subregion-tooltip'
                     });
-                    
+
+                    // Attach click handler directly to each polygon to capture the specific subregion clicked
+                    poly.on('click', (e) => {
+                        L.DomEvent.stopPropagation(e);
+                        // Get the bounds of this specific polygon
+                        const subregionBounds = poly.getBounds();
+                        selectTerritory(territory.id, subregionBounds);
+                    });
+
+                    // Attach tooltip close on mouseout directly to polygon
+                    poly.on('mouseout', () => {
+                        if (poly.getTooltip()) {
+                            poly.closeTooltip();
+                        }
+                    });
+
                     polygons.push(poly);
                 } catch (e) {
                     console.error(`Error creating polygon for ${territory.name} - ${sr.name}:`, e, sr.polygon);
@@ -852,13 +863,14 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
             
             if (polygons.length === 0) return;
             
-            // Create a feature group for this territory
+            // Create a feature group for this territory and add it to the map
+            // This is the standard Leaflet pattern - group manages the polygons
             const group = L.featureGroup(polygons).addTo(map);
             polygonLayers.set(territory.id, group);
-            
+
             // Store territory data for info panel
             group.territoryData = territory;
-            
+
             // Hover effects for main territory (only when not selected)
             group.on('mouseover', () => {
                 if (selectedTerritoryId !== territory.id) {
@@ -868,7 +880,6 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
                         weight: 3,
                         color: '#ffffff'
                     });
-                    group.bringToFront();
                 }
                 // Show territory info in panel on hover
                 showInfoPanel(territory);
@@ -877,6 +888,12 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
             });
             
             group.on('mouseout', () => {
+                // Explicitly close all tooltips for this territory's polygons
+                group.eachLayer(layer => {
+                    if (layer.getTooltip()) {
+                        layer.closeTooltip();
+                    }
+                });
                 if (selectedTerritoryId !== territory.id) {
                     // If a territory is selected, hide this one (mask covers it)
                     // Otherwise restore normal opacity
@@ -903,14 +920,8 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
                 }
             });
             
-            // Click to select territory - zoom to the specific subregion clicked
-            group.on('click', (e) => {
-                L.DomEvent.stopPropagation(e);
-                // Get the bounds of the specific polygon (subregion) that was clicked
-                const clickedLayer = e.layer || e.target;
-                const subregionBounds = clickedLayer && clickedLayer.getBounds ? clickedLayer.getBounds() : null;
-                selectTerritory(territory.id, subregionBounds);
-            });
+            // Note: Click handlers are now attached to individual polygons above
+            // This allows us to capture exactly which subregion was clicked
         });
         
         // Track selected territory
@@ -1241,6 +1252,14 @@ const territoriesJson = JSON.stringify(territories.map(t => ({
             
             item.addEventListener('mouseleave', () => {
                 const group = polygonLayers.get(id);
+                // FIX: Explicitly close all tooltips for this territory's polygons when leaving legend item
+                if (group) {
+                    group.eachLayer(layer => {
+                        if (layer.getTooltip()) {
+                            layer.closeTooltip();
+                        }
+                    });
+                }
                 if (group && selectedTerritoryId !== id) {
                     const territory = territories.find(t => t.id === id);
                     // If a territory is selected, hide this one again (mask covers it)
