@@ -1,5 +1,42 @@
 entries:
   - hidden: false
+    name: Safe Highways Act
+    slug: safe-highways-act
+    masterdoc: /documents/safe-highways-act.pdf
+    kind: statute
+  - hidden: false
+    slug: selene-icenia-friendship-pact
+    name: Selene - Icenia Friendship Pact
+    masterdoc: /documents/Selene - Icenia Friendship Pact.pdf
+    kind: treaty
+  - hidden: false
+    name: CDM - Ruby Friendship Pact
+    fullname: Treaty of Piave — Treaty of Friendship and Non-Aggression between
+      Cortesia Del Mar and Ruby
+    slug: cdm-ruby-friendship-pact
+    kind: treaty
+    masterdoc: /archive/CDM - Ruby Treaty of Piave.pdf
+  - hidden: false
+    slug: cdm-danzilona-non-aggression-pact
+    name: CDM - Danzilona Non-Aggression Pact
+    kind: treaty
+    masterdoc: /archive/CDM - Danzilona Non-Aggression Pact.pdf
+  - hidden: false
+    slug: cdm-neo-sol-non-aggression-pact
+    masterdoc: /archive/CDM - Neo Sol Non-Aggression Pact.pdf
+    kind: treaty
+    name: CDM - Neo Sol Non-Aggression Pact
+  - hidden: false
+    name: CDM - Infrapontem Non-Aggression Pact
+    slug: cdm-infrapontem-non-aggression-pact
+    masterdoc: /archive/CDM - Infrapontem Non-Aggression Pact.pdf
+    kind: treaty
+  - hidden: false
+    name: CDM - TE Partnership Treaty
+    masterdoc: /archive/CDM-TE Partnership Treaty.pdf
+    slug: cdm-te-partnership-treaty
+    kind: treaty
+  - hidden: false
     slug: third-constitution
     name: Constitution of Icenia
     fullname: The Constitution of the Third Republic of Icenia

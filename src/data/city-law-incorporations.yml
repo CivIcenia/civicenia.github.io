@@ -1,5 +1,10 @@
 incorporations:
   - change_slugs:
+      - 2026-02-14-04-01
+    law_slug: city-council-voting-act
+    incorporated_at: 2026-03-15 22:41:00 +08:00
+    incorporated_by: Creepily
+  - change_slugs:
       - 2025-11-23-amendment-to-municipal-housing-act
     law_slug: municipal-housing-act
     incorporated_at: 2026-02-01 10:06:00 +08:00

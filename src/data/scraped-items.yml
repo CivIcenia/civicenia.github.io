@@ -1,57 +1,29 @@
 items:
-  - id: '1472090745619091596'
+  - id: "1472090745619091596"
     title: Amendment to Constitution on Citizenship Ranks
-    date: '2026-02-14'
+    date: 2026-02-14
     checked: false
-  - id: '1471965690163499261'
+  - id: "1471965690163499261"
     title: Patrician Test
-    date: '2026-02-13'
+    date: 2026-02-13
     checked: false
-  - id: '1462687549238677719'
+  - id: "1462687549238677719"
     title: Vote on Icenia's vote on the admission of Fairhill into WARDA
-    date: '2026-01-19'
+    date: 2026-01-19
     checked: false
-  - id: '1461801340505428059'
+  - id: "1461801340505428059"
     title: Salerno-Icenia Wholesome Friendship Treaty
-    date: '2026-01-16'
+    date: 2026-01-16
     checked: false
-  - id: '1463215644668596335'
+  - id: "1463215644668596335"
     title: Civil Equity and Integrity Act
-    date: '2026-01-20'
+    date: 2026-01-20
     checked: false
-  - id: '1463214184971108631'
+  - id: "1463214184971108631"
     title: Criminal Justice Act
-    date: '2026-01-20'
+    date: 2026-01-20
     checked: false
-  - id: '1459897498536640685'
-    title: Icenia Micronook Friendship Pact
-    date: '2026-01-11'
-    checked: false
-  - id: '1463103552443388005'
+  - id: "1463103552443388005"
     title: Modify Constitution on civilian bunker perms
-    date: '2026-01-20'
-    checked: false
-  - id: '1480666996357070960'
-    title: Kingstell Territory Ban
-    date: '2026-03-09'
-    checked: false
-  - id: '1480607641569857659'
-    title: CDM - +,+ NAPs
-    date: '2026-03-09'
-    checked: false
-  - id: '1480315925269057758'
-    title: Selene - Icenia Friendship Pact
-    date: '2026-03-08'
-    checked: false
-  - id: '1478669039160000512'
-    title: Mercutio County Charter
-    date: '2026-03-04'
-    checked: false
-  - id: '1468223786263253055'
-    title: Safe Highways Act
-    date: '2026-02-03'
-    checked: false
-  - id: '1466736404477509632'
-    title: CDM-TE Partnership Treaty
-    date: '2026-01-30'
+    date: 2026-01-20
     checked: false
