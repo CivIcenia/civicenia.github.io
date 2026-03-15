@@ -197,7 +197,7 @@ export function STV(ballots: Ballot[], k: number, candidateReferences: string[],
             const candidateName = candidateReferences[bottomCandidate - 1];
             const { primaryVotes: bottomVotes, counted: ballotsForBottom } = votesInFavor(ballots, bottomCandidate);
 
-            logCallback(`<span class="stv-log-elim">✗ ELIM: ${candidateName} (${bottomVotes.toFixed(3)} votes from ${ballotsForBottom.length} ballots)\n</span>`, 'elim');
+            logCallback(`<span class="stv-log-elim">✗ ELIM: ${candidateName} (${bottomVotes.toFixed(3)} votes, Quota: ${quota.toFixed(3)})\n</span>`, 'elim');
 
             roundData.tallyResults.push({
                 eliminated: candidateName,
