@@ -1,0 +1,1207 @@
+/* Prefer govuk-frontend for layout and spacing; these are fallbacks */
+/* Icenia theme (GOV.UK colour & style alignment)
+   This file provides minimal overrides and utility classes that
+   complement the included govuk-frontend styles while using the
+   original site's colours (blue: #1C70B8) and high-contrast black/white.
+*/
+
+:root {
+    --icenia-blue: #1C70B8; /* GOV.UK-like primary blue */
+    --icenia-black: #000000;
+    --icenia-white: #ffffff;
+    --icenia-muted: #6f777b;
+    --icenia-gray: #141515;
+    --off-white: #eeeeee;
+    
+    /* Header & navbar heights for layout calculations */
+    --header-height-desktop: 56px;
+    --header-height-mobile: 56px;
+    --navbar-height: 54px; /* nav links (~44px) + blue border (10px) */
+}
+
+
+code {
+    background-color: #f0f0f0 !important;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'monospace', monospace !important;
+    color: var(--icenia-blue) !important;
+}
+
+/* govuk-header color override */
+.govuk-header {
+  border-bottom-color: var(--off-white);
+}
+
+/* .govuk-body code,
+.govuk-body pre,
+.govuk-body kbd,
+.govuk-body samp {
+	font-family: monospace, monospace;
+} */
+
+/* Keep styling minimal — prefer govuk-frontend classes for structure */
+
+/* Status Bar (small utility) */
+.icenia-status-bar {
+    background-color: var(--icenia-blue);
+    color: var(--icenia-white);
+    padding: 6px 18px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    gap: 8px;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .icenia-status-bar { flex-direction: column; text-align: center; }
+}
+
+/* Hero: use straight overlay and let govuk typography apply */
+.icenia-hero {
+	background: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('../images/nation_render.png') center/cover no-repeat;
+    height: calc(100vh - var(--header-height-desktop) - var(--navbar-height));
+    min-height: 400px; /* Ensure minimum usable height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: var(--icenia-white);
+    padding: 2rem 1rem;
+    box-sizing: border-box;
+}
+
+/* When menu-mode is active (navbar hidden, hamburger shown), exclude navbar from height calc */
+body.menu-mode .icenia-hero {
+    height: calc(100vh - var(--header-height-desktop));
+}
+
+@media (max-width: 768px) {
+    .icenia-hero {
+        height: calc(100vh - var(--header-height-mobile) - var(--navbar-height));
+        min-height: 300px;
+    }
+    body.menu-mode .icenia-hero {
+        height: calc(100vh - var(--header-height-mobile));
+    }
+}
+
+.icenia-hero h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-weight: 700; /* govuk heading weight */
+    line-height: 1;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+}
+
+/* .icenia-hero p { margin: 0 0 1.25rem 0; font-size: 1.125rem; color: rgba(255,255,255,0.95); } */
+
+.icenia-hero-subtitle {
+    font-size: clamp(1.125rem, 3vw, 1.5rem);
+    margin: 0 0 2rem 0;
+    opacity: 0.95;
+}
+
+.icenia-hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.icenia-scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255,255,255,0.7);
+    font-size: 0.875rem;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(5px); }
+}
+
+/* Buttons: style to match GOV.UK button spacing and keep utility classes */
+.icenia-btn {
+    display: inline-block;
+    padding: 12px 20px; /* comfortable tap target */
+    background-color: var(--icenia-blue);
+    color: var(--icenia-white);
+    text-decoration: none;
+    border: 2px solid var(--icenia-blue);
+    border-radius: 0; /* align with GOV.UK minimal radius */
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.25;
+    box-sizing: border-box;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.icenia-btn:hover, .icenia-btn:focus { background-color: #154f86; border-color: #154f86; color: var(--icenia-white); }
+
+.icenia-btn-secondary {
+    display: inline-block;
+    padding: 12px 20px;
+    background: rgba(0, 0, 0, 0);
+    color: var(--icenia-blue);
+    border: 2px solid var(--icenia-blue);
+    border-radius: 0;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.25;
+}
+
+.icenia-btn-secondary:hover, .icenia-btn-secondary:focus { background-color: var(--icenia-blue); border-color: var(--icenia-blue); color: var(--icenia-white); }
+
+.icenia-btn-tertiary {
+    background: rgba(255,255,255,0.1);
+    border-color: white;
+    color: white;
+}
+
+.icenia-btn-tertiary:hover, .icenia-btn-tertiary:focus {
+    background: white;
+    color: var(--icenia-blue, #1C70B8);
+}
+
+.icenia-btn-warning {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #d4351c; /* GOV.UK red */
+    color: var(--icenia-white);
+    text-decoration: none;
+    border: 2px solid #d4351c;
+    border-radius: 0;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.25;
+    box-sizing: border-box;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.icenia-btn-warning:hover, .icenia-btn-warning:focus {
+    background-color: #942514; /* Darker red on hover */
+    border-color: #942514;
+    color: var(--icenia-white);
+}
+
+/* Card components - work with GOV.UK grid */
+.icenia-card { 
+    background: var(--icenia-white); 
+    padding: 1.5rem; 
+    border-top: 4px solid var(--icenia-blue); 
+    box-shadow: 0 1px 2px rgba(3,10,21,0.08); 
+    margin-bottom: 1.5rem;
+}
+
+.state-card { 
+    background: var(--icenia-white); 
+    padding: 1rem; 
+    border-left: 4px solid var(--icenia-blue); 
+    box-shadow: 0 1px 1px rgba(3,10,21,0.06); 
+    margin-bottom: 1.5rem;
+}
+
+/* News ticker aligned with govuk panels - works within GOV.UK grid */
+.news-ticker { 
+    background: var(--icenia-white); 
+    padding: 1.5rem; 
+    margin-bottom: 1.5rem;
+    border-left: 6px solid var(--icenia-blue); 
+}
+.news-ticker-item { 
+    padding: 0.75rem 0; 
+    border-bottom: 1px solid #eee; 
+}
+.news-ticker-item:last-child { 
+    border-bottom: none; 
+}
+.news-ticker-date { 
+    color: var(--icenia-muted); 
+    font-size: 0.875rem; 
+}
+
+.section-header { background: var(--icenia-blue); color: var(--icenia-white); padding: 1.5rem 1rem; text-align: center; }
+.section-header h2 { margin: 0; font-size: 1.5rem; line-height: 1.2; }
+
+
+/* Equal height cards utility - works with GOV.UK grid */
+.equal-cards .govuk-grid-row {
+	display: flex;
+	gap: 1.5rem;
+	flex-wrap: wrap;
+	/* margin-bottom: 1.5rem; */
+}
+
+.equal-cards .govuk-grid-column-one-half {
+	flex: 1 1 calc(50% - 0.75rem);
+	display: flex;
+	min-width: 260px;
+}
+
+.equal-cards .icenia-card {
+	/* make card fill column and align content so buttons sit at bottom */
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding: 1.25rem;
+	background: var(--icenia-white);
+	/* border-radius: 6px; */
+	/* box-shadow: 0 1px 4px rgba(0,0,0,0.06); */
+	flex: 1;
+	min-height: 220px; /* ensure a consistent minimum height */
+}
+
+/* Ensure link doesn't collapse spacing on very short content */
+.equal-cards .icenia-card a {
+	margin-top: 0.75rem;
+	align-self: flex-start;
+}
+
+@media (max-width: 700px) {
+	.equal-cards .govuk-grid-column-one-half {
+		flex: 1 1 100%;
+	}
+}
+
+
+/* Icenia theme for form elements - GOV.UK style with yellow focus */
+.icenia-textarea,
+.icenia-input,
+.icenia-select {
+    font-family: "GDS Transport", arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 1.25;
+    box-sizing: border-box;
+    padding: 5px;
+    border: 2px solid #0b0c0c;
+    width: 100%;
+}
+
+.icenia-textarea {
+    display: block;
+    resize: vertical;
+}
+
+.icenia-input {
+    height: 40px;
+    line-height: 1.25;
+}
+
+.icenia-select {
+    height: 40px;
+    padding: 5px;
+}
+
+/* Reset default focus styles */
+.icenia-textarea:focus,
+.icenia-input:focus,
+.icenia-select:focus {
+    outline: none;
+    border-color: #0b0c0c;
+    box-shadow: none;
+}
+
+/* Only show yellow outline when user is navigating with keyboard */
+.is-keyboard-user .icenia-textarea:focus-visible,
+.is-keyboard-user .icenia-input:focus-visible,
+.is-keyboard-user .icenia-select:focus-visible {
+    outline: 3px solid #ffdd00 !important;
+    outline-offset: 0 !important;
+    box-shadow: inset 0 0 0 2px #0b0c0c !important;
+}
+
+.icenia-textarea:hover,
+.icenia-input:hover,
+.icenia-select:hover {
+    border-color: #0b0c0c;
+}
+
+/* Small utility adjustments */
+/* Prefer GOV.UK frontend typography if present. Provide a conservative default font stack
+   (Arial, sans-serif) so pages that don't include govuk-frontend still get a sane
+   sans-serif font. This rule is intentionally not marked !important — if govuk-
+   frontend defines fonts later in the cascade it will override this default. */
+html, body { 
+    background: var(--off-white); 
+    font-family: Arial, sans-serif;
+    /* Hide scrollbar for all browsers */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+/*
+ * GOV.UK sets a 10px bottom border on the inner header container
+ * in `govuk-frontend-4.3.1.min.css` (.govuk-header__container {
+ *   ... border-bottom: 10px solid #1C70B8;
+ * }) which is the blue bar you see.
+ *
+ * Override it here to change or remove the bar.
+ */
+
+.govuk-header {
+    /* Optional: change overall header background if desired */
+    border-bottom: 0px !important;
+
+}
+
+.govuk-header__container {
+    border-bottom: 0px !important;
+    /* govuk adds a negative bottom margin to pull up content; reset if needed */
+    /* margin-bottom: 0 !important; */
+}
+
+/* ==========================================================================
+   Page Header Component
+   Used across multiple pages (laws, news, union, officials, city pages)
+   ========================================================================== */
+
+.page-header {
+    background: var(--icenia-blue);
+    padding: 30px 20px;
+    margin-bottom: 30px;
+    color: var(--icenia-white);
+}
+
+.page-header h1 {
+    color: var(--icenia-white);
+    margin: 0 0 10px 0;
+}
+
+.page-header p {
+    color: var(--icenia-white);
+    margin: 0;
+}
+
+/* ==========================================================================
+   Info Box Component
+   Highlighted information section with left border accent
+   ========================================================================== */
+
+.info-box {
+    background: #f3f2f1;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-left: 6px solid var(--icenia-blue);
+}
+
+/* ==========================================================================
+   Officials/Council Card Components
+   Used on government/officials and icenia-city/council pages
+   ========================================================================== */
+
+.officials-centred {
+    text-align: center;
+}
+
+.officials-parent {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.officials-wrapper {
+    width: 200px;
+    flex: 0 0 200px;
+    margin: 10px;
+    text-align: center;
+}
+
+.official-card {
+    width: 200px;
+    border: 2px solid var(--icenia-blue);
+    border-radius: 5px;
+    margin: 0 auto;
+    padding: 15px 10px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.official-pfp {
+    display: block;
+    margin: 5px auto 10px;
+    border-radius: 75px;
+    border: 3px solid var(--icenia-blue);
+}
+
+.official-name {
+    display: block;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #0b0c0c;
+}
+
+.official-title {
+    display: block;
+    font-size: 0.875rem;
+    color: #505a5f;
+    margin-top: 5px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 30px 0 20px 0;
+    color: #0b0c0c;
+}
+
+/* ==========================================================================
+   Fixed Header & Navigation Spacing
+   ========================================================================== */
+
+body {
+    min-height: 100vh;
+    padding-top: 56px; /* space for fixed header (desktop) */
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 54px; /* space for fixed header (mobile) */
+    }
+}
+
+/* ==========================================================================
+   Custom Header - maintains govuk visual style
+   ========================================================================== */
+
+.icenia-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--header-height-desktop);
+    z-index: 9999;
+    background: #0b0c0c;
+    color: #ffffff;
+    font-family: arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+}
+
+.icenia-header__container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.icenia-header__logo {
+    display: flex;
+    align-items: center;
+}
+
+.icenia-header__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 1;
+}
+
+.icenia-header__link:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 4px;
+}
+
+.icenia-header__link:focus {
+    outline: 3px solid transparent;
+    color: #0b0c0c;
+    background-color: #fd0;
+    box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+    text-decoration: none;
+}
+
+.icenia-header__logo-img {
+    width: 40px;
+    height: 40px;
+}
+
+@media (max-width: 768px) {
+    .icenia-header__container {
+        height: var(--header-height-mobile);
+        padding: 0;
+    }
+    
+    .icenia-header__link {
+        font-size: 24px;
+    }
+    
+    .icenia-header__logo-img {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+/* ==========================================================================
+   Menu Toggle Button (hamburger)
+   ========================================================================== */
+
+.icenia-menu-toggle {
+    display: none; /* Hidden by default, shown via JS when needed */
+    background: transparent;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: #ffffff;
+    z-index: 10001;
+}
+
+.icenia-menu-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.icenia-menu-toggle:focus {
+    outline: 3px solid transparent;
+    color: #0b0c0c;
+    background-color: #fd0;
+    box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+}
+
+.icenia-menu-toggle__icon {
+    display: block;
+    width: 24px;
+    height: 20px;
+    position: relative;
+}
+
+.icenia-menu-toggle__icon span {
+    display: block;
+    position: absolute;
+    height: 3px;
+    width: 100%;
+    background: currentColor;
+    border-radius: 2px;
+    left: 0;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.icenia-menu-toggle__icon span:nth-child(1) {
+    top: 0;
+}
+
+.icenia-menu-toggle__icon span:nth-child(2) {
+    top: 8px;
+}
+
+.icenia-menu-toggle__icon span:nth-child(3) {
+    top: 16px;
+}
+
+/* Hamburger to X animation */
+.icenia-menu-toggle.is-active .icenia-menu-toggle__icon span:nth-child(1) {
+    transform: rotate(45deg);
+    top: 8px;
+}
+
+.icenia-menu-toggle.is-active .icenia-menu-toggle__icon span:nth-child(2) {
+    opacity: 0;
+}
+
+.icenia-menu-toggle.is-active .icenia-menu-toggle__icon span:nth-child(3) {
+    transform: rotate(-45deg);
+    top: 8px;
+}
+
+/* ==========================================================================
+   Separate Navigation Bar
+   ========================================================================== */
+
+.icenia-navbar {
+    background: #0b0c0c;
+    position: sticky;
+    top: var(--header-height-desktop);
+    height: var(--navbar-height);
+    z-index: 998;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .icenia-navbar {
+        top: var(--header-height-mobile);
+    }
+}
+
+.icenia-navbar__container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 15px;
+    height: 100%;
+    box-sizing: border-box;
+    border-bottom: 10px solid var(--icenia-blue, #1C70B8);
+}
+
+@media (min-width: 40.0625em) {
+    .icenia-navbar__container {
+        padding: 0 0px;
+    }
+}
+
+/* Navigation list - default: single row, right-aligned */
+.icenia-navbar__list {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    align-items: stretch;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Navigation items */
+.icenia-navbar__item {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+}
+
+/* Primary navigation link styling */
+.icenia-navbar__item > .icenia-navbar__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 12px 16px;
+    color: #ffffff;
+    text-decoration: none;
+    font-family: arial, sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.25;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.icenia-navbar__item > .icenia-navbar__link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 4px;
+}
+
+.icenia-navbar__item > .icenia-navbar__link:focus {
+    outline: 3px solid transparent;
+    color: #0b0c0c;
+    background-color: #fd0;
+    box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+    text-decoration: none;
+}
+
+/* Dropdown arrow */
+.icenia-navbar__link.has-dropdown::after {
+    content: '';
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 4px;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid currentColor;
+    transition: transform 0.2s ease;
+}
+
+.icenia-navbar__item:hover > .icenia-navbar__link.has-dropdown::after {
+    transform: rotate(180deg);
+}
+
+/* Active state for current section */
+.icenia-navbar__item.active > .icenia-navbar__link {
+    background-color: var(--off-white, #eeeeee);
+    color: #0b0c0c;
+}
+
+.icenia-navbar__item.active > .icenia-navbar__link.has-dropdown::after {
+    border-top-color: #0b0c0c;
+}
+
+/* Dropdown menu - default (horizontal layout) */
+.icenia-navbar__dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #0b0c0c;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    clip-path: inset(0 0 100% 0);
+    opacity: 1;
+    visibility: visible;
+    transition: clip-path 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    /* Width is set dynamically via JS to match parent link */
+}
+
+.icenia-navbar__item:hover > .icenia-navbar__dropdown {
+    clip-path: inset(0 0 0 0);
+}
+
+.icenia-navbar__dropdown li {
+    margin: 0;
+    padding: 0;
+}
+
+.icenia-navbar__dropdown a {
+    display: block;
+    padding: 12px 16px;
+    color: #ffffff;
+    text-decoration: none;
+    font-family: arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.25;
+    white-space: nowrap;
+    transition: background-color 0.15s ease;
+}
+
+.icenia-navbar__dropdown a:hover,
+.icenia-navbar__dropdown a:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 4px;
+}
+
+.icenia-navbar__dropdown a:focus {
+    outline: 3px solid transparent;
+    background-color: #fd0;
+    color: #0b0c0c;
+    box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+    text-decoration: none;
+}
+
+/* Active child item (current page) */
+.icenia-navbar__dropdown a.active {
+    background-color: var(--icenia-blue, #1C70B8);
+    color: #ffffff;
+}
+
+.icenia-navbar__dropdown a.active:hover,
+.icenia-navbar__dropdown a.active:focus {
+    background-color: var(--icenia-blue, #1C70B8);
+}
+
+/* ==========================================================================
+   SLIDE-OUT MENU (when horizontal doesn't fit)
+   ========================================================================== */
+
+/* Overlay backdrop */
+.icenia-menu-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9997;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.icenia-menu-overlay.is-visible {
+    display: block;
+    opacity: 1;
+}
+
+/* Slide-out menu panel */
+.icenia-slide-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    max-width: 85vw;
+    height: 100%;
+    background: #0b0c0c;
+    z-index: 10000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+    display: none;
+}
+
+.icenia-slide-menu.is-open {
+    transform: translateX(0);
+}
+
+.icenia-slide-menu__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid #333;
+}
+
+.icenia-slide-menu__title {
+    color: #ffffff;
+    font-family: arial, sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    margin: 0;
+}
+
+.icenia-slide-menu__close {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 4px 8px;
+    line-height: 1;
+}
+
+.icenia-slide-menu__close:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.icenia-slide-menu__close:focus {
+    outline: 3px solid transparent;
+    color: #0b0c0c;
+    background-color: #fd0;
+}
+
+.icenia-slide-menu__nav {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.icenia-slide-menu__item {
+    border-bottom: 1px solid #333;
+}
+
+.icenia-slide-menu__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    color: #ffffff;
+    text-decoration: none;
+    font-family: arial, sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.icenia-slide-menu__link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.icenia-slide-menu__link:focus {
+    outline: 3px solid transparent;
+    color: #0b0c0c;
+    background-color: #fd0;
+}
+
+.icenia-slide-menu__link.has-children::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 6px solid currentColor;
+    transition: transform 0.2s ease;
+}
+
+.icenia-slide-menu__link.has-children.is-expanded::after {
+    transform: rotate(90deg);
+}
+
+.icenia-slide-menu__link.active {
+    background-color: var(--off-white, #eeeeee);
+    color: #0b0c0c;
+}
+
+/* Submenu in slide menu */
+.icenia-slide-menu__submenu {
+    display: grid;
+    grid-template-rows: 0fr;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    background: var(--icenia-gray);
+    overflow: hidden;
+    transition: grid-template-rows 0.3s ease;
+}
+
+.icenia-slide-menu__submenu-inner {
+    overflow: hidden;
+}
+
+.icenia-slide-menu__submenu.is-open {
+    grid-template-rows: 1fr;
+}
+
+.icenia-slide-menu__submenu li {
+    margin: 0;
+    padding: 0;
+}
+
+.icenia-slide-menu__submenu a {
+    display: block;
+    padding: 12px 16px 12px 32px;
+    color: #ffffff;
+    text-decoration: none;
+    font-family: arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    transition: background-color 0.15s ease;
+}
+
+.icenia-slide-menu__submenu a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.icenia-slide-menu__submenu a:focus {
+    outline: 3px solid transparent;
+    color: #0b0c0c;
+    background-color: #fd0;
+}
+
+.icenia-slide-menu__submenu a.active {
+    background-color: var(--icenia-blue, #1C70B8);
+    color: #ffffff;
+}
+
+/* When menu mode is active */
+body.menu-mode .icenia-menu-toggle {
+    display: block;
+}
+
+body.menu-mode .icenia-navbar {
+    display: none;
+}
+
+body.menu-mode .icenia-slide-menu {
+    display: block;
+}
+
+/* Prevent body scroll when menu is open */
+body.menu-open {
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   Service/Feature Cards - Shared Card Styles
+   Used on home page, city page, and other service grid layouts
+   ========================================================================== */
+
+.icenia-section-title {
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.icenia-section-intro {
+    text-align: center;
+    color: var(--icenia-muted, #6f777b);
+    margin-bottom: 2rem;
+}
+
+.icenia-services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.icenia-service-card {
+    background: white;
+    padding: 1.5rem;
+    border-top: 4px solid var(--icenia-blue, #1C70B8);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.icenia-service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.icenia-service-card:focus {
+    outline: 3px solid var(--icenia-blue);
+    outline-offset: 2px;
+}
+
+.icenia-service-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.icenia-service-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    color: #0b0c0c;
+}
+
+.icenia-service-desc {
+    font-size: 0.9375rem;
+    color: var(--icenia-muted, #6f777b);
+    margin: 0 0 1rem 0;
+    flex: 1;
+}
+
+.icenia-service-link {
+    font-weight: 700;
+    color: var(--icenia-blue, #1C70B8);
+}
+
+/* ==========================================================================
+   CTA Section - Call to Action Banner
+   Used on home page, city page, and other landing pages
+   ========================================================================== */
+
+.icenia-cta-section {
+    background: var(--icenia-blue, #1C70B8);
+    margin: 3rem auto;
+    padding: 4rem 2rem;
+    text-align: center;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .icenia-cta-section {
+        margin: 3rem -15px;
+        padding: 3rem 1rem;
+    }
+}
+
+.icenia-cta-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.icenia-cta-content h2 {
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.icenia-cta-content p {
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 2rem;
+}
+
+.icenia-cta-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.icenia-cta-actions .icenia-btn {
+    background: white;
+    color: var(--icenia-blue, #1C70B8);
+    border-color: white;
+}
+
+.icenia-cta-actions .icenia-btn:hover {
+    background: var(--off-white, #eeeeee);
+}
+
+.icenia-cta-actions .icenia-btn-secondary {
+    background: transparent;
+    border-color: white;
+    color: white;
+}
+
+.icenia-cta-actions .icenia-btn-secondary:hover {
+    background: white;
+    color: var(--icenia-blue, #1C70B8);
+}
+
+/* ==========================================================================
+   Recent Changes Section
+   Used on law pages to show recent amendments/changes
+   ========================================================================== */
+
+.recent-changes-section {
+    background: #f3f2f1;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-left: 6px solid #1C70B8;
+}
+
+.change-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.change-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.change-info {
+    flex: 1;
+    min-width: 200px;
+}
+
+.change-date {
+    color: #6f777b;
+    font-size: 0.875rem;
+    margin-bottom: 3px;
+}
+
+.change-title {
+    font-weight: 700;
+}
+
+.change-title a {
+    text-decoration: none;
+}
+
+.change-title a:hover {
+    text-decoration: underline;
+}
+
+.repealed-card {
+    opacity: 0.7;
+}
+
+.repealed-card div.law-card-internal {
+    border-left-color: #6f777b;
+}
