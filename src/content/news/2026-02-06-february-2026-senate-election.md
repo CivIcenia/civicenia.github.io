@@ -48,4 +48,4 @@ officials:
     action: appointed
 icon: /assets/images/election_stock.png
 ---
-View the election results at icenia.org/stv/visualize
+View the election results at [icenia.org/stv/visualize](icenia.org/stv/visualize)

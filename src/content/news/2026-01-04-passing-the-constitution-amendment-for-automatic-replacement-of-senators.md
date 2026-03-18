@@ -11,7 +11,9 @@ document:
     Amend IV(d) of the Constitution ("Elections") to add:
 
     > Should a seat in the Senate become vacant for any reason, the seat must be filled by recompiling votes from the most recent Senate election as though the previous holder of the seat never ran.
-changes: []
+changes:
+  - target: third-constitution
+    kind: amendment
 icon: /assets/images/law_stock.jpeg
 ---
 [Passed by the November 2025 Senate](https://discord.com/channels/558071874161082368/1437276669755916289)
