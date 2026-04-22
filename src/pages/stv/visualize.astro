@@ -735,7 +735,7 @@ import PageLayout from "@layouts/page.astro";
             const option: echarts.EChartsOption = {
                 title: {
                     text: 'Election Results by Round',
-                    subtext: `Round ${roundData.round} of ${roundResults.length}${currentQuota > 0 ? ` • Quota: ${currentQuota.toFixed(2)}` : ''}`,
+                    subtext: `Round ${roundData.round} of ${roundResults.length}${currentQuota > 0 ? ` • Quota: ${currentQuota.toFixed(3)}` : ''}`,
                     left: 'center',
                     textStyle: { fontSize: 18, fontWeight: 'bold' },
                     subtextStyle: { fontSize: 14 }
@@ -856,7 +856,7 @@ import PageLayout from "@layouts/page.astro";
                                 const isEliminated = eliminatedStates.has(candidate);
                                 if (totalVotes === 0) return '';
                                 
-                                let label = totalVotes.toFixed(2);
+                                let label = totalVotes.toFixed(3);
                                 
                                 // Check if won or eliminated THIS round
                                 const wonThisRound = outcomes?.some(o => 
@@ -894,7 +894,7 @@ import PageLayout from "@layouts/page.astro";
                         silent: true,
                         symbol: 'none',
                         lineStyle: { color: '#ff4444', type: 'dashed', width: 2 },
-                        data: [{ yAxis: currentQuota, label: { formatter: `Quota: ${currentQuota.toFixed(2)}`, position: 'end' } }]
+                        data: [{ yAxis: currentQuota, label: { formatter: `Quota: ${currentQuota.toFixed(3)}`, position: 'end' } }]
                     }
                 });
             }
@@ -947,7 +947,7 @@ import PageLayout from "@layouts/page.astro";
                         {
                             type: 'text',
                             style: {
-                                text: currentExhausted > 0 ? currentExhausted.toFixed(2) : '0.00',
+                                text: currentExhausted > 0 ? currentExhausted.toFixed(3) : '0.000',
                                 x: 40,
                                 y: 58,
                                 textAlign: 'center',
@@ -1180,7 +1180,7 @@ import PageLayout from "@layouts/page.astro";
                     {
                         type: 'text',
                         style: {
-                            text: currentExhausted > 0 ? currentExhausted.toFixed(2) : '0.00',
+                            text: currentExhausted > 0 ? currentExhausted.toFixed(3) : '0.000',
                             x: 40,
                             y: 58,
                             textAlign: 'center',
@@ -1447,7 +1447,7 @@ import PageLayout from "@layouts/page.astro";
             tooltip: {
                 trigger: 'item',
                 triggerOn: 'mousemove',
-                formatter: (p: any) => p.dataType === 'edge' ? `${p.data.source} → ${p.data.target}<br/>Votes: ${p.value.toFixed(2)}` : `${p.name}<br/>Total: ${p.value.toFixed(2)} votes`
+                formatter: (p: any) => p.dataType === 'edge' ? `${p.data.source} → ${p.data.target}<br/>Votes: ${p.value.toFixed(3)}` : `${p.name}<br/>Total: ${p.value.toFixed(3)} votes`
             },
             series: [{
                 type: 'sankey', emphasis: { focus: 'adjacency' }, nodeAlign: 'left', nodeGap: 12, nodeWidth: 25, layoutIterations: 0,
@@ -1997,7 +1997,7 @@ import PageLayout from "@layouts/page.astro";
                 name: 'Correlation',
                 type: 'heatmap',
                 data: data,
-                label: { show: candidates.length <= 8, formatter: (params: any) => params.data[2].toFixed(2) },
+                label: { show: candidates.length <= 8, formatter: (params: any) => params.data[2].toFixed(3) },
                 emphasis: { itemStyle: { shadowBlur: 10, shadowColor: 'rgba(0, 0, 0, 0.5)' } }
             }]
         };

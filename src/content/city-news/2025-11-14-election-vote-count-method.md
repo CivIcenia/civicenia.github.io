@@ -6,7 +6,7 @@ term_number: 1
 act_number: 10
 headline: Passing the Election Vote Count Method
 date: 2025-11-14 15:07:00 +08:00
-discord_thread_id: 1438770752206930000
+discord_thread_id: "1438770752206930023"
 excerpt: Sponsored by creepily
 document:
   type: markdown

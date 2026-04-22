@@ -1,5 +1,12 @@
 incorporations:
   - change_slugs:
+      - 2026-02-14-amendment-to-constitution-on-citizenship-ranks
+      - 2026-02-13-patrician-test
+      - 2026-01-04-passing-the-constitution-amendment-for-automatic-replacement-of-senators
+    law_slug: third-constitution
+    incorporated_at: 2026-03-19 00:14:00 +08:00
+    incorporated_by: Creepily
+  - change_slugs:
       - 2026-02-03-safe-highways-act
     law_slug: federal-executives-act
     incorporated_at: 2026-02-07 10:23:00 +08:00

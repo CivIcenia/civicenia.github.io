@@ -1840,6 +1840,8 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             top: auto;
             left: 10px;
             bottom: 10px;
+            border-radius: 16px 16px 0 0 !important;
+            top: auto !important;
         }
         
         .map-extra-controls {
@@ -2703,6 +2705,37 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             return `${months}mo ago`;
         }
 
+        function compactMultiplier(item) {
+            if (!item) return 1;
+            
+            // If not explicitly marked as compacted, no multiplier
+            let loreText = '';
+            if (item && item.lore) {
+                loreText = Array.isArray(item.lore) ? item.lore.join(' ') : String(item.lore);
+            }
+            
+            const loreCompacted = (loreText.toLowerCase().includes('compacted')) ||
+                                 (item && item.material && item.material.toLowerCase().includes('compacted'));
+            
+            if (!loreCompacted) return 1;
+            
+            // Varying multipliers based on item type
+            const mat = (item.material || '').toString();
+            if (item.bookAuthor != null) return 8;
+            if (item.potionName != null) return 8;
+            if (mat === "Ender Pearl") return 8;
+            if (mat === "Bow") return 8;
+            if (mat.endsWith(" Pickaxe")) return 8;
+            if (mat.endsWith(" Axe")) return 8;
+            if (mat.endsWith(" Shovel")) return 8;
+            if (mat.endsWith(" Helmet")) return 8;
+            if (mat.endsWith(" Chestplate")) return 8;
+            if (mat.endsWith(" Leggings")) return 8;
+            if (mat.endsWith(" Boots")) return 8;
+            if (mat.endsWith("Egg")) return 16;
+            return 64;
+        }
+
         function formatCount(count, item) {
             let loreText = '';
             if (item && item.lore) {
@@ -2715,11 +2748,10 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             if (loreCompacted) {
                 return { text: `${count}ci`, isCompacted: true };
             }
-            
-            if (count > 0 && count % 64 === 0) {
-                return { text: `${count / 64}ci`, isCompacted: true };
-            }
-            
+            // Do NOT treat raw counts that are multiples of 64 as "ci" unless the
+            // item is explicitly marked as compacted in its material or lore.
+            // This preserves the distinction between "5 stacks = 320" and
+            // "5ci = 5 compacted items".
             return { text: `${count}`, isCompacted: false };
         }
 
@@ -2742,13 +2774,13 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
             }
 
             // Convert an item's reported `count` into the number of "normal" items it represents.
-            // - If material/lore explicitly marks it compacted, each reported unit = 64 normal items.
+            // - If material/lore explicitly marks it compacted, each reported unit = multiplier (8/16/64) normal items.
             // - Otherwise the reported `count` is assumed to be normal units already.
             function normalizedCount(item) {
                 if (!item) return 0;
                 const c = Number(item.count) || 0;
-                if (isMaterialOrLoreCompacted(item)) return c * 64;
-                return c;
+                const multiplier = compactMultiplier(item);
+                return c * multiplier;
             }
 
         const ENCHANTMENTS = [
@@ -2884,7 +2916,7 @@ const BASE = (import.meta.env.BASE_URL ?? "/");
                     'strawbeary_dreams','pisco_sour',
 
                     // Food brews (restore saturation) - from Brewery wiki "List of Discoverable Brews" (Food Brews)
-                    'vegetable_soup','ratatouille','laksa','minestrone','pho','chicken_noodle_soup','dumpling_soup','corn_chowder','goulash','tonkatsu_ramen','borscht',
+                    'vegetable_soup','                          ','laksa','minestrone','pho','chicken_noodle_soup','dumpling_soup','corn_chowder','goulash','tonkatsu_ramen','borscht',
                     'balti_gosht','rice_porridge','cranberry_pie','fish_soup','poached_salmon','marmite','mais_con_hielo','mediterranean_medly','halloween_candy','cheese','easter_bread',
                     'candied_carrots','dyed_eggs','deviled_eggs','carrot_cake','valentines_chocolate','dark_chocolate'
                 ];

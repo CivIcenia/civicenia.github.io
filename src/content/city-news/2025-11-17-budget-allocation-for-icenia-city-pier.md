@@ -1,0 +1,32 @@
+---
+changetocitylaw: true
+layout: "@layouts/news/city-act.astro"
+institution: council
+term_number: 2
+act_number: 1
+headline: Passing the Budget Allocation for Icenia City Pier
+date: 2025-11-17 16:25:22 +00:00
+discord_thread_id: "1440014967607787644"
+excerpt: Sponsored by creepily
+document:
+  type: markdown
+  value: >
+    AUTOMATICALLY SCRAPED CONTENT:
+
+
+    The Icenia City Pier shall be designated and funded as a Public Works Project under municipal infrastructure development.
+
+    - An initial allocation of 300 diamonds shall be committed from the federal treasury to support planning, construction, and associated costs.
+
+    - This allocation shall be subject to adjustment at the discretion of the City Council Treasurer, provided that:
+      - Any proposed adjustment is vetoable by the City Council through a simple majority vote within this thread.
+      - The City Council may also propose and ratify a new budget through the same thread, following standard voting procedure.
+      - The Treasurer is required to document all budget calculations and adjustments, including:
+        - The revised allocation amount.
+        - The reasoning and justification for the adjustment.
+        - Any anticipated impacts on project scope, timeline, or municipal obligations.
+      - Such documentation shall be submitted and archived in the municipal record (this thread) for transparency and auditability.
+changes: []
+icon: /assets/images/law_stock.jpeg
+---
+[Passed by the Term 2 City Council](https://discord.com/channels/558071874161082368/1440014967607787644)
