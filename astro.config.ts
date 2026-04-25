@@ -7,7 +7,7 @@ export default defineConfig({
     // `https://<username>.github.io/<repo>/` set `site`
     // and `base` accordingly so generated links and redirects are
     // rooted at the repository path.
-    site: "https://civicenia.github.io",
+    site: "https://icenia.org",
     base: "/",  // have this as "/" if hosting as a user/organization site
     trailingSlash: "ignore",
 

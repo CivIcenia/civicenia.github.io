@@ -8,13 +8,30 @@ function generateState() {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }
 
+function getGitHubOAuthConfig(env) {
+  if (!env.GITHUB_CLIENT_ID) {
+    throw new Error('Missing GITHUB_CLIENT_ID secret in Cloudflare Worker');
+  }
+
+  if (!env.GITHUB_CLIENT_SECRET) {
+    throw new Error('Missing GITHUB_CLIENT_SECRET secret in Cloudflare Worker');
+  }
+
+  return {
+    clientId: env.GITHUB_CLIENT_ID,
+    clientSecret: env.GITHUB_CLIENT_SECRET,
+  };
+}
+
 // Create OAuth client
 function createOAuth(env) {
+  const { clientId, clientSecret } = getGitHubOAuthConfig(env);
+
   return {
     authorizeURL: ({ redirect_uri, scope, state }) => {
       const params = new URLSearchParams({
         response_type: 'code',
-        client_id: env.GITHUB_CLIENT_ID,
+        client_id: clientId,
         redirect_uri,
         scope,
         state
@@ -30,8 +47,8 @@ function createOAuth(env) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          client_id: env.GITHUB_CLIENT_ID,
-          client_secret: env.GITHUB_CLIENT_SECRET,
+          client_id: clientId,
+          client_secret: clientSecret,
           code,
           redirect_uri,
           grant_type: 'authorization_code'
@@ -83,7 +100,7 @@ async function handleAuth(url, env) {
   }
 
   const oauth2 = createOAuth(env);
-  const redirectUri = `https://${url.hostname}/callback?provider=${encodeURIComponent(provider)}`;
+  const redirectUri = `https://${url.hostname}/auth/callback?provider=${encodeURIComponent(provider)}`;
   const authorizationUri = oauth2.authorizeURL({
     redirect_uri: redirectUri,
     scope: 'public_repo',
@@ -109,7 +126,7 @@ async function handleCallback(url, env) {
 
   try {
     const oauth2 = createOAuth(env);
-    const redirectUri = `https://${url.hostname}/callback?provider=${encodeURIComponent(provider)}`;
+    const redirectUri = `https://${url.hostname}/auth/callback?provider=${encodeURIComponent(provider)}`;
     const accessToken = await oauth2.getToken({ code, redirect_uri: redirectUri });
     return callbackScriptResponse('success', accessToken);
   } catch (error) {
@@ -136,7 +153,7 @@ export default {
     }
 
     if (path === '/auth' || path === '/auth/login') return handleAuth(url, env);
-    if (path === '/callback') return handleCallback(url, env);
+    if (path === '/callback' || path === '/auth/callback') return handleCallback(url, env);
 
     return new Response('Decap CMS OAuth Proxy', { headers: makeCorsHeaders() });
   }

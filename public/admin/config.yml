@@ -1,9 +1,10 @@
-site_url: "https://civicenia.github.io/"
+site_url: "https://icenia.org/"
 backend:
   name: github
   repo: "CivIcenia/civicenia.github.io"
   branch: "master"
   base_url: "https://civicenia-admin-oauth.creepilyciv.workers.dev"
+  auth_endpoint: "https://civicenia-admin-oauth.creepilyciv.workers.dev"
   open_authoring: true
 publish_mode: editorial_workflow
 local_backend: true
