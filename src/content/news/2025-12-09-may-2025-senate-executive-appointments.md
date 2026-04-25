@@ -4,7 +4,7 @@ layout: "@layouts/news/official-change.astro"
 changetype: secretary-change
 headline: May 2025 Senate Executive Appointments
 date: 2025-05-07 13:57:00 +08:00
-term: ""
+term: 35
 senate_size: ""
 officials:
   - name: "prettyparfait "

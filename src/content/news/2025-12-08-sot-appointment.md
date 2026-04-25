@@ -4,6 +4,7 @@ layout: "@layouts/news/official-change.astro"
 changetype: secretary-change
 headline: SOT Appointment
 date: 2025-11-10 11:00:00 +08:00
+term: 41
 officials:
   - name: Anvil
     role: secretary-of-treasury

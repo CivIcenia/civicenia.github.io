@@ -4,6 +4,7 @@ layout: "@layouts/news/official-change.astro"
 changetype: secretary-change
 headline: SOD Appointment
 date: 2025-11-10 11:10:00 +08:00
+term: 41
 officials:
   - name: JuniorTide
     role: secretary-of-defense

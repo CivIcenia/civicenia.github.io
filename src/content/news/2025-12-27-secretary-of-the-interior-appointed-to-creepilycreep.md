@@ -4,7 +4,7 @@ layout: "@layouts/news/official-change.astro"
 changetype: secretary-change
 headline: Secretary of the Interior Appointed to CreepilyCreep
 date: 2025-12-22 06:57:00 +08:00
-term: ""
+term: 42
 senate_size: ""
 officials:
   - name: CreepilyCreep
