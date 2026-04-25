@@ -4,7 +4,7 @@ layout: "@layouts/news/act.astro"
 institution: senate
 headline: Passing the Kingstell Territory Ban
 date: 2026-03-09 20:42:01 +00:00
-discord_thread_id: 1480666996357070800
+discord_thread_id: 1480666996357070960
 excerpt: Sponsored by hsmnewfriend
 document:
   type: markdown

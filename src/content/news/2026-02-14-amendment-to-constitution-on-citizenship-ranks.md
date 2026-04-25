@@ -4,7 +4,7 @@ layout: "@layouts/news/act.astro"
 institution: senate
 headline: Passing the Amendment to Constitution on Citizenship Ranks
 date: 2026-02-15 19:50:00 +08:00
-discord_thread_id: 1472090745619091700
+discord_thread_id: 1472090745619091596
 excerpt: Sponsored by creepily
 document:
   type: markdown

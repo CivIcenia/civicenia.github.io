@@ -4,7 +4,7 @@ backend:
   repo: "CivIcenia/civicenia.github.io"
   branch: "master"
   base_url: "https://civicenia-admin-oauth.creepilyciv.workers.dev"
-  auth_endpoint: "https://civicenia-admin-oauth.creepilyciv.workers.dev"
+  auth_endpoint: "auth/login"
   open_authoring: true
 publish_mode: editorial_workflow
 local_backend: true

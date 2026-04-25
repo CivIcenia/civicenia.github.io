@@ -4,7 +4,7 @@ layout: "@layouts/news/act.astro"
 institution: senate
 headline: Passing the CDM-TE Partnership Treaty
 date: 2026-01-30 10:06:49 +00:00
-discord_thread_id: 1466736404477509600
+discord_thread_id: 1466736404477509632
 excerpt: Sponsored by creepily
 document:
   type: remote-file

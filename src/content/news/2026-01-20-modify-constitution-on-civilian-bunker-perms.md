@@ -4,7 +4,7 @@ layout: "@layouts/news/act.astro"
 institution: senate
 headline: Passing the Constitution Amendment on Civilian Bunker Rights
 date: 2026-01-21 11:51:00 +08:00
-discord_thread_id: 1463103552443388000
+discord_thread_id: 1463103552443388005
 excerpt: Sponsored by creepily
 document:
   type: markdown

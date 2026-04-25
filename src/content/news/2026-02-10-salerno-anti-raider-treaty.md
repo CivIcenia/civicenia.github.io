@@ -4,7 +4,7 @@ layout: "@layouts/news/act.astro"
 institution: senate
 headline: Passing the Icenia-Salerno Anti Raider Treaty
 date: 2026-02-10 21:45:00 +08:00
-discord_thread_id: 1470602766950072300
+discord_thread_id: 1470602766950072434
 excerpt: Sponsored by DrBaconHair
 document:
   type: remote-file

@@ -1,5 +1,11 @@
 entries:
   - hidden: false
+    slug: state-of-selene
+    name: State of Selene
+    fullname: Statehood for Selene
+    kind: statehood
+    masterdoc: /documents/State-of-Selene.docx
+  - hidden: false
     name: Safe Highways Act
     slug: safe-highways-act
     masterdoc: /documents/safe-highways-act.pdf

@@ -6,7 +6,7 @@ term_number: 1
 act_number: 3
 headline: Passing the City Charter
 date: 2025-10-28 23:44:00 +08:00
-discord_thread_id: 1432727275802988800
+discord_thread_id: 1432727275802988686
 excerpt: Sponsored by ratat0ing_
 document:
   type: local-file

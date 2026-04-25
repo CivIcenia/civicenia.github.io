@@ -4,7 +4,7 @@ layout: "@layouts/news/act.astro"
 institution: senate
 headline: Passing the Icenia-Salerno Friendship Treaty
 date: 2026-01-18 01:10:00 +08:00
-discord_thread_id: 1461801340505428000
+discord_thread_id: 1461801340505428059
 excerpt: Sponsored by DrBaconHair
 document:
   type: remote-file

@@ -4,7 +4,7 @@ layout: "@layouts/news/act.astro"
 institution: senate
 headline: Passing the Mercutio County Charter
 date: 2026-03-04 08:22:51 +00:00
-discord_thread_id: 1478669039160000500
+discord_thread_id: 1478669039160000512
 excerpt: Sponsored by creepily
 document:
   type: remote-file

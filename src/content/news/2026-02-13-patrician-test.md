@@ -4,7 +4,7 @@ layout: "@layouts/news/act.astro"
 institution: senate
 headline: Passing the Patrician Test
 date: 2026-02-15 07:50:00 +08:00
-discord_thread_id: 1471965690163499300
+discord_thread_id: 1471965690163499261
 excerpt: Sponsored by Anvil
 document:
   type: markdown

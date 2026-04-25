@@ -6,7 +6,7 @@ term_number: 1
 act_number: 2
 headline: Passing the Resolution on Facade for McMarkBacons
 date: 2025-10-28 01:01:00 +08:00
-discord_thread_id: 1432221362323460000
+discord_thread_id: 1432221362323460177
 excerpt: Sponsored by DrBaconHair
 document:
   type: markdown

@@ -4,7 +4,7 @@ layout: "@layouts/news/act.astro"
 institution: senate
 headline: Passing the Vote on the Icenian Vote for the Admission of Fairhill into WARDA
 date: 2026-01-19 05:58:07 +00:00
-discord_thread_id: 1462687549238677800
+discord_thread_id: 1462687549238677719
 excerpt: Sponsored by creepily
 document:
   type: markdown

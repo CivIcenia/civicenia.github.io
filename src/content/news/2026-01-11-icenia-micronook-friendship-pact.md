@@ -4,7 +4,7 @@ layout: "@layouts/news/act.astro"
 institution: senate
 headline: Passing the Icenia Micronook Friendship Pact
 date: 2026-01-11 13:11:27 +00:00
-discord_thread_id: 1459897498536640800
+discord_thread_id: 1459897498536640685
 excerpt: Sponsored by creepily
 document:
   type: remote-file

@@ -4,7 +4,7 @@ layout: "@layouts/news/act.astro"
 institution: senate
 headline: Passing the Selene - Icenia Friendship Pact
 date: 2026-03-09 07:21:00 +08:00
-discord_thread_id: 1480315925269057800
+discord_thread_id: "1480315925269057758"
 excerpt: Sponsored by Anvil
 document:
   type: markdown

@@ -208,7 +208,7 @@ layout: "@layouts/news/act.astro"
 institution: senate
 headline: Passing the ${headline}
 date: ${fullTimestamp}
-discord_thread_id: ${data.threadId}
+discord_thread_id: '${data.threadId}'
 excerpt: Sponsored by ${data.sponsorUsername}
 document:
   type: markdown
@@ -307,7 +307,7 @@ async function scrapeForum() {
     }
     console.log(`--------------------------------------------------`);
     console.log(`CUTOFF DATE: ${dateCutoff.toISOString()}`);
-    console.log(`(Threads archived or created before this will be skipped)`);
+    console.log(`(Archived threads older than this cutoff will be skipped)`);
     console.log(`--------------------------------------------------\n`);
 
     const existingThreadIds = getExistingThreadIds();
@@ -378,17 +378,13 @@ async function scrapeForum() {
     async function processThread(thread: ThreadChannel, isArchived: boolean) {
         const createdAt = thread.createdAt || new Date();
 
-        // 1. Date cutoff check (for active threads or fallback)
-        // If it's archived, we already checked the cutoff in the loop
-        if (!thread.archived && createdAt < dateCutoff) return;
-
-        // 2. Already scraped check
+        // 1. Already scraped check
         if (existingThreadIds.has(thread.id)) {
             console.log(`-> Skipping (already scraped): ${thread.name}`);
             return;
         }
 
-        // 3. 'Passed' tag check
+        // 2. 'Passed' tag check
         if (!thread.appliedTags?.includes(passedTagId)) {
             console.log(`-> Skipping (not Passed): ${thread.name}`);
             return;

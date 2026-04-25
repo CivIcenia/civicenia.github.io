@@ -6,7 +6,7 @@ term_number: 2
 act_number: 6
 headline: Passing the Resolution on Hosting the IHL All-star Game
 date: 2025-11-27 10:57:00 +08:00
-discord_thread_id: 1443415246713786400
+discord_thread_id: 1443415246713786431
 excerpt: Sponsored by ratat0ing_
 document:
   type: markdown

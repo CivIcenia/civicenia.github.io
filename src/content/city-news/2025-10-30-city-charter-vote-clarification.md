@@ -6,7 +6,7 @@ term_number: 1
 act_number: 4
 headline: Passing the City Charter Vote Clarification
 date: 2025-10-31 13:48:00 +08:00
-discord_thread_id: 1433143940848156700
+discord_thread_id: 1433143940848156712
 excerpt: Sponsored by creepily
 document:
   type: markdown

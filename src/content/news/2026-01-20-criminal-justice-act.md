@@ -4,7 +4,7 @@ layout: "@layouts/news/act.astro"
 institution: senate
 headline: Passing the Criminal Justice Act
 date: 2026-01-23 11:13:00 +08:00
-discord_thread_id: 1463214184971108600
+discord_thread_id: 1463214184971108631
 excerpt: Sponsored by creepily
 document:
   type: remote-file

@@ -3,7 +3,7 @@ officialchange: true
 layout: "@layouts/news/official-change.astro"
 changetype: senate-election
 headline: March 2026 Senate Election
-date: 2026-02-06 10:00:00 +08:00
+date: 2026-03-15 23:13:00 +08:00
 term: 45
 senate_size: 5
 officials:

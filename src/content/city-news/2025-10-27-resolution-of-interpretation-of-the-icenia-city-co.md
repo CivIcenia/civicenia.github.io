@@ -6,7 +6,7 @@ term_number: 1
 act_number: 1
 headline: Passing the Resolution of Interpretation of the Icenia City Council Act
 date: 2025-10-27 12:17:00 +08:00
-discord_thread_id: 1432220374678114300
+discord_thread_id: 1432220374678114375
 excerpt: Sponsored by ratat0ing_
 document:
   type: markdown

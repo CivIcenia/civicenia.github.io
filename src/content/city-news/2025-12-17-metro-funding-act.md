@@ -6,7 +6,7 @@ term_number: 3
 act_number: 2
 headline: Passing the Metro Funding Act
 date: 2025-12-17 10:11:00 +08:00
-discord_thread_id: 1450595042065645600
+discord_thread_id: 1450595042065645682
 excerpt: Sponsored by ratat0ing_
 document:
   type: markdown

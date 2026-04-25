@@ -6,7 +6,7 @@ term_number: 3
 act_number: 3
 headline: Passing the Funding for City Hall Building Competition
 date: 2025-12-18 00:37:00 +08:00
-discord_thread_id: 1450882990321303600
+discord_thread_id: 1450882990321303635
 excerpt: Sponsored by ratat0ing_
 document:
   type: markdown

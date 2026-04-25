@@ -4,7 +4,7 @@ layout: "@layouts/news/act.astro"
 institution: senate
 headline: Passing the Civil Equity and Integrity Act
 date: 2026-01-23 11:13:00 +08:00
-discord_thread_id: 1463215644668596200
+discord_thread_id: 1463215644668596335
 excerpt: Sponsored by creepily
 document:
   type: remote-file

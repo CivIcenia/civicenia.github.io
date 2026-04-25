@@ -6,7 +6,7 @@ term_number: 1
 act_number: 9
 headline: Passing the Amendment to City Charter
 date: 2025-11-08 23:44:00 +08:00
-discord_thread_id: 1436055077961076700
+discord_thread_id: 1436055077961076746
 excerpt: Sponsored by creepily
 document:
   type: markdown

@@ -1,5 +1,19 @@
 incorporations:
   - change_slugs:
+      - 2026-03-24-pre-trial-proceedings-change
+      - 2026-03-24-campaign-tax
+      - 2026-03-24-contempt-of-court-powers
+      - 2026-03-11-allow-disqualification-from-multiple-election-cycl
+    law_slug: third-constitution
+    incorporated_at: 2026-04-25 13:09:00 +08:00
+    incorporated_by: Creepily
+  - change_slugs:
+      - 2026-04-19-selene-statehood-agreement
+    law_slug: statute-of-territory
+    incorporated_at: 2026-04-25 13:05:00 +08:00
+    incorporated_by: Anvil/Creepily
+    notes: Updated territories.ts according to Anvil's updated polygons
+  - change_slugs:
       - 2026-02-14-amendment-to-constitution-on-citizenship-ranks
       - 2026-02-13-patrician-test
       - 2026-01-04-passing-the-constitution-amendment-for-automatic-replacement-of-senators
