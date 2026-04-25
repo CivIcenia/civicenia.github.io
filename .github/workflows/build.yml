@@ -52,7 +52,7 @@ jobs:
       - name: Sync Officials
         id: sync_officials
         run: bun run sync-officials
-        continue-on-error: true  # Don't fail build if sync fails
+
 
       # Update Discord avatars using bot token
       - name: Update Discord Avatars
