@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Content Manager</title>
+    </head>
+    <body>
+        <!-- Debug message listener -->
+        <script>
+        window.addEventListener('message', function(event) {
+            console.log('📨 Message received in admin:', event.data, 'from:', event.origin);
+            
+            // Check if it's a GitHub token message
+            if (event.data && event.data.token && event.data.provider === 'github') {
+                console.log('🎯 GitHub token received');
+                
+                // Try to trigger the correct event that Decap CMS listens for
+                if (event.data.type === 'authorization:github:success') {
+                    console.log('✅ Success message detected');
+                }
+            }
+        });
+        </script>
+        
+        <!-- Include the script that builds the page and powers DecapCMS -->
+        <script src="https://unpkg.com/decap-cms@^3.8.4/dist/decap-cms.js"></script>
+        
+        <!-- Additional debug script -->
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Admin page loaded, CMS available:', typeof window.CMS);
+        });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,254 @@
+{
+  "config": {
+    "contest": "Senate Election February 2026 Term 44",
+    "date": "2026-02-05",
+    "jurisdiction": "Icenia",
+    "office": "Senate Election February 2026 Term 44",
+    "threshold": "6.375"
+  },
+  "results": [
+    {
+      "round": 1,
+      "tally": {
+        "Josh “alleged terrorist” Hillman": "2.000",
+        "Detective Luci": "5.000",
+        "Anti-WeePee BOAR Sovia DrBaconHair": "2.000",
+        "Hotel Holden, C.E.O": "2.000",
+        "CreepilyCreep": "7.000",
+        "Complexii": "2.000",
+        "Sdorr": "2.000",
+        "Anvil": "8.000",
+        "HsmNewfriend": "4.000",
+        "Gold": "3.000",
+        "Haxx0r": "10.000"
+      },
+      "quota": 5.875,
+      "exhausted": 0,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "elected": "Haxx0r",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "tally": {
+        "Josh “alleged terrorist” Hillman": "2.000",
+        "Detective Luci": "5.000",
+        "Anti-WeePee BOAR Sovia DrBaconHair": "5.300",
+        "Hotel Holden, C.E.O": "2.000",
+        "CreepilyCreep": "7.000",
+        "Complexii": "2.000",
+        "Sdorr": "2.825",
+        "Anvil": "8.000",
+        "HsmNewfriend": "4.000",
+        "Gold": "3.000"
+      },
+      "quota": 5.875,
+      "exhausted": 0,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "elected": "Anvil",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "tally": {
+        "Josh “alleged terrorist” Hillman": "2.000",
+        "Detective Luci": "5.531",
+        "Anti-WeePee BOAR Sovia DrBaconHair": "5.566",
+        "Hotel Holden, C.E.O": "2.531",
+        "CreepilyCreep": "7.266",
+        "Complexii": "2.531",
+        "Sdorr": "2.825",
+        "HsmNewfriend": "4.000",
+        "Gold": "3.000"
+      },
+      "quota": 5.875,
+      "exhausted": 0,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "elected": "CreepilyCreep",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "tally": {
+        "Josh “alleged terrorist” Hillman": "2.191",
+        "Detective Luci": "5.531",
+        "Anti-WeePee BOAR Sovia DrBaconHair": "5.566",
+        "Hotel Holden, C.E.O": "2.773",
+        "Complexii": "2.531",
+        "Sdorr": "2.825",
+        "HsmNewfriend": "4.766",
+        "Gold": "3.191"
+      },
+      "quota": 5.875,
+      "exhausted": 0,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "eliminated": "mushroomstew101",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "tally": {
+        "Josh “alleged terrorist” Hillman": "2.191",
+        "Detective Luci": "5.531",
+        "Anti-WeePee BOAR Sovia DrBaconHair": "5.566",
+        "Hotel Holden, C.E.O": "2.773",
+        "Complexii": "2.531",
+        "Sdorr": "2.825",
+        "HsmNewfriend": "4.766",
+        "Gold": "3.191"
+      },
+      "quota": 5.875,
+      "exhausted": 0,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "eliminated": "Josh “alleged terrorist” Hillman",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "tally": {
+        "Detective Luci": "6.531",
+        "Anti-WeePee BOAR Sovia DrBaconHair": "5.566",
+        "Hotel Holden, C.E.O": "2.773",
+        "Complexii": "2.531",
+        "Sdorr": "3.825",
+        "HsmNewfriend": "4.957",
+        "Gold": "3.191"
+      },
+      "quota": 5.875,
+      "exhausted": 0,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "elected": "Detective Luci",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "tally": {
+        "Anti-WeePee BOAR Sovia DrBaconHair": "5.566",
+        "Hotel Holden, C.E.O": "2.827",
+        "Complexii": "2.833",
+        "Sdorr": "3.825",
+        "HsmNewfriend": "4.957",
+        "Gold": "3.292"
+      },
+      "quota": 5.85,
+      "exhausted": 0.201,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "eliminated": "Hotel Holden, C.E.O",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 8,
+      "tally": {
+        "Anti-WeePee BOAR Sovia DrBaconHair": "5.566",
+        "Complexii": "4.859",
+        "Sdorr": "4.141",
+        "HsmNewfriend": "4.957",
+        "Gold": "3.510"
+      },
+      "quota": 5.817,
+      "exhausted": 0.467,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "eliminated": "Gold",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 9,
+      "tally": {
+        "Anti-WeePee BOAR Sovia DrBaconHair": "5.566",
+        "Complexii": "6.987",
+        "Sdorr": "4.141",
+        "HsmNewfriend": "6.340"
+      },
+      "quota": 5.817,
+      "exhausted": 0.467,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "elected": "Complexii",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 10,
+      "tally": {
+        "Anti-WeePee BOAR Sovia DrBaconHair": "5.816",
+        "Sdorr": "4.309",
+        "HsmNewfriend": "6.859"
+      },
+      "quota": 5.788,
+      "exhausted": 0.7,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "elected": "HsmNewfriend",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 11,
+      "tally": {
+        "Anti-WeePee BOAR Sovia DrBaconHair": "6.218",
+        "Sdorr": "4.863"
+      },
+      "quota": 5.773,
+      "exhausted": 0.815,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "elected": "Anti-WeePee BOAR Sovia DrBaconHair",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 12,
+      "tally": {
+        "Haxx0r": "5.875",
+        "Anvil": "5.875",
+        "CreepilyCreep": "5.875",
+        "Detective Luci": "5.875",
+        "Complexii": "5.817",
+        "HsmNewfriend": "5.788",
+        "Anti-WeePee BOAR Sovia DrBaconHair": "5.773"
+      },
+      "quota": 5.769,
+      "exhausted": 0.85,
+      "isFinalRound": true,
+      "tallyResults": []
+    }
+  ]
+}

@@ -1,0 +1,271 @@
+{
+  "config": {
+    "contest": "Senate Election March 2026 Term 45",
+    "date": "2026-03-15",
+    "jurisdiction": "Icenia",
+    "office": "Senate Election March 2026 Term 45",
+    "threshold": "7.667"
+  },
+  "results": [
+    {
+      "round": 1,
+      "tally": {
+        "hg": "3.000",
+        "eledion": "5.000",
+        "holden": "2.000",
+        "xcios": "1.000",
+        "zolo": "1.000",
+        "naglafer": "4.000",
+        "bacon": "5.000",
+        "anvil": "12.000",
+        "hsm": "3.000",
+        "gold": "3.000",
+        "complexii": "1.000",
+        "haxx0r": "6.000"
+      },
+      "quota": 7.667,
+      "exhausted": 0,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "elected": "anvil",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "tally": {
+        "hg": "3.000",
+        "eledion": "5.000",
+        "holden": "2.722",
+        "xcios": "1.000",
+        "zolo": "1.000",
+        "naglafer": "4.361",
+        "bacon": "6.083",
+        "hsm": "3.000",
+        "gold": "3.000",
+        "complexii": "1.361",
+        "haxx0r": "6.361"
+      },
+      "quota": 7.426,
+      "exhausted": 1.444,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "eliminated": "xcios",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "tally": {
+        "hg": "4.000",
+        "eledion": "5.000",
+        "holden": "2.722",
+        "zolo": "1.000",
+        "naglafer": "4.361",
+        "bacon": "6.083",
+        "hsm": "3.000",
+        "gold": "3.000",
+        "complexii": "1.361",
+        "haxx0r": "6.361"
+      },
+      "quota": 7.426,
+      "exhausted": 1.444,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "eliminated": "zolo",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "tally": {
+        "hg": "4.000",
+        "eledion": "6.000",
+        "holden": "2.722",
+        "naglafer": "4.361",
+        "bacon": "6.083",
+        "hsm": "3.000",
+        "gold": "3.000",
+        "complexii": "1.361",
+        "haxx0r": "6.361"
+      },
+      "quota": 7.426,
+      "exhausted": 1.444,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "eliminated": "complexii",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "tally": {
+        "hg": "4.000",
+        "eledion": "6.000",
+        "holden": "2.722",
+        "naglafer": "4.361",
+        "bacon": "6.444",
+        "hsm": "3.000",
+        "gold": "4.000",
+        "haxx0r": "6.361"
+      },
+      "quota": 7.426,
+      "exhausted": 1.444,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "eliminated": "holden",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "tally": {
+        "hg": "4.000",
+        "eledion": "6.000",
+        "naglafer": "4.722",
+        "bacon": "7.806",
+        "hsm": "3.000",
+        "gold": "4.000",
+        "haxx0r": "6.361"
+      },
+      "quota": 7.259,
+      "exhausted": 2.444,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "elected": "bacon",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "tally": {
+        "hg": "4.000",
+        "eledion": "6.095",
+        "naglafer": "4.747",
+        "hsm": "3.000",
+        "gold": "4.140",
+        "haxx0r": "6.596"
+      },
+      "quota": 7.251,
+      "exhausted": 2.495,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "eliminated": "hsm",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 8,
+      "tally": {
+        "hg": "4.000",
+        "eledion": "6.095",
+        "naglafer": "5.747",
+        "gold": "6.140",
+        "haxx0r": "6.596"
+      },
+      "quota": 7.251,
+      "exhausted": 2.495,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "eliminated": "hg",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 9,
+      "tally": {
+        "eledion": "6.095",
+        "naglafer": "6.747",
+        "gold": "6.140",
+        "haxx0r": "6.596"
+      },
+      "quota": 6.751,
+      "exhausted": 5.495,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "eliminated": "eledion",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 10,
+      "tally": {
+        "naglafer": "6.747",
+        "gold": "6.165",
+        "haxx0r": "11.666"
+      },
+      "quota": 6.584,
+      "exhausted": 6.495,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "elected": "haxx0r",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 11,
+      "tally": {
+        "naglafer": "6.759",
+        "gold": "10.304"
+      },
+      "quota": 6.429,
+      "exhausted": 7.427,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "elected": "gold",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 12,
+      "tally": {
+        "naglafer": "9.881"
+      },
+      "quota": 6.303,
+      "exhausted": 8.18,
+      "isFinalRound": false,
+      "tallyResults": [
+        {
+          "elected": "naglafer",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 13,
+      "tally": {
+        "anvil": "7.667",
+        "bacon": "7.259",
+        "haxx0r": "6.584",
+        "gold": "6.429",
+        "naglafer": "6.303"
+      },
+      "quota": 5.707,
+      "exhausted": 11.758,
+      "isFinalRound": true,
+      "tallyResults": []
+    }
+  ]
+}

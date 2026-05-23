@@ -1,0 +1,348 @@
+<!DOCTYPE html><h1 id="stv-election-visualization">STV Election Visualization</h1>
+<p>This directory contains components and pages for visualizing Single Transferable Vote (STV) election results with animated bar charts and Sankey diagrams.</p>
+<h2 id="features">Features</h2>
+<h3 id="1-animated-bar-chart-visualizeastro">1. <strong>Animated Bar Chart</strong> (<a href="visualize.astro">visualize.astro</a>)</h3>
+<ul>
+<li>Round-by-round vote tallies displayed as animated bars</li>
+<li><strong>Vote Redistribution Animation</strong>: When candidates exceed the quota and are elected, their bars turn green with a checkmark and freeze at the quota level</li>
+<li><strong>Consistent Y-Axis Scaling</strong>: The Y-axis remains constant across all rounds for easy comparison</li>
+<li><strong>Winner Visualization</strong>: Elected candidates are highlighted in green with a border</li>
+<li>Play/pause controls for automatic animation through rounds</li>
+<li>Slider for manual round navigation</li>
+<li>Adjustable playback speed (slow/normal/fast)</li>
+<li>Download charts as PNG images</li>
+<li>Fully responsive for mobile and desktop</li>
+</ul>
+<h3 id="2-sankey-diagram-sankeydiagramastro">2. <strong>Sankey Diagram</strong> (<a href="../components/SankeyDiagram.astro">SankeyDiagram.astro</a>)</h3>
+<ul>
+<li>Visualizes vote transfers between rounds</li>
+<li>Shows how votes flow from eliminated or elected candidates to remaining candidates</li>
+<li>Color-coded by candidate for easy tracking</li>
+<li>Proportional vote redistribution based on actual tally changes</li>
+<li>Interactive tooltips showing transfer amounts</li>
+</ul>
+<h3 id="3-election-outcomes-summary">3. <strong>Election Outcomes Summary</strong></h3>
+<ul>
+<li>Lists all elected and eliminated candidates</li>
+<li>Shows the round in which each outcome occurred</li>
+<li>Visual indicators (✓ for elected, ✗ for eliminated)</li>
+</ul>
+<h2 id="components">Components</h2>
+<h3 id="animatedbarchartastro">AnimatedBarChart.astro</h3>
+<p>Located in <code>src/components/AnimatedBarChart.astro</code></p>
+<p><strong>Props:</strong></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#B392F0">  roundResults</span><span style="color:#E1E4E8">: </span><span style="color:#B392F0">Array</span><span style="color:#E1E4E8">&#x3C;{</span></span>
+<span class="line"><span style="color:#FFAB70">    round</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> number</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">    tally</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> { [</span><span style="color:#FFAB70">candidate</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">]</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> number</span><span style="color:#E1E4E8"> };</span></span>
+<span class="line"><span style="color:#E1E4E8">  }>;</span></span>
+<span class="line"><span style="color:#E1E4E8">  candidates</span><span style="color:#F97583">?:</span><span style="color:#E1E4E8"> string[];</span></span>
+<span class="line"><span style="color:#E1E4E8">  quota</span><span style="color:#F97583">?:</span><span style="color:#E1E4E8"> number;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<h3 id="sankeydiagramastro">SankeyDiagram.astro</h3>
+<p>Located in <code>src/components/SankeyDiagram.astro</code></p>
+<p><strong>Props:</strong></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#B392F0">  roundResults</span><span style="color:#E1E4E8">: </span><span style="color:#B392F0">Array</span><span style="color:#E1E4E8">&#x3C;{</span></span>
+<span class="line"><span style="color:#FFAB70">    round</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> number</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">    tally</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> { [</span><span style="color:#FFAB70">candidate</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">]</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> number</span><span style="color:#E1E4E8"> };</span></span>
+<span class="line"><span style="color:#E1E4E8">  }>;</span></span>
+<span class="line"><span style="color:#E1E4E8">  candidates</span><span style="color:#F97583">?:</span><span style="color:#E1E4E8"> string[];</span></span>
+<span class="line"><span style="color:#E1E4E8">  quota</span><span style="color:#F97583">?:</span><span style="color:#E1E4E8"> number;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<h2 id="usage">Usage</h2>
+<h3 id="viewing-election-results">Viewing Election Results</h3>
+<ol>
+<li>Navigate to <code>/stv/visualize</code> in your browser</li>
+<li>Click “Load Demo Data” to see a sample election, or</li>
+<li>Upload an RCVis-format JSON file from the STV Calculator</li>
+</ol>
+<h3 id="expected-json-format">Expected JSON Format</h3>
+<p>The visualization expects RCVis-compatible JSON files:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "config"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "contest"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Election Name"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "date"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"2026-01-09"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "threshold"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"7.500"</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#79B8FF">  "results"</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span></span>
+<span class="line"><span style="color:#79B8FF">      "round"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "tally"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">        "Candidate A"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"10.000"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "Candidate B"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"8.000"</span></span>
+<span class="line"><span style="color:#E1E4E8">      },</span></span>
+<span class="line"><span style="color:#79B8FF">      "tallyResults"</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#E1E4E8">        { </span><span style="color:#79B8FF">"elected"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Candidate A"</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">"transfers"</span><span style="color:#E1E4E8">: {} }</span></span>
+<span class="line"><span style="color:#E1E4E8">      ]</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">  ]</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<h3 id="integration-in-other-pages">Integration in Other Pages</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="astro"><code><span class="line"><span style="color:#6A737D">---</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> AnimatedBarChart </span><span style="color:#F97583">from</span><span style="color:#9ECBFF"> "@components/AnimatedBarChart.astro"</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> SankeyDiagram </span><span style="color:#F97583">from</span><span style="color:#9ECBFF"> "@components/SankeyDiagram.astro"</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> roundResults</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> [</span></span>
+<span class="line"><span style="color:#E1E4E8">  { round: </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, tally: { Alice: </span><span style="color:#79B8FF">10</span><span style="color:#E1E4E8">, Bob: </span><span style="color:#79B8FF">8</span><span style="color:#E1E4E8"> } },</span></span>
+<span class="line"><span style="color:#E1E4E8">  { round: </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, tally: { Alice: </span><span style="color:#79B8FF">12</span><span style="color:#E1E4E8">, Bob: </span><span style="color:#79B8FF">7</span><span style="color:#E1E4E8"> } }</span></span>
+<span class="line"><span style="color:#E1E4E8">];</span></span>
+<span class="line"><span style="color:#6A737D">---</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">&#x3C;</span><span style="color:#79B8FF">AnimatedBarChart</span><span style="color:#B392F0"> roundResults</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">{roundResults}</span><span style="color:#B392F0"> quota</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">{8}</span><span style="color:#E1E4E8"> /></span></span>
+<span class="line"><span style="color:#E1E4E8">&#x3C;</span><span style="color:#79B8FF">SankeyDiagram</span><span style="color:#B392F0"> roundResults</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">{roundResults}</span><span style="color:#B392F0"> quota</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">{8}</span><span style="color:#E1E4E8"> /></span></span>
+<span class="line"></span></code></pre>
+<h2 id="technical-details">Technical Details</h2>
+<h3 id="libraries-used">Libraries Used</h3>
+<ul>
+<li><strong>ECharts 6.0.0</strong> (Apache 2.0 License) - Chart rendering and animations</li>
+<li>All code is original or based on ECharts official documentation</li>
+<li><strong>No GPL code</strong> - All components are MIT/Apache 2.0 compatible</li>
+</ul>
+<h3 id="key-features-implementation">Key Features Implementation</h3>
+<h4 id="vote-redistribution-animation">Vote Redistribution Animation</h4>
+<p>When a candidate is elected:</p>
+<ol>
+<li>Their bar turns green with a green border</li>
+<li>A checkmark (✓) appears next to their vote count</li>
+<li>The bar height freezes at the quota level for all subsequent rounds</li>
+<li>The Y-axis scaling remains consistent across all rounds</li>
+<li>Surplus votes are shown redistributing to other candidates in the Sankey diagram</li>
+</ol>
+<h4 id="sankey-vote-flow-calculation">Sankey Vote Flow Calculation</h4>
+<p>The Sankey diagram estimates vote transfers by:</p>
+<ol>
+<li>Tracking each candidate’s vote total between consecutive rounds</li>
+<li>If votes decrease (surplus or elimination), distributing proportionally to candidates who gained votes</li>
+<li>If votes increase, showing incoming transfers from eliminated/elected candidates</li>
+<li>Using gradient coloring to show the flow direction</li>
+</ol>
+<h3 id="performance-considerations">Performance Considerations</h3>
+<ul>
+<li>Charts are rendered client-side using Canvas</li>
+<li>Automatic resizing with ResizeObserver</li>
+<li>Debounced animations for smooth playback</li>
+<li>Minimal re-renders during round transitions</li>
+</ul>
+<h2 id="accessibility">Accessibility</h2>
+<ul>
+<li>Keyboard navigation supported for all controls</li>
+<li>Focus indicators on interactive elements</li>
+<li>Color-blind friendly: green for elected, red for quota line</li>
+<li>High contrast text labels</li>
+<li>Semantic HTML structure</li>
+</ul>
+<h2 id="browser-compatibility">Browser Compatibility</h2>
+<ul>
+<li>Modern browsers with ES6+ support</li>
+<li>Canvas API required</li>
+<li>Tested on Chrome, Firefox, Edge, Safari</li>
+</ul>
+<h2 id="future-enhancements">Future Enhancements</h2>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" disabled> Export Sankey diagram as PNG</li>
+<li class="task-list-item"><input type="checkbox" disabled> Toggle between grouped and stacked bar charts</li>
+<li class="task-list-item"><input type="checkbox" disabled> Highlight specific candidate paths in Sankey</li>
+<li class="task-list-item"><input type="checkbox" disabled> Comparison view for multiple elections</li>
+<li class="task-list-item"><input type="checkbox" disabled> Dark mode support</li>
+<li class="task-list-item"><input type="checkbox" disabled> Animated particle effects for vote transfers</li>
+</ul>
+<h2 id="license">License</h2>
+<p>Apache 2.0 (matching ECharts license)</p>
+<h2 id="credits">Credits</h2>
+<ul>
+<li>Built with <a href="https://echarts.apache.org/">ECharts</a> by Apache Software Foundation</li>
+<li>Follows RCVis JSON format for interoperability</li>
+<li>Created for the Icenia government website</li>
+</ul>
+<h2 id="icenianstv-by-yodabird19">IcenianSTV by Yodabird19</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>import numpy as np</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Takes in a list of *strings* corresponding to candidate rankings,</span></span>
+<span class="line"><span># which may be up to as long as (but not longer than) the number of candidates,</span></span>
+<span class="line"><span># and a list of all the candidates</span></span>
+<span class="line"><span># and outputs a numeric ranking list (of the form used by the rest of this program)</span></span>
+<span class="line"><span># with names corresponding to their candidate numbers given in the candidate references</span></span>
+<span class="line"><span>def ballotFromNames(name, l, candidateReferences):</span></span>
+<span class="line"><span>    rankingList = []</span></span>
+<span class="line"><span>    for candidateName in l:</span></span>
+<span class="line"><span>        num = getCandidateNumber(candidateName,candidateReferences)</span></span>
+<span class="line"><span>        if num > 0:</span></span>
+<span class="line"><span>            rankingList.append(num)</span></span>
+<span class="line"><span>        else:</span></span>
+<span class="line"><span>            print(name + "'s ballot has invalid candidate '" + candidateName + "'.")</span></span>
+<span class="line"><span>            return None</span></span>
+<span class="line"><span>    for i in range(len(l),len(candidateReferences)):</span></span>
+<span class="line"><span>        rankingList.append(0)</span></span>
+<span class="line"><span>    return Ballot(name, rankingList, 1, len(candidateReferences))</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Gets the numeric candidate identifier for a candidate name,</span></span>
+<span class="line"><span># based on a list of references</span></span>
+<span class="line"><span># Returns -2 (error code for "invalid candidate") if there is none</span></span>
+<span class="line"><span>def getCandidateNumber(candidateName, candidateReferences):</span></span>
+<span class="line"><span>    for i in range(len(candidateReferences)):</span></span>
+<span class="line"><span>        if candidateReferences[i] == candidateName:</span></span>
+<span class="line"><span>            return i+1</span></span>
+<span class="line"><span>    return -2</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Takes in a list, where each index is a ranking, and each value is a candidate</span></span>
+<span class="line"><span># (ex. index 4 has value 8 -> voter has candidate #8 in 5th rank)</span></span>
+<span class="line"><span># Validates that it is of the correct form</span></span>
+<span class="line"><span># A value of 0 corresponds to a blank ranking</span></span>
+<span class="line"><span># (These can only be at the bottom of the ballot)</span></span>
+<span class="line"><span># A value of -1 corresponds to an eliminated candidate</span></span>
+<span class="line"><span># NOTE: This function will error if a ballot with -1 is put in</span></span>
+<span class="line"><span># Also takes in the number of candidates running</span></span>
+<span class="line"><span># (so if there are 26 candidates, input 26 for the second argument)</span></span>
+<span class="line"><span>def validateRankingList(l, candidateCount):</span></span>
+<span class="line"><span>    presence = np.zeros(candidateCount)</span></span>
+<span class="line"><span>    zero = False</span></span>
+<span class="line"><span>    if len(l) != candidateCount:</span></span>
+<span class="line"><span>        return (False, "Ballot has incorrect length " + str(len(l)) + " for " + str(candidateCount) + " candidates")</span></span>
+<span class="line"><span>    for c in l:</span></span>
+<span class="line"><span>        if c > candidateCount or c &#x3C; 0:</span></span>
+<span class="line"><span>            return (False, "Ballot has invalid candidate number " + str(c))</span></span>
+<span class="line"><span>        if c != 0:</span></span>
+<span class="line"><span>            presence[c-1] += 1</span></span>
+<span class="line"><span>            if presence[c-1] > 1:</span></span>
+<span class="line"><span>                return (False, "Ballot has more than one ranking for candidate number " + str(c))</span></span>
+<span class="line"><span>        if c == 0:</span></span>
+<span class="line"><span>            zero = True</span></span>
+<span class="line"><span>        if zero and c != 0:</span></span>
+<span class="line"><span>            return (False, "Ballot has non-trailing blank rankings")</span></span>
+<span class="line"><span>    return (True, "")</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>class Ballot:</span></span>
+<span class="line"><span>    def __init__(self, name, rankingList, votingPower, candidateCount):</span></span>
+<span class="line"><span>        valid = validateRankingList(rankingList, candidateCount)</span></span>
+<span class="line"><span>        if (valid[0]):</span></span>
+<span class="line"><span>            self.name = name</span></span>
+<span class="line"><span>            self.rankingList = rankingList</span></span>
+<span class="line"><span>            self.votingPower = votingPower</span></span>
+<span class="line"><span>        else:</span></span>
+<span class="line"><span>            print(name + " is invalid: " + valid[1])</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    # num = 1 for top choice</span></span>
+<span class="line"><span>    # num = 2 for second top choice</span></span>
+<span class="line"><span>    # etc</span></span>
+<span class="line"><span>    def getRankedChoice(self, num):</span></span>
+<span class="line"><span>        for c in self.rankingList:</span></span>
+<span class="line"><span>            if c != -1:</span></span>
+<span class="line"><span>                if num == 1:</span></span>
+<span class="line"><span>                    #print(self.name+" top choice of "+str(c)+": "+str(self.rankingList))</span></span>
+<span class="line"><span>                    return c</span></span>
+<span class="line"><span>                else:</span></span>
+<span class="line"><span>                    num -= 1</span></span>
+<span class="line"><span>        return 0</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    def eliminate(self,candidateNumber):</span></span>
+<span class="line"><span>        for i in range(len(self.rankingList)):</span></span>
+<span class="line"><span>            if self.rankingList[i] == candidateNumber:</span></span>
+<span class="line"><span>               self.rankingList[i] = -1</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    def isExhausted(self):</span></span>
+<span class="line"><span>        for c in self.rankingList:</span></span>
+<span class="line"><span>            if c != -1 and c != 0:</span></span>
+<span class="line"><span>                return False</span></span>
+<span class="line"><span>        return True</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Assesses the number of votes (taking weighting ito account) in favor</span></span>
+<span class="line"><span># of the candidate</span></span>
+<span class="line"><span># For tiebreaking purposes, 2nd-choice votes are included x1/1000, and</span></span>
+<span class="line"><span># 3rd-choice as x1/1000000 (Subsection 5)</span></span>
+<span class="line"><span>def votesInFavor(ballots, candidateNumber):</span></span>
+<span class="line"><span>    count = 0</span></span>
+<span class="line"><span>    counted = []</span></span>
+<span class="line"><span>    for b in ballots:</span></span>
+<span class="line"><span>        if (b.votingPower > 1):</span></span>
+<span class="line"><span>            print (b.name+"'s ballot has voting power "+str(b.votingPower)+"!")</span></span>
+<span class="line"><span>        if b.getRankedChoice(1) == candidateNumber:</span></span>
+<span class="line"><span>            count += b.votingPower*1</span></span>
+<span class="line"><span>            counted.append(b)</span></span>
+<span class="line"><span>        if b.getRankedChoice(2) == candidateNumber:</span></span>
+<span class="line"><span>            count += b.votingPower*1/1000</span></span>
+<span class="line"><span>        if b.getRankedChoice(3) == candidateNumber:</span></span>
+<span class="line"><span>            count += b.votingPower*1/1000000</span></span>
+<span class="line"><span>    #print("Candidate " + str(candidateNumber) + " has "  + str(count) + " votes in favor from " + str(len(counted)) + " ballots.")</span></span>
+<span class="line"><span>    return (count, counted)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Gets either the top-ranked or lowest-ranked candidate</span></span>
+<span class="line"><span># mode  1: top ranked</span></span>
+<span class="line"><span># mode -1: lowest ranked</span></span>
+<span class="line"><span>def extremeCandidate(ballots, mode):</span></span>
+<span class="line"><span>    candidates = np.zeros(len(ballots[0].rankingList))</span></span>
+<span class="line"><span>    for i in range(len(candidates)):</span></span>
+<span class="line"><span>        candidates[i] = votesInFavor(ballots, i+1)[0]</span></span>
+<span class="line"><span>    toReturn = -1/2</span></span>
+<span class="line"><span>    for i in range(len(candidates)):</span></span>
+<span class="line"><span>        if (candidates[i] != 0):</span></span>
+<span class="line"><span>            toReturn = i+1</span></span>
+<span class="line"><span>            break</span></span>
+<span class="line"><span>    if toReturn == -1/2:</span></span>
+<span class="line"><span>        print("TORETURN = 1/2:")</span></span>
+<span class="line"><span>        for b in ballots:</span></span>
+<span class="line"><span>            print(b.name+": " + str(b.rankingList))</span></span>
+<span class="line"><span>    #print(candidates)</span></span>
+<span class="line"><span>    for i in range(len(candidates)):</span></span>
+<span class="line"><span>        if (mode*candidates[i] > mode*candidates[toReturn-1] and candidates[i] != 0):</span></span>
+<span class="line"><span>            toReturn = i+1</span></span>
+<span class="line"><span>    #print("Votes in favor of candidate",toReturn,":",str(candidates[toReturn-1]))</span></span>
+<span class="line"><span>    #print("Votes in favor of candidate",1,":",str(candidates[0+1]))</span></span>
+<span class="line"><span>    return toReturn</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Eliminates a candidate from a list of ballots</span></span>
+<span class="line"><span>def eliminateCandidate(ballots, candidateNumber):</span></span>
+<span class="line"><span>    #print("ELIMINATING CANDIDATE " + str(candidateNumber))</span></span>
+<span class="line"><span>    for b in ballots:</span></span>
+<span class="line"><span>        b.eliminate(candidateNumber)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>#</span></span>
+<span class="line"><span>def STV(ballots, k, candidateReferences):</span></span>
+<span class="line"><span>    print("STV with",str(k),"winners,",str(len(ballots[0].rankingList)),"candidates,",str(len(ballots)),"ballots")</span></span>
+<span class="line"><span>    #for b in ballots:</span></span>
+<span class="line"><span>        #print(b.name + ": " + str(b.rankingList))</span></span>
+<span class="line"><span>    winners = []</span></span>
+<span class="line"><span>    totalVote = len(ballots)</span></span>
+<span class="line"><span>    # Subsection 2</span></span>
+<span class="line"><span>    while (len(winners) &#x3C; k):</span></span>
+<span class="line"><span>        # Subsection 3</span></span>
+<span class="line"><span>        topCandidate = extremeCandidate(ballots,1)</span></span>
+<span class="line"><span>        (topCandidateVotes, votesForTopCandidate) = votesInFavor(ballots, topCandidate)</span></span>
+<span class="line"><span>        if topCandidateVotes >= totalVote/(k+1):</span></span>
+<span class="line"><span>            # Paragraph 3(a)</span></span>
+<span class="line"><span>            winners.append(candidateReferences[topCandidate-1])</span></span>
+<span class="line"><span>            # Paragraph 3(b)</span></span>
+<span class="line"><span>            print ("win",candidateReferences[topCandidate-1])#,topCandidateVotes,str(totalVote/(k+1)))</span></span>
+<span class="line"><span>            eliminateCandidate(ballots, topCandidate)</span></span>
+<span class="line"><span>            #print("quota:",str(np.ceil(totalVote/(k+1))),"from total remaining voting power of",str(totalVote))</span></span>
+<span class="line"><span>            for b in votesForTopCandidate:</span></span>
+<span class="line"><span>                b.votingPower *= (topCandidateVotes-totalVote/(k+1))/topCandidateVotes</span></span>
+<span class="line"><span>            # Paragraph 3(c)</span></span>
+<span class="line"><span>        # Subsection 4</span></span>
+<span class="line"><span>        else:</span></span>
+<span class="line"><span>            # Paragraph 4(a)</span></span>
+<span class="line"><span>            bottomCandidate = extremeCandidate(ballots, -1)</span></span>
+<span class="line"><span>            print("elim",candidateReferences[bottomCandidate-1])#,str(votesInFavor(ballots, bottomCandidate)[0]),str(totalVote/(k+1)))</span></span>
+<span class="line"><span>            eliminateCandidate(ballots, bottomCandidate)</span></span>
+<span class="line"><span>        # Subsection 6</span></span>
+<span class="line"><span>        for b in ballots:</span></span>
+<span class="line"><span>            if b.isExhausted():</span></span>
+<span class="line"><span>                #print(b.name+"'s ballot is exhausted!")</span></span>
+<span class="line"><span>                totalVote -= b.votingPower</span></span>
+<span class="line"><span>                #print("totalVote has been reduced by " + str(b.votingPower) + "! It is now " + str(totalVote))</span></span>
+<span class="line"><span>                b.votingPower = 0</span></span>
+<span class="line"><span>    return winners</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>cand = ["Wyatt","Xavier","Yvette","Zoe"]</span></span>
+<span class="line"><span>b1 = ballotFromNames("Alice", ["Yvette", "Wyatt", "Xavier", "Zoe"], cand)</span></span>
+<span class="line"><span>b2 = ballotFromNames("Bob", ["Zoe", "Xavier", "Yvette"], cand)</span></span>
+<span class="line"><span>b3 = ballotFromNames("Claire", ["Wyatt"], cand)</span></span>
+<span class="line"><span>b4 = ballotFromNames("David", ["Yvette", "Zoe", "Wyatt", "Xavier"], cand)</span></span>
+<span class="line"><span>b5 = ballotFromNames("Eliza", ["Wyatt", "Zoe", "Xavier"], cand)</span></span>
+<span class="line"><span>bs = [b1,b2,b3,b4,b5]</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>print(STV(bs,1,cand))</span></span>
+<span class="line"><span></span></span></code></pre>

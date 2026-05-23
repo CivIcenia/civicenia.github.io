@@ -1,0 +1,602 @@
+{
+  "version": "3.0",
+  "timestamp": "2026-03-14T16:59:01.326Z",
+  "inputMode": "simple",
+  "electionName": "Senate Election March 2026 Term 45",
+  "candidates": [
+    "hg",
+    "eledion",
+    "holden",
+    "xcios",
+    "zolo",
+    "naglafer",
+    "bacon",
+    "anvil",
+    "hsm",
+    "gold",
+    "complexii",
+    "haxx0r"
+  ],
+  "ballots": [
+    {
+      "voter": "hg",
+      "rankings": [
+        "hg",
+        "xcios",
+        "anvil"
+      ]
+    },
+    {
+      "voter": "eledion",
+      "rankings": [
+        "eledion",
+        "zolo",
+        "anvil",
+        "bacon",
+        "hsm",
+        "haxx0r",
+        "holden"
+      ]
+    },
+    {
+      "voter": "xcios",
+      "rankings": [
+        "hg",
+        "xcios",
+        "anvil",
+        "holden"
+      ]
+    },
+    {
+      "voter": "bacon",
+      "rankings": [
+        "bacon",
+        "haxx0r",
+        "eledion",
+        "zolo",
+        "hsm",
+        "anvil",
+        "gold",
+        "holden",
+        "complexii",
+        "xcios",
+        "hg"
+      ]
+    },
+    {
+      "voter": "lopster",
+      "rankings": [
+        "holden",
+        "anvil",
+        "bacon",
+        "complexii",
+        "gold",
+        "hg",
+        "xcios",
+        "zolo",
+        "naglafer",
+        "haxx0r"
+      ]
+    },
+    {
+      "voter": "binchy",
+      "rankings": [
+        "hg",
+        "xcios",
+        "naglafer"
+      ]
+    },
+    {
+      "voter": "speedy",
+      "rankings": [
+        "bacon",
+        "gold",
+        "anvil",
+        "hsm",
+        "zolo",
+        "haxx0r",
+        "eledion",
+        "holden",
+        "xcios",
+        "hg"
+      ]
+    },
+    {
+      "voter": "gjum",
+      "rankings": [
+        "naglafer",
+        "anvil",
+        "holden",
+        "bacon",
+        "eledion",
+        "hsm",
+        "haxx0r",
+        "zolo",
+        "complexii",
+        "gold",
+        "xcios"
+      ]
+    },
+    {
+      "voter": "zolo",
+      "rankings": [
+        "eledion",
+        "zolo",
+        "bacon",
+        "haxx0r",
+        "complexii",
+        "gold",
+        "hsm",
+        "hg"
+      ]
+    },
+    {
+      "voter": "quanton",
+      "rankings": [
+        "anvil"
+      ]
+    },
+    {
+      "voter": "soundtech",
+      "rankings": [
+        "anvil"
+      ]
+    },
+    {
+      "voter": "alzu",
+      "rankings": [
+        "hsm",
+        "anvil",
+        "holden",
+        "naglafer",
+        "haxx0r",
+        "gold",
+        "eledion",
+        "complexii"
+      ]
+    },
+    {
+      "voter": "kayotic",
+      "rankings": [
+        "xcios",
+        "hg"
+      ]
+    },
+    {
+      "voter": "chris",
+      "rankings": [
+        "anvil"
+      ]
+    },
+    {
+      "voter": "sage",
+      "rankings": [
+        "anvil",
+        "bacon",
+        "naglafer"
+      ]
+    },
+    {
+      "voter": "wo7f",
+      "rankings": [
+        "anvil",
+        "holden",
+        "naglafer",
+        "xcios",
+        "hg",
+        "bacon",
+        "gold"
+      ]
+    },
+    {
+      "voter": "luci",
+      "rankings": [
+        "anvil",
+        "complexii",
+        "bacon"
+      ]
+    },
+    {
+      "voter": "naglafer",
+      "rankings": [
+        "naglafer",
+        "anvil",
+        "complexii",
+        "xcios",
+        "zolo",
+        "bacon"
+      ]
+    },
+    {
+      "voter": "holden",
+      "rankings": [
+        "holden",
+        "anvil",
+        "complexii"
+      ]
+    },
+    {
+      "voter": "unique",
+      "rankings": [
+        "anvil",
+        "holden",
+        "complexii",
+        "bacon"
+      ]
+    },
+    {
+      "voter": "sdorr",
+      "rankings": [
+        "eledion",
+        "bacon",
+        "haxx0r",
+        "zolo",
+        "hsm",
+        "anvil",
+        "gold",
+        "holden",
+        "complexii",
+        "naglafer",
+        "xcios",
+        "hg"
+      ]
+    },
+    {
+      "voter": "jaimiemie",
+      "rankings": [
+        "bacon",
+        "haxx0r",
+        "eledion",
+        "gold",
+        "hsm",
+        "zolo",
+        "anvil",
+        "holden",
+        "xcios",
+        "hg"
+      ]
+    },
+    {
+      "voter": "creepily",
+      "rankings": [
+        "haxx0r",
+        "gold",
+        "anvil",
+        "hsm",
+        "xcios",
+        "bacon",
+        "eledion",
+        "naglafer",
+        "complexii",
+        "hg",
+        "zolo",
+        "holden"
+      ]
+    },
+    {
+      "voter": "azuzi",
+      "rankings": [
+        "eledion",
+        "zolo"
+      ]
+    },
+    {
+      "voter": "john",
+      "rankings": [
+        "eledion",
+        "zolo",
+        "anvil",
+        "bacon",
+        "hsm",
+        "haxx0r",
+        "holden",
+        "xcios",
+        "complexii"
+      ]
+    },
+    {
+      "voter": "savster",
+      "rankings": [
+        "gold",
+        "complexii"
+      ]
+    },
+    {
+      "voter": "mayblu",
+      "rankings": [
+        "anvil",
+        "bacon",
+        "xcios",
+        "haxx0r",
+        "naglafer"
+      ]
+    },
+    {
+      "voter": "yodabird",
+      "rankings": [
+        "gold",
+        "zolo",
+        "hsm",
+        "anvil",
+        "complexii",
+        "bacon",
+        "haxx0r",
+        "naglafer",
+        "eledion",
+        "holden",
+        "xcios",
+        "hg"
+      ]
+    },
+    {
+      "voter": "complexii",
+      "rankings": [
+        "complexii",
+        "gold",
+        "zolo",
+        "anvil",
+        "holden",
+        "hsm",
+        "naglafer",
+        "eledion",
+        "haxx0r"
+      ]
+    },
+    {
+      "voter": "jt",
+      "rankings": [
+        "naglafer",
+        "anvil",
+        "complexii",
+        "xcios",
+        "zolo",
+        "bacon"
+      ]
+    },
+    {
+      "voter": "zolo",
+      "rankings": [
+        "zolo",
+        "eledion",
+        "bacon",
+        "haxx0r",
+        "complexii",
+        "gold",
+        "hsm",
+        "hg"
+      ]
+    },
+    {
+      "voter": "lagi",
+      "rankings": [
+        "anvil"
+      ]
+    },
+    {
+      "voter": "raeders",
+      "rankings": [
+        "anvil",
+        "bacon",
+        "eledion",
+        "gold",
+        "zolo",
+        "naglafer"
+      ]
+    },
+    {
+      "voter": "entrie",
+      "rankings": [
+        "haxx0r",
+        "bacon",
+        "eledion",
+        "gold",
+        "naglafer",
+        "hsm",
+        "zolo",
+        "anvil",
+        "holden",
+        "xcios",
+        "hg"
+      ]
+    },
+    {
+      "voter": "cultist",
+      "rankings": [
+        "haxx0r",
+        "bacon",
+        "eledion",
+        "gold",
+        "naglafer",
+        "hsm",
+        "zolo",
+        "anvil",
+        "holden",
+        "xcios",
+        "hg"
+      ]
+    },
+    {
+      "voter": "anvil",
+      "rankings": [
+        "anvil",
+        "naglafer",
+        "holden",
+        "gold",
+        "haxx0r",
+        "hsm",
+        "bacon",
+        "complexii",
+        "eledion"
+      ]
+    },
+    {
+      "voter": "markstefer",
+      "rankings": [
+        "bacon",
+        "haxx0r"
+      ]
+    },
+    {
+      "voter": "kaiser",
+      "rankings": [
+        "haxx0r",
+        "bacon",
+        "eledion",
+        "gold",
+        "naglafer",
+        "hsm",
+        "zolo",
+        "anvil",
+        "holden",
+        "xcios",
+        "hg"
+      ]
+    },
+    {
+      "voter": "kingkev",
+      "rankings": [
+        "haxx0r",
+        "bacon",
+        "eledion",
+        "gold",
+        "naglafer",
+        "hsm",
+        "zolo",
+        "anvil",
+        "holden",
+        "xcios",
+        "hg"
+      ]
+    },
+    {
+      "voter": "kampuchea",
+      "rankings": [
+        "haxx0r",
+        "bacon",
+        "eledion",
+        "gold",
+        "naglafer",
+        "hsm",
+        "zolo",
+        "anvil",
+        "holden",
+        "xcios",
+        "hg"
+      ]
+    },
+    {
+      "voter": "gold",
+      "rankings": [
+        "gold",
+        "complexii",
+        "anvil",
+        "zolo",
+        "hsm",
+        "bacon",
+        "haxx0r",
+        "naglafer",
+        "holden",
+        "eledion",
+        "xcios",
+        "hg"
+      ]
+    },
+    {
+      "voter": "darkh",
+      "rankings": [
+        "bacon",
+        "eledion",
+        "haxx0r",
+        "anvil",
+        "hsm",
+        "xcios",
+        "zolo"
+      ]
+    },
+    {
+      "voter": "hsm",
+      "rankings": [
+        "hsm",
+        "bacon",
+        "gold",
+        "naglafer",
+        "haxx0r",
+        "anvil",
+        "holden",
+        "xcios",
+        "hg",
+        "eledion",
+        "zolo"
+      ]
+    },
+    {
+      "voter": "minemaster",
+      "rankings": [
+        "hsm",
+        "bacon",
+        "gold",
+        "naglafer",
+        "haxx0r",
+        "anvil",
+        "holden",
+        "xcios",
+        "hg",
+        "eledion",
+        "zolo"
+      ]
+    },
+    {
+      "voter": "charlie",
+      "rankings": [
+        "naglafer"
+      ]
+    },
+    {
+      "voter": "haxx0r",
+      "rankings": [
+        "anvil",
+        "haxx0r",
+        "bacon",
+        "gold",
+        "eledion",
+        "naglafer",
+        "hsm",
+        "holden",
+        "zolo",
+        "xcios",
+        "complexii"
+      ]
+    }
+  ],
+  "rawDiscordInput": {
+    "candidates": "",
+    "ballots": "",
+    "seats": 5
+  },
+  "nameMatches": {
+    "hg": "hg",
+    "xcios": "xcios",
+    "anvil": "anvil",
+    "eledion": "eledion",
+    "zolo": "zolo",
+    "bacon": "bacon",
+    "hsm": "hsm",
+    "haxx0r": "haxx0r",
+    "holden": "holden",
+    "gold": "gold",
+    "complexii": "complexii",
+    "naglafer": "naglafer"
+  },
+  "learnedCorrelations": {},
+  "ballotStructuredLines": {},
+  "ballotManuallyModified": [],
+  "originalBallotText": {},
+  "reviewedNames": [],
+  "uniqueNames": [],
+  "nameCounts": {},
+  "currentState": {
+    "section": "results",
+    "currentNameIndex": 0,
+    "currentBallotIndex": 0
+  }
+}
